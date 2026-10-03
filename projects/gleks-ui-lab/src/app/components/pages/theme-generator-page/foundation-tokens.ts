@@ -91,6 +91,7 @@ export const FOUNDATION_GROUPS: readonly FoundationGroup[] = [
       // Weight and leading, the third and fourth axes of this layer (21.9.0). Both are unitless,
       // so `classifyToken` renders them as text fields rather than ranges — the same graceful
       // degradation the two casing tokens above and `--gog-density` below already rely on.
+      '--gog-font-weight-regular',
       '--gog-font-weight-medium',
       '--gog-font-weight-semibold',
       '--gog-font-weight-bold',

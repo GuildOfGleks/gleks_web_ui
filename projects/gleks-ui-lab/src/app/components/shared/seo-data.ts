@@ -80,7 +80,7 @@ export const PAGE_SEO: Readonly<Record<string, PageSeo>> = {
     title: `Theming Angular Components with CSS Variables`,
     description:
       'Retheme the whole library by overriding a handful of CSS custom properties — foundation, ' +
-      'component and instance layers, 1239 tokens, no preprocessor and no rebuild.',
+      'component and instance layers, 1497 tokens, no preprocessor and no rebuild.',
   },
   'general/theme-generator': {
     title: `Theme Generator — Build an Angular UI Theme`,

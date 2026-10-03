@@ -2,7 +2,7 @@
 // doc page slices out of it by section id.
 //
 // **Hand-maintained, and deliberately not the package's full token list.** `TOKENS.md` and
-// `GOG_TOKEN_GROUPS` are exhaustive — 1383 custom properties, most of them one per size step —
+// `GOG_TOKEN_GROUPS` are exhaustive — 1497 custom properties as of 21.15.0, most of them one per size step —
 // and reprinting that is a search result, not a reference. The rows here compress a family into
 // one line (`{variant}`, `{status}`, "per size step") and say what it is *for*. The cost of that
 // choice is that a release adding tokens does not show up here on its own: check a new release's
@@ -132,9 +132,9 @@ export const TOKEN_SECTIONS: TokenSection[] = [
         description: 'Emphasis tracking, paired with --gog-text-transform.',
       },
       {
-        name: '--gog-font-weight-medium / -semibold / -bold / -heavy',
+        name: '--gog-font-weight-regular / -medium / -semibold / -bold / -heavy',
         description:
-          'Weight, the third character axis. Four steps because four are painted — there is no normal, since nothing in the library uses 400. Set these and every component weight follows; before them, fifteen component tokens each held a bare number.',
+          'Weight, the third character axis. Set these and every component weight follows; before them, fifteen component tokens each held a bare number. The regular (400) step arrived in 21.15.0 and is what field labels are set in.',
       },
       {
         name: '--gog-line-height-none / -tight / -snug / -normal / -relaxed / -loose',
@@ -263,13 +263,18 @@ export const TOKEN_SECTIONS: TokenSection[] = [
           'The clear (×) button’s glyph as a fraction of its box, shared by the five single-line controls that draw one. gog-textarea keeps its own 1 deliberately: its clear button sits in a corner rather than in the field’s icon row.',
       },
       {
-        name: '--gog-control-checkbox-{size}-box-size / -label-size / -icon-size',
+        name: '--gog-control-checkbox-box-size-{size} / -label-size-{size} / -icon-size-{size}',
         description: 'Checkbox box, label and icon size, per size step (xsm/sm/md/lg/slg).',
       },
       {
         name: '--gog-field-line-height / -label-line-height / -error-line-height',
         description:
           'Leading for the three things every field renders — its own text, its label and its error line — declared once here and aliased by all eight controls that draw them. The role is what sets the value, not the size: all five size steps of a field share one leading, which is why there is no per-size token to override.',
+      },
+      {
+        name: '--gog-field-label-color / -label-font-family / -label-font-size / -label-font-weight / -label-letter-spacing / -label-text-transform',
+        description:
+          'The label above every form control, declared once in 21.15.0 so a theme restyles every form control’s label at once. Each component’s own --gog-{control}-label-* tokens alias these, so one control can still be set on its own. Defaults: the accent colour, the heading font at --gog-text-sm, regular weight, and the theme’s casing and tracking.',
       },
       {
         name: '--gog-field-float-label-reserve / -in-top / -over-gap / -over-reserve',
@@ -367,7 +372,10 @@ export const TOKEN_SECTIONS: TokenSection[] = [
     id: 'autocomplete',
     title: 'Autocomplete',
     tokens: [
-      { name: '--gog-autocomplete-label-color', description: 'Field label color.' },
+      {
+        name: '--gog-autocomplete-label-color / -label-font-family / -label-font-size / -label-font-weight / -label-letter-spacing / -label-line-height / -label-text-transform',
+        description: 'Field label. Each aliases its --gog-field-label-* counterpart.',
+      },
       {
         name: '--gog-autocomplete-field-bg / -border-color / -text-color',
         description: 'Field surface, border and text.',
@@ -726,7 +734,10 @@ export const TOKEN_SECTIONS: TokenSection[] = [
     id: 'datepicker',
     title: 'Datepicker',
     tokens: [
-      { name: '--gog-datepicker-label-color', description: 'Field label color.' },
+      {
+        name: '--gog-datepicker-label-color / -label-font-family / -label-font-size / -label-font-weight / -label-letter-spacing / -label-line-height / -label-text-transform',
+        description: 'Field label. Each aliases its --gog-field-label-* counterpart.',
+      },
       {
         name: '--gog-datepicker-field-bg / -border-color / -text-color',
         description: 'Field surface, border and text.',
@@ -856,7 +867,10 @@ export const TOKEN_SECTIONS: TokenSection[] = [
     // set on purpose, which is why there is no --gog-inputfield-*.
     title: 'Input Field & Text Area — the shared field block',
     tokens: [
-      { name: '--gog-input-label-color', description: 'Field label color.' },
+      {
+        name: '--gog-input-label-color / -label-font-family / -label-font-size / -label-font-weight / -label-letter-spacing / -label-line-height / -label-text-transform',
+        description: 'Field label. Each aliases its --gog-field-label-* counterpart.',
+      },
       {
         name: '--gog-input-field-bg / -field-border / -field-color',
         description: 'Field surface, border and text.',
@@ -963,7 +977,10 @@ export const TOKEN_SECTIONS: TokenSection[] = [
     id: 'multiselect',
     title: 'Multiselect',
     tokens: [
-      { name: '--gog-multiselect-label-color', description: 'Field label color.' },
+      {
+        name: '--gog-multiselect-label-color / -label-font-family / -label-font-size / -label-font-weight / -label-letter-spacing / -label-line-height / -label-text-transform',
+        description: 'Field label. Each aliases its --gog-field-label-* counterpart.',
+      },
       {
         name: '--gog-multiselect-field-bg / -field-border',
         description: 'Field surface and border.',
@@ -1112,7 +1129,7 @@ export const TOKEN_SECTIONS: TokenSection[] = [
       {
         name: '--gog-progressbar-edge-color / -edge-backing-color / -edge-width',
         description:
-          'The two hairlines marking where the fill ends, added in 21.10.0 — and, since 21.13.0, where the buffer level ends too. Two rather than one because no single tone clears WCAG 1.4.11 against all five fills: the ink line sits outermost against the track, the surface-coloured one just inside the fill, and whichever tone a fill sits close to, the other one reads. With showValue off — the default — this boundary is the only thing stating the value.',
+          'Two hairlines marking where the fill ends — and where the buffer level ends — off by default since 21.15.0 (-edge-width: 0px). Set the width to 1px to turn them on. The reason to: with showValue off, the boundary between fill and track is the only thing stating the value, and the fill and track colours alone do not clear WCAG 1.4.11’s 3:1 in every theme. On, they do — the ink line sits outermost against the track, the surface-coloured one just inside the fill. They are off because a light line on a dark fill reads as an outline rather than as the value.',
       },
     ],
   },
@@ -1133,8 +1150,9 @@ export const TOKEN_SECTIONS: TokenSection[] = [
         description: 'Per-option label and the gap to its circle.',
       },
       {
-        name: '--gog-radio-group-label-color / -group-label-size / -group-gap',
-        description: 'The group’s own label.',
+        name: '--gog-radio-group-label-color / -group-label-size / -group-label-font-family / -group-label-font-weight / -group-label-line-height / -group-label-letter-spacing / -group-label-text-transform / -group-gap',
+        description:
+          'The group’s own label, and its gap to the options. Since 21.15.0 it aliases --gog-field-label-*, so it wears the same colour and font as every other field label — the accent in most themes, where it used to be the muted grey.',
       },
       {
         name: '--gog-radio-group-option-gap / -group-option-gap-horizontal',
@@ -1192,6 +1210,11 @@ export const TOKEN_SECTIONS: TokenSection[] = [
         name: '--gog-scroll-corner-bg',
         description: 'Background of the corner square where two tracks meet.',
       },
+      {
+        name: '--gog-scroll-track-start',
+        description:
+          'Where the vertical track starts, 0px by default. Content that pins a header over the top of the viewport sets it to that header’s height, so the thumb never runs over the header; gog-table does this itself for its stickyHeader. New in 21.15.0.',
+      },
       { name: '--gog-scroll-fade-duration', description: 'Auto-hide fade animation timing.' },
       {
         name: '--gog-scroll-focus-ring / -focus-ring-width',
@@ -1207,7 +1230,10 @@ export const TOKEN_SECTIONS: TokenSection[] = [
     id: 'select',
     title: 'Select',
     tokens: [
-      { name: '--gog-select-label-color', description: 'Field label color.' },
+      {
+        name: '--gog-select-label-color / -label-font-family / -label-font-size / -label-font-weight / -label-letter-spacing / -label-line-height / -label-text-transform',
+        description: 'Field label. Each aliases its --gog-field-label-* counterpart.',
+      },
       {
         name: '--gog-select-field-bg / -field-border',
         description: 'Field surface and border.',
@@ -1267,7 +1293,11 @@ export const TOKEN_SECTIONS: TokenSection[] = [
     id: 'skeleton',
     title: 'Skeleton',
     tokens: [
-      { name: '--gog-skeleton-base / -shine', description: 'Placeholder base color and shimmer.' },
+      {
+        name: '--gog-skeleton-base / -shine',
+        description:
+          'Placeholder base colour and shimmer. Since 21.15.0 the base is translucent ink — color-mix(in srgb, var(--gog-text-color) 12%, transparent) — rather than a fixed colour, so a bone stands off whatever it sits on by the same step: a filled card’s tint as much as the page. The fixed colour vanished on a filled surface.',
+      },
       {
         name: '--gog-skeleton-radius / -line-radius',
         description: 'Corner radius, block and line shapes.',
@@ -1282,7 +1312,11 @@ export const TOKEN_SECTIONS: TokenSection[] = [
     id: 'slider',
     title: 'Slider',
     tokens: [
-      { name: '--gog-slider-label-color / -value-color', description: 'Label and current value.' },
+      {
+        name: '--gog-slider-label-color / -label-font-family / -label-font-size / -label-font-weight / -label-letter-spacing / -label-line-height / -label-text-transform',
+        description: 'Field label. Each aliases its --gog-field-label-* counterpart.',
+      },
+      { name: '--gog-slider-value-color', description: 'The current value readout.' },
       {
         name: '--gog-slider-track-bg / -fill-bg',
         description:
@@ -1297,6 +1331,11 @@ export const TOKEN_SECTIONS: TokenSection[] = [
         name: '--gog-slider-thumb-bg / -thumb-border / -thumb-glow-color / -thumb-glow-size',
         description:
           'Drag handle, and the glow around it. -thumb-glow-color was --gog-slider-thumb-shadow until 21.13.0 — it always held a colour, not a shadow — and the old name stopped resolving in 21.14.0.',
+      },
+      {
+        name: '--gog-slider-range-target-size',
+        description:
+          'A range thumb’s pointer target, 24px (WCAG 2.5.8). The drawn thumb stays --gog-slider-thumb-size; this is the invisible area around it that takes the press. New in 21.15.0.',
       },
       {
         name: '--gog-slider-auto-width / -vertical-length',
