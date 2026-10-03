@@ -1,16 +1,16 @@
-<div class="menu-row">
-  <gog-button variant="outline" type="button" [gogMenuTrigger]="documentMenu">
-    Document actions
-  </gog-button>
+<div>
+  <gog-button variant="outline" [gogMenuTrigger]="documentMenu">Document actions</gog-button>
 
-  <gog-menu #documentMenu ariaLabel="Document actions" (gogClosed)="closes.set(closes() + 1)">
+  <gog-menu #documentMenu ariaLabel="Document actions" (gogClosed)="closes.update((n) => n + 1)">
     <button gogMenuItem type="button" (click)="run('Rename')">
       <gog-icon name="pencil" />
       Rename
     </button>
+    <!-- An item is your own button, so a shortcut hint is just more of its content. -->
     <button gogMenuItem type="button" (click)="run('Duplicate')">
       <gog-icon name="copy" />
       Duplicate
+      <kbd style="margin-inline-start: auto; color: var(--gog-muted-text-color)">Ctrl+D</kbd>
     </button>
     <button gogMenuItem type="button" disabled>
       <gog-icon name="lock" />
@@ -23,6 +23,4 @@
   </gog-menu>
 </div>
 
-<p class="menu-status">
-  Last action: <strong>{{ lastAction() }}</strong> · closes: <strong>{{ closes() }}</strong>
-</p>
+<p>Last action: {{ lastAction() }} · gogClosed: {{ closes() }}</p>

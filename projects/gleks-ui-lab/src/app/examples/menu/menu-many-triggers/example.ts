@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import {
-  ButtonComponent,
+  GogButtonDirective,
   GogMenuItemDirective,
   GogMenuTriggerDirective,
   IconComponent,
@@ -10,7 +10,7 @@ import {
 @Component({
   selector: 'app-example',
   imports: [
-    ButtonComponent,
+    GogButtonDirective,
     MenuComponent,
     GogMenuTriggerDirective,
     GogMenuItemDirective,
@@ -19,11 +19,12 @@ import {
   templateUrl: './example.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MenuOverviewExample {
+export class MenuManyTriggersExample {
+  protected readonly files = ['report.pdf', 'budget.xlsx', 'notes.md'];
+  protected readonly target = signal('');
   protected readonly lastAction = signal('—');
-  protected readonly closes = signal(0);
 
   protected run(action: string): void {
-    this.lastAction.set(action);
+    this.lastAction.set(`${action} ${this.target()}`);
   }
 }

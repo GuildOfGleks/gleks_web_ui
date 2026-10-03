@@ -5,41 +5,37 @@
        `header` is blank, so `header=""` on a field="id" column renders "ID" above a menu button. -->
   <gog-column field="id" header="Actions" width="88px">
     <ng-template gogColumnBody [gogColumnBodyTypeOf]="documents" let-row>
-      <span class="row-actions">
-        <button
-          gogButton
-          variant="ghost"
-          size="sm"
-          type="button"
-          [gogMenuTrigger]="rowMenu"
-          [attr.aria-label]="'Actions for ' + row.name"
-        >
-          <gog-icon name="more-vertical" />
-        </button>
+      <button
+        gogButton
+        variant="ghost"
+        size="sm"
+        type="button"
+        [gogMenuTrigger]="rowMenu"
+        [attr.aria-label]="'Actions for ' + row.name"
+      >
+        <gog-icon name="more-vertical" />
+      </button>
 
-        <gog-menu #rowMenu ariaLabel="Row actions">
-          <button gogMenuItem type="button" (click)="run('Open ' + row.name)">
-            <gog-icon name="eye" />
-            Open
-          </button>
-          <button gogMenuItem type="button" (click)="run('Share ' + row.name)">
-            <gog-icon name="external-link" />
-            Share
-          </button>
-          <button gogMenuItem type="button" disabled>
-            <gog-icon name="lock" />
-            Transfer ownership
-          </button>
-          <button gogMenuItem type="button" (click)="run('Archive ' + row.name)">
-            <gog-icon name="download" />
-            Archive
-          </button>
-        </gog-menu>
-      </span>
+      <gog-menu #rowMenu ariaLabel="Row actions">
+        <button gogMenuItem type="button" (click)="run('Open ' + row.name)">
+          <gog-icon name="eye" />
+          Open
+        </button>
+        <button gogMenuItem type="button" (click)="run('Share ' + row.name)">
+          <gog-icon name="external-link" />
+          Share
+        </button>
+        <button gogMenuItem type="button" disabled>
+          <gog-icon name="lock" />
+          Transfer ownership
+        </button>
+        <button gogMenuItem type="button" (click)="run('Archive ' + row.name)">
+          <gog-icon name="download" />
+          Archive
+        </button>
+      </gog-menu>
     </ng-template>
   </gog-column>
 </gog-table>
 
-<p class="menu-status">
-  Last action: <strong>{{ lastAction() }}</strong>
-</p>
+<p>Last action: {{ lastAction() }}</p>

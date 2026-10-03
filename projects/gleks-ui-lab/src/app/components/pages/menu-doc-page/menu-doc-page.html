@@ -18,14 +18,19 @@
       <a routerLink="/components/button">[gogButton]</a> — because a menu button is usually an icon
       button you have already styled, and a wrapper would fight that. It goes on a
       <code>gog-button</code> as well as on your own <code>&lt;button gogButton&gt;</code>: since
-      21.15.0 it writes <code>aria-haspopup</code>, <code>aria-expanded</code> and
-      <code>aria-controls</code> onto the inner <code>&lt;button&gt;</code> that takes focus, and
-      Escape hands focus back to it.
+      <app-since version="21.15.0" inline /> it writes <code>aria-haspopup</code>,
+      <code>aria-expanded</code> and <code>aria-controls</code> onto the inner
+      <code>&lt;button&gt;</code> that takes focus, and Escape hands focus back to it.
     </p>
     <app-markdown [markdown]="importSnippet" />
 
+    <p class="doc-section__intro">
+      An item is your own <code>&lt;button gogMenuItem&gt;</code>, so its content is yours — an
+      icon, a label, a shortcut hint. The hint's styling below is inline because the library draws
+      none for it: it is your markup, styled however your app styles a <code>&lt;kbd&gt;</code>.
+    </p>
     <div class="demo-card">
-      <app-demo [component]="examples.overview" [source]="sources.menuOverview" />
+      <app-demo [component]="examples.overview" [source]="sources.menuOverview" layout="rows" />
     </div>
 
     <p class="doc-section__intro">
@@ -41,11 +46,99 @@
   </section>
 
   <section class="doc-section">
-    <h2 id="keyboard" class="doc-section__title font-heading">Keyboard</h2>
+    <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Row actions</h3>
+      <p class="demo-card__meta">
+        What the component was built for: an icon button per row. The library created this gap
+        itself — 21.4.0 added the <code>more-horizontal</code> / <code>more-vertical</code> icons
+        and a table built for row actions, with nothing to open with them. The table wraps itself in
+        a <code>gog-scroll</code> and the panel still escapes it, which is why the menu always
+        renders into <code>&lt;body&gt;</code> rather than offering a mode to get this wrong in.
+      </p>
+      <app-demo
+        [component]="examples.rowActions"
+        [source]="sources.menuRowActions"
+        layout="block"
+      />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Disabled items</h3>
+      <p class="demo-card__meta">
+        An item is your own <code>&lt;button&gt;</code>, so you disable it the way you disable a
+        button: the native <code>disabled</code> attribute, static or bound — there is no input for
+        it. A disabled item stays in the list rather than disappearing, since removing it would
+        shift every other item under the pointer; the arrow keys step over it, and clicking it does
+        nothing. With <strong>Locked</strong> on, the second menu leaves only
+        <em>Open</em> reachable, and <kbd>↓</kbd> from it wraps back to itself instead of landing on
+        a dead command.
+      </p>
+      <app-demo [component]="examples.disabled" [source]="sources.menuDisabled" layout="rows" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">A long menu scrolls itself</h3>
+      <p class="demo-card__meta">
+        The panel's height is the smallest of three: its own content,
+        <code>--gog-menu-max-height</code> (<code>320px</code> by default), and the room between the
+        trigger and the viewport edge. Past that it scrolls with
+        <a routerLink="/components/scroll">gog-scroll</a> — the same thin, auto-hiding scroller as
+        everywhere else in the package, with <code>overscrollBehavior="contain"</code> so a wheel at
+        the end of the list does not scroll the page behind it. Arrowing past the last visible item
+        scrolls it into view.
+      </p>
+      <p class="demo-card__meta">
+        Lower the token to make a menu start scrolling sooner — that is the knob, and it is the one
+        thing about this component that did not work in 21.5.0, fixed in 21.5.1: the measured room
+        was written onto the panel as an inline
+        <code>max-height</code>, which beat the rule the token feeds.
+      </p>
+      <app-demo [component]="examples.long" [source]="sources.menuLong" layout="rows" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Direction</h3>
+      <p class="demo-card__meta">
+        <code>direction</code> is <code>auto</code> by default: the panel drops down whenever it
+        fits and flips up only when it cannot. Force it with <code>up</code> or <code>down</code>.
+      </p>
+      <app-demo [component]="examples.direction" [source]="sources.menuDirection" layout="rows" />
+    </article>
+    <article class="demo-card">
+      <h3 class="demo-card__title">One menu, many triggers</h3>
+      <p class="demo-card__meta">
+        A menu declared once can be opened from several buttons — row actions in a list. It opens
+        beside whichever trigger opened it, and only that trigger reads as expanded (<code
+          >isOpenFrom(trigger)</code
+        >
+        says which). The example records the file on the trigger's <code>focus</code>, which happens
+        before the menu opens however it is opened.
+      </p>
+      <app-demo
+        [component]="examples.manyTriggers"
+        [source]="sources.menuManyTriggers"
+        layout="rows"
+      />
+    </article>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="accessibility" class="doc-section__title font-heading">Accessibility</h2>
     <p class="doc-section__intro">
-      The WAI-ARIA menu button pattern, in full. This is most of what the component is for — none of
-      it is visible in a screenshot, and it is the part a hand-rolled dropdown almost always leaves
-      out. Open the demo above and try it.
+      The trigger says it opens a menu (<code>aria-haspopup="menu"</code>), whether it is open
+      (<code>aria-expanded</code>) and which menu (<code>aria-controls</code>, while open) — on the
+      inner <code>&lt;button&gt;</code> when the trigger is a <code>gog-button</code>. The panel is
+      <code>role="menu"</code> of <code>role="menuitem"</code> buttons, with one tab stop: the
+      trigger. A closed menu is not in the DOM at all, so nothing of it reaches the accessibility
+      tree. The panel is named by <code>ariaLabel</code>, which is empty by default — name every
+      menu.
+    </p>
+    <p class="doc-section__intro">
+      The keyboard is the WAI-ARIA menu button pattern, in full. This is most of what the component
+      is for — none of it is visible in a screenshot, and it is the part a hand-rolled dropdown
+      almost always leaves out. Open the overview menu and try it.
     </p>
     <div class="api-table-scroll">
       <table class="api-table keyboard-table">
@@ -74,182 +167,19 @@
   </section>
 
   <section class="doc-section">
-    <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
-
-    <article class="demo-card">
-      <h3 class="demo-card__title">Row actions</h3>
-      <p class="demo-card__meta">
-        What the component was built for: an icon button per row. The library created this gap
-        itself — 21.4.0 added the <code>more-horizontal</code> / <code>more-vertical</code> icons
-        and a table built for row actions, with nothing to open with them. The table wraps itself in
-        a <code>gog-scroll</code> and the panel still escapes it, which is why the menu always
-        renders into <code>&lt;body&gt;</code> rather than offering a mode to get this wrong in.
-      </p>
-      <app-demo [component]="examples.rowActions" [source]="sources.menuRowActions" />
-    </article>
-
-    <article class="demo-card">
-      <h3 class="demo-card__title">Disabled items</h3>
-      <p class="demo-card__meta">
-        An item is your own <code>&lt;button&gt;</code>, so you disable it the way you disable a
-        button: the native <code>disabled</code> attribute, static or bound — there is no input for
-        it. A disabled item stays in the list rather than disappearing, since removing it would
-        shift every other item under the pointer; the arrow keys step over it, and clicking it does
-        nothing. With <strong>Locked</strong> on, the second menu leaves only
-        <em>Open</em> reachable, and <kbd>↓</kbd> from it wraps back to itself instead of landing on
-        a dead command.
-      </p>
-      <app-demo [component]="examples.disabled" [source]="sources.menuDisabled" />
-    </article>
-
-    <article class="demo-card">
-      <h3 class="demo-card__title">A long menu scrolls itself</h3>
-      <p class="demo-card__meta">
-        The panel's height is the smallest of three: its own content,
-        <code>--gog-menu-max-height</code> (<code>320px</code> by default), and the room between the
-        trigger and the viewport edge. Past that it scrolls with
-        <a routerLink="/components/scroll">gog-scroll</a> — the same thin, auto-hiding scroller as
-        everywhere else in the package, with <code>overscrollBehavior="contain"</code> so a wheel at
-        the end of the list does not scroll the page behind it. Arrowing past the last visible item
-        scrolls it into view.
-      </p>
-      <p class="demo-card__meta">
-        Lower the token to make a menu start scrolling sooner — that is the knob, and it is the one
-        thing about this component that did not work in 21.5.0
-        <app-since version="21.5.1" />: the measured room was written onto the panel as an inline
-        <code>max-height</code>, which beat the rule the token feeds.
-      </p>
-      <app-demo [component]="examples.long" [source]="sources.menuLong" />
-    </article>
-
-    <article class="demo-card">
-      <h3 class="demo-card__title">Direction</h3>
-      <p class="demo-card__meta">
-        <code>direction</code> is <code>auto</code> by default: the panel drops down whenever it
-        fits and flips up only when it cannot. Force it with <code>up</code> or <code>down</code>.
-      </p>
-      <app-demo [component]="examples.direction" [source]="sources.menuDirection" />
-    </article>
-  </section>
-
-  <section class="doc-section">
     <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
 
-    <h3 class="doc-section__subtitle">Inputs — <code>gog-menu</code></h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Default</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of apiInputs; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-                @if (row.since) {
-                  <app-since [version]="row.since" />
-                }
-              </td>
-              <td>
-                <code>{{ row.type }}</code>
-              </td>
-              <td>
-                <code>{{ row.default }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <h3 class="doc-section__subtitle">gog-menu — Inputs</h3>
+    <app-api-table [rows]="apiInputs" kind="inputs" />
 
-    <h3 class="doc-section__subtitle">Outputs</h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Payload</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of apiOutputs; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-              </td>
-              <td>
-                <code>{{ row.payload }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <h3 class="doc-section__subtitle">gog-menu — Outputs</h3>
+    <app-api-table [rows]="apiOutputs" kind="outputs" />
 
-    <h3 class="doc-section__subtitle">Methods, for driving it yourself</h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of apiMethods; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <h3 class="doc-section__subtitle">gog-menu — Methods, for driving it yourself</h3>
+    <app-api-table [rows]="apiMethods" kind="methods" />
 
     <h3 class="doc-section__subtitle">Directives</h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Selector</th>
-            <th>Goes on</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              <code>[gogMenuTrigger]</code>
-            </td>
-            <td>your own button</td>
-            <td>
-              Takes the menu to open — <code>&lt;gog-menu #rowMenu&gt;</code> plus
-              <code>[gogMenuTrigger]="rowMenu"</code>. Required.
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <code>gogMenuItem</code>
-            </td>
-            <td>your own buttons, inside the menu</td>
-            <td>
-              Marks an item so the panel can find it for roving focus. No inputs — an item's label,
-              icon and disabled state are all just the button's own.
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="apiDirectives" kind="directives" />
   </section>
 
   <app-global-config-note component="menu" />
@@ -262,25 +192,6 @@
       <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
       <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
     </p>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Token</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of styleTokens; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="styleTokens" kind="tokens" />
   </section>
 </div>

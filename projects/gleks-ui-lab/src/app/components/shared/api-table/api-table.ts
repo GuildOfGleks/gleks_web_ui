@@ -14,7 +14,7 @@ export interface ApiRow {
 }
 
 /** Which table: it picks the column set, so every page's tables read the same way. */
-export type ApiTableKind = 'inputs' | 'outputs' | 'slots' | 'methods' | 'tokens';
+export type ApiTableKind = 'inputs' | 'outputs' | 'slots' | 'methods' | 'directives' | 'tokens';
 
 interface Column {
   readonly label: string;
@@ -36,6 +36,11 @@ const COLUMNS: Record<ApiTableKind, readonly Column[]> = {
   slots: [
     { label: 'Directive', field: 'name' },
     { label: 'Context', field: 'type' },
+    { label: 'Description', field: 'description' },
+  ],
+  directives: [
+    { label: 'Selector', field: 'name' },
+    { label: 'Goes on', field: 'type' },
     { label: 'Description', field: 'description' },
   ],
   methods: [

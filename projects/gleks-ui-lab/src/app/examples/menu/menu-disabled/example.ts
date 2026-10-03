@@ -17,7 +17,6 @@ import {
     ToggleComponent,
   ],
   templateUrl: './example.html',
-  styleUrl: './example.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MenuDisabledExample {

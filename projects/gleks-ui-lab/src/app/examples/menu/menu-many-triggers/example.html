@@ -1,0 +1,25 @@
+<!-- One menu, opened from several triggers: it opens beside whichever one was pressed,
+     and only that trigger reads as expanded. -->
+@for (file of files; track file) {
+  <div>
+    <span>{{ file }}</span>
+    <button
+      gogButton
+      variant="ghost"
+      size="xsm"
+      type="button"
+      [attr.aria-label]="'Actions for ' + file"
+      [gogMenuTrigger]="fileMenu"
+      (focus)="target.set(file)"
+    >
+      <gog-icon name="more-vertical" />
+    </button>
+  </div>
+}
+
+<gog-menu #fileMenu ariaLabel="File actions">
+  <button gogMenuItem type="button" (click)="run('Open')">Open</button>
+  <button gogMenuItem type="button" (click)="run('Share')">Share</button>
+</gog-menu>
+
+<p>Last action: {{ lastAction() }}</p>

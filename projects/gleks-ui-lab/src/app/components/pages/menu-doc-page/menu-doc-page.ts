@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { ApiTableComponent, type ApiRow } from '../../shared/api-table/api-table';
 import { DemoComponent } from '../../shared/demo/demo';
-import { LIBRARY_VERSION } from '../../shared/library-version';
 import { GlobalConfigNote } from '../../shared/global-config-note/global-config-note';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
@@ -10,17 +10,10 @@ import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 import { MENU_EXAMPLES } from '../../../examples/menu/sources.generated';
 import { MenuDirectionExample } from '../../../examples/menu/menu-direction/example';
 import { MenuDisabledExample } from '../../../examples/menu/menu-disabled/example';
+import { MenuManyTriggersExample } from '../../../examples/menu/menu-many-triggers/example';
 import { MenuLongExample } from '../../../examples/menu/menu-long/example';
 import { MenuOverviewExample } from '../../../examples/menu/menu-overview/example';
 import { MenuRowActionsExample } from '../../../examples/menu/menu-row-actions/example';
-
-interface ApiRow {
-  readonly name: string;
-  readonly type: string;
-  readonly default: string;
-  readonly description: string;
-  readonly since?: string;
-}
 
 const API_INPUTS: readonly ApiRow[] = [
   {
@@ -49,16 +42,16 @@ const API_INPUTS: readonly ApiRow[] = [
   },
 ];
 
-const API_OUTPUTS: readonly { name: string; payload: string; description: string }[] = [
+const API_OUTPUTS: readonly ApiRow[] = [
   {
     name: 'gogClosed',
-    payload: 'void',
+    type: 'void',
     description:
       'Fires after every close, whatever caused it — an item, Escape, Tab, or a click outside.',
   },
 ];
 
-const API_METHODS: readonly { name: string; description: string }[] = [
+const API_METHODS: readonly ApiRow[] = [
   {
     name: "open(trigger: HTMLElement, focus?: 'first' | 'last')",
     description: 'Opens anchored to that element, focusing the first item — or the last.',
@@ -75,6 +68,21 @@ const API_METHODS: readonly { name: string; description: string }[] = [
   { name: 'isOpen', description: 'A signal, true while the panel is rendered.' },
 ];
 
+const API_DIRECTIVES: readonly ApiRow[] = [
+  {
+    name: '[gogMenuTrigger]',
+    type: 'your own button, or a gog-button',
+    description:
+      'Takes the menu to open — <gog-menu #rowMenu> plus [gogMenuTrigger]="rowMenu". Required. Writes aria-haspopup, aria-expanded and aria-controls onto the element that takes focus.',
+  },
+  {
+    name: 'gogMenuItem',
+    type: 'your own buttons, inside the menu',
+    description:
+      "Marks an item so the panel can find it for roving focus. No inputs — an item's label, icon and disabled state are all just the button's own.",
+  },
+];
+
 const KEYBOARD: readonly { keys: string; action: string }[] = [
   { keys: 'Enter / Space / ArrowDown', action: 'Opens the menu with the first item focused.' },
   { keys: 'ArrowUp', action: 'Opens the menu with the last item focused.' },
@@ -89,7 +97,14 @@ const KEYBOARD: readonly { keys: string; action: string }[] = [
 
 @Component({
   selector: 'app-menu-doc-page',
-  imports: [DemoComponent, GlobalConfigNote, MarkdownComponent, RouterLink, SinceBadgeComponent],
+  imports: [
+    ApiTableComponent,
+    DemoComponent,
+    GlobalConfigNote,
+    MarkdownComponent,
+    RouterLink,
+    SinceBadgeComponent,
+  ],
   templateUrl: './menu-doc-page.html',
   styleUrl: './menu-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -98,8 +113,8 @@ export class MenuDocPage {
   protected readonly apiInputs = API_INPUTS;
   protected readonly apiOutputs = API_OUTPUTS;
   protected readonly apiMethods = API_METHODS;
+  protected readonly apiDirectives = API_DIRECTIVES;
   protected readonly keyboard = KEYBOARD;
-  protected readonly libraryVersion = LIBRARY_VERSION;
   protected readonly styleTokens =
     TOKEN_SECTIONS.find((section) => section.id === 'menu')?.tokens ?? [];
 
@@ -125,5 +140,6 @@ export class MenuDocPage {
     long: MenuLongExample,
     rowActions: MenuRowActionsExample,
     direction: MenuDirectionExample,
+    manyTriggers: MenuManyTriggersExample,
   };
 }

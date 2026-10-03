@@ -1,7 +1,5 @@
-<div class="menu-row">
-  <gog-button variant="outline" type="button" [gogMenuTrigger]="branchMenu">
-    Move to branch…
-  </gog-button>
+<div>
+  <gog-button variant="outline" [gogMenuTrigger]="branchMenu">Move to branch…</gog-button>
   <gog-menu #branchMenu ariaLabel="Move to branch">
     @for (branch of branches; track branch) {
       <button gogMenuItem type="button" (click)="moved.set(branch)">{{ branch }}</button>
@@ -9,6 +7,4 @@
   </gog-menu>
 </div>
 
-<p class="menu-status">
-  Moved to: <strong>{{ moved() }}</strong>
-</p>
+<p>Moved to: {{ moved() }}</p>
