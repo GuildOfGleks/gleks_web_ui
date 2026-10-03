@@ -1,18 +1,21 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { GogRadioOption, GogSize, RadioGroupComponent } from '@guildofgleks/ui';
-import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
+import { ApiTableComponent, type ApiRow } from '../../shared/api-table/api-table';
+import { DemoComponent } from '../../shared/demo/demo';
 import { GlobalConfigNote } from '../../shared/global-config-note/global-config-note';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
+import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
-
-interface ApiRow {
-  readonly name: string;
-  readonly type: string;
-  readonly default: string;
-  readonly description: string;
-}
+import { RADIO_GROUP_EXAMPLES } from '../../../examples/radio-group/sources.generated';
+import { RadioGroupAriaLabelExample } from '../../../examples/radio-group/radio-group-aria-label/example';
+import { RadioGroupBindingExample } from '../../../examples/radio-group/radio-group-binding/example';
+import { RadioGroupConfigExample } from '../../../examples/radio-group/radio-group-config/example';
+import { RadioGroupFormsExample } from '../../../examples/radio-group/radio-group-forms/example';
+import { RadioGroupLayoutExample } from '../../../examples/radio-group/radio-group-layout/example';
+import { RadioGroupOptionsExample } from '../../../examples/radio-group/radio-group-options/example';
+import { RadioGroupOverviewExample } from '../../../examples/radio-group/radio-group-overview/example';
+import { RadioGroupSizesExample } from '../../../examples/radio-group/radio-group-sizes/example';
+import { RadioGroupStatesExample } from '../../../examples/radio-group/radio-group-states/example';
 
 const API_INPUTS: readonly ApiRow[] = [
   {
@@ -91,51 +94,42 @@ const API_OUTPUTS: readonly ApiRow[] = [
   {
     name: 'valueChange',
     type: 'string | number | null',
-    default: '—',
     description: 'Emitted when the selection changes. Comes from the value model input.',
   },
-];
-
-const DELIVERY_OPTIONS: GogRadioOption[] = [
-  { id: 'standard', label: 'Standard — 3 to 5 days' },
-  { id: 'express', label: 'Express — next day' },
-  { id: 'pickup', label: 'Collect in store' },
-  { id: 'drone', label: 'Drone drop (unavailable in your area)', disabled: true },
-];
-
-const PLAN_OPTIONS: GogRadioOption[] = [
-  { id: 'monthly', label: 'Monthly' },
-  { id: 'yearly', label: 'Yearly' },
 ];
 
 @Component({
   selector: 'app-radio-group-doc-page',
   imports: [
-    RadioGroupComponent,
-    ReactiveFormsModule,
+    ApiTableComponent,
+    DemoComponent,
     GlobalConfigNote,
     MarkdownComponent,
-    CodeTabsComponent,
     RouterLink,
+    SinceBadgeComponent,
   ],
   templateUrl: './radio-group-doc-page.html',
   styleUrl: './radio-group-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RadioGroupDocPage {
-  protected readonly deliveryOptions = DELIVERY_OPTIONS;
-  protected readonly planOptions = PLAN_OPTIONS;
-  protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];
-
-  protected readonly delivery = signal<string | number | null>('standard');
-  protected readonly plan = signal<string | number | null>('yearly');
-  protected readonly sizeValue = signal<string | number | null>('monthly');
-  protected readonly shipping = new FormControl<string | null>(null, Validators.required);
-
   protected readonly apiInputs = API_INPUTS;
   protected readonly apiOutputs = API_OUTPUTS;
   protected readonly styleTokens =
     TOKEN_SECTIONS.find((section) => section.id === 'radio-group')?.tokens ?? [];
+
+  protected readonly sources = RADIO_GROUP_EXAMPLES;
+  protected readonly examples = {
+    overview: RadioGroupOverviewExample,
+    states: RadioGroupStatesExample,
+    sizes: RadioGroupSizesExample,
+    layout: RadioGroupLayoutExample,
+    options: RadioGroupOptionsExample,
+    ariaLabel: RadioGroupAriaLabelExample,
+    binding: RadioGroupBindingExample,
+    forms: RadioGroupFormsExample,
+    config: RadioGroupConfigExample,
+  };
 
   protected readonly importSnippet =
     "```typescript\nimport { RadioGroupComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [RadioGroupComponent],\n})\n```";
@@ -148,126 +142,5 @@ export class RadioGroupDocPage {
     '  disabled?: boolean;',
     '}',
     '```',
-  ].join('\n');
-
-  protected readonly overviewHtml = [
-    '<gog-radio-group label="Delivery" [options]="deliveryOptions" [(value)]="delivery" />',
-  ].join('\n');
-  protected readonly overviewTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { GogRadioOption, RadioGroupComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [RadioGroupComponent],',
-    '  template: `',
-    '    <gog-radio-group label="Delivery" [options]="deliveryOptions" [(value)]="delivery" />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly deliveryOptions: GogRadioOption[] = [',
-    "    { id: 'standard', label: 'Standard — 3 to 5 days' },",
-    "    { id: 'express', label: 'Express — next day' },",
-    "    { id: 'pickup', label: 'Collect in store' },",
-    "    { id: 'drone', label: 'Drone drop', disabled: true },",
-    '  ];',
-    "  protected readonly delivery = signal<string | number | null>('standard');",
-    '}',
-  ].join('\n');
-
-  protected readonly orientationHtml = [
-    '<gog-radio-group label="Billing" [options]="planOptions" [(value)]="plan" />',
-    '',
-    '<gog-radio-group',
-    '  label="Billing"',
-    '  orientation="horizontal"',
-    '  [options]="planOptions"',
-    '  [(value)]="plan"',
-    '/>',
-  ].join('\n');
-  protected readonly orientationTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { GogRadioOption, RadioGroupComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [RadioGroupComponent],',
-    '  template: `',
-    '    <gog-radio-group',
-    '      label="Billing"',
-    '      orientation="horizontal"',
-    '      [options]="planOptions"',
-    '      [(value)]="plan"',
-    '    />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly planOptions: GogRadioOption[] = [',
-    "    { id: 'monthly', label: 'Monthly' },",
-    "    { id: 'yearly', label: 'Yearly' },",
-    '  ];',
-    "  protected readonly plan = signal<string | number | null>('yearly');",
-    '}',
-  ].join('\n');
-
-  protected readonly sizesHtml = [
-    '@for (sizeOption of sizes; track sizeOption) {',
-    '  <gog-radio-group',
-    '    [label]="sizeOption"',
-    '    [size]="sizeOption"',
-    '    orientation="horizontal"',
-    '    [options]="planOptions"',
-    '    [(value)]="sizeValue"',
-    '  />',
-    '}',
-  ].join('\n');
-  protected readonly sizesTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { GogSize, RadioGroupComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [RadioGroupComponent],',
-    '  template: `',
-    '    @for (sizeOption of sizes; track sizeOption) {',
-    '      <gog-radio-group [size]="sizeOption" [options]="planOptions" [(value)]="sizeValue" />',
-    '    }',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    "  protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];",
-    '}',
-  ].join('\n');
-
-  protected readonly formsHtml = [
-    '<gog-radio-group',
-    '  label="Shipping"',
-    '  errorDisplay="auto"',
-    '  errorMessage="Pick a shipping option"',
-    '  [options]="deliveryOptions"',
-    '  [formControl]="shipping"',
-    '/>',
-  ].join('\n');
-  protected readonly formsTs = [
-    "import { Component } from '@angular/core';",
-    "import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';",
-    "import { RadioGroupComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [RadioGroupComponent, ReactiveFormsModule],',
-    '  template: `',
-    '    <gog-radio-group',
-    '      label="Shipping"',
-    '      errorDisplay="auto"',
-    '      errorMessage="Pick a shipping option"',
-    '      [options]="deliveryOptions"',
-    '      [formControl]="shipping"',
-    '    />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly shipping = new FormControl<string | null>(null, Validators.required);',
-    '}',
   ].join('\n');
 }

@@ -1,0 +1,6 @@
+<!-- Enterprise is disabled on its own, through its option's disabled: true. -->
+<gog-radio-group label="Value unset" [options]="plans" />
+<gog-radio-group label="Value set" [options]="plans" value="pro" />
+<!-- A disabled group fades once, as a whole — label and options together. -->
+<gog-radio-group label="Disabled group" [options]="plans" value="pro" disabled />
+<gog-radio-group label="Error" [options]="plans" errorMessage="Pick a plan" />

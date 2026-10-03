@@ -1,0 +1,12 @@
+<gog-radio-group label="Vertical (default)" [options]="plans" value="free" />
+<gog-radio-group label="Horizontal" orientation="horizontal" [options]="plans" value="free" />
+<!-- fullWidth: every option is as wide as the group, so the whole line is the hit target. -->
+<gog-radio-group label="Vertical, fullWidth" [options]="plans" value="free" fullWidth />
+<!-- Horizontal and fullWidth: the options share the row, and wrap only when they must. -->
+<gog-radio-group
+  label="Horizontal, fullWidth"
+  orientation="horizontal"
+  [options]="plans"
+  value="free"
+  fullWidth
+/>

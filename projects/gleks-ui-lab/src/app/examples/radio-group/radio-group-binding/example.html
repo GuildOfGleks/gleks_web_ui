@@ -1,0 +1,19 @@
+<div>
+  <gog-radio-group
+    label="Plan"
+    [options]="plans"
+    [(value)]="plan"
+    (valueChange)="changes.update((n) => n + 1)"
+  />
+  <div>
+    <!-- The user cannot empty a radio group; only the model can. -->
+    <gog-button variant="outline" size="sm" (gogClick)="plan.set(null)">
+      value.set(null)
+    </gog-button>
+    <!-- disabled stops the user choosing an option, not the model holding it. -->
+    <gog-button variant="outline" size="sm" (gogClick)="plan.set('enterprise')">
+      value.set('enterprise')
+    </gog-button>
+  </div>
+  <code>value: {{ plan() ?? 'null' }} · {{ changes() }} valueChange</code>
+</div>

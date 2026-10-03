@@ -1,0 +1,8 @@
+<!-- The id is the value, and keeps its type: numbers come back as numbers. -->
+<div>
+  <gog-radio-group label="Seats" [options]="seats" [(value)]="seatCount" />
+  <code>value: {{ seatCount() }} ({{ typeOf(seatCount()) }})</code>
+</div>
+
+<!-- A long label wraps beside its circle rather than pushing it out of line. -->
+<gog-radio-group label="When offline" [options]="offline" value="keep" />

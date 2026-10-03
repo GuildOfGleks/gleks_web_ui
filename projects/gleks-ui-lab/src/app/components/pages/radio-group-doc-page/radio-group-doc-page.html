@@ -15,157 +15,170 @@
     <p class="doc-section__intro">Import the component and drop it into a template.</p>
     <app-markdown [markdown]="importSnippet" />
 
-    <p class="doc-section__intro">Basic usage:</p>
-    <div class="demo-card">
-      <div class="demo-card__preview">
-        <gog-radio-group label="Delivery" [options]="deliveryOptions" [(value)]="delivery" />
-        <p class="doc-section__meta">Selected: {{ delivery() }}</p>
-      </div>
-      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
-    </div>
-  </section>
-
-  <section class="doc-section">
-    <h2 id="options" class="doc-section__title font-heading">Options</h2>
     <p class="doc-section__intro">
-      Each option is a <code>GogRadioOption</code>. <code>value</code> holds the selected option's
-      <code>id</code> rather than the object itself, since a radio group is a single-value control
-      bound straight to a form field.
+      Basic usage — <code>[(value)]</code> holds the selected option's <code>id</code>:
     </p>
-    <app-markdown [markdown]="optionInterface" />
+    <div class="demo-card">
+      <app-demo
+        [component]="examples.overview"
+        [source]="sources.radioGroupOverview"
+        layout="fields"
+      />
+    </div>
   </section>
 
   <section class="doc-section">
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Orientation</h3>
+      <h3 class="demo-card__title">States</h3>
       <p class="demo-card__meta">
-        <code>vertical</code> by default; <code>horizontal</code> for two or three short options in
-        a row.
+        Empty, holding a value, a disabled group, and an error — each with
+        <em>Enterprise</em> disabled on its own, so the option-level and the group-level disabled
+        can be read side by side. A disabled group fades once, as a whole
+        <app-since version="21.15.0" />; before, its options faded twice.
       </p>
-      <div class="demo-card__preview radio-demo__row">
-        <gog-radio-group label="Vertical" [options]="planOptions" [(value)]="plan" />
-        <gog-radio-group
-          label="Horizontal"
-          orientation="horizontal"
-          [options]="planOptions"
-          [(value)]="plan"
-        />
-      </div>
-      <app-code-tabs [html]="orientationHtml" [ts]="orientationTs" />
+      <app-demo [component]="examples.states" [source]="sources.radioGroupStates" layout="fields" />
     </article>
 
     <article class="demo-card">
       <h3 class="demo-card__title">Sizes</h3>
       <p class="demo-card__meta">
-        Five steps, reusing <code>gog-checkbox</code>'s scale. Also settable app-wide through
-        <code>GOG_CONFIG.control.size</code>.
+        Five steps. The circle, the dot and the labels scale from the
+        <code>--gog-control-checkbox-*</code> lengths
+        <a routerLink="/components/checkbox">gog-checkbox</a>
+        reads too, so a radio and a checkbox of one size line up on a form.
       </p>
-      <div class="demo-card__preview radio-demo__stack">
-        @for (sizeOption of sizes; track sizeOption) {
-          <gog-radio-group
-            [label]="sizeOption"
-            [size]="sizeOption"
-            orientation="horizontal"
-            [options]="planOptions"
-            [(value)]="sizeValue"
-          />
-        }
-      </div>
-      <app-code-tabs [html]="sizesHtml" [ts]="sizesTs" />
+      <app-demo [component]="examples.sizes" [source]="sources.radioGroupSizes" layout="block" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Orientation and full width</h3>
+      <p class="demo-card__meta">
+        <code>vertical</code> by default; <code>horizontal</code> for two or three short options.
+        <code>fullWidth</code> makes every option as wide as the group, so the whole line is the hit
+        target — and in a horizontal group the options share the row in equal parts, wrapping only
+        once the labels no longer fit <app-since version="21.15.0" />. Before 21.15.0 that last
+        group came out as a vertical list.
+      </p>
+      <app-demo [component]="examples.layout" [source]="sources.radioGroupLayout" layout="frame" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Option ids and long labels</h3>
+      <p class="demo-card__meta">
+        The <code>id</code> is the value and keeps its type: the first group uses numbers and hands
+        back a number. A long label wraps beside its circle rather than pushing it out of line.
+      </p>
+      <app-demo
+        [component]="examples.options"
+        [source]="sources.radioGroupOptions"
+        layout="fields"
+      />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">No visible label</h3>
+      <p class="demo-card__meta">
+        <code>ariaLabel</code> names the group when the surrounding UI already says what it is. With
+        a <code>label</code> set it is ignored: the visible text names the group through
+        <code>aria-labelledby</code>.
+      </p>
+      <app-demo
+        [component]="examples.ariaLabel"
+        [source]="sources.radioGroupAriaLabel"
+        layout="block"
+      />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Two-way binding</h3>
+      <p class="demo-card__meta">
+        <code>value</code> is a model. A press on the selected option changes nothing — a radio
+        group cannot be emptied by the user, only by writing <code>null</code> to it. The second
+        button writes the disabled option's id, and the group shows it selected:
+        <code>disabled</code> on an option stops the user choosing it, not the model holding it. A
+        value that matches no option selects nothing and is kept as it is.
+      </p>
+      <app-demo
+        [component]="examples.binding"
+        [source]="sources.radioGroupBinding"
+        layout="fields"
+      />
     </article>
 
     <article class="demo-card">
       <h3 class="demo-card__title">Reactive forms and validation</h3>
       <p class="demo-card__meta">
-        A <code>ControlValueAccessor</code>, so <code>formControl</code> /
-        <code>formControlName</code> work directly. With <code>errorDisplay="auto"</code> the
-        message appears once the control is invalid and touched — no <code>&#64;if</code> at the
-        call site. Focus the group and tab away to see it.
+        A <code>ControlValueAccessor</code>. With <code>errorDisplay="auto"</code> the message
+        appears once the control is invalid and touched — tab into the group and out again without
+        choosing — and a choice clears it. Before 21.15.0 this mode never showed anything on a radio
+        group <app-since version="21.15.0" />: it was the one control that did not read the form's
+        state back.
       </p>
-      <div class="demo-card__preview">
-        <gog-radio-group
-          label="Shipping"
-          errorDisplay="auto"
-          errorMessage="Pick a shipping option"
-          [options]="deliveryOptions"
-          [formControl]="shipping"
-        />
-      </div>
-      <app-code-tabs [html]="formsHtml" [ts]="formsTs" />
+      <app-demo [component]="examples.forms" [source]="sources.radioGroupForms" layout="fields" />
     </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">App-wide defaults — <code>GOG_CONFIG</code></h3>
+      <p class="demo-card__meta">
+        <code>control.size</code> sets the default size; <code>control.errorDisplay</code> reaches
+        this component too, so an app that wants every control on <code>'auto'</code> sets it once.
+        An instance's own input still wins. See
+        <a routerLink="/general/global-config">Global Configuration</a>.
+      </p>
+      <app-demo [component]="examples.config" [source]="sources.radioGroupConfig" layout="fields" />
+    </article>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="options" class="doc-section__title font-heading">Options — a fixed shape</h2>
+    <p class="doc-section__intro">
+      Each option is a <code>GogRadioOption</code>. <code>value</code> holds the selected option's
+      <code>id</code> rather than the object itself, since a radio group is a single-value control
+      bound straight to a form field. There is no <code>optionLabel</code> /
+      <code>optionValue</code> accessor as on <a routerLink="/components/select">Select</a>: a
+      domain list is mapped into this shape first.
+    </p>
+    <app-markdown [markdown]="optionInterface" />
   </section>
 
   <section class="doc-section">
     <h2 id="accessibility" class="doc-section__title font-heading">Accessibility</h2>
     <p class="doc-section__intro">
-      The options are real radio inputs sharing one <code>name</code>, which is what makes the
-      browser treat them as one group: arrow keys move <em>and</em> select, Home/End jump to the
-      ends, and the group takes a single tab stop. That is also why there is no roving-focus code
-      here — the platform already does it. Give the group either a <code>label</code> or an
-      <code>ariaLabel</code>.
+      A <code>role="radiogroup"</code> container around native radios sharing one <code>name</code>:
+      the group carries the name and the error, and each option's role, state and keyboard come from
+      the platform — there is no roving-focus code here.
     </p>
+    <ul class="doc-section__intro">
+      <li>
+        <strong>Keyboard</strong> — the group is one tab stop; the arrows move <em>and select</em>,
+        skipping disabled options.
+      </li>
+      <li>
+        <strong>Name</strong> — the visible <code>label</code> through <code>aria-labelledby</code>,
+        or <code>ariaLabel</code> when there is none. Each option is a
+        <code>&lt;label&gt;</code> around its input, so its text is its name.
+      </li>
+      <li>
+        <strong>Error</strong> — <code>aria-invalid</code> on the group and an
+        <code>aria-describedby</code> pointing at the message.
+      </li>
+      <li>
+        <strong><code>name</code></strong> — unset, every group generates its own, which keeps two
+        groups apart. Set it only for a native form submission, and never give two groups the same
+        one: the browser would treat their options as one group behind both components' backs.
+      </li>
+    </ul>
   </section>
-
   <section class="doc-section">
     <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
 
     <h3 class="doc-section__subtitle">Inputs</h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Default</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of apiInputs; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-              </td>
-              <td>
-                <code>{{ row.type }}</code>
-              </td>
-              <td>
-                <code>{{ row.default }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="apiInputs" kind="inputs" />
 
     <h3 class="doc-section__subtitle">Outputs</h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Payload</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of apiOutputs; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-              </td>
-              <td>
-                <code>{{ row.type }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="apiOutputs" kind="outputs" />
   </section>
 
   <app-global-config-note component="radio-group" />
@@ -178,25 +191,6 @@
       <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
       <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
     </p>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Token</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of styleTokens; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="styleTokens" kind="tokens" />
   </section>
 </div>
