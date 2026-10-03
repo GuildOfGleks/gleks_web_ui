@@ -36,6 +36,13 @@ build.
 
 ## 21.15.0 — select a table row by pressing it
 
+- **`gog-progressbar`'s edge hairlines are off by default** (`--gog-progressbar-edge-width: 0px`).
+  The token reference's `--gog-progressbar-edge-*` row in `token-reference-data.ts` describes them
+  as always drawn; it should say they are opt-in, set the width to `1px` to turn them on, and why
+  one might (WCAG 1.4.11 with `showValue` off). If the Progressbar page shows or describes the
+  marker, the same correction applies. `theme-starter.css` picks up the new default on
+  regeneration.
+
 - **`gog-table` has `selectOnRowClick`, and the Table page's selection section should show it.** An
   API row beside `showSelectionColumn` and `interactiveRows`, and a demo: `[showSelectionColumn]="false"`
   plus `[selectOnRowClick]="true"`, with a button in one column so the page can say that a press on

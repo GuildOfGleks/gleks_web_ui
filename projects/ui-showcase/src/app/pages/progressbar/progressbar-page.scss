@@ -3,9 +3,14 @@
   width: 12rem;
 }
 
-// Hue removed, to show the fill's boundary does not depend on it.
+// Hue removed, to show which boundaries survive without it.
 .progressbar-page__cell--grey {
   filter: grayscale(1);
+}
+
+// The opt-in edge marker, switched on the way a consumer would.
+.progressbar-page__cell--edged {
+  --gog-progressbar-edge-width: 1px;
 }
 
 .progressbar-page__stack {

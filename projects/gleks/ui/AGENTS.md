@@ -1462,13 +1462,13 @@ on `<body>`. You do not need to disable the controls inside yourself.
 <gog-progressbar mode="buffer" [value]="42" [buffer]="70" />
 ```
 
-**The fill's end is marked by two hairlines** (21.10.0), `--gog-progressbar-edge-color` over
-`--gog-progressbar-edge-backing-color`, each `--gog-progressbar-edge-width` wide. That boundary is
-the value — `showValue` is off by default — and the fill and the track cannot carry it themselves:
-in every shipped theme the five fills straddle mid-luminance, so no one track colour clears WCAG
-1.4.11's 3:1 against all of them. Two tones always do, and `check:contrast` gates the pair. Retint
-them per theme if you like; keep them a _pair_ whose tones sit on opposite sides of the middle, or
-the marker disappears on whichever fill it happens to match.
+**The fill's end can be marked by two hairlines**, off by default since 21.15.0:
+`--gog-progressbar-edge-color` over `--gog-progressbar-edge-backing-color`, each
+`--gog-progressbar-edge-width` wide (default `0px`). With `showValue` off the fill/track boundary is
+the value, and in every shipped theme the five fills straddle mid-luminance, so no one track colour
+clears WCAG 1.4.11's 3:1 against all of them. Set `--gog-progressbar-edge-width: 1px` where that
+matters — the two tones always clear it, and `check:contrast` gates the pair — or turn on
+`showValue`. If you retint them, keep them a _pair_ whose tones sit on opposite sides of the middle.
 
 #### `gog-divider`
 

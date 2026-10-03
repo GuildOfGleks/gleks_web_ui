@@ -57,16 +57,19 @@
     <h3>where the fill ends, with and without colour</h3>
     <p class="progressbar-page__note">
       With <code>showValue</code> off, the boundary between fill and track <em>is</em> the value,
-      and colour alone cannot carry it: the five fills straddle mid-luminance in every theme, so no
-      single track colour clears WCAG 1.4.11's 3:1 against all of them. Two hairlines at the fill's
-      leading edge do — one dark, one light, so whichever a fill sits close to, the other stands
-      out. The right-hand column is the left one with hue taken away; every boundary is still there.
+      and colour alone does not always carry it: the five fills straddle mid-luminance in every
+      theme, so no single track colour clears WCAG 1.4.11's 3:1 against all of them. The library
+      leaves that to the consumer. <code>--gog-progressbar-edge-width</code> is <code>0px</code> by
+      default; set it to <code>1px</code> and two hairlines mark the fill's leading edge — one dark,
+      one light, so whichever a fill sits close to, the other stands out. The greyscale columns are
+      the same bars with hue taken away.
     </p>
     <app-doc-matrix rowAxis="variant" colAxis="rendering">
       <ng-template appDocCell [rows]="variants" [cols]="renderings" let-variant let-rendering="col">
         <div
           class="progressbar-page__cell"
-          [class.progressbar-page__cell--grey]="rendering !== 'colour'"
+          [class.progressbar-page__cell--grey]="rendering.includes('grayscale')"
+          [class.progressbar-page__cell--edged]="rendering.includes('edge')"
         >
           <gog-progressbar [variant]="variant" [value]="62" ariaLabel="Uploading" />
         </div>

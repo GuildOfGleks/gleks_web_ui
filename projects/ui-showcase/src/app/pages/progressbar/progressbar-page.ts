@@ -32,8 +32,13 @@ export class ProgressbarPage {
     'warning',
     'danger',
   ];
-  /** The same bars twice: as drawn, and with hue taken away. */
-  protected readonly renderings = ['colour', 'filter: grayscale(1)'] as const;
+  /** The same bars as drawn and with hue taken away, without and with the opt-in edge marker. */
+  protected readonly renderings = [
+    'default',
+    'grayscale(1)',
+    'edge-width: 1px',
+    'edge-width: 1px, grayscale(1)',
+  ] as const;
   protected readonly clampValues = [-20, 0, 62, 140, Number.NaN] as const;
 
   /** The single column of a matrix whose rows are the only axis. */

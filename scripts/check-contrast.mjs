@@ -251,7 +251,8 @@ const PAIRS = [
  * Two-tone markers, gated against what sits **outside** them.
  *
  * `--gog-progressbar-edge-*` marks where a tier ends, and since 21.13.0 the buffer carries it as
- * well as the fill. The five `*-buffer-bg` tints are deliberately **not** in the grounds below,
+ * well as the fill. Since 21.15.0 the marker is off by default (`-edge-width: 0px`); the pair is
+ * still gated, so a theme or consumer that switches it on gets a marker that works. The five `*-buffer-bg` tints are deliberately **not** in the grounds below,
  * and the reason is the one `collectBoundaryPairs` already states for borders: a boundary is
  * adjacent to what is outside it. The pair that locates the buffer's edge is the marker against
  * the bare track — measured at 3.25:1 to 9.57:1 across all 55 theme/variant combinations, and

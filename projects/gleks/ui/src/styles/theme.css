@@ -1607,10 +1607,10 @@
   /* Stands in for the indeterminate animation under reduced motion. */
   --gog-progressbar-stripe-size: 6px;
   --gog-progressbar-stripe-color: var(--gog-surface-color);
-  /* Two hairlines mark where the fill ends, because that boundary is the value (`showValue` is off
-     by default) and must clear 3:1. No single track or marker tone manages that against every fill in
-     every theme; an ink line and a surface line together always do. */
-  --gog-progressbar-edge-width: 1px;
+  /* Two hairlines that mark where the fill ends, off by default (width 0). On, they make that
+     boundary clear 3:1 in every theme, which the fill and track colours alone do not — but a light
+     line on a dark fill reads as an outline, not as the value. Set the width to 1px to opt in. */
+  --gog-progressbar-edge-width: 0px;
   --gog-progressbar-edge-color: var(--gog-text-color);
   --gog-progressbar-edge-backing-color: var(--gog-surface-color);
   /* Same hue at low opacity, so the buffer reads as ahead of the fill, not as a second colour. */

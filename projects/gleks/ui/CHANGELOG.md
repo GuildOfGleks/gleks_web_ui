@@ -113,6 +113,14 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Changed
 
+- **`gog-progressbar`'s edge hairlines are off by default.** 21.10.0 marked where the fill (and,
+  from 21.13.0, the buffer) ends with an ink line and a surface line, so the boundary cleared WCAG
+  1.4.11's 3:1 in every theme. In use the surface line read as a bright outline at the end of every
+  bar rather than as the value, most of all on a dark fill. `--gog-progressbar-edge-width` now
+  defaults to `0px`; the two colour tokens and the `check:contrast` gate on their pair are
+  unchanged, so `--gog-progressbar-edge-width: 1px` on `:root` or on one bar brings the marker
+  back. Where the bar's value must be readable without colour, set it, or turn on `showValue`.
+
 - **A labelled `gog-divider` is named by its label.** `<gog-divider>OR</gog-divider>` was an
   unnamed `role="separator"` with the label as ordinary content — and ARIA makes a separator's
   children presentational, so whether the word was read at all was up to the browser. The host now
