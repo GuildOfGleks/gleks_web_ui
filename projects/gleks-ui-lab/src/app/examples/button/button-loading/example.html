@@ -1,0 +1,17 @@
+<div>
+  <gog-button variant="primary" [loading]="saving()" (gogClick)="save()">Save</gog-button>
+</div>
+
+<!-- The spinner scales with the button. -->
+<div>
+  @for (size of sizes; track size) {
+    <gog-button
+      variant="secondary"
+      [size]="size"
+      [loading]="loading() === size"
+      (gogClick)="load(size)"
+    >
+      {{ size }}
+    </gog-button>
+  }
+</div>

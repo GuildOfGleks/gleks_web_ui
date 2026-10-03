@@ -1,0 +1,8 @@
+@for (severity of severities; track severity) {
+  <div>
+    <span>{{ severity }}</span>
+    @for (variant of variants; track variant) {
+      <gog-button [variant]="variant" [severity]="severity">{{ variant }}</gog-button>
+    }
+  </div>
+}

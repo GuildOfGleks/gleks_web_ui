@@ -14,14 +14,14 @@
     <p class="doc-section__intro">Import the component and drop it into a template.</p>
     <app-markdown [markdown]="importSnippet" />
 
-    <p class="doc-section__intro">Basic usage — a primary button that reacts to a click:</p>
+    <p class="doc-section__intro">
+      Basic usage — a primary button that reacts to a click. Listen to <code>(gogClick)</code>, not
+      <code>(click)</code>: <code>gogClick</code> is the one that respects <code>debounce</code> and
+      <code>loading</code>.
+    </p>
     <div class="demo-card">
-      <div class="demo-card__preview">
-        <gog-button variant="primary" (gogClick)="onClick('primary', 'md')">Click me</gog-button>
-      </div>
-      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
+      <app-demo [component]="examples.overview" [source]="sources.buttonOverview" layout="stack" />
     </div>
-    <p class="doc-section__meta">{{ lastClicked() }}</p>
   </section>
 
   <section class="doc-section">
@@ -30,26 +30,11 @@
     <article class="demo-card">
       <h3 class="demo-card__title">Variants &amp; sizes</h3>
       <p class="demo-card__meta">Every combination of the four variants and five sizes.</p>
-      <div class="demo-card__preview variant-grid">
-        @for (variant of variants; track variant) {
-          <div class="variant-row">
-            <span class="variant-row__label">{{ variant }}</span>
-            @for (size of sizes; track size) {
-              <gog-button [variant]="variant" [size]="size" (gogClick)="onClick(variant, size)">
-                {{ size }}
-              </gog-button>
-            }
-          </div>
-        }
-      </div>
-      <app-code-tabs [html]="variantsHtml" [ts]="variantsTs" />
+      <app-demo [component]="examples.variants" [source]="sources.buttonVariants" layout="rows" />
     </article>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">
-        Severity
-        <app-since version="21.9.0" />
-      </h3>
+      <h3 class="demo-card__title">Severity <app-since version="21.9.0" /></h3>
       <p class="demo-card__meta">
         <code>severity</code> says what the action <em>means</em>; <code>variant</code> says how
         loudly it is drawn. The two are orthogonal, so this is not a fifth variant — every cell
@@ -57,233 +42,133 @@
         the default and the absence of a claim, which is why every other button on this page needs
         no opt-out.
       </p>
-      <div class="demo-card__preview variant-grid">
-        @for (severity of severities; track severity) {
-          <div class="variant-row">
-            <span class="variant-row__label">{{ severity }}</span>
-            @for (variant of variants; track variant) {
-              <gog-button [variant]="variant" [severity]="severity">{{ variant }}</gog-button>
-            }
-          </div>
-        }
-      </div>
+      <app-demo [component]="examples.severity" [source]="sources.buttonSeverity" layout="rows" />
       <p class="demo-card__meta">
-        <strong>Now switch the theme with the toggle in the header and look again.</strong> This
-        grid is the best demonstration of the token layering the
-        <a routerLink="/general/theming">Theming</a> guide describes, because three separate
-        decisions are visible in it at once. A filled button's label is the colour its own theme
-        states for that status, and it is stated per status rather than per theme: under
-        <code>primeng</code>, success, warning and info carry a near-black label because white would
-        be unreadable on those three, while danger keeps white because on that hue it is fine. Hover
-        and press deepen the fill <em>away</em> from that label, so a state always makes the label
-        easier to read rather than harder. And the outlined and ghost labels are not the raw status
-        colour at all but that hue mixed halfway toward the page's ink, because as body text the raw
-        hue clears WCAG AA in only five of the eleven shipped themes.
+        <strong>Now switch the theme with the toggle in the header and look again.</strong> Three
+        decisions show at once. A filled button's label is the colour its theme states for that
+        status, per status: under <code>primeng</code>, success, warning and info carry a near-black
+        label because white would be unreadable on them, while danger keeps white. Hover and press
+        deepen the fill <em>away</em> from that label, so a state only makes it easier to read. And
+        the outlined and ghost labels are the status hue mixed halfway toward the page's ink,
+        because the raw hue as body text clears WCAG AA in only five of the eleven themes. The
+        <a routerLink="/general/theming">Theming</a> guide describes the layering behind it.
       </p>
-      <app-code-tabs [html]="severityHtml" [ts]="severityTs" />
     </article>
 
     <article class="demo-card">
       <h3 class="demo-card__title">
-        Press feedback, with animations off
-        <app-since version="21.9.0" />
+        Press feedback, with animations off <app-since version="21.9.0" />
       </h3>
       <p class="demo-card__meta">
         Hold any of these down. The background deepens one step past its own hover, so the press
-        reads even while the pointer is already hovering the button — and it is a
-        <em>state</em> rather than a movement, which is the whole point. Turn on
-        <code>prefers-reduced-motion: reduce</code> (DevTools &rarr; Rendering &rarr; Emulate CSS
-        media feature) and the <code>scale()</code> goes away while the colour stays.
+        reads even while the pointer is already hovering — and it is a <em>state</em> rather than a
+        movement. Turn on <code>prefers-reduced-motion: reduce</code> (DevTools &rarr; Rendering
+        &rarr; Emulate CSS media feature) and the <code>scale()</code> goes away while the colour
+        stays. The last button sets its own press colour inline, through the instance tokens
+        <code>--gog-button-press-bg</code> / <code>--gog-button-press-color</code>.
       </p>
-      <div class="demo-card__preview action-row">
-        @for (variant of variants; track variant) {
-          <gog-button [variant]="variant" type="button">{{ variant }}</gog-button>
-        }
-      </div>
+      <app-demo [component]="examples.press" [source]="sources.buttonPress" layout="row" />
       <p class="demo-card__meta">
-        Until 21.9.0 the scale was the whole press, so a reader with animations off pressed a button
-        and nothing happened at all. The <a routerLink="/components/ripple">ripple</a> does not
-        cover that case and is not meant to: it is off by default, and it is suppressed under
-        reduced motion on purpose, because a ripple really is decoration and a press state is not.
-        Override the colour per instance with <code>--gog-button-press-bg</code> /
-        <code>--gog-button-press-color</code>, per theme with
-        <code>--gog-button-&lt;variant&gt;-active-bg</code>, and retime or remove the movement with
-        <code>--gog-button-active-scale</code>. Every other pressable surface in the library — menu
-        items, chips, tab and accordion headers, button-toggle options, the three dropdowns' option
-        rows — gained the same treatment in the same release.
+        A theme sets the same thing for every button of a variant, and retimes or removes the
+        movement for all of them:
       </p>
-      <app-code-tabs [html]="pressHtml" [ts]="pressTs" />
+      <app-markdown [markdown]="pressThemeSnippet" />
+      <p class="demo-card__meta">
+        Until 21.9.0 the scale was the whole press, so with animations off a press showed nothing.
+        The <a routerLink="/components/ripple">ripple</a> is not meant to cover that: it is off by
+        default and suppressed under reduced motion, because a ripple is decoration and a press
+        state is not.
+      </p>
     </article>
 
     <article class="demo-card">
       <h3 class="demo-card__title">Disabled</h3>
       <p class="demo-card__meta">
-        One disabled button per variant — disabled state must stay legible on every color.
+        One disabled button per variant — the disabled state must stay legible on every colour.
       </p>
-      <div class="demo-card__preview action-row">
-        @for (variant of variants; track variant) {
-          <gog-button [variant]="variant" [disabled]="true">{{ variant }}</gog-button>
-        }
-      </div>
-      <app-code-tabs [html]="disabledHtml" [ts]="disabledTs" />
+      <app-demo [component]="examples.disabled" [source]="sources.buttonDisabled" layout="row" />
     </article>
 
     <article class="demo-card">
       <h3 class="demo-card__title">Loading</h3>
       <p class="demo-card__meta">
-        Loading swaps the label for a spinner and blocks clicks (via <code>aria-disabled</code>, not
-        the native <code>disabled</code> attribute, so focus is preserved). The label stays in the
-        button's accessible name <app-since version="21.15.0" /> — a screen reader still hears
-        "Simulate loading" rather than an unnamed button — and on a
-        <code>type="submit"</code> button a click while loading does not submit the form.
+        Loading swaps the label for a spinner and blocks clicks — through
+        <code>aria-disabled</code> rather than the native <code>disabled</code>, so focus stays on
+        the button. On a <code>type="submit"</code> button a click while loading does not submit the
+        form. The spinner scales with the button size.
       </p>
-      <div class="demo-card__preview action-row">
-        <gog-button variant="primary" [loading]="isLoading()" (gogClick)="simulateLoading()">
-          Simulate loading
-        </gog-button>
-      </div>
-
-      <p class="demo-card__meta">The spinner scales with the button size:</p>
-      <div class="demo-card__preview action-row">
-        @for (sizeOption of sizes; track sizeOption) {
-          <gog-button
-            variant="secondary"
-            [size]="sizeOption"
-            [loading]="loadingBySize[sizeOption]()"
-            (gogClick)="simulateLoadingFor(sizeOption)"
-          >
-            {{ sizeOption }}
-          </gog-button>
-        }
-      </div>
-      <app-code-tabs [html]="loadingHtml" [ts]="loadingTs" />
+      <app-demo [component]="examples.loading" [source]="sources.buttonLoading" layout="rows" />
     </article>
 
     <article class="demo-card">
       <h3 class="demo-card__title">Full width</h3>
       <p class="demo-card__meta">
-        Stretches to fill its container; wrapped here in a narrower box to show it.
+        <code>fullWidth</code> stretches the button to its container — the dashed box here.
       </p>
-      <div class="demo-card__preview width-demo">
-        <gog-button variant="outline" [fullWidth]="true">Full width</gog-button>
-      </div>
-      <app-code-tabs [html]="fullWidthHtml" [ts]="fullWidthTs" />
+      <app-demo
+        [component]="examples.fullWidth"
+        [source]="sources.buttonFullWidth"
+        layout="frame"
+      />
     </article>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Icon-only</h3>
+      <h3 class="demo-card__title">Icons</h3>
       <p class="demo-card__meta">
-        No visible label, so <code>ariaLabel</code> is required — it targets the inner
-        <code>&lt;button&gt;</code>, unlike a plain <code>aria-label</code> attribute on
-        <code>&lt;gog-button&gt;</code> itself.
-      </p>
-      <div class="demo-card__preview action-row">
-        <gog-button variant="primary" ariaLabel="Confirm">
-          <gog-icon name="check" />
-        </gog-button>
-        <gog-button variant="outline" ariaLabel="Dismiss">
-          <gog-icon name="close" />
-        </gog-button>
-        <gog-button variant="ghost" size="sm" ariaLabel="More info">
-          <gog-icon name="info" />
-        </gog-button>
-        <gog-button variant="outline">
-          <gog-icon name="download" />
-          Export
-        </gog-button>
-        <gog-button variant="outline">Save</gog-button>
-      </div>
-      <p class="demo-card__meta">
+        An icon-only button has no visible label, so <code>ariaLabel</code> is required — it names
+        the inner <code>&lt;button&gt;</code>, unlike a plain <code>aria-label</code> attribute on
+        <code>&lt;gog-button&gt;</code>. Beside a label, put the icon in as a plain
+        <code>&lt;gog-icon&gt;</code>: it is centred and spaced <code>--gog-button-gap</code> away,
+        with no margin or <code>&amp;nbsp;</code> of your own.
         <strong>Every button of one size is one height</strong>, icon or not
-        <app-since version="21.15.0" /> — the last three line up. An icon beside a label is centred
-        on it and spaced <code>--gog-button-gap</code> away, as <code>[gogButton]</code> always did;
-        put it in as a plain <code>&lt;gog-icon&gt;</code>, with no margin or
-        <code>&amp;nbsp;</code>
-        of your own. Before 21.15.0 an icon button was 0.2em taller than a text one.
+        <app-since version="21.15.0" /> — the last two line up.
       </p>
-      <app-code-tabs [html]="iconOnlyHtml" [ts]="iconOnlyTs" />
+      <app-demo [component]="examples.icons" [source]="sources.buttonIcons" layout="row" />
     </article>
 
     <article class="demo-card">
       <h3 class="demo-card__title">ARIA state — a toggle and a disclosure</h3>
       <p class="demo-card__meta">
-        Same trap as <code>ariaLabel</code>, one step further: the component hides the real
-        <code>&lt;button&gt;</code>, so <code>[attr.aria-pressed]</code> written on
-        <code>&lt;gog-button&gt;</code> lands on the custom-element host — which has no role — and
-        reaches no assistive tech at all. It compiles, throws nothing, and looks right, which is
-        what makes it worth a demo. Use the inputs: <code>ariaPressed</code>,
-        <code>ariaExpanded</code>, <code>ariaControls</code> and <code>ariaHasPopup</code>.
+        The component hides the real <code>&lt;button&gt;</code>, so
+        <code>[attr.aria-pressed]</code> written on <code>&lt;gog-button&gt;</code> lands on a host
+        with no role and reaches no assistive tech — it compiles and looks right, which is why it is
+        worth a demo. Use the inputs: <code>ariaPressed</code>, <code>ariaExpanded</code>,
+        <code>ariaControls</code>, <code>ariaHasPopup</code> and <code>ariaCurrent</code>.
       </p>
+      <app-demo [component]="examples.ariaState" [source]="sources.buttonAriaState" layout="rows" />
       <p class="demo-card__meta">
-        <strong>A toggle button now looks toggled</strong>
-        <app-since version="21.9.0" /> — press "Mirror layout" and it keeps an inset ring
-        (<code>--gog-button-&lt;variant&gt;-toggled-shadow</code>, width from
-        <code>--gog-button-toggled-ring-width</code>) for as long as <code>aria-pressed</code> is
-        <code>"true"</code> or <code>"mixed"</code>. A ring rather than a fill, because hover and
-        press already own the background and the state has to survive both. Until 21.9.0 it did not
-        exist at all: a button could announce itself as on to a screen reader and look identical to
-        an off one.
+        Press "Mirror layout": a toggle that is on keeps an inset ring
+        <app-since version="21.9.0" /> (<code>--gog-button-&lt;variant&gt;-toggled-shadow</code>)
+        for as long as <code>aria-pressed</code> is <code>"true"</code> or <code>"mixed"</code> — a
+        ring rather than a fill, because hover and press already own the background. The off state
+        renders <code>aria-pressed="false"</code> rather than dropping the attribute:
+        <code>null</code> means "not a toggle button", <code>false</code> means "a toggle that is
+        off", and to a screen reader those are two different controls.
       </p>
-      <div class="demo-card__preview action-row">
-        <gog-button variant="outline" [ariaPressed]="isMirrored()" (gogClick)="toggleMirror()">
-          Mirror layout
-        </gog-button>
-        <gog-button
-          variant="outline"
-          [ariaExpanded]="areFiltersOpen()"
-          ariaControls="button-doc-filters"
-          ariaHasPopup="dialog"
-          (gogClick)="toggleFilters()"
-        >
-          Filters
-        </gog-button>
-      </div>
-      <p id="button-doc-filters" class="demo-card__meta" [hidden]="!areFiltersOpen()">
-        The region <code>ariaControls</code> points at. It stays in the document and hides, rather
-        than being removed — <code>aria-controls</code> has to name an element that exists.
-      </p>
-      <p class="demo-card__meta">
-        Inspect either button: the attribute sits on the inner <code>&lt;button&gt;</code>, never on
-        <code>&lt;gog-button&gt;</code>. The off state renders
-        <code>aria-pressed="false"</code> rather than dropping the attribute —
-        <code>null</code> means "not a toggle button", <code>false</code> means "a toggle button
-        that is off", and to a screen reader those are two different controls.
-        <code>[gogButton]</code> needs none of these inputs: it styles an element you own, so write
-        the attributes on your own <code>&lt;button&gt;</code> directly — and it draws the same
-        toggled ring off the attribute you wrote.
-      </p>
-      <app-code-tabs [html]="ariaStateHtml" [ts]="ariaStateTs" />
     </article>
 
     <article class="demo-card">
       <h3 class="demo-card__title">Debounce guard</h3>
       <p class="demo-card__meta">
-        Clicks are throttled leading-edge: the first click fires immediately, further clicks are
-        dropped for <code>debounce</code> ms (default 300). Click rapidly and watch the counter lag
-        behind your clicks.
+        Clicks are throttled leading-edge: the first fires immediately, further clicks are dropped
+        for <code>debounce</code> ms (default 300). Click rapidly and watch the counter lag behind.
+        A dropped click is cancelled, so on a <code>type="submit"</code> button it does not submit
+        the form either.
       </p>
-      <div class="demo-card__preview action-row">
-        <gog-button variant="primary" (gogClick)="onSpamClick()">Click me fast</gog-button>
-      </div>
-      <p class="demo-card__meta">Accepted clicks: {{ clickCount() }}</p>
-      <app-code-tabs [html]="debounceHtml" [ts]="debounceTs" />
+      <app-demo [component]="examples.debounce" [source]="sources.buttonDebounce" layout="stack" />
     </article>
 
     <article class="demo-card">
       <h3 class="demo-card__title">Native type semantics</h3>
       <p class="demo-card__meta">
-        <code>type</code> is forwarded to the native <code>&lt;button&gt;</code>.
+        <code>type</code> is forwarded to the native <code>&lt;button&gt;</code>, so a submit or
+        reset button inside a <code>&lt;form&gt;</code> works as it would without the component.
       </p>
-      <form
-        class="demo-card__preview action-row"
-        (submit)="onFormSubmit($event)"
-        (reset)="onFormReset()"
-      >
-        <gog-button variant="primary" type="submit">Submit</gog-button>
-        <gog-button variant="outline" type="reset">Reset</gog-button>
-      </form>
-      <p class="demo-card__meta">{{ formResult() }}</p>
-      <app-code-tabs [html]="formHtml" [ts]="formTs" />
+      <app-demo
+        [component]="examples.nativeType"
+        [source]="sources.buttonNativeType"
+        layout="stack"
+      />
     </article>
   </section>
 
@@ -299,19 +184,7 @@
     <app-markdown [markdown]="directiveImportSnippet" />
 
     <div class="demo-card">
-      <div class="demo-card__preview action-row">
-        <a gogButton routerLink="/general/theming">See theming</a>
-        <a
-          gogButton
-          variant="ghost"
-          href="https://www.npmjs.com/package/@guildofgleks/ui"
-          target="_blank"
-          rel="noreferrer"
-          >Package on npm</a
-        >
-        <button gogButton variant="outline" size="sm" type="button">A real button</button>
-      </div>
-      <app-code-tabs [html]="directiveHtml" [ts]="directiveTs" />
+      <app-demo [component]="examples.link" [source]="sources.buttonLink" layout="row" />
     </div>
 
     <p class="doc-section__intro">
@@ -331,110 +204,68 @@
       an input in the first place.
     </p>
     <p class="doc-section__intro">
-      That is also why the library still has
-      <strong>no <code>@angular/router</code> dependency</strong> — a design point, not an omission.
-      A component that took a <code>routerLink</code> input would force the router on every app that
+      That is also why the library has <strong>no <code>@angular/router</code> dependency</strong> —
+      a component that took a <code>routerLink</code> input would force the router on every app that
       installs the package.
     </p>
     <p class="doc-section__intro">
       Two things the directive deliberately does not do: no <code>disabled</code> on an
       <code>&lt;a&gt;</code> (there is no such thing — drop the <code>href</code> or render a real
       <code>&lt;button&gt;</code>), and no loading state (the spinner is a projected child, which a
-      directive cannot add without taking over the element's content).
+      directive cannot add without taking over the element's content). Its styles live in the global
+      <code>styles/button.css</code>, pulled in by <code>index.css</code>, because emulated
+      encapsulation cannot reach an element declared in <em>your</em> template.
     </p>
-    <p class="doc-section__intro">
-      Its styles live in the global <code>styles/button.css</code>, pulled in by
-      <code>index.css</code>, because Angular's emulated encapsulation could never reach an element
-      declared in <em>your</em> template. Nothing changes in your setup — see
-      <a routerLink="/general/theming">Theming</a>.
-    </p>
+  </section>
 
-    <h3 class="doc-section__subtitle">[gogButton] — Inputs</h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Default</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of directiveInputs; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-              </td>
-              <td>
-                <code>{{ row.type }}</code>
-              </td>
-              <td>
-                <code>{{ row.default }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+  <section class="doc-section">
+    <h2 id="accessibility" class="doc-section__title font-heading">Accessibility</h2>
+    <p class="doc-section__intro">
+      <code>gog-button</code> renders a native <code>&lt;button&gt;</code>, so it is one tab stop,
+      Enter and Space press it, and it is announced as a button by its content. Everything a screen
+      reader needs goes on that inner element through inputs, never as attributes on the
+      <code>&lt;gog-button&gt;</code> host:
+    </p>
+    <ul class="doc-section__intro">
+      <li>
+        <strong>Name</strong> — the projected text, or <code>ariaLabel</code> when there is none (an
+        icon-only button).
+      </li>
+      <li>
+        <strong>State</strong> — <code>ariaPressed</code> for a toggle, <code>ariaExpanded</code> +
+        <code>ariaControls</code> + <code>ariaHasPopup</code> for a disclosure or popup trigger,
+        <code>ariaCurrent</code> <app-since version="21.15.0" /> for the current item of a set.
+      </li>
+      <li>
+        <strong>Disabled</strong> — <code>disabled</code> takes the button out of the tab order;
+        <code>loading</code> keeps it focusable with <code>aria-disabled</code>, and keeps its label
+        in the accessible name <app-since version="21.15.0" />, so a button that was just pressed
+        still says what it is.
+      </li>
+      <li>
+        <strong>Directives on a <code>gog-button</code></strong> — <code>gogTooltip</code>,
+        <code>[gogMenuTrigger]</code> and <code>gogBadge</code> write their ARIA onto the inner
+        <code>&lt;button&gt;</code> <app-since version="21.15.0" />.
+      </li>
+    </ul>
+    <p class="doc-section__intro">
+      <code>[gogButton]</code> needs none of these inputs: it styles an element you own, so write
+      the attributes on it directly — it draws the toggled ring off the
+      <code>aria-pressed</code> you wrote.
+    </p>
   </section>
 
   <section class="doc-section">
     <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
 
-    <h3 class="doc-section__subtitle">Inputs</h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Default</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of apiInputs; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-                @if (row.since) {
-                  <app-since [version]="row.since" />
-                }
-              </td>
-              <td>
-                <code>{{ row.type }}</code>
-              </td>
-              <td>
-                <code>{{ row.default }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <h3 class="doc-section__subtitle">gog-button — Inputs</h3>
+    <app-api-table [rows]="apiInputs" kind="inputs" />
 
-    <h3 class="doc-section__subtitle">Outputs</h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>gogClick</code></td>
-            <td><code>EventEmitter&lt;MouseEvent&gt;</code></td>
-            <td>Emitted on each accepted click, after debounce throttling.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <h3 class="doc-section__subtitle">gog-button — Outputs</h3>
+    <app-api-table [rows]="apiOutputs" kind="outputs" />
+
+    <h3 class="doc-section__subtitle">[gogButton] — Inputs</h3>
+    <app-api-table [rows]="directiveInputs" kind="inputs" />
   </section>
 
   <app-global-config-note component="button" />
@@ -447,25 +278,6 @@
       <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
       <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
     </p>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Token</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of styleTokens; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="styleTokens" kind="tokens" />
   </section>
 </div>

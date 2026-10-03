@@ -1,0 +1,11 @@
+@for (variant of variants; track variant) {
+  <gog-button [variant]="variant">{{ variant }}</gog-button>
+}
+
+<!-- One instance with its own press colour: the instance tier, set inline. -->
+<gog-button
+  variant="primary"
+  style="--gog-button-press-bg: var(--gog-danger-color); --gog-button-press-color: #fff"
+>
+  custom press
+</gog-button>

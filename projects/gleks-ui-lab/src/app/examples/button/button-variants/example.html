@@ -1,0 +1,8 @@
+@for (variant of variants; track variant) {
+  <div>
+    <span>{{ variant }}</span>
+    @for (size of sizes; track size) {
+      <gog-button [variant]="variant" [size]="size">{{ size }}</gog-button>
+    }
+  </div>
+}

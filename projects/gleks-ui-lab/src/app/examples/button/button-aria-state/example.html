@@ -1,0 +1,17 @@
+<div>
+  <gog-button variant="outline" [ariaPressed]="mirrored()" (gogClick)="toggleMirror()">
+    Mirror layout
+  </gog-button>
+  <gog-button
+    variant="outline"
+    [ariaExpanded]="filtersOpen()"
+    ariaControls="filters-region"
+    ariaHasPopup="dialog"
+    (gogClick)="toggleFilters()"
+  >
+    Filters
+  </gog-button>
+</div>
+
+<!-- aria-controls must name an element that exists, so this hides rather than leaves. -->
+<p id="filters-region" [hidden]="!filtersOpen()">The region the Filters button controls.</p>

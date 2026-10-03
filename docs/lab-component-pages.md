@@ -122,55 +122,55 @@ are the same everywhere and a fix lands once.
 
 ## Iterations
 
-| #   | What                                                                                                                                                                                                                                                                                             | Status  |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------- |
-| 1   | **Pilot: `button`, plus the machinery it needs** — `<app-demo [layout]>`, `<app-code-tabs>` with HTML and TS only (CSS shown only while a legacy page still passes it), the D2 rule in the generator for new examples, `<app-api-table>`. The owner reviews the page before anything else moves. | planned |
-| 2   | The 28 other legacy pages, one per commit — simple ones first, then the layout-heavy ones (`table`, `spinner`, `dialog`, `toast`) last.                                                                                                                                                          | planned |
-| 3   | The 6 already-extracted pages: drop each `example.css` per D3/D4, align the outline.                                                                                                                                                                                                             | planned |
-| 4   | Close-out: the generator fails on any `example.css` and any `template:`; `<app-code-tabs>` loses its `css` input; `<app-demo>` is the only way a page renders an example; this file's table is all ✅ and the file becomes a record.                                                             | planned |
+| #   | What                                                                                                                                                                                                                                                                                             | Status                                        |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------- |
+| 1   | **Pilot: `button`, plus the machinery it needs** — `<app-demo [layout]>`, `<app-code-tabs>` with HTML and TS only (CSS shown only while a legacy page still passes it), the D2 rule in the generator for new examples, `<app-api-table>`. The owner reviews the page before anything else moves. | built 2026-10-03, awaiting the owner's review |
+| 2   | The 28 other legacy pages, one per commit — simple ones first, then the layout-heavy ones (`table`, `spinner`, `dialog`, `toast`) last.                                                                                                                                                          | planned                                       |
+| 3   | The 6 already-extracted pages: drop each `example.css` per D3/D4, align the outline.                                                                                                                                                                                                             | planned                                       |
+| 4   | Close-out: the generator fails on any `example.css` and any `template:`; `<app-code-tabs>` loses its `css` input; `<app-demo>` is the only way a page renders an example; this file's table is all ✅ and the file becomes a record.                                                             | planned                                       |
 
 ### Pages
 
 Counts are the demos with a code block today; `tpl` is how many of their TS strings repeat the
 template.
 
-| Page          | Shape    | Demos | tpl | Status |
-| ------------- | -------- | ----- | --- | ------ |
-| button        | legacy   | 12    | 12  | pilot  |
-| accordion     | legacy   | 8     | 8   |        |
-| autocomplete  | legacy   | 6     | 6   |        |
-| badge         | legacy   | 5     | 5   |        |
-| button-toggle | legacy   | 6     | 6   |        |
-| calendar      | legacy   | 5     | 5   |        |
-| checkbox      | legacy   | 8     | 8   |        |
-| chip          | legacy   | 11    | 11  |        |
-| collapsible   | legacy   | 6     | 6   |        |
-| datepicker    | legacy   | 6     | 6   |        |
-| dialog        | legacy   | 6     | 4   |        |
-| divider       | legacy   | 5     | 5   |        |
-| icon          | legacy   | 5     | 5   |        |
-| inputfield    | legacy   | 13    | 13  |        |
-| multiselect   | legacy   | 13    | 13  |        |
-| paginator     | legacy   | 8     | 8   |        |
-| progressbar   | legacy   | 6     | 6   |        |
-| radio-group   | legacy   | 4     | 4   |        |
-| select        | legacy   | 12    | 12  |        |
-| skeleton      | legacy   | 9     | 9   |        |
-| slider        | legacy   | 9     | 9   |        |
-| spinner       | legacy   | 9     | 9   |        |
-| table         | legacy   | 14    | 14  |        |
-| tabs          | legacy   | 4     | 4   |        |
-| tag           | legacy   | 6     | 6   |        |
-| textarea      | legacy   | 10    | 10  |        |
-| toast         | legacy   | 6     | 6   |        |
-| toggle        | legacy   | 6     | 6   |        |
-| tooltip       | legacy   | 4     | 4   |        |
-| alert         | examples | 5     | 0   |        |
-| card          | examples | 6     | 0   |        |
-| menu          | examples | 5     | 0   |        |
-| panel         | examples | 6     | 0   |        |
-| ripple        | examples | 6     | 0   |        |
-| scroll        | examples | 7     | 0   |        |
+| Page          | Shape    | Demos | tpl | Status              |
+| ------------- | -------- | ----- | --- | ------------------- |
+| button        | legacy   | 12    | 12  | ✅ pilot, in review |
+| accordion     | legacy   | 8     | 8   |                     |
+| autocomplete  | legacy   | 6     | 6   |                     |
+| badge         | legacy   | 5     | 5   |                     |
+| button-toggle | legacy   | 6     | 6   |                     |
+| calendar      | legacy   | 5     | 5   |                     |
+| checkbox      | legacy   | 8     | 8   |                     |
+| chip          | legacy   | 11    | 11  |                     |
+| collapsible   | legacy   | 6     | 6   |                     |
+| datepicker    | legacy   | 6     | 6   |                     |
+| dialog        | legacy   | 6     | 4   |                     |
+| divider       | legacy   | 5     | 5   |                     |
+| icon          | legacy   | 5     | 5   |                     |
+| inputfield    | legacy   | 13    | 13  |                     |
+| multiselect   | legacy   | 13    | 13  |                     |
+| paginator     | legacy   | 8     | 8   |                     |
+| progressbar   | legacy   | 6     | 6   |                     |
+| radio-group   | legacy   | 4     | 4   |                     |
+| select        | legacy   | 12    | 12  |                     |
+| skeleton      | legacy   | 9     | 9   |                     |
+| slider        | legacy   | 9     | 9   |                     |
+| spinner       | legacy   | 9     | 9   |                     |
+| table         | legacy   | 14    | 14  |                     |
+| tabs          | legacy   | 4     | 4   |                     |
+| tag           | legacy   | 6     | 6   |                     |
+| textarea      | legacy   | 10    | 10  |                     |
+| toast         | legacy   | 6     | 6   |                     |
+| toggle        | legacy   | 6     | 6   |                     |
+| tooltip       | legacy   | 4     | 4   |                     |
+| alert         | examples | 5     | 0   |                     |
+| card          | examples | 6     | 0   |                     |
+| menu          | examples | 5     | 0   |                     |
+| panel         | examples | 6     | 0   |                     |
+| ripple        | examples | 6     | 0   |                     |
+| scroll        | examples | 7     | 0   |                     |
 
 ## Open after the pilot
 
