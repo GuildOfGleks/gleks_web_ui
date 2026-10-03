@@ -170,6 +170,18 @@ unlabelled field.
 `,
     ),
     item(
+      'Can I write <gog-checkbox disabled> instead of [disabled]="true"?',
+      `
+Yes, on every boolean input <span class="since" title="Added in 21.15.0">21.15.0</span> — \`<gog-checkbox
+disabled>\`, \`<gog-select clearable>\`, \`<gog-table stickyHeader>\`. Before 21.15.0 only ten inputs
+accepted the bare attribute and the rest failed \`strictTemplates\` with "Type 'string' is not
+assignable to type 'boolean'". The string \`"false"\` is \`false\`, and an input that falls back to
+\`GOG_CONFIG\` when unset still does so when the attribute is absent. Two kinds are left as they
+were: models such as \`checked\` and \`open\`, and inputs where \`null\` means "no attribute"
+(\`ariaPressed\`, \`ariaExpanded\`, \`gog-chip\`'s \`selected\`, \`spellcheck\`).
+`,
+    ),
+    item(
       'Can I use my own icons?',
       `
 Yes — register them once with \`provideGogIcons(...)\`
@@ -260,11 +272,12 @@ own custom CSS can use to follow the same rule.
       'How much does it add to my bundle?',
       `
 The whole library — 32 components plus the \`gogBadge\`, \`gogTooltip\` and \`gogRipple\`
-directives — is **123.1 KB gzipped** of JavaScript, plus a 51.4 KB gzipped stylesheet that
-carries every theming token (most of it the stylesheet's own comments). An app using a handful
+directives — is **129.8 KB gzipped** of JavaScript, plus a 29.4 KB gzipped stylesheet that
+carries every theming token. An app using a handful
 of components pays a fraction of the first number, since the rest is tree-shaken; the stylesheet
 is loaded whole either way. For context, four Angular Material components gzip to 153.6 KB and
-the same four from PrimeNG to 332.7 KB — measured 2026-09-13, with the commands to re-measure
+the same four from PrimeNG to 332.7 KB — measured on 21.15.0 (2026-10-03) against Material's and
+PrimeNG's figures from 2026-09-13, with the commands to re-measure
 all of it on the [full technical comparison](/general/compare-full).
 `,
     ),
@@ -275,7 +288,9 @@ No. Material ships \`@angular/material/*/testing\` harnesses; this library ships
 components the way you test your own markup — by role and accessible name
 (\`getByRole('button', { name: 'Save' })\`), which works in Testing Library, Playwright and
 plain \`TestBed\` alike, and does not break when the internal DOM changes. The components render
-proper roles, labels and \`aria-*\` state precisely so that this is possible.
+proper roles, labels and \`aria-*\` state precisely so that this is possible. \`gog-inputfield\`'s stepper, clear and reveal buttons also
+carry \`data-gog-part\` <span class="since" title="Added in 21.15.0">21.15.0</span> — a hook that,
+unlike the internal \`gog-input__*\` classes, is meant to stay put.
 `,
     ),
     item(
@@ -381,12 +396,16 @@ component doc pages call these out explicitly wherever they apply.
     item(
       "What's deprecated right now, and when does it go?",
       `
-**Nothing.** \`GOG_DEPRECATIONS\` — the manifest the package exports, generated from the library's
-own source with \`since\`, \`sinceDate\`, \`replacement\` and \`removedIn\` for whatever it lists — is an
-empty array as of the version you have installed.
+**Four inputs on \`gog-autocomplete\`, going in 21.16.0.** \`filter\`, \`filterPlaceholder\`,
+\`filterPosition\` and \`filterEmptyMessage\` were deprecated in 21.15.0: the field filters as you
+type and its panel has no search box. Drop \`filter\` and \`filterPosition\`; use \`placeholder\` for
+\`filterPlaceholder\` and \`emptyMessage\` for \`filterEmptyMessage\`. \`GOG_DEPRECATIONS\` — the manifest
+the package exports, generated from the library's own source with \`since\`, \`sinceDate\`,
+\`replacement\` and \`removedIn\` for whatever it lists — names all four, and the
+[Autocomplete](/components/autocomplete) page marks them in its API table.
 
-The library's three deprecation waves are all fully removed.
-**21.14.0** removed the latest: \`gog-table\`, \`gog-datepicker\`/\`gog-calendar\` and \`gog-dialog\` left
+The library's three earlier deprecation waves are all fully removed.
+**21.14.0** removed the latest of them: \`gog-table\`, \`gog-datepicker\`/\`gog-calendar\` and \`gog-dialog\` left
 the root for \`@guildofgleks/ui/table\`, \`/datepicker\` and \`/dialog\`; \`getByPath\`, \`readOption\` and
 \`isSameOptionValue\` left the public API; and \`--gog-select-panel-offset\`,
 \`--gog-multiselect-panel-offset\` and \`--gog-slider-thumb-shadow\` stopped resolving in favour of
