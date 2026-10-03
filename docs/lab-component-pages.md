@@ -150,7 +150,7 @@ template.
 | dialog        | legacy   | 6     | 4   |          |
 | divider       | legacy   | 5     | 5   |          |
 | icon          | legacy   | 5     | 5   |          |
-| inputfield    | legacy   | 13    | 13  |          |
+| inputfield    | legacy   | 13    | 13  | ✅       |
 | multiselect   | legacy   | 13    | 13  |          |
 | paginator     | legacy   | 8     | 8   |          |
 | progressbar   | legacy   | 6     | 6   |          |

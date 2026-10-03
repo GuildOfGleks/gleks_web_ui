@@ -1,0 +1,6 @@
+<!-- errorDisplay="manual" (the default): the message shows while it is non-empty. -->
+<gog-inputfield
+  label="Username"
+  [(value)]="username"
+  [errorMessage]="username().length > 0 && username().length < 3 ? 'At least 3 characters' : ''"
+/>

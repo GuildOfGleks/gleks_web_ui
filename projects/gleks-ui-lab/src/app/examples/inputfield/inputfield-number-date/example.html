@@ -1,0 +1,10 @@
+<!-- Through a formControl a number field's value is a number (null when empty). -->
+<div>
+  <gog-inputfield label="Quantity" type="number" [min]="1" [max]="10" [formControl]="quantity" />
+  <code>{{ quantity.value }} ({{ typeOf(quantity.value) }})</code>
+</div>
+<!-- [(value)] always hands back the string. -->
+<div>
+  <gog-inputfield label="Delivery date" type="date" [(value)]="delivery" />
+  <code>"{{ delivery() }}" ({{ typeOf(delivery()) }})</code>
+</div>

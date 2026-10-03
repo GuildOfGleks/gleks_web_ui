@@ -1,0 +1,20 @@
+<div>
+  <gog-inputfield
+    label="Email (reactive form)"
+    placeholder="jane@example.com"
+    [formControl]="control"
+    errorMessage="Enter a valid email"
+    errorDisplay="auto"
+  />
+  <div>
+    <gog-button variant="outline" size="sm" (gogClick)="control.markAsTouched()">
+      markAsTouched()
+    </gog-button>
+    <gog-button variant="outline" size="sm" (gogClick)="toggleDisabled()">
+      {{ control.disabled ? 'enable()' : 'disable()' }}
+    </gog-button>
+  </div>
+  <code>
+    value: "{{ control.value }}" · touched: {{ control.touched }} · disabled: {{ control.disabled }}
+  </code>
+</div>

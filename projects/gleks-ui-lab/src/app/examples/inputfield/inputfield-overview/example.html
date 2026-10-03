@@ -1,0 +1,9 @@
+<div>
+  <gog-inputfield
+    label="Name"
+    placeholder="Ada Lovelace"
+    [(value)]="name"
+    (valueChange)="changes.update((n) => n + 1)"
+  />
+  <code>value: "{{ name() }}" · {{ changes() }} valueChange</code>
+</div>

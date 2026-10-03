@@ -1,0 +1,19 @@
+<gog-inputfield label="Amount" [(value)]="amount">
+  <span gogInputAddonStart>$</span>
+  <span gogInputAddonEnd>USD</span>
+</gog-inputfield>
+
+<!-- The field makes room for an addon wider than an icon. -->
+<gog-inputfield label="Website" [(value)]="website">
+  <span gogInputAddonStart>https://</span>
+</gog-inputfield>
+
+<!-- An actionable addon is a real button with its own name and click. -->
+<div>
+  <gog-inputfield label="Search" [(value)]="search">
+    <button type="button" gogInputAddonEnd aria-label="Run search" (click)="run()">
+      <gog-icon name="search" />
+    </button>
+  </gog-inputfield>
+  <code>{{ lastSearch() }}</code>
+</div>

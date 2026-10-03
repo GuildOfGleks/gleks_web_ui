@@ -1,0 +1,21 @@
+<gog-inputfield type="number" label="Stepper" value="5" />
+<!-- The arrow keys and the wheel still step: that is native number-input behaviour. -->
+<gog-inputfield type="number" label="No stepper" [showSpinButtons]="false" value="5" />
+<!-- At a bound the button for that direction is disabled. -->
+<gog-inputfield
+  type="number"
+  label="At max (0–10, step 2)"
+  [min]="0"
+  [max]="10"
+  [step]="2"
+  value="10"
+/>
+<gog-inputfield
+  type="number"
+  label="At min (0–10, step 2)"
+  [min]="0"
+  [max]="10"
+  [step]="2"
+  value="0"
+/>
+<gog-inputfield type="number" label="Clearable and stepper" clearable value="5" />
