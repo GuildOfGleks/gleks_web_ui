@@ -55,6 +55,7 @@ files you are about to touch:
 | `styling.instructions.md`          | any `.scss`/`.css` in the library — the three-layer token contract                   |
 | `typescript.instructions.md`       | any `.ts`                                                                            |
 | `ui-showcase.instructions.md`      | anything under `projects/ui-showcase`                                                |
+| `gleks-ui-lab.instructions.md`     | anything under `projects/gleks-ui-lab` — page outline, examples, demo layout         |
 
 Three documents ship **inside the npm package** and count as part of the library, not as notes
 about it: `README.md`, `AGENTS.md` and `TOKENS.md` (generated). `CHANGELOG.md` stays in the repo.

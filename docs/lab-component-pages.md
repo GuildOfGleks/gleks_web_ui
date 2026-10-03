@@ -4,7 +4,8 @@
 component pages written at different times in at least three different shapes, and the cost of
 unifying them grows with every component the library adds. It is cheaper at 35 than at a hundred.
 
-This plan replaces `docs/lab-examples-handoff.md`, whose useful parts (the example folder shape and
+The rules that outlive this plan are in `.github/instructions/gleks-ui-lab.instructions.md` —
+keep the two in step. This plan replaces `docs/lab-examples-handoff.md`, whose useful parts (the example folder shape and
 the traps already paid for) are folded in below. `docs/lab-stackblitz-plan.md` stays as the
 post-mortem it is: this is its phase 1, with two decisions it did not make — no CSS tab, and a
 fixed page outline. StackBlitz remains out of scope.
@@ -41,8 +42,8 @@ enforces it: `--check` (which `build:lab` runs) fails on an `example.ts` contain
 keys, or on an `example.css` existing at all once the migration is done.
 
 **D3. Demo layout belongs to the lab, not to the example.** `<app-demo>` takes a `layout` input —
-a small fixed set such as `row` (wrapping, centred), `column` (stacked, constrained width), `grid`
-(equal columns), `block` (full width, the default) — and owns the preview box, including the host
+`block` (default), `row`, `rows`, `frame` as built in the pilot; every one keeps the example
+centred, its controls spaced apart and clear space above the code block — and owns the preview box, including the host
 `display: block` that every `example.css` repeats today (trap 1 below, solved once). An example
 that needs a layout outside the set is a signal to add one to the set, not to add CSS to the
 example.

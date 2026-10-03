@@ -8,16 +8,15 @@ import type { ExampleSource } from '../example-source';
  * example carries no stylesheet (`docs/lab-component-pages.md`, D3), so the arrangement a reader
  * should not copy lives here, once.
  *
- * - `block` — the example as it renders, full width.
- * - `row` — its top-level elements in a wrapping, centred row: buttons, chips, toggles.
- * - `rows` — its top-level elements stacked, each one a wrapping row; a leading `<span>` in a row
- *   is drawn as that row's label.
- * - `stack` — its top-level elements stacked and centred: a control and the line reporting it.
+ * - `block` — each top-level element centred on its own line (the default).
+ * - `row` — its top-level elements in one wrapping, centred row: buttons, chips, toggles.
+ * - `rows` — each top-level element a wrapping row, the rows centred as one block; a leading
+ *   `<span>` in a row is drawn as that row's label.
  * - `frame` — a narrow dashed box, for an example whose point is how it fills its container.
  *
  * A new arrangement is added here, never as CSS in an example.
  */
-export type DemoLayout = 'block' | 'row' | 'rows' | 'stack' | 'frame';
+export type DemoLayout = 'block' | 'row' | 'rows' | 'frame';
 
 /**
  * One documentation example: the live component, then its three files behind the tab strip.

@@ -289,20 +289,28 @@ h3[id] {
 
 /*
  * `<app-demo [layout]>` — the preview arrangements an example is rendered into
- * (`docs/lab-component-pages.md`, D3). An example is mounted through `NgComponentOutlet`, so
- * `> *` is the example's own host element: an unknown, inline element until it is given a
- * display, which is what collapsed a `width: 100%` region inside it to a few pixels. Setting it
- * here, once, is what lets examples carry no stylesheet.
+ * (`docs/lab-component-pages.md`, D3, and the rules in `gleks-ui-lab.instructions.md`). An
+ * example is mounted through `NgComponentOutlet`, so `> *` is the example's own host element: an
+ * unknown, inline element until it is given a display, which is what collapsed a `width: 100%`
+ * region inside it to a few pixels. Setting it here, once, is what lets examples carry no
+ * stylesheet.
+ *
+ * Three rules hold for every layout: the example is centred in the card, the controls in it are
+ * spaced apart, and there is clear space between the example and the code block under it.
  */
 .demo-preview {
-  margin-bottom: 1em;
+  margin-block: 8px 24px;
 }
 
-.demo-preview > * {
-  display: block;
-  width: 100%;
+/* `block` — each top-level element centred on its own line. */
+.demo-preview--block > * {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
 }
 
+/* `row` — one wrapping, centred row of controls. */
 .demo-preview--row > * {
   display: flex;
   flex-wrap: wrap;
@@ -311,10 +319,12 @@ h3[id] {
   gap: 12px;
 }
 
+/* `rows` — each top-level element a wrapping row; the rows form one block, centred, so a
+   leading label column stays aligned while the whole example sits in the middle of the card. */
 .demo-preview--rows > * {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
+  display: grid;
+  justify-content: center;
+  row-gap: 14px;
 }
 
 .demo-preview--rows > * > * {
@@ -322,33 +332,32 @@ h3[id] {
   flex-wrap: wrap;
   align-items: center;
   gap: 12px;
+  margin: 0;
 }
 
 /* A row's leading span is its label: a fixed column so the rows line up. */
 .demo-preview--rows > * > * > span:first-child {
-  min-width: 80px;
+  min-width: 160px;
   color: var(--gog-muted-text-color);
   font-size: var(--gog-text-sm);
-  text-transform: capitalize;
+  font-family: var(--gog-font-mono);
 }
 
-.demo-preview--stack > * {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-}
-
-.demo-preview--stack p,
-.demo-preview--rows p {
-  margin: 0;
+.demo-preview p,
+.demo-preview code {
   color: var(--gog-muted-text-color);
   font-size: var(--gog-text-sm);
 }
 
-/* The dashed edge is the container the reader is meant to see filled. */
+/* `frame` — a narrow dashed box, centred: for an example whose point is how it fills its
+   container. The dashed edge is the container the reader is meant to see filled. */
 .demo-preview--frame {
   max-width: 320px;
   padding: 12px;
   border: 1px dashed var(--gog-border-color);
+}
+
+.demo-preview--frame > * {
+  display: grid;
+  row-gap: 12px;
 }
