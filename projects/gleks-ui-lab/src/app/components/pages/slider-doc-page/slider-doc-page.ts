@@ -60,14 +60,14 @@ const API_INPUTS: readonly ApiInputRow[] = [
     type: 'string',
     default: "'Minimum'",
     description:
-      "Accessible name for the lower thumb, prefixed with label when one is set ('Price Minimum'). A shared <label> cannot be associated with two inputs via for, so each thumb needs its own name.",
+      "Accessible name for the lower thumb, prefixed with label when one is set ('Price Minimum'), or with ariaLabel when there is no label (since 21.15.0). A shared <label> cannot be associated with two inputs via for, so each thumb needs its own name.",
     since: '21.3.1',
   },
   {
     name: 'endAriaLabel',
     type: 'string',
     default: "'Maximum'",
-    description: 'Accessible name for the upper thumb.',
+    description: 'Accessible name for the upper thumb, prefixed the same way as startAriaLabel.',
     since: '21.3.1',
   },
   { name: 'label', type: 'string', default: "''", description: 'Field label.' },

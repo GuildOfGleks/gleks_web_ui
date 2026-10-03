@@ -139,7 +139,10 @@
       <p class="demo-card__meta">
         Each thumb needs its own accessible name — a single <code>&lt;label&gt;</code> cannot be
         associated with two inputs through <code>for</code>. Unset, they fall back to "Minimum" and
-        "Maximum", prefixed with <code>label</code> when there is one ("Price Minimum").
+        "Maximum", prefixed with <code>label</code> when there is one ("Price Minimum"), or with
+        <code>ariaLabel</code> when there is no visible label <app-since version="21.15.0" /> —
+        before 21.15.0 a range slider ignored <code>ariaLabel</code>, and its thumbs were a bare
+        "Minimum" and "Maximum".
       </p>
       <app-code-tabs [html]="rangeHtml" [ts]="rangeTs" />
     </article>
