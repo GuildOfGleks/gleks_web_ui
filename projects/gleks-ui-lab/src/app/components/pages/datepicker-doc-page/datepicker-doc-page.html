@@ -144,6 +144,23 @@
   </section>
 
   <section class="doc-section">
+    <h2 id="keyboard" class="doc-section__title font-heading">Keyboard</h2>
+    <p class="doc-section__intro">
+      From the field, <kbd>↓</kbd> or <kbd>Enter</kbd> opens the panel. <kbd>Escape</kbd> closes it
+      from anywhere inside — the calendar button and the day grid included — and returns focus to
+      the field. In the grid the arrows move by a day and by a week, <kbd>Home</kbd>/<kbd>End</kbd>
+      go to the ends of the week, <kbd>PageUp</kbd>/<kbd>PageDown</kbd> change the month and with
+      <kbd>Shift</kbd> the year, and <kbd>Enter</kbd> or <kbd>Space</kbd> picks. The 42 day cells
+      are one tab stop, not 42.
+    </p>
+    <p class="doc-section__intro">
+      Two of those sentences became true in 21.15.0 <app-since version="21.15.0" />: before it,
+      Escape closed the panel only from the text input, and the arrows moved the highlight while the
+      focus ring — and a screen reader — stayed on the day they had left.
+    </p>
+  </section>
+
+  <section class="doc-section">
     <h2 id="global-config" class="doc-section__title font-heading">App-wide defaults</h2>
     <p class="doc-section__intro">
       A locale and a date format repeated on every date input is exactly the boilerplate
@@ -171,6 +188,9 @@
             <tr>
               <td>
                 <code>{{ row.name }}</code>
+                @if (row.since) {
+                  <app-since [version]="row.since" />
+                }
               </td>
               <td>
                 <code>{{ row.type }}</code>
@@ -200,6 +220,9 @@
             <tr>
               <td>
                 <code>{{ row.name }}</code>
+                @if (row.since) {
+                  <app-since [version]="row.since" />
+                }
               </td>
               <td>
                 <code>{{ row.type }}</code>

@@ -5,6 +5,7 @@ import { DatepickerComponent, GogDatepickerValue } from '@guildofgleks/ui/datepi
 import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
 import { GlobalConfigNote } from '../../shared/global-config-note/global-config-note';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
+import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 interface ApiRow {
@@ -12,6 +13,7 @@ interface ApiRow {
   readonly type: string;
   readonly default: string;
   readonly description: string;
+  readonly since?: string;
 }
 
 const API_INPUTS: readonly ApiRow[] = [
@@ -97,6 +99,14 @@ const API_INPUTS: readonly ApiRow[] = [
     description: 'Wording for the footer actions and the two icon buttons.',
   },
   {
+    name: 'previousMonthLabel / nextMonthLabel / previousYearLabel / nextYearLabel / hoursLabel / minutesLabel / secondsLabel',
+    type: 'string | undefined',
+    default: 'GOG_CONFIG.labels.*',
+    description:
+      "Accessible names for the panel calendar's navigation arrows and time inputs, handed to the calendar inside the field. Before 21.15.0 the field forwarded only todayLabel and thisMonthLabel, so these could be set only app-wide — two fields in different languages on one page could not be.",
+    since: '21.15.0',
+  },
+  {
     name: 'allowTextInput',
     type: 'boolean',
     default: 'true',
@@ -154,7 +164,16 @@ const API_OUTPUTS: readonly ApiRow[] = [
     name: 'valueChange',
     type: 'Date | GogDateRange | null',
     default: '—',
-    description: 'Emitted when the selection changes. Comes from the value model input.',
+    description:
+      'Emitted when the value changes — including a half-picked range and typed text. Comes from the value model input.',
+  },
+  {
+    name: 'gogDateSelect',
+    type: 'GogDatepickerValue',
+    default: '—',
+    description:
+      'A complete selection made in the calendar: a day in single mode, both ends of a range. The event the panel closes on — bind it for "the user has finished choosing" rather than inspecting a half-picked value.',
+    since: '21.15.0',
   },
 ];
 
@@ -167,6 +186,7 @@ const API_OUTPUTS: readonly ApiRow[] = [
     MarkdownComponent,
     CodeTabsComponent,
     RouterLink,
+    SinceBadgeComponent,
   ],
   templateUrl: './datepicker-doc-page.html',
   styleUrl: './datepicker-doc-page.scss',
