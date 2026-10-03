@@ -87,10 +87,12 @@
         box with nothing extra asked of you — the first select below.
       </p>
       <p class="demo-card__meta">
-        A <strong>collapsible</strong> one <em>does</em> clip while it animates, exactly like
-        <code>gog-collapsible</code>. That is the one trap on this page: reach for
-        <code>[appendToBody]</code> on the overlay, as the second select does, and it renders into
-        <code>&lt;body&gt;</code> instead of inside the clipped box.
+        A <strong>collapsible</strong> one clips only while it opens and closes, exactly like
+        <code>gog-collapsible</code>, and stops once it is open and settled
+        <app-since version="21.15.0" /> — so the second select escapes as well. Before 21.15.0 an
+        open collapsible panel kept clipping, and an overlay inside needed
+        <code>[appendToBody]</code>. It still does in one case: content capped with
+        <code>--gog-collapsible-max-height</code> never settles, and keeps clipping.
       </p>
       <app-demo [component]="examples.overlay" [source]="sources.panelOverlay" />
     </article>

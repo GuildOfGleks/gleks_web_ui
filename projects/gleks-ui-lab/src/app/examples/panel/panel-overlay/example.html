@@ -9,16 +9,11 @@
   </gog-panel>
 
   <!--
-    Collapsible: this one *does* clip while it animates, exactly like gog-collapsible.
-    `appendToBody` renders the panel into <body>, which is what keeps it whole.
+    Collapsible: it clips only while it opens and closes, so once open the dropdown escapes too.
+    Content capped with --gog-collapsible-max-height still clips; use [appendToBody] there.
   -->
   <gog-panel [collapsible]="true" [(open)]="regionalOpen" size="md" variant="outlined">
     <h4 gogPanelHeader>Regional, collapsible</h4>
-    <gog-select
-      label="Time zone"
-      [options]="timezones"
-      [appendToBody]="true"
-      [(value)]="inCollapsible"
-    />
+    <gog-select label="Time zone" [options]="timezones" [(value)]="inCollapsible" />
   </gog-panel>
 </div>

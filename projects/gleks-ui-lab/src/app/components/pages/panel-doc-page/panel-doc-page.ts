@@ -49,15 +49,14 @@ const API_INPUTS: readonly ApiRow[] = [
     type: 'boolean',
     default: 'false',
     description:
-      'Adds the toggle and composes gog-collapsible underneath. A bare attribute works. Note a collapsible panel clips while animating.',
+      'Adds the toggle and composes gog-collapsible underneath. A collapsible panel clips while it animates, and since 21.15.0 stops once open, so an overlay inside it is not cut off.',
     since: '21.6.1',
   },
   {
     name: 'disabled',
     type: 'boolean',
     default: 'false',
-    description:
-      'Marks the toggle aria-disabled and stops it acting; the content stays readable. A bare attribute works.',
+    description: 'Marks the toggle aria-disabled and stops it acting; the content stays readable.',
     since: '21.6.1',
   },
   {
