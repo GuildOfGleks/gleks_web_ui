@@ -1,7 +1,11 @@
-<span
-  class="since"
-  [class.since--latest]="isLatest()"
-  [title]="label()"
-  [attr.aria-label]="label()"
-  >{{ version() }}</span
->
+@if (isRecent()) {
+  <span
+    class="since"
+    [class.since--latest]="isLatest()"
+    [title]="label()"
+    [attr.aria-label]="label()"
+    >{{ version() }}</span
+  >
+} @else if (inline()) {
+  <ng-container>{{ version() }}</ng-container>
+}

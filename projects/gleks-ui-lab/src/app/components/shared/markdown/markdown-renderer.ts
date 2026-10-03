@@ -1,6 +1,6 @@
 import { Marked, type Tokens } from 'marked';
 import { highlightCode } from '../code-highlight';
-import { isLatestVersion } from '../library-version';
+import { isLatestVersion, isRecentVersion } from '../library-version';
 
 function renderCodeBlock({ text, lang }: Tokens.Code): string {
   const highlighted = highlightCode(text, lang);
@@ -58,24 +58,28 @@ const markedRenderer = new Marked({ renderer: { code: renderCodeBlock, heading: 
 const SINCE_CHIP_RE = /<span class="since"([^>]*)>(\d+\.\d+\.\d+)<\/span>/g;
 
 /**
- * Fills in `since--latest` on the markdown chips that name the current release line.
+ * Fills in `since--latest` on the markdown chips that name the current release line, and drops the
+ * ones too old to show (`isRecentVersion`).
  *
- * `<app-since>` computes that from the installed package and is always right. Its markdown twin
+ * `<app-since>` computes both from the installed package and is always right. Its markdown twin
  * could not: the class had to be typed by hand, so it went stale on the next release, and once
- * the stale ones were removed the markdown half could no longer be filled **at all** — a
- * genuinely new API in `theming.md` or `global-config.md` simply never got the highlight the same
- * API gets one page over. Deriving it here fixes the class of bug rather than an instance, and
- * means a `.md` author writes the version and nothing else.
+ * the stale ones were removed the markdown half could no longer be filled **at all**. Deriving it
+ * here fixes the class of bug rather than an instance, and means a `.md` author writes the version
+ * and nothing else. A chip that is a word in its sentence carries `data-inline`, and an old one
+ * leaves its version behind as text instead of a hole — the same rule as `<app-since inline>`.
  */
-function markLatestSinceChips(html: string): string {
-  return html.replace(SINCE_CHIP_RE, (match, attrs: string, version: string) =>
-    isLatestVersion(version)
+function markSinceChips(html: string): string {
+  return html.replace(SINCE_CHIP_RE, (match, attrs: string, version: string) => {
+    if (!isRecentVersion(version)) {
+      return attrs.includes('data-inline') ? version : '';
+    }
+    return isLatestVersion(version)
       ? `<span class="since since--latest"${attrs}>${version}</span>`
-      : match,
-  );
+      : match;
+  });
 }
 
 export function renderMarkdown(markdown: string): string {
   usedHeadingIds = new Map();
-  return markLatestSinceChips(markedRenderer.parse(markdown) as string);
+  return markSinceChips(markedRenderer.parse(markdown) as string);
 }

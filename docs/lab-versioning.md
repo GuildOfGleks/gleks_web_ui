@@ -6,15 +6,15 @@ put a package on npm that carries `CHANGELOG.md`, and 4 on 2026-08-28, once the 
 `hardening-21.5.0.md` iteration 3 built for a CI check turned out to be exactly what layer 4
 needed too.
 
-| Layer | State |
-| --- | --- |
-| 1 — version badge | **done** — `components/shared/library-version.ts`, rendered in `app.html` |
-| 2 — releases page | **done** — `CHANGELOG.md` ships in `ng-package.json`'s `assets`, an asset glob copies it to `docs/`, and `components/pages/releases-page/` renders it at `general/releases` |
-| 3 — `since` markers | **done** — `components/shared/since-badge/`, plus a `.since` rule in `src/styles.scss` for the markdown docs; API rows from 21.3.1 onward carry one |
-| 4 — deprecation badges | **done** — see below |
+| Layer                  | State                                                                                                                                                                       |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1 — version badge      | **done** — `components/shared/library-version.ts`, rendered in `app.html`                                                                                                   |
+| 2 — releases page      | **done** — `CHANGELOG.md` ships in `ng-package.json`'s `assets`, an asset glob copies it to `docs/`, and `components/pages/releases-page/` renders it at `general/releases` |
+| 3 — `since` markers    | **done** — `components/shared/since-badge/`, plus a `.since` rule in `src/styles.scss` for the markdown docs; API rows from 21.3.1 onward carry one                         |
+| 4 — deprecation badges | **done** — see below                                                                                                                                                        |
 
-Companion to `lab-after-publish.md`, which tracks *what* the lab must say after each release. This
-file is about the *mechanism* for saying it.
+Companion to `lab-after-publish.md`, which tracks _what_ the lab must say after each release. This
+file is about the _mechanism_ for saying it.
 
 ## The three questions a reader actually has
 
@@ -28,7 +28,7 @@ Worth separating, because they want different answers and the third is the one u
    wrong. This is the one a changelog answers badly (you have to read every entry) and structured
    metadata answers well.
 
-"What's new in this release" — the thing a version-switcher is usually built for — is the *least*
+"What's new in this release" — the thing a version-switcher is usually built for — is the _least_
 useful of the four for a patch release. It matters for a major.
 
 ## Recommended: four layers, cheapest first
@@ -90,7 +90,7 @@ the quality of the changelog — currently high, and worth protecting.
 ### Layer 3 — `since` markers in the API tables
 
 A small `since="21.4.0"` chip next to a new input, output, component or config key. This answers
-question 2 *where the question is asked*, which a release-notes page cannot.
+question 2 _where the question is asked_, which a release-notes page cannot.
 
 **Mechanics.** Manual, and that is acceptable: the marker is added at the moment the API is being
 documented anyway, and only for **new** API — nothing needs backfilling beyond the current
@@ -114,6 +114,15 @@ someone writes and then forgets to update.
 `--latest` is compared at **major.minor**, not exactly: a patch adds no API, so 21.4.0's
 additions are still "what's new" to someone on 21.4.1. Comparing full versions would
 un-highlight a whole feature set the moment a bug fix shipped.
+
+**A chip lives for six minors, then goes** (decided by the owner on 2026-10-03): the current line
+and the five before it, so on 21.15.0 the site shows 21.10.0 to 21.15.0 and nothing older. A page
+carrying a chip on every row it ever gained read as noise rather than news. The window is derived
+from the installed package (`isRecentVersion` and `SINCE_CHIP_WINDOW` in `library-version.ts`), so
+it moves on every publish and no chip is ever deleted by hand. A chip that is a word in its
+sentence — "since 21.4.0, a directive…" — is written `<app-since version="…" inline />`, or with
+`data-inline` on the markdown span, and an expired one leaves its version as plain text rather than
+a hole in the sentence.
 
 ### Layer 4 — deprecations, generated
 
@@ -144,7 +153,7 @@ the main token reference. No lab-side data entry, so it cannot drift from what a
 hand-authored and often collapse several real token names into one shorthand row (`--gog-button-bg
 / -color / -border / -padding / -font-size`) — matching a manifest entry's exact `name` against
 that shorthand would need a parser for a notation invented for human readability, not machine
-matching, and a parser that gets a shorthand wrong produces a false *negative*: a deprecated token
+matching, and a parser that gets a shorthand wrong produces a false _negative_: a deprecated token
 silently missing its badge, which is worse than not having badges at all. A dedicated generated
 section — the "optionally a single page" half of this doc's original sketch — sidesteps the
 problem entirely: it reads `GOG_DEPRECATIONS` directly, needs no matching, and can't be
@@ -178,7 +187,7 @@ The existing plan, recorded here so it is written down: a major (Angular 21 → 
 branch and its own deployment at a subdomain, leaving the previous major's site standing.
 
 This is the only case where a full documentation snapshot earns its cost, because a major is
-exactly when the *current* docs stop being true for people who have not upgraded.
+exactly when the _current_ docs stop being true for people who have not upgraded.
 
 **It fits the existing deploy setup.** `.github/workflows/deploy-lab.yml` is
 `workflow_dispatch`-triggered with `tag` and `port` inputs and builds a Docker image, so a second
@@ -205,12 +214,12 @@ will need adding:
 Layers 1 and 3 are lab-only and can happen at any time. Layers 2 and 4 need a library change
 first, so they are gated on a release:
 
-| Layer | Library side | Lab side |
-| --- | --- | --- |
-| 1 — version badge | — | read `version` from the installed `package.json` |
-| 2 — releases page | ship `CHANGELOG.md` in `assets` | asset glob + route + markdown render |
-| 3 — `since` markers | — | manual chips in the API tables |
-| 4 — deprecation badges | generator + ship the manifest | read manifest, render badges |
+| Layer                  | Library side                    | Lab side                                         |
+| ---------------------- | ------------------------------- | ------------------------------------------------ |
+| 1 — version badge      | —                               | read `version` from the installed `package.json` |
+| 2 — releases page      | ship `CHANGELOG.md` in `assets` | asset glob + route + markdown render             |
+| 3 — `since` markers    | —                               | manual chips in the API tables                   |
+| 4 — deprecation badges | generator + ship the manifest   | read manifest, render badges                     |
 
 Both library-side items are iteration 7 of `hardening-21.5.0.md`. Once they ship, the lab-side
 halves become entries in `lab-after-publish.md` under that release, per

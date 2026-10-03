@@ -1,5 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
-import { isLatestVersion } from '../library-version';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  booleanAttribute,
+  computed,
+  input,
+} from '@angular/core';
+import { isLatestVersion, isRecentVersion } from '../library-version';
 
 /**
  * "Added in 21.4.0" — a chip marking API newer than some readers' installed version.
@@ -10,6 +16,10 @@ import { isLatestVersion } from '../library-version';
  * **Only new API carries one.** An absent badge reads as "has been here a while", which is true
  * and costs nothing to maintain; back-filling every row to its introducing version would mean
  * reading the whole changelog history for a marker nobody needs. See `docs/lab-versioning.md`.
+ *
+ * **And only recent API keeps it**: a chip older than `SINCE_CHIP_WINDOW` minors renders nothing,
+ * or, with `inline`, the bare version — for a chip that is part of a sentence ("since 21.4.0, a
+ * directive…"), where removing it would leave the sentence without its subject.
  */
 @Component({
   selector: 'app-since',
@@ -20,6 +30,11 @@ import { isLatestVersion } from '../library-version';
 export class SinceBadgeComponent {
   /** The version the API it sits next to first shipped in, e.g. `'21.4.0'`. */
   readonly version = input.required<string>();
+
+  /** The chip is a word in a sentence: when it is too old to show, leave the version as text. */
+  readonly inline = input(false, { transform: booleanAttribute });
+
+  protected readonly isRecent = computed(() => isRecentVersion(this.version()));
 
   /**
    * The current release line gets a filled chip, older ones an outline: on any given visit the

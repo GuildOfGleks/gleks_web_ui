@@ -38,3 +38,21 @@ function minor(version: string): string {
 export function isLatestVersion(version: string): boolean {
   return minor(version) === minor(LIBRARY_VERSION);
 }
+
+/**
+ * How many minor releases a `since` chip stays on screen: the current line and the five before
+ * it. Past that the API is simply part of the library, and a page carrying a chip on every row
+ * it ever gained reads as noise rather than as news.
+ */
+export const SINCE_CHIP_WINDOW = 5;
+
+/**
+ * Whether a `since` chip for `version` is still worth showing — at most `SINCE_CHIP_WINDOW` minors
+ * behind the installed release, on the same major. Derived, like `isLatestVersion`, so the window
+ * moves with every publish and no chip has to be deleted by hand.
+ */
+export function isRecentVersion(version: string): boolean {
+  const [major, minorPart] = version.split('.').map(Number);
+  const [currentMajor, currentMinor] = LIBRARY_VERSION.split('.').map(Number);
+  return major === currentMajor && currentMinor - minorPart <= SINCE_CHIP_WINDOW;
+}

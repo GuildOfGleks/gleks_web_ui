@@ -214,7 +214,7 @@ library cannot support a browser the framework it runs on does not.
 **What is worth knowing is where the CSS is newer than that window.** The themes mix colours
 with \`color-mix()\`, which shipped in Chrome 111, Firefox 113, Safari 16.2 and Samsung Internet
 22 — so Firefox 112 is *inside* Angular's supported window and has no \`color-mix()\`. Since
-<span class="since" title="Added in 21.7.1">21.7.1</span> every mixed value sits inside an
+<span class="since" data-inline title="Added in 21.7.1">21.7.1</span> every mixed value sits inside an
 \`@supports\` block over a flat palette value, which is the only mechanism that gates a **custom
 property** on feature support: the ordinary two-declaration fallback does not work here, because
 a custom property is validated when it is substituted rather than when it is parsed, so the
@@ -230,7 +230,7 @@ Three more things that look like a bug and are not:
 - **Every animation is plain CSS** — \`@keyframes\` and \`transition\`, no Web Animations API and no
   JavaScript timer driving a visual. There is no browser that runs the library but skips its
   animations. If you see none, the cause is \`prefers-reduced-motion\`, not the browser. That
-  setting removes movement, not feedback: since <span class="since" title="Added in 21.9.0">21.9.0</span>
+  setting removes movement, not feedback: since <span class="since" data-inline title="Added in 21.9.0">21.9.0</span>
   a press is a colour as well as a scale, and under \`prefers-reduced-motion: reduce\` the scale
   goes and the colour stays, on the button and on the eight other pressable surfaces. The
   [Button](/components/button) page has the live case. The ripple is the deliberate exception —
@@ -251,7 +251,7 @@ opened it in all of these".
     item(
       'Is right-to-left (RTL) supported?',
       `
-**Yes**, since <span class="since" title="Added in 21.5.0">21.5.0</span>. Set \`dir="rtl"\` on
+**Yes**, since <span class="since" data-inline title="Added in 21.5.0">21.5.0</span>. Set \`dir="rtl"\` on
 \`<html>\` for the whole app, or on any element for one region of it — physical \`left\`/\`right\`
 became logical \`inset-inline-*\` properties across every stylesheet, and portaled panels (the
 select/multiselect panel, the tooltip bubble) copy that scoped \`dir\` onto their own host, so an
