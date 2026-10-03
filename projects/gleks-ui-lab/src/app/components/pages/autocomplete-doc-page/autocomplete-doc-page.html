@@ -16,65 +16,16 @@
     <p class="doc-section__intro">Import the component and drop it into a template.</p>
     <app-markdown [markdown]="importSnippet" />
 
-    <p class="doc-section__intro">Basic usage — type a letter or two:</p>
-    <div class="demo-card">
-      <div class="demo-card__preview autocomplete-demo__field">
-        <gog-autocomplete
-          label="City"
-          placeholder="Start typing…"
-          [options]="cities"
-          [(value)]="city"
-        />
-        <p class="doc-section__meta">value = {{ city() }}</p>
-      </div>
-      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
-    </div>
-  </section>
-
-  <section class="doc-section">
-    <h2 id="server" class="doc-section__title font-heading">Server-backed suggestions</h2>
     <p class="doc-section__intro">
-      Two things shape how the panel behaves before a query even runs.
-      <strong><code>openOnFocus</code></strong> <app-since version="21.3.1" /> — on by default —
-      opens the panel with the full option list the moment the field is focused, instead of waiting
-      for <code>minLength</code> characters: for a short, known list that is the difference between
-      a combobox and a text field the user has to guess at. Turn it off per instance, or app-wide
-      with <code>GOG_CONFIG.autocomplete.openOnFocus</code>, to keep the older behaviour of showing
-      nothing until something is typed.
-    </p>
-    <p class="doc-section__intro">
-      <strong><code>gogLoadMore</code></strong> <app-since version="21.3.1" /> fires when the panel
-      is scrolled to its end. Fetch the next page and append it to <code>options</code> — that is
-      how a large or server-backed source is paged, with no virtual scroller involved.
-    </p>
-    <p class="doc-section__intro">
-      <code>gogSearch</code> is debounced (<code>searchDebounce</code>, 300 ms by default), so a
-      lookup fires once the typing settles rather than on every keystroke. Set
-      <code>[filterLocal]="false"</code> alongside it: the server has already filtered, and
-      filtering its answer a second time against the same query is the classic double-filtering bug
-      — it silently drops rows the server matched on a field this component cannot see.
+      Basic usage — type a letter or two. <code>[(value)]</code> holds the picked option's
+      <code>id</code>:
     </p>
     <div class="demo-card">
-      <p class="demo-card__meta">
-        This demo fakes a 400 ms round trip. It also matches on the country, which local filtering
-        would throw away — type <code>germany</code> to see it.
-      </p>
-      <div class="demo-card__preview autocomplete-demo__field">
-        <gog-autocomplete
-          label="City"
-          placeholder="Type at least 2 characters"
-          [options]="serverResults()"
-          [loading]="serverLoading()"
-          [filterLocal]="false"
-          [minLength]="2"
-          (gogSearch)="search($event)"
-          [(value)]="city"
-        />
-        <p class="doc-section__meta">
-          last query: "{{ lastQuery() }}" — {{ serverResults().length }} result(s)
-        </p>
-      </div>
-      <app-code-tabs [html]="serverHtml" [ts]="serverTs" />
+      <app-demo
+        [component]="examples.overview"
+        [source]="sources.autocompleteOverview"
+        layout="fields"
+      />
     </div>
   </section>
 
@@ -82,226 +33,354 @@
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
     <article class="demo-card">
+      <h3 class="demo-card__title">Sizes</h3>
+      <p class="demo-card__meta">
+        Five steps, also settable app-wide through <code>GOG_CONFIG.control.size</code>.
+      </p>
+      <app-demo [component]="examples.sizes" [source]="sources.autocompleteSizes" layout="fields" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">States</h3>
+      <p class="demo-card__meta">
+        Empty with a placeholder, holding a value, disabled, with an error, and loading —
+        <code>[loading]</code> puts a spinner in the trailing slot for a source that is still
+        fetching. There is no chevron: the trigger is a text field, not a button, so nothing claims
+        it is a list you open by clicking.
+      </p>
+      <app-demo
+        [component]="examples.states"
+        [source]="sources.autocompleteStates"
+        layout="fields"
+      />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Clearable</h3>
+      <p class="demo-card__meta">
+        <code>clearable</code> is opt-in, and it watches the <em>text</em>, not the selection: type
+        two letters into the third field and the clear button appears before anything is picked,
+        because on this control the two can disagree. Clearing empties both and emits
+        <code>gogSearch</code> with an empty query, so a server-backed list resets with it. The
+        spinner shares the trailing slot, and the field makes room for both.
+      </p>
+      <app-demo
+        [component]="examples.clearable"
+        [source]="sources.autocompleteClearable"
+        layout="fields"
+      />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Width</h3>
+      <p class="demo-card__meta">
+        A field fills its container by default — the dashed box here. Unlike the two listbox
+        controls, the trigger does not size to its content: it is an <code>&lt;input&gt;</code>,
+        whose own width is the browser's default, so <code>[fullWidth]="false"</code> gives you that
+        box and <code>minWidth</code> is the floor under it.
+      </p>
+      <app-demo [component]="examples.width" [source]="sources.autocompleteWidth" layout="frame" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">No visible label</h3>
+      <p class="demo-card__meta">
+        <code>ariaLabel</code> names a field that has no <code>label</code>. With neither, the
+        placeholder is the fallback accessible name — better than nothing, but it disappears the
+        moment anything is typed.
+      </p>
+      <app-demo
+        [component]="examples.ariaLabel"
+        [source]="sources.autocompleteAriaLabel"
+        layout="fields"
+      />
+    </article>
+
+    <article class="demo-card">
       <h3 class="demo-card__title">Your own objects</h3>
       <p class="demo-card__meta">
         <code>optionLabel</code>, <code>optionValue</code> and <code>optionDisabled</code> take a
-        property path (dot-paths included) or a function. Set <code>[optionValue]="null"</code> and
-        the control hands back the option <em>object</em> — the same reference you passed in —
-        instead of an id.
-      </p>
-      <div class="demo-card__preview autocomplete-demo__field">
-        <gog-autocomplete
-          label="City"
-          optionLabel="name"
-          [optionValue]="null"
-          [options]="cities"
-          [(value)]="cityObject"
-        />
-        <p class="doc-section__meta">
-          value = {{ cityObject() ? cityObject()!.name + ', ' + cityObject()!.country : 'null' }}
-        </p>
-      </div>
-      <app-code-tabs [html]="dtoHtml" [ts]="dtoTs" />
-    </article>
-
-    <article class="demo-card">
-      <h3 class="demo-card__title">Custom suggestion rows</h3>
-      <p class="demo-card__meta">
-        A <code>gogDropdownOption</code> template replaces one row, with the option itself plus
+        property path — dot-paths included — or a function, so a real DTO goes in unmapped.
+        <code>[optionValue]="null"</code> hands back the option <em>object</em> itself. A
+        <code>gogDropdownOption</code> template replaces one row, with the option plus
         <code>selected</code>, <code>disabled</code> and the resolved <code>label</code> in its
-        context — so a custom row can decorate the label rather than re-derive it.
-        <code>[gogDropdownOptionTypeOf]="cities"</code> <app-since version="21.15.0" /> types
-        <code>let-option</code> as a <code>City</code>: bind the same array the field renders, and
-        <code>option.country</code> is checked under <code>strictTemplates</code> instead of being
-        <code>unknown</code>. It is never read at runtime.
+        context; <code>[gogDropdownOptionTypeOf]</code> <app-since version="21.15.0" /> types the
+        option, so <code>option.profile.role</code> is checked under <code>strictTemplates</code>.
       </p>
-      <div class="demo-card__preview autocomplete-demo__field">
-        <gog-autocomplete label="City" [options]="cities" [(value)]="slotCity">
-          <ng-template
-            gogDropdownOption
-            [gogDropdownOptionTypeOf]="cities"
-            let-option
-            let-label="label"
-          >
-            <span class="autocomplete-demo__row">
-              <strong>{{ label }}</strong>
-              <small>{{ option.country }}</small>
-            </span>
-          </ng-template>
-        </gog-autocomplete>
-      </div>
-      <app-code-tabs [html]="slotHtml" [ts]="slotTs" />
+      <app-demo
+        [component]="examples.accessors"
+        [source]="sources.autocompleteAccessors"
+        layout="fields"
+      />
     </article>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Free text (<code>forceSelection</code>)</h3>
+      <h3 class="demo-card__title">A disabled option, and the empty message</h3>
       <p class="demo-card__meta">
-        On by default, the field always ends up reflecting a real selection: editing is treated as
-        transient, so <code>value</code> survives keystrokes and Escape or blur snaps the text back
-        to it. Turn it off for a create-as-you-type flow — the text is then left alone by blur and
-        by Escape, which only closes the panel <app-since version="21.15.0" />, and
-        <code>value</code> is dropped as soon as it stops matching, so the two never disagree. Read
-        what was typed from <code>gogSearch</code>, not from <code>value</code>.
+        <code>optionDisabled</code> defaults to the <code>disabled</code> property, so an option
+        carrying it needs no binding: the row stays in the list, reports <code>aria-disabled</code>,
+        and neither the pointer nor Enter picks it. <code>emptyMessage</code> replaces the list when
+        nothing matches — type <code>zz</code>
+        into the second field.
       </p>
-      <div class="demo-card__preview autocomplete-demo__field">
-        <gog-autocomplete
-          label="Tag"
-          placeholder="Type anything and click away"
-          [forceSelection]="false"
-          [options]="cities"
-          [(value)]="freeText"
-        />
-      </div>
-      <app-code-tabs [html]="freeTextHtml" [ts]="freeTextTs" />
+      <app-demo
+        [component]="examples.disabledOption"
+        [source]="sources.autocompleteDisabledOption"
+        layout="fields"
+      />
     </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Local filtering — <code>filterMatch</code></h3>
+      <p class="demo-card__meta">
+        Local filtering matches the query as a case-insensitive substring of the resolved label.
+        <code>filterMatch</code> swaps in any predicate: type <code>b</code> into both — the default
+        keeps Dublin, Lisbon and Zagreb beside the five cities that start with B; the prefix matcher
+        keeps only those five.
+      </p>
+      <app-demo
+        [component]="examples.filterMatch"
+        [source]="sources.autocompleteFilterMatch"
+        layout="fields"
+      />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Two-way binding, and the text that is not the value</h3>
+      <p class="demo-card__meta">
+        The field holds two things: what is typed, and what is committed. Pick Berlin, then edit the
+        text — the value stays Berlin until the edit resolves, and <kbd>Esc</kbd> or clicking away
+        snaps the text back. That is <code>forceSelection</code>, on by default: a user who types
+        one more character to refine a search does not silently lose what they had picked.
+      </p>
+      <app-demo
+        [component]="examples.binding"
+        [source]="sources.autocompleteBinding"
+        layout="fields"
+      />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Free text — <code>[forceSelection]="false"</code></h3>
+      <p class="demo-card__meta">
+        For a create-as-you-type flow, where the text itself is the answer. Neither blur nor
+        <kbd>Esc</kbd> touches what was typed — <kbd>Esc</kbd> only closes the panel
+        <app-since version="21.15.0" /> — and <code>value</code> is dropped as soon as the text
+        stops matching, so the two never disagree. Read the text from <code>gogSearch</code>, not
+        from <code>value</code>.
+      </p>
+      <app-demo
+        [component]="examples.freeText"
+        [source]="sources.autocompleteFreeText"
+        layout="fields"
+      />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Reactive forms</h3>
+      <p class="demo-card__meta">
+        <code>errorDisplay="auto"</code> shows the error once the control is touched and invalid:
+        focus the field and leave it without picking. Text that matches no option leaves the value
+        <code>null</code>, so a required field stays invalid however full the box looks — the point
+        of <code>forceSelection</code> being on.
+      </p>
+      <app-demo [component]="examples.forms" [source]="sources.autocompleteForms" layout="fields" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Float label</h3>
+      <p class="demo-card__meta">
+        <code>'none'</code> keeps the label above the field; <code>'in'</code>,
+        <code>'on'</code> and <code>'over'</code> rest it inside until focus or a value moves it
+        clear — each shown empty, then holding a value.
+        <code>floatLabelShowPlaceholder</code> brings the placeholder back once the label has
+        floated.
+      </p>
+      <app-demo
+        [component]="examples.floatLabel"
+        [source]="sources.autocompleteFloatLabel"
+        layout="fields"
+      />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">App-wide defaults — <code>GOG_CONFIG</code></h3>
+      <p class="demo-card__meta">
+        <code>control.size</code> and the <code>autocomplete</code> keys set the defaults for every
+        field under the provider; an instance's own input still wins. Here the second field opens
+        only after two letters, and the third reports one query a second. In an app the provider
+        goes in <code>app.config.ts</code> — see
+        <a routerLink="/general/global-config">Global Configuration</a>.
+      </p>
+      <app-demo
+        [component]="examples.config"
+        [source]="sources.autocompleteConfig"
+        layout="fields"
+      />
+    </article>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="server" class="doc-section__title font-heading">Searching, and a server behind it</h2>
+    <p class="doc-section__intro">
+      <strong><code>openOnFocus</code></strong> — on by default — opens the panel with the whole
+      list the moment the field is focused, before <code>minLength</code> would have let anything
+      through; for a short, known list that is the difference between a combobox and a text field
+      the user has to guess at. Off, nothing opens until enough has been typed. Focus each field
+      without typing, then type one letter:
+    </p>
+    <div class="demo-card">
+      <app-demo
+        [component]="examples.openOnFocus"
+        [source]="sources.autocompleteOpenOnFocus"
+        layout="fields"
+      />
+    </div>
+
+    <p class="doc-section__intro">
+      <code>gogSearch</code> is debounced — <code>searchDebounce</code>, 300 ms by default — so a
+      lookup fires once the typing settles. Type a word at speed into each and compare the counters:
+      <code>0</code> emits on every keystroke, which a local source can afford and a server-backed
+      one cannot.
+    </p>
+    <div class="demo-card">
+      <app-demo
+        [component]="examples.debounce"
+        [source]="sources.autocompleteDebounce"
+        layout="fields"
+      />
+    </div>
+
+    <p class="doc-section__intro">
+      A server-backed field is three inputs: <code>(gogSearch)</code> runs the lookup,
+      <code>[loading]</code> shows it is running, and <code>[filterLocal]="false"</code> stops the
+      answer being filtered a second time. That last one is the bug worth naming: the server matched
+      on fields this component cannot see, so filtering its reply against the same query silently
+      drops rows. This lookup also matches the country — type <code>germany</code>.
+    </p>
+    <div class="demo-card">
+      <app-demo
+        [component]="examples.server"
+        [source]="sources.autocompleteServer"
+        layout="fields"
+      />
+    </div>
+
+    <p class="doc-section__intro">
+      <code>gogLoadMore</code> fires when the panel is scrolled to its end — the signal to fetch and
+      append the next page rather than handing every row over up front. Open the panel and scroll to
+      the bottom:
+    </p>
+    <div class="demo-card">
+      <app-demo
+        [component]="examples.loadMore"
+        [source]="sources.autocompleteLoadMore"
+        layout="fields"
+      />
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="panel" class="doc-section__title font-heading">
+      The panel — <code>appendToBody</code>
+    </h2>
+    <p class="doc-section__intro">
+      The panel renders inline by default and is clipped by any scrolling or
+      <code>overflow: hidden</code> ancestor. <code>appendToBody</code> moves it into
+      <code>&lt;body&gt;</code> and positions it against the trigger. Type in the first two: only
+      the appended one survives its box. <code>dropdownWidth</code> and
+      <code>dropdownMaxHeight</code> take any CSS length and apply only while the panel is appended
+      — an inline panel matches the trigger.
+    </p>
+    <div class="demo-card">
+      <app-demo
+        [component]="examples.appendToBody"
+        [source]="sources.autocompleteAppendToBody"
+        layout="fields"
+      />
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="virtualize" class="doc-section__title font-heading">
+      Virtualized options — <code>virtualize</code>
+    </h2>
+    <p class="doc-section__intro">
+      <code>virtualize</code> renders only the rows in view. Both fields hold the same 10&nbsp;000
+      options: unwindowed, that is 10&nbsp;000 DOM rows to show about six — measured in Chrome,
+      <strong>512&nbsp;ms</strong> before the panel appears, against <strong>21&nbsp;ms</strong>
+      windowed. The scrollbar looks the same either way, because spacers stand in for the rows that
+      are not there.
+    </p>
+    <div class="demo-card">
+      <app-demo
+        [component]="examples.virtualize"
+        [source]="sources.autocompleteVirtualize"
+        layout="fields"
+      />
+    </div>
+    <p class="doc-section__intro">
+      <strong>Off by default, and never switched on at some row count.</strong> A windowed list
+      behaves differently in ways nothing about the data predicts: <code>Ctrl+F</code> finds only
+      the rendered rows, and CSS targeting <code>:last-child</code> matches the last rendered one.
+      Set it per field, or app-wide with <code>GOG_CONFIG.dropdown.virtualize</code>.
+      <code>aria-setsize</code> and <code>aria-posinset</code> keep the announced count real, and
+      the arrows walk the whole list — <kbd>End</kbd> reaches the last option. Focus never moves,
+      which is how this differs from the select: a combobox keeps focus in its input.
+      <code>gogLoadMore</code> is not a substitute and the two compose — that one keeps the records
+      the <em>server</em> sends small, this one the rows the <em>browser</em> builds.
+    </p>
   </section>
 
   <section class="doc-section">
     <h2 id="accessibility" class="doc-section__title font-heading">Accessibility</h2>
     <p class="doc-section__intro">
-      The <code>&lt;input&gt;</code> keeps DOM focus the whole time and the highlighted suggestion
-      is pointed at with <code>aria-activedescendant</code> — where a listbox would move focus onto
-      the option itself. That is the difference that makes this a combobox rather than a select, and
-      it is why typing keeps working while the panel is open.
-    </p>
-    <p class="doc-section__intro">
-      Arrow keys move the highlight, Enter picks it, Escape closes the panel. Give the field a
-      <code>label</code> or an <code>ariaLabel</code>; use <code>inputId</code> if you are wiring
-      your own <code>&lt;label for="…"&gt;</code>.
-    </p>
-  </section>
-
-  <section class="doc-section">
-    <h2 id="virtualize" class="doc-section__title font-heading">
-      Virtualized options — <code>virtualize</code> <app-since version="21.13.0" />
-    </h2>
-    <p class="doc-section__intro">
-      <code>[virtualize]="true"</code> renders only the rows in view. Unwindowed, 10&nbsp;000
-      options build 10&nbsp;000 DOM rows to show about six — measured in Chrome,
-      <strong>512&nbsp;ms</strong> before the panel appears, against
-      <strong>21&nbsp;ms</strong> windowed on the same data. The scrollbar looks the same either
-      way, because spacers stand in for the rows that are not there.
-    </p>
-    <div class="demo-card">
-      <p class="demo-card__meta">
-        10&nbsp;000 cities. Focus the field and scroll the panel, or press End.
-      </p>
-      <div class="demo-card__preview size-column">
-        <gog-autocomplete label="City" [options]="manyCities" [virtualize]="true" />
-      </div>
-      <app-code-tabs [html]="virtualizeHtml" [ts]="virtualizeTs" />
-    </div>
-    <p class="doc-section__intro">
-      <strong>Off by default, and never switched on at some row count.</strong> A windowed list
-      behaves differently in ways nothing about the data predicts: <code>Ctrl+F</code> finds only
-      the rendered rows, and CSS targeting <code>:last-child</code> matches the last
-      <em>rendered</em> row. A threshold would make that depend on how much data happened to arrive,
-      so set it per field, or app-wide with <code>GOG_CONFIG.dropdown.virtualize</code>.
+      The trigger is a real <code>&lt;input role="combobox"&gt;</code>. DOM focus never leaves it:
+      the highlighted row is pointed at with <code>aria-activedescendant</code> rather than being
+      focused, which is what makes this a combobox rather than a select, and why typing keeps
+      working while the panel is open. The rows are <code>role="option"</code> and are never tab
+      stops.
     </p>
     <ul class="doc-section__intro">
       <li>
-        <strong>The announced count stays honest:</strong> the <code>aria-setsize</code> and
-        <code>aria-posinset</code> carry the real list, so a screen reader hears "10&nbsp;000 items"
-        rather than "20". Arrow keys walk the whole list — End reaches the last option.
+        <strong>Keyboard</strong> — the arrows highlight, <kbd>Home</kbd>/<kbd>End</kbd> jump to the
+        ends, <kbd>Enter</kbd> picks the highlighted row (and does nothing when there is none),
+        <kbd>Esc</kbd> closes the panel, <kbd>Tab</kbd> closes and moves on.
       </li>
       <li>
-        <strong>Focus never moves</strong>, which is the one way this differs from the select and
-        the multiselect. Their windowed lists hand focus back to the trigger when a focused row
-        scrolls away; a combobox keeps focus in its input the whole time, so there is nothing to
-        hand back.
+        <strong>Name</strong> — <code>label</code>, or <code>ariaLabel</code>; use
+        <code>inputId</code> to wire your own <code>&lt;label for&gt;</code>.
       </li>
       <li>
-        <strong><code>gog-table</code>'s <code>virtualize</code> is a different story</strong> under
-        the same name: table rows vary in height, so it measures as it goes — see the
-        <a routerLink="/components/table" fragment="virtualize">Table page</a>.
+        <strong>Error</strong> — <code>errorMessage</code> sets <code>aria-invalid="true"</code> and
+        an <code>aria-describedby</code> pointing at the message.
+      </li>
+      <li>
+        <strong>Loading</strong> — the spinner is <code>aria-hidden</code>, so the host carries
+        <code>aria-busy</code> while <code>loading</code> is on.
+      </li>
+      <li>
+        <strong>Clear button</strong> — named by <code>clearAriaLabel</code>, or
+        <code>GOG_CONFIG.labels.clearSelection</code>.
       </li>
     </ul>
-    <p class="doc-section__intro">
-      <strong>Not the same thing as <code>gogLoadMore</code>, and the two compose.</strong> The
-      <a routerLink="." fragment="server">server-backed suggestions</a> above keep the number of
-      records the <em>server</em> sends small; <code>virtualize</code> keeps the number of rows the
-      <em>browser</em> builds small. A <code>gogLoadMore</code> list that has loaded 10&nbsp;000
-      records still stamps 10&nbsp;000 rows without it — neither implies the other, and a list long
-      enough to want one usually wants both.
-    </p>
   </section>
 
   <section class="doc-section">
     <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
 
     <h3 class="doc-section__subtitle">Inputs — autocomplete's own</h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Default</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of apiInputs; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-                @if (row.since) {
-                  <app-since [version]="row.since" />
-                }
-              </td>
-              <td>
-                <code>{{ row.type }}</code>
-              </td>
-              <td>
-                <code>{{ row.default }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="apiInputs" kind="inputs" />
 
     <h3 class="doc-section__subtitle">Inputs — shared with Select</h3>
     <p class="doc-section__intro">
-      These come from <code>GogDropdownBase</code> and behave exactly as they do on
+      These come from <code>GogDropdownBase</code> and behave as they do on
       <a routerLink="/components/select">Select</a>. The exception is the panel's search box: an
-      autocomplete's trigger already <em>is</em> the search box, so the panel never gets a second
-      one, and the four inputs that configure it are deprecated here (below).
-      <code>filterMatch</code> still applies, since it plugs into <code>filterLocal</code>'s own
-      matching rather than the panel's search box.
+      autocomplete's trigger already <em>is</em> the search box, so the four inputs that configure
+      it are deprecated here (below). <code>filterMatch</code> still applies, since it plugs into
+      <code>filterLocal</code>'s own matching.
     </p>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Default</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of sharedInputs; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-                @if (row.since) {
-                  <app-since [version]="row.since" />
-                }
-              </td>
-              <td>
-                <code>{{ row.type }}</code>
-              </td>
-              <td>
-                <code>{{ row.default }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="sharedInputs" kind="inputs" />
 
     @if (deprecatedInputs.length > 0) {
       <h3 id="deprecated" class="doc-section__subtitle">Deprecated inputs</h3>
@@ -311,93 +390,14 @@
         bindings. Read from <code>GOG_DEPRECATIONS</code> in the installed package, so this table
         empties itself once they are gone.
       </p>
-      <div class="api-table-scroll">
-        <table class="api-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Instead</th>
-              <th>Deprecated</th>
-              <th>Removed in</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (row of deprecatedInputs; track row.name) {
-              <tr>
-                <td>
-                  <code>{{ row.name }}</code>
-                </td>
-                <td>{{ row.replacement }}</td>
-                <td>{{ row.since }} ({{ row.sinceDate }})</td>
-                <td>{{ row.removedIn }}</td>
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>
+      <app-api-table [rows]="deprecatedInputs" kind="deprecations" />
     }
 
     <h3 class="doc-section__subtitle">Outputs</h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Payload</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of apiOutputs; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-                @if (row.since) {
-                  <app-since [version]="row.since" />
-                }
-              </td>
-              <td>
-                <code>{{ row.type }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="apiOutputs" kind="outputs" />
 
     <h3 class="doc-section__subtitle">Content slots</h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Directive</th>
-            <th>Context</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              <code>gogDropdownOption</code>
-            </td>
-            <td>
-              <code>{{ '$' }}implicit, selected, disabled, label</code>
-            </td>
-            <td>Replaces one suggestion row.</td>
-          </tr>
-          <tr>
-            <td><code>[gogDropdownOptionTypeOf]</code> <app-since version="21.15.0" /></td>
-            <td><code>readonly TOption[]</code> — an input on <code>gogDropdownOption</code></td>
-            <td>
-              Bind the same array as <code>options</code> and <code>{{ '$' }}implicit</code> is
-              typed as its element instead of <code>unknown</code>. Never read at runtime; left
-              unbound, the template compiles exactly as before.
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="apiSlots" kind="slots" />
   </section>
 
   <app-global-config-note component="autocomplete" />
@@ -410,25 +410,6 @@
       <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
       <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
     </p>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Token</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of styleTokens; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="styleTokens" kind="tokens" />
   </section>
 </div>

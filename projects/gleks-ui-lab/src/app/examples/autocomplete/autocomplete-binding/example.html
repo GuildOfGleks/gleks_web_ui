@@ -1,0 +1,11 @@
+<div>
+  <gog-autocomplete
+    label="City"
+    placeholder="Search cities"
+    [options]="cities"
+    clearable
+    [(value)]="city"
+    (valueChange)="changes.update((n) => n + 1)"
+  />
+  <code>value: {{ city() ?? 'null' }} · {{ changes() }} valueChange</code>
+</div>

@@ -1,0 +1,13 @@
+<div>
+  <gog-autocomplete
+    label="City"
+    placeholder="Type at least 2 characters"
+    [options]="results()"
+    [filterLocal]="false"
+    [loading]="loading()"
+    [minLength]="2"
+    clearable
+    (gogSearch)="search($event)"
+  />
+  <code>last query: "{{ query() }}" · {{ results().length }} result(s)</code>
+</div>

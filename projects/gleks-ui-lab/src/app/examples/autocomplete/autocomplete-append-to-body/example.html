@@ -1,0 +1,21 @@
+<!-- The box clips its content, as an overflow: hidden card or a scroller does. -->
+<div style="overflow: hidden; padding: 12px; border: 1px dashed var(--gog-border-color)">
+  <gog-autocomplete label="Inline panel (clipped)" [options]="cities" dropdownDirection="down" />
+</div>
+<div style="overflow: hidden; padding: 12px; border: 1px dashed var(--gog-border-color)">
+  <gog-autocomplete
+    label="appendToBody (escapes)"
+    [options]="cities"
+    dropdownDirection="down"
+    appendToBody
+  />
+</div>
+<div>
+  <gog-autocomplete
+    label="Panel 240px wide, 160px tall"
+    [options]="cities"
+    appendToBody
+    dropdownWidth="240px"
+    dropdownMaxHeight="160px"
+  />
+</div>

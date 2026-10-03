@@ -1,0 +1,22 @@
+<div>
+  <gog-autocomplete
+    label="City (reactive form)"
+    placeholder="Search cities"
+    [options]="cities"
+    [formControl]="control"
+    errorMessage="Pick a city from the list"
+    errorDisplay="auto"
+  />
+  <div>
+    <gog-button variant="outline" size="sm" (gogClick)="control.markAsTouched()">
+      markAsTouched()
+    </gog-button>
+    <gog-button variant="outline" size="sm" (gogClick)="toggleDisabled()">
+      {{ control.disabled ? 'enable()' : 'disable()' }}
+    </gog-button>
+  </div>
+  <code>
+    value: {{ control.value ?? 'null' }} · touched: {{ control.touched }} · disabled:
+    {{ control.disabled }}
+  </code>
+</div>

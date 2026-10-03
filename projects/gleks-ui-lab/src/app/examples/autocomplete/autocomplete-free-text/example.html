@@ -1,0 +1,12 @@
+<!-- forceSelection off: the text itself is the answer; read it from gogSearch. -->
+<div>
+  <gog-autocomplete
+    label="Tag"
+    placeholder="Pick one or invent one"
+    [options]="cities"
+    [forceSelection]="false"
+    (gogSearch)="draft.set($event)"
+    (valueChange)="changes.update((n) => n + 1)"
+  />
+  <code>gogSearch: "{{ draft() }}" · {{ changes() }} valueChange</code>
+</div>

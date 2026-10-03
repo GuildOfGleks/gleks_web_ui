@@ -1,0 +1,6 @@
+<gog-autocomplete label="Value unset" placeholder="Search cities" [options]="cities" />
+<gog-autocomplete label="Value set" [options]="cities" [value]="4" />
+<gog-autocomplete label="Disabled" [options]="cities" [value]="4" disabled />
+<gog-autocomplete label="Error" [options]="cities" errorMessage="Pick a city" />
+<!-- A spinner in the trailing slot while a source is still fetching. -->
+<gog-autocomplete label="Loading" [options]="cities" loading />

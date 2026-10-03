@@ -1,29 +1,33 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import {
-  AutocompleteComponent,
-  GOG_DEPRECATIONS,
-  GogDropdownOptionDirective,
-} from '@guildofgleks/ui';
-import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
+import { GOG_DEPRECATIONS } from '@guildofgleks/ui';
+import { ApiTableComponent, type ApiRow } from '../../shared/api-table/api-table';
+import { DemoComponent } from '../../shared/demo/demo';
 import { GlobalConfigNote } from '../../shared/global-config-note/global-config-note';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
-
-interface ApiRow {
-  readonly name: string;
-  readonly type: string;
-  readonly default: string;
-  readonly description: string;
-  readonly since?: string;
-}
-
-interface City {
-  readonly id: number;
-  readonly name: string;
-  readonly country: string;
-}
+import { AUTOCOMPLETE_EXAMPLES } from '../../../examples/autocomplete/sources.generated';
+import { AutocompleteAccessorsExample } from '../../../examples/autocomplete/autocomplete-accessors/example';
+import { AutocompleteAppendToBodyExample } from '../../../examples/autocomplete/autocomplete-append-to-body/example';
+import { AutocompleteAriaLabelExample } from '../../../examples/autocomplete/autocomplete-aria-label/example';
+import { AutocompleteBindingExample } from '../../../examples/autocomplete/autocomplete-binding/example';
+import { AutocompleteClearableExample } from '../../../examples/autocomplete/autocomplete-clearable/example';
+import { AutocompleteConfigExample } from '../../../examples/autocomplete/autocomplete-config/example';
+import { AutocompleteDebounceExample } from '../../../examples/autocomplete/autocomplete-debounce/example';
+import { AutocompleteDisabledOptionExample } from '../../../examples/autocomplete/autocomplete-disabled-option/example';
+import { AutocompleteFilterMatchExample } from '../../../examples/autocomplete/autocomplete-filter-match/example';
+import { AutocompleteFloatLabelExample } from '../../../examples/autocomplete/autocomplete-float-label/example';
+import { AutocompleteFormsExample } from '../../../examples/autocomplete/autocomplete-forms/example';
+import { AutocompleteFreeTextExample } from '../../../examples/autocomplete/autocomplete-free-text/example';
+import { AutocompleteLoadMoreExample } from '../../../examples/autocomplete/autocomplete-load-more/example';
+import { AutocompleteOpenOnFocusExample } from '../../../examples/autocomplete/autocomplete-open-on-focus/example';
+import { AutocompleteOverviewExample } from '../../../examples/autocomplete/autocomplete-overview/example';
+import { AutocompleteServerExample } from '../../../examples/autocomplete/autocomplete-server/example';
+import { AutocompleteSizesExample } from '../../../examples/autocomplete/autocomplete-sizes/example';
+import { AutocompleteStatesExample } from '../../../examples/autocomplete/autocomplete-states/example';
+import { AutocompleteVirtualizeExample } from '../../../examples/autocomplete/autocomplete-virtualize/example';
+import { AutocompleteWidthExample } from '../../../examples/autocomplete/autocomplete-width/example';
 
 const OWN_INPUTS: readonly ApiRow[] = [
   {
@@ -102,13 +106,6 @@ const OWN_INPUTS: readonly ApiRow[] = [
     since: '21.13.0',
   },
 ];
-
-/** Long enough that the difference is the point: 10 000 rows to show about six. */
-const MANY_CITIES: City[] = Array.from({ length: 10_000 }, (_, i) => ({
-  id: i + 1,
-  name: `City ${(i + 1).toLocaleString('en-US')}`,
-  country: ['Netherlands', 'Belgium', 'France', 'Germany'][i % 4],
-}));
 
 /**
  * The panel-search-box inputs this control inherits and deprecated in 21.15.0. Matched by name
@@ -197,13 +194,11 @@ const API_OUTPUTS: readonly ApiRow[] = [
   {
     name: 'gogSearch',
     type: 'string',
-    default: '—',
     description: 'The current query, debounced. Wire a server-side lookup to this.',
   },
   {
     name: 'gogLoadMore',
     type: 'void',
-    default: '—',
     description:
       'The panel was scrolled to the end. Fetch the next page and append it to options — this is how a large or server-backed option source is paged without a virtual scroller.',
     since: '21.3.1',
@@ -211,42 +206,32 @@ const API_OUTPUTS: readonly ApiRow[] = [
   {
     name: 'valueChange',
     type: 'TValue',
-    default: '—',
     description: 'Emitted when the selection changes. Comes from the value model input.',
   },
 ];
 
-const CITIES: City[] = [
-  { id: 1, name: 'Amsterdam', country: 'Netherlands' },
-  { id: 2, name: 'Antwerp', country: 'Belgium' },
-  { id: 3, name: 'Athens', country: 'Greece' },
-  { id: 4, name: 'Barcelona', country: 'Spain' },
-  { id: 5, name: 'Belgrade', country: 'Serbia' },
-  { id: 6, name: 'Berlin', country: 'Germany' },
-  { id: 7, name: 'Bratislava', country: 'Slovakia' },
-  { id: 8, name: 'Bucharest', country: 'Romania' },
-  { id: 9, name: 'Budapest', country: 'Hungary' },
-  { id: 10, name: 'Copenhagen', country: 'Denmark' },
-  { id: 11, name: 'Dublin', country: 'Ireland' },
-  { id: 12, name: 'Kyiv', country: 'Ukraine' },
-  { id: 13, name: 'Lisbon', country: 'Portugal' },
-  { id: 14, name: 'Ljubljana', country: 'Slovenia' },
-  { id: 15, name: 'Prague', country: 'Czechia' },
-  { id: 16, name: 'Riga', country: 'Latvia' },
-  { id: 17, name: 'Stockholm', country: 'Sweden' },
-  { id: 18, name: 'Vienna', country: 'Austria' },
-  { id: 19, name: 'Warsaw', country: 'Poland' },
-  { id: 20, name: 'Zagreb', country: 'Croatia' },
+const API_SLOTS: readonly ApiRow[] = [
+  {
+    name: 'gogDropdownOption',
+    type: '$implicit, selected, disabled, label',
+    description: 'Replaces one suggestion row.',
+  },
+  {
+    name: '[gogDropdownOptionTypeOf]',
+    type: 'readonly TOption[] — an input on gogDropdownOption',
+    description:
+      'Bind the same array as options and $implicit is typed as its element instead of unknown. Never read at runtime; left unbound, the template compiles exactly as before.',
+    since: '21.15.0',
+  },
 ];
 
 @Component({
   selector: 'app-autocomplete-doc-page',
   imports: [
-    AutocompleteComponent,
-    GogDropdownOptionDirective,
+    ApiTableComponent,
+    DemoComponent,
     GlobalConfigNote,
     MarkdownComponent,
-    CodeTabsComponent,
     RouterLink,
     SinceBadgeComponent,
   ],
@@ -255,242 +240,45 @@ const CITIES: City[] = [
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AutocompleteDocPage {
-  protected readonly cities = CITIES;
-  protected readonly manyCities = MANY_CITIES;
-
-  protected readonly virtualizeHtml =
-    '<gog-autocomplete label="City" [options]="cities" [virtualize]="true" />';
-  protected readonly virtualizeTs = [
-    "import { Component } from '@angular/core';",
-    "import { AutocompleteComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [AutocompleteComponent],',
-    '  template: `/* as in the HTML tab */`,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly cities = Array.from({ length: 10_000 }, (_, i) => ({',
-    '    id: i + 1,',
-    '    name: `City ${i + 1}`,',
-    '  }));',
-    '}',
-  ].join('\n');
-
-  protected readonly city = signal<number | null>(null);
-  protected readonly cityObject = signal<City | null>(null);
-  protected readonly slotCity = signal<number | null>(null);
-  protected readonly freeText = signal<number | null>(null);
-  protected readonly lastQuery = signal('');
-  protected readonly serverLoading = signal(false);
-  protected readonly serverResults = signal<City[]>([]);
-
   protected readonly apiInputs = OWN_INPUTS;
   protected readonly sharedInputs = SHARED_INPUTS;
   protected readonly apiOutputs = API_OUTPUTS;
-  protected readonly deprecatedInputs = GOG_DEPRECATIONS.filter(
+  protected readonly apiSlots = API_SLOTS;
+  protected readonly deprecatedInputs: readonly ApiRow[] = GOG_DEPRECATIONS.filter(
     (entry) => entry.kind === 'symbol' && DEPRECATED_INPUT_NAMES.has(entry.name),
-  );
+  ).map((entry) => ({
+    name: entry.name,
+    type: `${entry.since} (${entry.sinceDate})`,
+    default: entry.removedIn,
+    description: entry.replacement,
+  }));
   protected readonly styleTokens =
     TOKEN_SECTIONS.find((section) => section.id === 'autocomplete')?.tokens ?? [];
 
+  protected readonly sources = AUTOCOMPLETE_EXAMPLES;
+  protected readonly examples = {
+    overview: AutocompleteOverviewExample,
+    sizes: AutocompleteSizesExample,
+    states: AutocompleteStatesExample,
+    clearable: AutocompleteClearableExample,
+    width: AutocompleteWidthExample,
+    ariaLabel: AutocompleteAriaLabelExample,
+    accessors: AutocompleteAccessorsExample,
+    disabledOption: AutocompleteDisabledOptionExample,
+    filterMatch: AutocompleteFilterMatchExample,
+    binding: AutocompleteBindingExample,
+    freeText: AutocompleteFreeTextExample,
+    forms: AutocompleteFormsExample,
+    floatLabel: AutocompleteFloatLabelExample,
+    config: AutocompleteConfigExample,
+    openOnFocus: AutocompleteOpenOnFocusExample,
+    debounce: AutocompleteDebounceExample,
+    server: AutocompleteServerExample,
+    loadMore: AutocompleteLoadMoreExample,
+    appendToBody: AutocompleteAppendToBodyExample,
+    virtualize: AutocompleteVirtualizeExample,
+  };
+
   protected readonly importSnippet =
     "```typescript\nimport { AutocompleteComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [AutocompleteComponent],\n})\n```";
-
-  protected readonly overviewHtml = [
-    '<gog-autocomplete',
-    '  label="City"',
-    '  placeholder="Start typing…"',
-    '  [options]="cities"',
-    '  [(value)]="city"',
-    '/>',
-  ].join('\n');
-  protected readonly overviewTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { AutocompleteComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [AutocompleteComponent],',
-    '  template: `',
-    '    <gog-autocomplete',
-    '      label="City"',
-    '      placeholder="Start typing…"',
-    '      [options]="cities"',
-    '      [(value)]="city"',
-    '    />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly cities = [',
-    "    { id: 1, name: 'Amsterdam', country: 'Netherlands' },",
-    "    { id: 2, name: 'Berlin', country: 'Germany' },",
-    '    // …',
-    '  ];',
-    '  protected readonly city = signal<number | null>(null);',
-    '}',
-  ].join('\n');
-
-  protected readonly serverHtml = [
-    '<gog-autocomplete',
-    '  label="City"',
-    '  [options]="results()"',
-    '  [loading]="loading()"',
-    '  [filterLocal]="false"',
-    '  [searchDebounce]="300"',
-    '  [minLength]="2"',
-    '  (gogSearch)="search($event)"',
-    '  [(value)]="city"',
-    '/>',
-  ].join('\n');
-  protected readonly serverTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { AutocompleteComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [AutocompleteComponent],',
-    '  template: `',
-    '    <gog-autocomplete',
-    '      [options]="results()"',
-    '      [loading]="loading()"',
-    '      [filterLocal]="false"',
-    '      (gogSearch)="search($event)"',
-    '      [(value)]="city"',
-    '    />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly results = signal<City[]>([]);',
-    '  protected readonly loading = signal(false);',
-    '',
-    '  // gogSearch is already debounced by searchDebounce (300 ms by default).',
-    '  protected search(query: string): void {',
-    '    this.loading.set(true);',
-    '    this.api.findCities(query).subscribe((cities) => {',
-    '      this.results.set(cities);',
-    '      this.loading.set(false);',
-    '    });',
-    '  }',
-    '}',
-  ].join('\n');
-
-  protected readonly dtoHtml = [
-    '<!-- optionValue="null" hands back the option object itself, not an id. -->',
-    '<gog-autocomplete',
-    '  label="City"',
-    '  optionLabel="name"',
-    '  [optionValue]="null"',
-    '  [options]="cities"',
-    '  [(value)]="cityObject"',
-    '/>',
-  ].join('\n');
-  protected readonly dtoTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { AutocompleteComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [AutocompleteComponent],',
-    '  template: `',
-    '    <gog-autocomplete',
-    '      optionLabel="name"',
-    '      [optionValue]="null"',
-    '      [options]="cities"',
-    '      [(value)]="cityObject"',
-    '    />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  // The same object reference you passed in comes back out.',
-    '  protected readonly cityObject = signal<City | null>(null);',
-    '}',
-  ].join('\n');
-
-  protected readonly slotHtml = [
-    '<gog-autocomplete label="City" [options]="cities" [(value)]="slotCity">',
-    '  <ng-template gogDropdownOption [gogDropdownOptionTypeOf]="cities" let-option let-label="label">',
-    '    <strong>{{ label }}</strong>',
-    '    <small>{{ option.country }}</small>',
-    '  </ng-template>',
-    '</gog-autocomplete>',
-  ].join('\n');
-  protected readonly slotTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { AutocompleteComponent, GogDropdownOptionDirective } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [AutocompleteComponent, GogDropdownOptionDirective],',
-    '  template: `',
-    '    <gog-autocomplete label="City" [options]="cities" [(value)]="slotCity">',
-    '      <!-- [gogDropdownOptionTypeOf] types `option` as a City. -->',
-    '      <ng-template',
-    '        gogDropdownOption',
-    '        [gogDropdownOptionTypeOf]="cities"',
-    '        let-option',
-    '        let-label="label"',
-    '      >',
-    '        <strong>{{ label }}</strong>',
-    '        <small>{{ option.country }}</small>',
-    '      </ng-template>',
-    '    </gog-autocomplete>',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly cities: readonly City[] = [/* ... */];',
-    '  protected readonly slotCity = signal<number | null>(null);',
-    '}',
-  ].join('\n');
-
-  protected readonly freeTextHtml = [
-    '<!-- forceSelection="false": what was typed is itself meaningful. -->',
-    '<gog-autocomplete',
-    '  label="Tag"',
-    '  [forceSelection]="false"',
-    '  [options]="cities"',
-    '  (gogSearch)="draft.set($event)"',
-    '  [(value)]="freeText"',
-    '/>',
-  ].join('\n');
-  protected readonly freeTextTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { AutocompleteComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [AutocompleteComponent],',
-    '  template: `',
-    '    <gog-autocomplete',
-    '      [forceSelection]="false"',
-    '      [options]="cities"',
-    '      (gogSearch)="draft.set($event)"',
-    '      [(value)]="freeText"',
-    '    />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  // With forceSelection off, read what the user typed from gogSearch, not from value.',
-    "  protected readonly draft = signal('');",
-    '}',
-  ].join('\n');
-
-  /** Stands in for a server lookup so the demo can show `loading` and `filterLocal="false"`. */
-  protected search(query: string): void {
-    this.lastQuery.set(query);
-    this.serverLoading.set(true);
-    const needle = query.trim().toLowerCase();
-    setTimeout(() => {
-      this.serverResults.set(
-        needle
-          ? CITIES.filter(
-              (city) =>
-                city.name.toLowerCase().includes(needle) ||
-                city.country.toLowerCase().includes(needle),
-            )
-          : [],
-      );
-      this.serverLoading.set(false);
-    }, 400);
-  }
 }

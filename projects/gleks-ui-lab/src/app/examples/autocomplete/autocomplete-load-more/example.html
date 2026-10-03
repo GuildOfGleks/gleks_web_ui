@@ -1,0 +1,10 @@
+<div>
+  <gog-autocomplete
+    label="Contact"
+    placeholder="Scroll to load more"
+    [options]="contacts()"
+    [loading]="loading()"
+    (gogLoadMore)="loadMore()"
+  />
+  <code>loaded: {{ contacts().length }} / {{ total }}</code>
+</div>

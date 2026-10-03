@@ -1,0 +1,17 @@
+<div>
+  <gog-autocomplete
+    label="Default (300 ms)"
+    [options]="cities"
+    (gogSearch)="record('slow', $event)"
+  />
+  <code>{{ searches().slow }} gogSearch · last: "{{ last().slow }}"</code>
+</div>
+<div>
+  <gog-autocomplete
+    label='[searchDebounce]="0"'
+    [options]="cities"
+    [searchDebounce]="0"
+    (gogSearch)="record('eager', $event)"
+  />
+  <code>{{ searches().eager }} gogSearch · last: "{{ last().eager }}"</code>
+</div>

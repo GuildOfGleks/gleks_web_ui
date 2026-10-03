@@ -1,0 +1,9 @@
+<gog-autocomplete label="Berlin selected" [options]="cities" clearable [value]="4" />
+<gog-autocomplete label="Clearable and loading" [options]="cities" clearable loading [value]="4" />
+<!-- Type two letters: the clear button watches the text, not the selection. -->
+<gog-autocomplete
+  label="Nothing selected"
+  placeholder="Type two letters"
+  [options]="cities"
+  clearable
+/>

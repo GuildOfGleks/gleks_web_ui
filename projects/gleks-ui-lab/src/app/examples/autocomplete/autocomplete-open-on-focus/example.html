@@ -1,0 +1,9 @@
+<gog-autocomplete label="Default: opens on focus" [options]="cities" />
+<gog-autocomplete label='[openOnFocus]="false"' [options]="cities" [openOnFocus]="false" />
+<gog-autocomplete
+  label='[minLength]="3", no openOnFocus'
+  placeholder="Three letters"
+  [options]="cities"
+  [minLength]="3"
+  [openOnFocus]="false"
+/>

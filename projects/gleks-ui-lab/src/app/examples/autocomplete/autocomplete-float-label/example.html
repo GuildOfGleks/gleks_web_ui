@@ -1,0 +1,23 @@
+@for (variant of variants; track variant) {
+  <gog-autocomplete
+    [floatLabel]="variant"
+    [label]="'floatLabel: ' + variant"
+    placeholder="e.g. Berlin"
+    [options]="cities"
+  />
+  <gog-autocomplete
+    [floatLabel]="variant"
+    [label]="'floatLabel: ' + variant"
+    [options]="cities"
+    [value]="4"
+  />
+}
+
+<!-- The placeholder shows under the floated label once it has somewhere to float to. -->
+<gog-autocomplete
+  floatLabel="over"
+  floatLabelShowPlaceholder
+  label="floatLabelShowPlaceholder"
+  placeholder="e.g. Berlin"
+  [options]="cities"
+/>

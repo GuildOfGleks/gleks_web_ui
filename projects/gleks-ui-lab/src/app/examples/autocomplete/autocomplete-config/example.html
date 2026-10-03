@@ -1,0 +1,10 @@
+<gog-autocomplete label="Size from the config (lg)" [options]="cities" />
+<gog-autocomplete label="Focus, then type two letters" [options]="cities" />
+<div>
+  <gog-autocomplete
+    label="One query a second"
+    [options]="cities"
+    (gogSearch)="searches.update((n) => n + 1)"
+  />
+  <code>{{ searches() }} gogSearch</code>
+</div>
