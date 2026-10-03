@@ -67,14 +67,14 @@ const API_INPUTS: readonly ApiInputRow[] = [
     type: 'boolean',
     default: 'false',
     description:
-      'Shows a spinner in place of the label and blocks activation. Uses aria-disabled rather than the native disabled attribute, so the button stays focusable.',
+      'Shows a spinner in place of the label and blocks activation — including a type="submit" button\'s form submission. Uses aria-disabled rather than the native disabled attribute, so the button stays focusable, and keeps its label in the accessible name (hidden with opacity, not visibility) so it still reads as "Save".',
   },
   {
     name: 'debounce',
     type: 'number',
     default: '300',
     description:
-      'Minimum time, in ms, between accepted clicks. Leading-edge throttle: the first click fires immediately, further clicks are dropped until the window elapses.',
+      'Minimum time, in ms, between accepted clicks. Leading-edge throttle: the first click fires immediately, further clicks are dropped until the window elapses. A dropped click is cancelled, so on a type="submit" button it does not submit the form either.',
   },
   {
     name: 'ariaLabel',
@@ -116,6 +116,14 @@ const API_INPUTS: readonly ApiInputRow[] = [
     since: '21.8.0',
   },
   {
+    name: 'ariaCurrent',
+    type: 'GogAriaCurrent | null',
+    default: 'null',
+    description:
+      "Marks the current item of a set — 'page', 'step', 'location', 'date', 'time', or true — on the inner <button>. Set it on that one button only; null omits the attribute. gog-paginator uses it for its current page.",
+    since: '21.15.0',
+  },
+  {
     name: 'ripple',
     type: 'boolean | undefined',
     default: 'undefined',
@@ -150,7 +158,7 @@ const DIRECTIVE_INPUTS: readonly ApiInputRow[] = [
     name: 'fullWidth',
     type: 'boolean',
     default: 'false',
-    description: 'Stretches the element to fill its container. A bare attribute works.',
+    description: 'Stretches the element to fill its container.',
   },
 ];
 
@@ -391,6 +399,13 @@ export class ButtonDocPage {
     '<gog-button variant="primary" ariaLabel="Confirm">',
     '  <gog-icon name="check" />',
     '</gog-button>',
+    '',
+    '<!-- One height with or without an icon; no margin or &nbsp; beside the icon. -->',
+    '<gog-button variant="outline">',
+    '  <gog-icon name="download" />',
+    '  Export',
+    '</gog-button>',
+    '<gog-button variant="outline">Save</gog-button>',
   ].join('\n');
   protected readonly iconOnlyTs = [
     "import { Component } from '@angular/core';",
@@ -403,6 +418,11 @@ export class ButtonDocPage {
     '    <gog-button variant="primary" ariaLabel="Confirm">',
     '      <gog-icon name="check" />',
     '    </gog-button>',
+    '    <gog-button variant="outline">',
+    '      <gog-icon name="download" />',
+    '      Export',
+    '    </gog-button>',
+    '    <gog-button variant="outline">Save</gog-button>',
     '  `,',
     '})',
     'export class ExampleComponent {}',
