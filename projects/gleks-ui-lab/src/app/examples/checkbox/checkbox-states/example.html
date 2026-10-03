@@ -1,0 +1,11 @@
+@for (size of sizes; track size) {
+  <div>
+    <span>{{ size }}</span>
+    <gog-checkbox [size]="size" label="Off" />
+    <gog-checkbox [size]="size" label="On" [checked]="true" />
+    <!-- indeterminate wins while both are set: the "some of them" state. -->
+    <gog-checkbox [size]="size" label="Mixed" indeterminate />
+    <gog-checkbox [size]="size" label="Disabled" disabled />
+    <gog-checkbox [size]="size" label="Disabled, on" disabled [checked]="true" />
+  </div>
+}

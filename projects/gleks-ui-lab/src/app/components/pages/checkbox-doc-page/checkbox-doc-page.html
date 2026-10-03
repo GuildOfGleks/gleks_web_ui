@@ -13,175 +13,162 @@
     <p class="doc-section__intro">Import the component and drop it into a template.</p>
     <app-markdown [markdown]="importSnippet" />
 
-    <p class="doc-section__intro">Basic usage — a labeled checkbox bound with [(checked)]:</p>
+    <p class="doc-section__intro">
+      Basic usage — a labelled checkbox bound with <code>[(checked)]</code>:
+    </p>
     <div class="demo-card">
-      <div class="demo-card__preview">
-        <gog-checkbox label="I agree" [(checked)]="agreed" />
-      </div>
-      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
+      <app-demo [component]="examples.overview" [source]="sources.checkboxOverview" />
     </div>
-    <p class="doc-section__meta">Checked: {{ agreed() }}</p>
   </section>
 
   <section class="doc-section">
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Sizes</h3>
-      <p class="demo-card__meta">Five size steps, from xsm to slg.</p>
-      <div class="demo-card__preview size-row">
-        @for (sizeOption of sizes; track sizeOption) {
-          <gog-checkbox [size]="sizeOption" [label]="sizeOption" [checked]="true" />
-        }
-      </div>
-      <app-code-tabs [html]="sizesHtml" [ts]="sizesTs" />
-    </article>
-
-    <article class="demo-card">
-      <h3 class="demo-card__title">Indeterminate — select all</h3>
+      <h3 class="demo-card__title">Sizes and states</h3>
       <p class="demo-card__meta">
-        <code>indeterminate</code> is purely presentational: a dash instead of the checkmark, plus
-        <code>aria-checked="mixed"</code>. Drive it yourself from the state of a group, as a "select
-        all" checkbox does here.
+        Off, on, indeterminate, and both disabled, in the five sizes — the box, the tick, the dash
+        and the label scale together. <code>indeterminate</code> and <code>checked</code> are
+        separate inputs and the dash wins while both are set. The lengths come from the shared
+        <code>--gog-control-checkbox-*</code> scale that
+        <a routerLink="/components/radio-group">gog-radio-group</a> reads too, which is why a
+        checkbox and a radio line up on a form.
       </p>
-      <div class="demo-card__preview checkbox-doc__select-all">
-        <gog-checkbox
-          label="Select all"
-          [checked]="allChecked()"
-          [indeterminate]="parentIndeterminate()"
-          (checkedChange)="setAll($event)"
-        />
-        <div class="checkbox-doc__group">
-          @for (item of subscriptions(); track item.id) {
-            <gog-checkbox
-              [label]="item.label"
-              [checked]="item.checked"
-              (checkedChange)="setOne(item.id, $event)"
-            />
-          }
-        </div>
-      </div>
-      <app-code-tabs [html]="indeterminateHtml" [ts]="indeterminateTs" />
+      <app-demo [component]="examples.states" [source]="sources.checkboxStates" layout="rows" />
     </article>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Disabled</h3>
-      <p class="demo-card__meta">Disabled blocks toggling in every check state.</p>
-      <div class="demo-card__preview action-column">
-        <gog-checkbox label="Disabled, unchecked" [disabled]="true" />
-        <gog-checkbox label="Disabled, checked" [checked]="true" [disabled]="true" />
-        <gog-checkbox label="Disabled, indeterminate" [indeterminate]="true" [disabled]="true" />
-      </div>
-      <app-code-tabs [html]="disabledHtml" [ts]="disabledTs" />
-    </article>
-
-    <article class="demo-card">
-      <h3 class="demo-card__title">No visible label</h3>
+      <h3 class="demo-card__title">The label, and none</h3>
       <p class="demo-card__meta">
-        Without <code>label</code>, set <code>ariaLabel</code> so the checkbox still has an
-        accessible name — for example a row-selection checkbox in a table.
+        The control is a <code>&lt;label&gt;</code> around a real
+        <code>&lt;input type="checkbox"&gt;</code>, so the text <em>is</em> the accessible name — no
+        <code>for</code> to wire up, pressing the text toggles the box. <code>ariaLabel</code>
+        is for the case with no visible text, which is the only case it applies to. A long label
+        wraps rather than pushing the box out of line.
       </p>
-      <div class="demo-card__preview">
-        <gog-checkbox ariaLabel="Select row" [(checked)]="agreed" />
-      </div>
-      <app-code-tabs [html]="noLabelHtml" [ts]="noLabelTs" />
+      <app-demo [component]="examples.labels" [source]="sources.checkboxLabels" />
     </article>
 
     <article class="demo-card">
       <h3 class="demo-card__title">Full width</h3>
       <p class="demo-card__meta">
-        Stretches the row to fill its container; wrapped here in a narrower box to show it.
+        Off by default: a checkbox is as wide as its label, so a row of them reads as a row.
+        <code>fullWidth</code> fills the container — the dashed box here — leaving the rest of the
+        line clickable.
       </p>
-      <div class="demo-card__preview width-demo">
-        <gog-checkbox label="Full width row" [fullWidth]="true" />
-      </div>
-      <app-code-tabs [html]="fullWidthHtml" [ts]="fullWidthTs" />
+      <app-demo
+        [component]="examples.fullWidth"
+        [source]="sources.checkboxFullWidth"
+        layout="frame"
+      />
     </article>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Reactive Forms</h3>
+      <h3 class="demo-card__title">Custom check icon — <code>gogCheckboxIcon</code></h3>
       <p class="demo-card__meta">
-        Works as a <code>ControlValueAccessor</code> — wire it to a <code>FormControl</code> with
-        <code>[formControl]</code> or <code>formControlName</code> instead of
-        <code>[(checked)]</code>. Don't bind both to the same instance.
+        The slot replaces the glyph inside the box, drawn through <code>gog-icon</code> so it takes
+        the size the scale gives it. The box, its border, its fill and every state stay the
+        component's. <strong>It is the checked glyph only</strong>: the indeterminate dash is drawn
+        by the stylesheet, and a template does not reach it — the third checkbox shows it.
       </p>
-      <div class="demo-card__preview">
-        <gog-checkbox label="Subscribe" [formControl]="formControl" />
-      </div>
-      <p class="demo-card__meta">Control value: {{ formControl.value }}</p>
-      <app-code-tabs [html]="formHtml" [ts]="formTs" />
+      <app-demo [component]="examples.icon" [source]="sources.checkboxIcon" layout="row" />
     </article>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Custom check icon</h3>
+      <h3 class="demo-card__title">Select all</h3>
       <p class="demo-card__meta">
-        Project an <code>&lt;ng-template gogCheckboxIcon&gt;</code> to replace the checkmark drawn
-        inside the box. The template is declared where it is used and carries a typed context, so
-        nothing has to be wired through an input.
+        The classic parent row: checked when every child is, indeterminate when some are, and a
+        press on it sets them all. The state is computed from the children — see the next example
+        for why it has to be.
       </p>
-      <div class="demo-card__preview">
-        <gog-checkbox label="Custom mark" [checked]="true">
-          <ng-template gogCheckboxIcon>
-            <gog-icon name="close" />
-          </ng-template>
-        </gog-checkbox>
-      </div>
-      <app-code-tabs [html]="checkIconHtml" [ts]="checkIconTs" />
+      <app-demo [component]="examples.selectAll" [source]="sources.checkboxSelectAll" />
     </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title"><code>indeterminate</code> is an input, not a model</h3>
+      <p class="demo-card__meta">
+        A native checkbox resolves <code>indeterminate</code> on the first click; here the dash is
+        drawn from the input, so
+        <strong
+          >a press changes <code>checked</code> and leaves <code>indeterminate</code> as it
+          was</strong
+        >. Press the checkbox below a few times: <code>checked</code> flips under the dash and
+        nothing visible moves. That is what lets a parent row be driven from its children rather
+        than from its own presses — and it means the state is yours to compute. Since 21.15.0 the
+        element's own <code>indeterminate</code> property is written back after a press, so an
+        <code>input:indeterminate</code> rule or a test reading the element agrees with the screen.
+      </p>
+      <app-demo
+        [component]="examples.indeterminateInput"
+        [source]="sources.checkboxIndeterminateInput"
+      />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Two-way binding</h3>
+      <p class="demo-card__meta">
+        <code>checked</code> is a model: <code>[(checked)]</code>, or <code>[checked]</code> with
+        <code>(checkedChange)</code>.
+      </p>
+      <app-demo [component]="examples.binding" [source]="sources.checkboxBinding" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Reactive forms, and the error a checkbox does not draw</h3>
+      <p class="demo-card__meta">
+        A <code>ControlValueAccessor</code>: wire it with <code>[formControl]</code> or
+        <code>formControlName</code> instead of <code>[(checked)]</code>, never both.
+        <code>Validators.requiredTrue</code> is how "you must tick this" is written. There is no
+        <code>errorMessage</code>: a checkbox has no error line of its own, so the message belongs
+        to the form around it. Disabling through the form ends up as <code>disabled</code> on the
+        native input.
+      </p>
+      <app-demo [component]="examples.forms" [source]="sources.checkboxForms" layout="rows" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">App-wide defaults — <code>GOG_CONFIG</code></h3>
+      <p class="demo-card__meta">
+        <code>control.size</code> sets the default size for every checkbox under the provider; an
+        instance's own input still wins. In an app the provider goes in <code>app.config.ts</code> —
+        see <a routerLink="/general/global-config">Global Configuration</a>.
+      </p>
+      <app-demo [component]="examples.config" [source]="sources.checkboxConfig" />
+    </article>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="accessibility" class="doc-section__title font-heading">Accessibility</h2>
+    <p class="doc-section__intro">
+      A native input inside a native label: the role, the state, the keyboard and the name all come
+      from the platform rather than from ARIA. The box you see is a <code>span</code> and is not
+      focusable; the input under it is.
+    </p>
+    <ul class="doc-section__intro">
+      <li><strong>Keyboard</strong> — Tab reaches it, Space toggles it.</li>
+      <li>
+        <strong>State</strong> — <code>checked</code> is the input's own property, so no attribute
+        appears for it. <code>indeterminate</code>, which has no native attribute, is announced
+        through <code>aria-checked="mixed"</code> — the one piece of ARIA this component needs.
+      </li>
+      <li>
+        <strong>Name</strong> — the <code>label</code>, or <code>ariaLabel</code> when there is no
+        visible text.
+      </li>
+    </ul>
   </section>
 
   <section class="doc-section">
     <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
 
     <h3 class="doc-section__subtitle">Inputs</h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Default</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of apiInputs; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-              </td>
-              <td>
-                <code>{{ row.type }}</code>
-              </td>
-              <td>
-                <code>{{ row.default }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="apiInputs" kind="inputs" />
+
+    <h3 class="doc-section__subtitle">Outputs</h3>
+    <app-api-table [rows]="apiOutputs" kind="outputs" />
 
     <h3 class="doc-section__subtitle">Content slots</h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Slot</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              <code>&lt;ng-template gogCheckboxIcon&gt;</code>
-            </td>
-            <td>Replaces the checkmark drawn inside the box when checked.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="apiSlots" kind="slots" />
   </section>
 
   <app-global-config-note component="checkbox" />
@@ -194,25 +181,6 @@
       <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
       <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
     </p>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Token</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of styleTokens; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="styleTokens" kind="tokens" />
   </section>
 </div>

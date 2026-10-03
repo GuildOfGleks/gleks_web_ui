@@ -143,7 +143,7 @@ template.
 | badge         | legacy   | 5     | 5   |          |
 | button-toggle | legacy   | 6     | 6   | ✅       |
 | calendar      | legacy   | 5     | 5   | ✅       |
-| checkbox      | legacy   | 8     | 8   |          |
+| checkbox      | legacy   | 8     | 8   | ✅       |
 | chip          | legacy   | 11    | 11  |          |
 | collapsible   | legacy   | 6     | 6   |          |
 | datepicker    | legacy   | 6     | 6   |          |

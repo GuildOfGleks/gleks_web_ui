@@ -1,0 +1,6 @@
+<gog-checkbox
+  label="Email me about releases"
+  [(checked)]="subscribed"
+  (checkedChange)="changes.update((n) => n + 1)"
+/>
+<p>checked: {{ subscribed() }} · {{ changes() }} checkedChange</p>

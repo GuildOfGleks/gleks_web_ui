@@ -1,0 +1,20 @@
+<div>
+  <!-- The parent is driven from its children: checked when all are, indeterminate when some are. -->
+  <gog-checkbox
+    label="Subscribe to all"
+    [checked]="allSelected()"
+    [indeterminate]="someSelected()"
+    (checkedChange)="toggleAll($event)"
+  />
+  <div style="padding-inline-start: 28px">
+    @for (topic of topics; track topic.id) {
+      <gog-checkbox
+        size="sm"
+        [label]="topic.name"
+        [checked]="selected().includes(topic.id)"
+        (checkedChange)="toggle(topic.id, $event)"
+      />
+    }
+  </div>
+</div>
+<p>selected: {{ selected().length }} / {{ topics.length }}</p>

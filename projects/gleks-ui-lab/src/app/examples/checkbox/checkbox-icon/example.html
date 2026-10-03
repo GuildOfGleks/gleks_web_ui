@@ -1,0 +1,23 @@
+<div>
+  <p>built-in tick</p>
+  <gog-checkbox label="Starred" [checked]="true" />
+</div>
+
+<div>
+  <p>gogCheckboxIcon</p>
+  <gog-checkbox label="Starred" [(checked)]="starred">
+    <ng-template gogCheckboxIcon>
+      <gog-icon name="star" />
+    </ng-template>
+  </gog-checkbox>
+</div>
+
+<!-- The slot replaces the tick only: the indeterminate dash is the component's own. -->
+<div>
+  <p>the same slot, indeterminate</p>
+  <gog-checkbox label="Starred" indeterminate>
+    <ng-template gogCheckboxIcon>
+      <gog-icon name="star" />
+    </ng-template>
+  </gog-checkbox>
+</div>

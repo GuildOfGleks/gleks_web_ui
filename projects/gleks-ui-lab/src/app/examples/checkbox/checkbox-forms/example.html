@@ -1,0 +1,22 @@
+<div>
+  <gog-checkbox label="I accept the terms" [formControl]="control" />
+</div>
+
+<div>
+  <gog-button variant="outline" size="sm" (gogClick)="control.markAsTouched()">
+    markAsTouched()
+  </gog-button>
+  <gog-button variant="outline" size="sm" (gogClick)="toggleDisabled()">
+    {{ control.disabled ? 'enable()' : 'disable()' }}
+  </gog-button>
+</div>
+
+<p>
+  value: {{ control.value }} · valid: {{ control.valid }} · touched: {{ control.touched }} ·
+  disabled: {{ control.disabled }}
+</p>
+
+<!-- A checkbox draws no error line of its own: the form renders this one. -->
+@if (control.touched && control.invalid) {
+  <p role="alert">You need to accept the terms.</p>
+}

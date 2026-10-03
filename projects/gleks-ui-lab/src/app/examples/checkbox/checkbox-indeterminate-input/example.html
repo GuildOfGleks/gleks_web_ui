@@ -1,0 +1,8 @@
+<!-- A press changes checked and leaves indeterminate as it was: the dash never moves. -->
+<gog-checkbox
+  label="indeterminate, never cleared"
+  indeterminate
+  [(checked)]="checked"
+  (checkedChange)="changes.update((n) => n + 1)"
+/>
+<p>checked: {{ checked() }} · {{ changes() }} checkedChange</p>
