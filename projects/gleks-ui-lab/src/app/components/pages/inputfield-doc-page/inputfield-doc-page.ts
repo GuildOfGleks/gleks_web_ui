@@ -219,6 +219,7 @@ export class InputfieldDocPage {
   protected readonly password = signal('');
   protected readonly search = signal('');
   protected readonly amount = signal('');
+  protected readonly website = signal('');
   protected readonly manualErrorValue = signal('');
   protected readonly lastIconAction = signal('No icon action yet.');
 
@@ -231,7 +232,10 @@ export class InputfieldDocPage {
   protected readonly weightValue = signal('72');
 
   protected readonly spinButtonsHtml = [
-    '<gog-inputfield label="Quantity (stepper)" type="number" [min]="0" [(value)]="quantity" />',
+    '<!-- A unit beside the stepper renders since 21.15.0. -->',
+    '<gog-inputfield label="Quantity (stepper)" type="number" [min]="0" [(value)]="quantity">',
+    '  <span gogInputAddonEnd>pcs</span>',
+    '</gog-inputfield>',
     '',
     '<gog-inputfield',
     '  label="Quantity (no stepper)"',
@@ -251,11 +255,11 @@ export class InputfieldDocPage {
   ].join('\n');
   protected readonly spinButtonsTs = [
     "import { Component, signal } from '@angular/core';",
-    "import { InputfieldComponent } from '@guildofgleks/ui';",
+    "import { GogInputAddonEndDirective, InputfieldComponent } from '@guildofgleks/ui';",
     '',
     '@Component({',
     "  selector: 'app-example',",
-    '  imports: [InputfieldComponent],',
+    '  imports: [InputfieldComponent, GogInputAddonEndDirective],',
     '  template: `/* as in the HTML tab */`,',
     '})',
     'export class ExampleComponent {',
@@ -346,6 +350,11 @@ export class InputfieldDocPage {
     '  <span gogInputAddonEnd>USD</span>',
     '</gog-inputfield>',
     '',
+    '<!-- Since 21.15.0 the field makes room for an addon wider than an icon. -->',
+    '<gog-inputfield label="Website" [(value)]="website">',
+    '  <span gogInputAddonStart>https://</span>',
+    '</gog-inputfield>',
+    '',
     '<gog-inputfield label="Search" [(value)]="search">',
     '  <button type="button" gogInputAddonEnd aria-label="Clear search" (click)="clearSearch()">',
     '    <gog-icon name="close" />',
@@ -375,6 +384,10 @@ export class InputfieldDocPage {
     '      <span gogInputAddonEnd>USD</span>',
     '    </gog-inputfield>',
     '',
+    '    <gog-inputfield label="Website" [(value)]="website">',
+    '      <span gogInputAddonStart>https://</span>',
+    '    </gog-inputfield>',
+    '',
     '    <gog-inputfield label="Search" [(value)]="search">',
     '      <button',
     '        type="button"',
@@ -389,6 +402,7 @@ export class InputfieldDocPage {
     '})',
     'export class ExampleComponent {',
     "  protected readonly amount = signal('');",
+    "  protected readonly website = signal('');",
     "  protected readonly search = signal('');",
     '',
     '  // A plain method on a real button — no callback threaded through the field.',

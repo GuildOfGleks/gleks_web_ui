@@ -41,7 +41,9 @@
       <h3 class="demo-card__title">Password</h3>
       <p class="demo-card__meta">
         <code>type="password"</code> gets a built-in show/hide toggle for free — the trailing icon
-        and its accessible label switch automatically.
+        and its accessible label switch automatically. An <code>iconEnd</code> or a projected
+        <code>gogInputAddonEnd</code> renders beside it <app-since version="21.15.0" />, with the
+        toggle keeping the outer edge; before 21.15.0 either was silently dropped.
       </p>
       <div class="demo-card__preview width-demo">
         <gog-inputfield label="Password" type="password" [(value)]="password" />
@@ -68,12 +70,18 @@
         <code>gogInputAddonStart</code> or <code>gogInputAddonEnd</code> element. Because it takes
         arbitrary markup, an actionable addon is a real <code>&lt;button&gt;</code> carrying its own
         <code>aria-label</code> and <code>(click)</code> — nothing has to be threaded through the
-        field.
+        field. The field measures each addon and makes room for it <app-since version="21.15.0" />,
+        so an addon wider than an icon — <code>https://</code>, a unit — no longer runs under the
+        typed text.
       </p>
       <div class="demo-card__preview size-column">
         <gog-inputfield label="Amount" [(value)]="amount">
           <span gogInputAddonStart class="addon-text">$</span>
           <span gogInputAddonEnd class="addon-text">USD</span>
+        </gog-inputfield>
+
+        <gog-inputfield label="Website" [(value)]="website">
+          <span gogInputAddonStart class="addon-text">https://</span>
         </gog-inputfield>
 
         <gog-inputfield label="Search" [(value)]="search">
@@ -210,12 +218,9 @@
         name them for assistive tech.
       </p>
       <div class="demo-card__preview size-column">
-        <gog-inputfield
-          label="Quantity (stepper)"
-          type="number"
-          [min]="0"
-          [(value)]="stepperValue"
-        />
+        <gog-inputfield label="Quantity (stepper)" type="number" [min]="0" [(value)]="stepperValue">
+          <span gogInputAddonEnd class="addon-text">pcs</span>
+        </gog-inputfield>
         <gog-inputfield
           label="Quantity (no stepper)"
           type="number"
@@ -237,6 +242,12 @@
         of the stepper and the gutter widens for the pair. Before that, <code>clearable</code> was
         silently a no-op on <code>type="number"</code> unless <code>showSpinButtons</code> was also
         off — so any workaround built around that can go.
+      </p>
+      <p class="demo-card__meta">
+        The first field carries a unit: an <code>iconEnd</code> or a
+        <code>gogInputAddonEnd</code> sits beside the stepper <app-since version="21.15.0" />, which
+        keeps the outer edge — before 21.15.0 it was silently dropped. On a clearable number field
+        the clear button still takes that place while there is a value, as it does on every field.
       </p>
       <app-code-tabs [html]="spinButtonsHtml" [ts]="spinButtonsTs" />
     </article>
@@ -321,14 +332,24 @@
               <code>[gogInputAddonEnd]</code>
             </td>
             <td>
-              The same in the trailing slot. On <code>type="password"</code> the built-in reveal
-              toggle keeps this slot, so a projected addon can never displace the only control that
-              shows the value.
+              The same in the trailing slot. On <code>type="password"</code> and
+              <code>type="number"</code> it renders beside the reveal toggle or the stepper, which
+              keep the outer edge, so a projected addon can never displace the only control that
+              shows the value. The clear button, while it shows, outranks it.
             </td>
           </tr>
         </tbody>
       </table>
     </div>
+
+    <h3 class="doc-section__subtitle">Test hooks</h3>
+    <p class="doc-section__intro">
+      The field's own buttons carry <code>data-gog-part</code> <app-since version="21.15.0" /> —
+      <code>increment</code>, <code>decrement</code>, <code>clear</code> and
+      <code>password-toggle</code> — so a test or an automation script can find them with
+      <code>[data-gog-part="clear"]</code>. Prefer it to the internal <code>gog-input__*</code>
+      classes, which may change.
+    </p>
   </section>
 
   <app-global-config-note component="inputfield" />
