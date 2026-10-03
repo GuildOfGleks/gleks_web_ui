@@ -33,7 +33,7 @@ status, is `docs/lab-component-pages.md`; the rules are stated here because they
 
 ## Demo layout
 
-`<app-demo layout>` is one of `block` (default), `row`, `rows`, `fields`, `frame` — defined once in
+`<app-demo layout>` is one of `block` (default), `row`, `rows`, `fields`, `wide`, `frame` — defined once in
 `src/styles.scss`. A new arrangement is added there, never as CSS in an example. Every layout keeps
 three rules, and a new one must too:
 

@@ -319,6 +319,46 @@ h3[id] {
   gap: 12px;
 }
 
+/* A `<div>` in a row is a captioned cell — a caption over one component. Cells sit on the row's
+   top edge, so captions line up whatever the components' heights, and the caption is centred
+   over its component. */
+.demo-preview--row > * > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-self: flex-start;
+  gap: 8px;
+}
+
+.demo-preview--row > * > div > p {
+  margin: 0;
+}
+
+/* A paragraph in a row reports on the controls above it: it takes a line of its own. */
+.demo-preview--row > * > p {
+  flex-basis: 100%;
+  margin: 0;
+  text-align: center;
+}
+
+/* `wide` — each top-level element as wide as the card, centred if it caps itself: for an example
+   about how a component fills a block container. */
+.demo-preview--wide > * {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.demo-preview--wide > * > * {
+  width: 100%;
+}
+
+.demo-preview--wide > * > p {
+  margin: 0;
+  text-align: center;
+}
+
 /* `rows` — each top-level element a wrapping row; the rows form one block, centred, so a
    leading label column stays aligned while the whole example sits in the middle of the card. */
 .demo-preview--rows > * {

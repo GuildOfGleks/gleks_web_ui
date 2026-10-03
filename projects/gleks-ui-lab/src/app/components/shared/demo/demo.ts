@@ -9,16 +9,19 @@ import type { ExampleSource } from '../example-source';
  * should not copy lives here, once.
  *
  * - `block` — each top-level element centred on its own line (the default).
- * - `row` — its top-level elements in one wrapping, centred row: buttons, chips, toggles.
+ * - `row` — its top-level elements in one wrapping, centred row: buttons, chips, toggles; a `<p>`
+ *   among them takes a line of its own, and a `<div>` is a captioned cell, top-aligned.
  * - `rows` — each top-level element a wrapping row, the rows centred as one block; a leading
  *   `<span>` in a row is drawn as that row's label.
  * - `fields` — form fields in centred rows of equal cells; a `<div>` cell stacks a field with
  *   the line under it.
+ * - `wide` — each top-level element as wide as the card (centred if it caps itself), for an
+ *   example about filling a block container.
  * - `frame` — a narrow dashed box, for an example whose point is how it fills its container.
  *
  * A new arrangement is added here, never as CSS in an example.
  */
-export type DemoLayout = 'block' | 'row' | 'rows' | 'fields' | 'frame';
+export type DemoLayout = 'block' | 'row' | 'rows' | 'fields' | 'wide' | 'frame';
 
 /**
  * One documentation example: the live component, then its three files behind the tab strip.
