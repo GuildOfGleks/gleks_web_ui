@@ -165,6 +165,76 @@ describe('TableComponent', () => {
       expect(scroller().axis).toBe('both');
       expect(scroller().maxHeight).toBe('260px');
     });
+
+    it('should draw its frame on the viewport once capped, so the frame does not scroll away', async () => {
+      const scrollEl = () => fixture.nativeElement.querySelector('gog-scroll') as HTMLElement;
+      const table = () => fixture.nativeElement.querySelector('table') as HTMLElement;
+      expect(scrollEl().classList.contains('gog-table-scroll--framed')).toBe(false);
+      expect(table().classList.contains('gog-table--in-frame')).toBe(false);
+
+      fixture.componentRef.setInput('maxHeight', '260px');
+      await fixture.whenStable();
+
+      expect(scrollEl().classList.contains('gog-table-scroll--framed')).toBe(true);
+      expect(table().classList.contains('gog-table--in-frame')).toBe(true);
+    });
+
+    describe('the scroll track under a pinned header', () => {
+      class MockResizeObserver {
+        static instances: MockResizeObserver[] = [];
+        constructor(readonly callback: ResizeObserverCallback) {
+          MockResizeObserver.instances.push(this);
+        }
+        // eslint-disable-next-line @typescript-eslint/no-empty-function -- the spec fires it
+        observe(): void {}
+        // eslint-disable-next-line @typescript-eslint/no-empty-function -- unused by the component
+        unobserve(): void {}
+        // eslint-disable-next-line @typescript-eslint/no-empty-function -- unused by the component
+        disconnect(): void {}
+      }
+
+      let original: typeof ResizeObserver | undefined;
+      beforeEach(() => {
+        MockResizeObserver.instances = [];
+        original = globalThis.ResizeObserver;
+        globalThis.ResizeObserver = MockResizeObserver as unknown as typeof ResizeObserver;
+      });
+      afterEach(() => {
+        globalThis.ResizeObserver = original as typeof ResizeObserver;
+      });
+
+      const trackStart = () =>
+        (fixture.nativeElement.querySelector('gog-scroll') as HTMLElement).style.getPropertyValue(
+          '--gog-scroll-track-start',
+        );
+
+      /** jsdom lays nothing out: give the header a height, then report it the way the browser would. */
+      async function measureHeader(height: number): Promise<void> {
+        const thead = fixture.nativeElement.querySelector('thead') as HTMLElement;
+        thead.getBoundingClientRect = () => ({ height }) as DOMRect;
+        for (const observer of MockResizeObserver.instances) {
+          observer.callback([], observer as unknown as ResizeObserver);
+        }
+        await fixture.whenStable();
+      }
+
+      it('starts below the header while it is pinned', async () => {
+        fixture.componentRef.setInput('maxHeight', '260px');
+        fixture.componentRef.setInput('stickyHeader', true);
+        await fixture.whenStable();
+
+        await measureHeader(41);
+        expect(trackStart()).toBe('41px');
+      });
+
+      it('runs the full height when the header does not pin', async () => {
+        fixture.componentRef.setInput('maxHeight', '260px');
+        await fixture.whenStable();
+
+        await measureHeader(41);
+        expect(trackStart()).toBe('');
+      });
+    });
   });
 
   it('should sort rows by the configured field', () => {

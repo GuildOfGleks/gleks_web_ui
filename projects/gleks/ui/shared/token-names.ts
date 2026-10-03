@@ -1118,6 +1118,7 @@ export type GogTokenName =
   | '--gog-scroll-thumb-radius'
   | '--gog-scroll-track-bg'
   | '--gog-scroll-track-radius'
+  | '--gog-scroll-track-start'
   | '--gog-secondary-color'
   | '--gog-select-chevron-color'
   | '--gog-select-chevron-icon-ratio'
@@ -2954,6 +2955,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-scroll-thumb-radius',
       '--gog-scroll-track-bg',
       '--gog-scroll-track-radius',
+      '--gog-scroll-track-start',
     ],
   },
   {

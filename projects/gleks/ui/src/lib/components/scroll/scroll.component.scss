@@ -90,7 +90,7 @@
 }
 
 .gog-scroll__track--v {
-  top: 0;
+  top: var(--gog-scroll-track-start);
   inset-inline-end: 0;
   bottom: 0;
   width: var(--gog-scroll-track-width);

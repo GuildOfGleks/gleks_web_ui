@@ -1906,6 +1906,10 @@ is exactly as tall as its content and never scrolls, so there is nothing to stic
 <gog-table [value]="rows" maxHeight="260px" [stickyHeader]="true">…</gog-table>
 ```
 
+A capped table draws its frame on the scroll viewport rather than on the table, so the frame stays
+put while rows scroll, and with `stickyHeader` the vertical scrollbar starts below the header
+(since 21.15.0).
+
 `maxHeight` takes any CSS length and is what makes the table own its vertical scrolling. Left
 `null`, the table grows to its content and an ancestor scrolls it — the header then follows that
 ancestor's scroll like everything else, which is the pre-21.6.0 behaviour and is fine as long as
@@ -2082,6 +2086,11 @@ Methods (via template ref): `scrollTo(options)`, `scrollToTop()`, `scrollToBotto
   <!-- content that might overflow -->
 </gog-scroll>
 ```
+
+**`--gog-scroll-track-start`** (default `0px`, since 21.15.0) moves the top of the vertical track
+down. Set it to the height of anything you pin over the top of the viewport, so the thumb runs
+beside the content and not over the pinned part; `gog-table` sets it to its sticky header's height
+on its own.
 
 ### Overlays
 

@@ -570,6 +570,20 @@ export class TableComponent<T extends object> {
 
   /** The table's own scroller, measured for the window's viewport — see the constructor. */
   private readonly scroller = viewChild('scroller', { read: ElementRef });
+  private readonly thead = viewChild('thead', { read: ElementRef });
+
+  /** The pinned header's height, measured while one is pinned — see the constructor. */
+  private readonly pinnedHeaderHeight = signal(0);
+
+  /**
+   * Starts `gog-scroll`'s vertical track below a pinned header. The header sits over the top of the
+   * viewport, so a track running the viewport's full height put the thumb over the header, beside
+   * no rows at all.
+   */
+  protected readonly scrollTrackStart = computed(() => {
+    const height = this.pinnedHeaderHeight();
+    return height > 0 ? `${height}px` : null;
+  });
 
   /**
    * `maxHeight` resolved to px, as the viewport's stand-in until the scroller is measured.
@@ -823,6 +837,20 @@ export class TableComponent<T extends object> {
       const observer = new ResizeObserver(([entry]) => {
         const height = entry.contentRect.height;
         if (height > 0) this.viewport.update((viewport) => ({ ...viewport, height }));
+      });
+      observer.observe(element);
+      onCleanup(() => observer.disconnect());
+    });
+
+    effect((onCleanup) => {
+      const element = this.thead()?.nativeElement as HTMLElement | undefined;
+      if (!this.isBrowser || !element || !this.stickyHeader() || !this.maxHeight()) {
+        this.pinnedHeaderHeight.set(0);
+        return;
+      }
+      if (typeof ResizeObserver === 'undefined') return;
+      const observer = new ResizeObserver(() => {
+        this.pinnedHeaderHeight.set(element.getBoundingClientRect().height);
       });
       observer.observe(element);
       onCleanup(() => observer.disconnect());

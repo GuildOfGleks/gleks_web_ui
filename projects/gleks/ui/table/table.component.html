@@ -9,6 +9,7 @@
     #scroller
     [axis]="maxHeight() ? 'both' : 'horizontal'"
     [style.max-height]="maxHeight()"
+    [style.--gog-scroll-track-start]="scrollTrackStart()"
     class="gog-table-scroll"
     [class.gog-table-scroll--framed]="maxHeight()"
     [class.gog-table-scroll--fit]="maxHeight() && !fullWidth()"
@@ -69,7 +70,7 @@
           <span class="gog-visually-hidden">{{ resolvedLabels().rowSelected }}, </span>
         }
       </ng-template>
-      <thead>
+      <thead #thead>
         <tr>
           @if (hasSelectionColumn()) {
             <th class="gog-table__th gog-table__th--select" scope="col">

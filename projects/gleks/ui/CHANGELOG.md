@@ -204,7 +204,11 @@ reached 1.0, so breaking changes may land in minor versions.
   sticky header cell left its border behind when it pinned and floated over the rows with nothing
   between them. The table is `separate` with no spacing now, so the header keeps its edge; and a
   table with `maxHeight` draws its frame on the scroll viewport instead of on the table, so the
-  frame no longer scrolls away with the rows.
+  frame no longer scrolls away with the rows. **Its vertical scrollbar starts below the pinned
+  header, too**: the thumb ran the viewport's full height, so at the top of the list it sat beside
+  the header rather than beside any row. That is `gog-scroll`'s new `--gog-scroll-track-start`
+  (default `0px`), which the table sets to its header's measured height; anything else that pins
+  a bar over a `gog-scroll`'s top can set it the same way.
 
 - **A selected row in a `gog-table` without its checkbox column said so only to sighted readers.**
   With `[showSelectionColumn]="false"` — the usual setup for `selectOnRowClick` — the state was

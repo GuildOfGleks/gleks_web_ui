@@ -1651,6 +1651,9 @@
      than a hairline. */
   --gog-scroll-thumb-inset: 2px;
   --gog-scroll-corner-bg: transparent;
+  /* Where the vertical track starts. Content that pins a header over the viewport's top sets it to
+     that header's height, so the thumb never runs over the header; `gog-table` does this itself. */
+  --gog-scroll-track-start: 0px;
   --gog-scroll-fade-duration: var(--gog-duration-base);
   --gog-scroll-focus-ring: var(--gog-accent-color);
   --gog-scroll-focus-ring-width: var(--gog-focus-ring-width);

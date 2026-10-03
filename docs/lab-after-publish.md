@@ -36,6 +36,13 @@ build.
 
 ## 21.15.0 — select a table row by pressing it
 
+- **`gog-table`'s pinned header and its frame** (21.15.0): a capped table frames its scroll
+  viewport, the sticky header keeps its bottom edge, the vertical scrollbar starts below it, and
+  the selection checkboxes render whole. The Table page's `stickyHeader` demo should look right
+  on its own; read its prose for anything that describes the old look. **`gog-scroll` has a new
+  token, `--gog-scroll-track-start`** — add it to the Scroll page's token list and the token
+  reference.
+
 - **A selected row without the checkbox column carries visually hidden "Selected"**, configurable
   as `GOG_CONFIG.labels.tableRowSelected`. Add the key to the Global Config labels table, and one
   sentence beside the `selectOnRowClick` demo on the Table page saying how the state reaches a
