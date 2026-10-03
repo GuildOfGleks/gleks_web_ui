@@ -11,6 +11,7 @@ import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
 import { HouseSpinnerDemo } from './house-spinner-demo';
 import { GlobalConfigNote } from '../../shared/global-config-note/global-config-note';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
+import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 interface ApiInputRow {
@@ -45,7 +46,8 @@ const SPINNER_API_INPUTS: readonly ApiInputRow[] = [
     name: 'ariaLabel',
     type: 'string',
     default: "'Loading'",
-    description: 'Accessible name announced to assistive tech.',
+    description:
+      'Names the spinner, which is an indeterminate role="progressbar" — read as progressbar "Loading". ariaLabel="" makes it decorative: no role, no name. Before 21.15.0 the input was accepted and never rendered, so every spinner was invisible to assistive tech.',
   },
 ];
 
@@ -88,6 +90,7 @@ const SPINNER_OVERLAY_API_INPUTS: readonly ApiInputRow[] = [
     CodeTabsComponent,
     HouseSpinnerDemo,
     RouterLink,
+    SinceBadgeComponent,
   ],
   templateUrl: './spinner-doc-page.html',
   styleUrl: './spinner-doc-page.scss',

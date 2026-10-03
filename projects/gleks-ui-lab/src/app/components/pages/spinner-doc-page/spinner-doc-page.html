@@ -123,8 +123,8 @@
       </div>
       <p class="demo-card__meta">
         Your component sits inside the library’s own size wrapper, so it keeps the sizing, the
-        overlay behaviour, <code>role="status"</code> and the accessible name — only the visual is
-        yours. An instance that asks for something specific still wins:
+        overlay behaviour, the <code>progressbar</code> role and the accessible name — only the
+        visual is yours. An instance that asks for something specific still wins:
         <code>&lt;gog-spinner variant="ring"&gt;</code> is a ring even here.
         <strong>The provider on this demo is scoped to it</strong>, which is a route’s mechanism
         rather than an app’s — the rest of this page shows the built-in look. See
@@ -170,6 +170,12 @@
         reaches a bare <code>gog-spinner</code>. Until 21.10.0 that input defaulted to
         <code>runic</code>, which the inner spinner correctly read as an instance overruling the
         config, so this was the one place a configured house spinner never appeared.
+      </p>
+      <p class="demo-card__meta">
+        While loading, the content is <code>inert</code> <app-since version="21.15.0" />: Tab steps
+        over it and nothing inside can be pressed, so there is no need to disable its controls
+        yourself. Focus that was inside when loading began waits on the spinner and comes back when
+        it ends. Before 21.15.0 the scrim blocked the pointer and not the keyboard.
       </p>
       <div class="demo-card__preview">
         <gog-button variant="primary" type="button" (gogClick)="previewOverlay()">
