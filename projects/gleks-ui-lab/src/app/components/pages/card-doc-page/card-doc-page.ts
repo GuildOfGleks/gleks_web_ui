@@ -48,8 +48,7 @@ const API_INPUTS: readonly ApiRow[] = [
     name: 'disabled',
     type: 'boolean',
     default: 'false',
-    description:
-      'Dims the card, sets aria-disabled, and takes the card link out of the tab order. A bare attribute works.',
+    description: 'Dims the card, sets aria-disabled, and takes the card link out of the tab order.',
     since: '21.6.1',
   },
   {
