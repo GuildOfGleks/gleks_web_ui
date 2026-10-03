@@ -49,7 +49,7 @@ const API_INPUTS: readonly ApiInputRow[] = [
   },
   {
     name: 'pageSizeOptions',
-    type: 'number[] | undefined',
+    type: 'readonly number[] | undefined',
     default: '[10, 20, 30, 40, 50]',
     description: 'The choices that select offers. Also settable app-wide via GOG_CONFIG.paginator.',
     since: '21.4.0',

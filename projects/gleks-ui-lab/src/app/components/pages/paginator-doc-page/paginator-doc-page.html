@@ -26,6 +26,14 @@
       <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
     </div>
     <p class="doc-section__meta">Page {{ basicPage() }} of {{ basicTotalPages() }}</p>
+    <p class="doc-section__intro">
+      <strong>The current page is stated, not only worded.</strong>
+      <app-since version="21.15.0" /> Its button carries <code>aria-current="page"</code> and is
+      named "Page 3", where it used to be named "Page 3, current page" with nothing machine-readable
+      behind it. A screen reader announces <code>aria-current</code> by itself, so if you translate
+      the names through <code>GOG_CONFIG.labels.page</code>, leave the "current" half out — see
+      <a routerLink="/general/global-config">Global Configuration</a>.
+    </p>
   </section>
 
   <section class="doc-section">
