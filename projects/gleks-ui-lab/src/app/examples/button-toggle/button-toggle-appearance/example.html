@@ -1,0 +1,31 @@
+<div>
+  <span>joined</span>
+  <gog-button-toggle-group ariaLabel="Align" [options]="alignments" [(value)]="align" />
+</div>
+<div>
+  <span>separated</span>
+  <gog-button-toggle-group
+    appearance="separated"
+    ariaLabel="Align"
+    [options]="alignments"
+    [(value)]="align"
+  />
+</div>
+
+<!-- Vertical works with either appearance. -->
+<div>
+  <span>vertical</span>
+  <gog-button-toggle-group
+    orientation="vertical"
+    ariaLabel="Align"
+    [options]="alignments"
+    [(value)]="align"
+  />
+  <gog-button-toggle-group
+    orientation="vertical"
+    appearance="separated"
+    ariaLabel="Align"
+    [options]="alignments"
+    [(value)]="align"
+  />
+</div>

@@ -1,33 +1,22 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import {
-  ButtonToggleGroupComponent,
-  GogButtonToggleAppearance,
-  GogButtonToggleOptionDirective,
-  GogIconName,
-  GogSize,
-  IconComponent,
-} from '@guildofgleks/ui';
-import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
-import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
+import { ApiTableComponent, type ApiRow } from '../../shared/api-table/api-table';
+import { DemoComponent } from '../../shared/demo/demo';
 import { GlobalConfigNote } from '../../shared/global-config-note/global-config-note';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
+import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
-
-interface ApiRow {
-  readonly name: string;
-  readonly type: string;
-  readonly default: string;
-  readonly description: string;
-  readonly since?: string;
-}
-
-interface ViewOption {
-  readonly id: string;
-  readonly name: string;
-  readonly icon: GogIconName;
-  readonly disabled?: boolean;
-}
+import { BUTTON_TOGGLE_EXAMPLES } from '../../../examples/button-toggle/sources.generated';
+import { ButtonToggleAppearanceExample } from '../../../examples/button-toggle/button-toggle-appearance/example';
+import { ButtonToggleConfigExample } from '../../../examples/button-toggle/button-toggle-config/example';
+import { ButtonToggleFormsExample } from '../../../examples/button-toggle/button-toggle-forms/example';
+import { ButtonToggleFullWidthExample } from '../../../examples/button-toggle/button-toggle-full-width/example';
+import { ButtonToggleIconsExample } from '../../../examples/button-toggle/button-toggle-icons/example';
+import { ButtonToggleMultipleExample } from '../../../examples/button-toggle/button-toggle-multiple/example';
+import { ButtonToggleOverviewExample } from '../../../examples/button-toggle/button-toggle-overview/example';
+import { ButtonToggleSizesExample } from '../../../examples/button-toggle/button-toggle-sizes/example';
+import { ButtonToggleSlotExample } from '../../../examples/button-toggle/button-toggle-slot/example';
+import { ButtonToggleStatesExample } from '../../../examples/button-toggle/button-toggle-states/example';
 
 const API_INPUTS: readonly ApiRow[] = [
   {
@@ -128,33 +117,33 @@ const API_OUTPUTS: readonly ApiRow[] = [
   {
     name: 'valueChange',
     type: 'TValue | TValue[] | null',
-    default: '—',
     description: 'Emitted when the selection changes. Comes from the value model input.',
   },
 ];
 
-const VIEWS: ViewOption[] = [
-  { id: 'list', name: 'List', icon: 'sort' },
-  { id: 'grid', name: 'Grid', icon: 'checkbox' },
-  { id: 'calendar', name: 'Calendar', icon: 'calendar' },
-  { id: 'timeline', name: 'Timeline', icon: 'clock', disabled: true },
-];
-
-const FORMATS: ViewOption[] = [
-  { id: 'bold', name: 'Bold', icon: 'check' },
-  { id: 'italic', name: 'Italic', icon: 'info' },
-  { id: 'underline', name: 'Underline', icon: 'warning' },
+const API_SLOTS: readonly ApiRow[] = [
+  {
+    name: 'gogButtonToggleOption',
+    type: '$implicit, selected, disabled, label',
+    description:
+      "Replaces one button's content. label is the resolved label, for hidden text or decoration.",
+  },
+  {
+    name: '[gogButtonToggleOptionTypeOf]',
+    type: 'readonly TOption[] — an input on gogButtonToggleOption',
+    description:
+      'Bind the same array as options and $implicit is typed as its element instead of unknown. Never read at runtime; left unbound, the template compiles exactly as before.',
+    since: '21.15.0',
+  },
 ];
 
 @Component({
   selector: 'app-button-toggle-doc-page',
   imports: [
-    ButtonToggleGroupComponent,
-    GogButtonToggleOptionDirective,
-    IconComponent,
+    ApiTableComponent,
+    DemoComponent,
     GlobalConfigNote,
     MarkdownComponent,
-    CodeTabsComponent,
     RouterLink,
     SinceBadgeComponent,
   ],
@@ -163,208 +152,26 @@ const FORMATS: ViewOption[] = [
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ButtonToggleDocPage {
-  protected readonly views = VIEWS;
-  protected readonly formats = FORMATS;
-  protected readonly appearances: GogButtonToggleAppearance[] = ['joined', 'separated'];
-  protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];
-
-  protected readonly view = signal<unknown>('list');
-  protected readonly appearanceView = signal<unknown>('grid');
-  protected readonly sizeView = signal<unknown>('list');
-  protected readonly activeFormats = signal<unknown>(['bold']);
-  protected readonly iconView = signal<unknown>('grid');
-  protected readonly slotView = signal<unknown>('calendar');
-
   protected readonly apiInputs = API_INPUTS;
   protected readonly apiOutputs = API_OUTPUTS;
+  protected readonly apiSlots = API_SLOTS;
   protected readonly styleTokens =
     TOKEN_SECTIONS.find((section) => section.id === 'button-toggle')?.tokens ?? [];
 
+  protected readonly sources = BUTTON_TOGGLE_EXAMPLES;
+  protected readonly examples = {
+    overview: ButtonToggleOverviewExample,
+    appearance: ButtonToggleAppearanceExample,
+    sizes: ButtonToggleSizesExample,
+    states: ButtonToggleStatesExample,
+    icons: ButtonToggleIconsExample,
+    slot: ButtonToggleSlotExample,
+    fullWidth: ButtonToggleFullWidthExample,
+    forms: ButtonToggleFormsExample,
+    config: ButtonToggleConfigExample,
+    multiple: ButtonToggleMultipleExample,
+  };
+
   protected readonly importSnippet =
     "```typescript\nimport { ButtonToggleGroupComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [ButtonToggleGroupComponent],\n})\n```";
-
-  protected readonly overviewHtml = [
-    '<gog-button-toggle-group ariaLabel="View" [options]="views" [(value)]="view" />',
-  ].join('\n');
-  protected readonly overviewTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { ButtonToggleGroupComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [ButtonToggleGroupComponent],',
-    '  template: `',
-    '    <gog-button-toggle-group ariaLabel="View" [options]="views" [(value)]="view" />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly views = [',
-    "    { id: 'list', name: 'List' },",
-    "    { id: 'grid', name: 'Grid' },",
-    "    { id: 'calendar', name: 'Calendar' },",
-    "    { id: 'timeline', name: 'Timeline', disabled: true },",
-    '  ];',
-    "  protected readonly view = signal<unknown>('list');",
-    '}',
-  ].join('\n');
-
-  protected readonly multipleHtml = [
-    '<gog-button-toggle-group',
-    '  ariaLabel="Text formatting"',
-    '  [options]="formats"',
-    '  [multiple]="true"',
-    '  [(value)]="activeFormats"',
-    '/>',
-  ].join('\n');
-  protected readonly multipleTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { ButtonToggleGroupComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [ButtonToggleGroupComponent],',
-    '  template: `',
-    '    <gog-button-toggle-group',
-    '      ariaLabel="Text formatting"',
-    '      [options]="formats"',
-    '      [multiple]="true"',
-    '      [(value)]="activeFormats"',
-    '    />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  // With multiple on, value is an array.',
-    "  protected readonly activeFormats = signal<unknown>(['bold']);",
-    '}',
-  ].join('\n');
-
-  protected readonly appearanceHtml = [
-    '<gog-button-toggle-group appearance="joined" [options]="views" [(value)]="view" />',
-    '<gog-button-toggle-group appearance="separated" [options]="views" [(value)]="view" />',
-    '',
-    '<!-- Vertical works with either appearance. -->',
-    '<gog-button-toggle-group orientation="vertical" [options]="views" [(value)]="view" />',
-  ].join('\n');
-  protected readonly appearanceTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { ButtonToggleGroupComponent, GogButtonToggleAppearance } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [ButtonToggleGroupComponent],',
-    '  template: `',
-    '    @for (option of appearances; track option) {',
-    '      <gog-button-toggle-group',
-    '        [appearance]="option"',
-    '        [options]="views"',
-    '        [(value)]="view"',
-    '      />',
-    '    }',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    "  protected readonly appearances: GogButtonToggleAppearance[] = ['joined', 'separated'];",
-    '}',
-  ].join('\n');
-
-  protected readonly iconsHtml = [
-    '<gog-button-toggle-group',
-    '  ariaLabel="View"',
-    '  optionIcon="icon"',
-    '  [options]="views"',
-    '  [(value)]="iconView"',
-    '/>',
-  ].join('\n');
-  protected readonly iconsTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { ButtonToggleGroupComponent, GogIconName } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [ButtonToggleGroupComponent],',
-    '  template: `',
-    '    <gog-button-toggle-group optionIcon="icon" [options]="views" [(value)]="iconView" />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly views: { id: string; name: string; icon: GogIconName }[] = [',
-    "    { id: 'list', name: 'List', icon: 'sort' },",
-    "    { id: 'grid', name: 'Grid', icon: 'checkbox' },",
-    '  ];',
-    '}',
-  ].join('\n');
-
-  protected readonly slotHtml = [
-    '<gog-button-toggle-group [options]="views" [(value)]="slotView">',
-    '  <ng-template',
-    '    gogButtonToggleOption',
-    '    [gogButtonToggleOptionTypeOf]="views"',
-    '    let-option',
-    '    let-selected="selected"',
-    '  >',
-    '    <gog-icon [name]="option.icon" />',
-    '    <span>{{ option.name }}</span>',
-    '    @if (selected) {',
-    '      <gog-icon name="check" />',
-    '    }',
-    '  </ng-template>',
-    '</gog-button-toggle-group>',
-  ].join('\n');
-  protected readonly slotTs = [
-    "import { Component, signal } from '@angular/core';",
-    'import {',
-    '  ButtonToggleGroupComponent,',
-    '  GogButtonToggleOptionDirective,',
-    '  IconComponent,',
-    "} from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [ButtonToggleGroupComponent, GogButtonToggleOptionDirective, IconComponent],',
-    '  template: `',
-    '    <gog-button-toggle-group [options]="views" [(value)]="slotView">',
-    '      <!-- [gogButtonToggleOptionTypeOf] types `option` from the array it renders. -->',
-    '      <ng-template',
-    '        gogButtonToggleOption',
-    '        [gogButtonToggleOptionTypeOf]="views"',
-    '        let-option',
-    '        let-selected="selected"',
-    '      >',
-    '        <gog-icon [name]="option.icon" />',
-    '        <span>{{ option.name }}</span>',
-    '        @if (selected) {',
-    '          <gog-icon name="check" />',
-    '        }',
-    '      </ng-template>',
-    '    </gog-button-toggle-group>',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly views: readonly ViewOption[] = [/* ... */];',
-    "  protected readonly slotView = signal('list');",
-    '}',
-  ].join('\n');
-
-  protected readonly sizesHtml = [
-    '@for (sizeOption of sizes; track sizeOption) {',
-    '  <gog-button-toggle-group [size]="sizeOption" [options]="views" [(value)]="sizeView" />',
-    '}',
-  ].join('\n');
-  protected readonly sizesTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { ButtonToggleGroupComponent, GogSize } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [ButtonToggleGroupComponent],',
-    '  template: `',
-    '    @for (sizeOption of sizes; track sizeOption) {',
-    '      <gog-button-toggle-group [size]="sizeOption" [options]="views" [(value)]="sizeView" />',
-    '    }',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    "  protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];",
-    '}',
-  ].join('\n');
 }

@@ -15,40 +15,16 @@
     <p class="doc-section__intro">Import the component and drop it into a template.</p>
     <app-markdown [markdown]="importSnippet" />
 
-    <p class="doc-section__intro">Basic usage:</p>
-    <div class="demo-card">
-      <div class="demo-card__preview">
-        <gog-button-toggle-group ariaLabel="View" [options]="views" [(value)]="view" />
-        <p class="doc-section__meta">Selected: {{ view() }}</p>
-      </div>
-      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
-    </div>
-  </section>
-
-  <section class="doc-section">
-    <h2 id="single-vs-multiple" class="doc-section__title font-heading">
-      Single and multiple are different widgets
-    </h2>
     <p class="doc-section__intro">
-      <code>multiple</code> is not a cosmetic switch. In single mode the group is a radio group —
-      <code>role="radiogroup"</code> / <code>role="radio"</code> with <code>aria-checked</code>, and
-      the arrow keys move <em>and</em> select, because that is what a radio group does. In multiple
-      mode it is a toolbar of independent toggles — <code>role="group"</code> with
-      <code>aria-pressed</code>, arrows only move, and Space toggles. Getting this backwards is the
-      usual defect in this component; here it follows from the input.
+      Basic usage — <code>[(value)]</code> holds the selected option's <code>id</code>, and an
+      option with <code>disabled: true</code> cannot be picked:
     </p>
     <div class="demo-card">
-      <h3 class="demo-card__title">Multiple</h3>
-      <div class="demo-card__preview">
-        <gog-button-toggle-group
-          ariaLabel="Text formatting"
-          [options]="formats"
-          [multiple]="true"
-          [(value)]="activeFormats"
-        />
-        <p class="doc-section__meta">Active: {{ activeFormats() }}</p>
-      </div>
-      <app-code-tabs [html]="multipleHtml" [ts]="multipleTs" />
+      <app-demo
+        [component]="examples.overview"
+        [source]="sources.buttonToggleOverview"
+        layout="rows"
+      />
     </div>
   </section>
 
@@ -61,202 +37,157 @@
         <code>joined</code> is one segmented control sharing borders; <code>separated</code> is
         discrete buttons with a gap. Either works vertically.
       </p>
-      <div class="demo-card__preview button-toggle-demo__stack">
-        @for (option of appearances; track option) {
-          <div>
-            <p class="doc-section__meta">{{ option }}</p>
-            <gog-button-toggle-group
-              [appearance]="option"
-              ariaLabel="View"
-              [options]="views"
-              [(value)]="appearanceView"
-            />
-          </div>
-        }
-        <div>
-          <p class="doc-section__meta">vertical</p>
-          <gog-button-toggle-group
-            orientation="vertical"
-            ariaLabel="View"
-            [options]="views"
-            [(value)]="appearanceView"
-          />
-        </div>
-      </div>
-      <app-code-tabs [html]="appearanceHtml" [ts]="appearanceTs" />
+      <app-demo
+        [component]="examples.appearance"
+        [source]="sources.buttonToggleAppearance"
+        layout="rows"
+      />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Sizes</h3>
+      <p class="demo-card__meta">
+        Five steps, in both appearances — also settable app-wide through
+        <code>GOG_CONFIG.control.size</code> (see the last example).
+      </p>
+      <app-demo [component]="examples.sizes" [source]="sources.buttonToggleSizes" layout="rows" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">States</h3>
+      <p class="demo-card__meta">
+        Nothing selected, one selected, a single option disabled through
+        <code>optionDisabled</code>, and the whole group <code>disabled</code> — then the multiple
+        mode with none and all of its options on. A disabled option stays in place and is skipped by
+        the arrow keys rather than merely being unclickable.
+      </p>
+      <app-demo [component]="examples.states" [source]="sources.buttonToggleStates" layout="rows" />
     </article>
 
     <article class="demo-card">
       <h3 class="demo-card__title">Icons</h3>
       <p class="demo-card__meta">
         <code>optionIcon</code> takes the same accessor shape as the other option inputs — a
-        property path or a function.
+        property path or a function — and draws a leading icon on each button.
       </p>
-      <div class="demo-card__preview">
-        <gog-button-toggle-group
-          ariaLabel="View"
-          optionIcon="icon"
-          [options]="views"
-          [(value)]="iconView"
-        />
-      </div>
-      <app-code-tabs [html]="iconsHtml" [ts]="iconsTs" />
+      <app-demo [component]="examples.icons" [source]="sources.buttonToggleIcons" layout="row" />
     </article>
 
     <article class="demo-card">
       <h3 class="demo-card__title">Custom button markup</h3>
       <p class="demo-card__meta">
         A <code>gogButtonToggleOption</code> template replaces the button's content, with
-        <code>{{ '$' }}implicit</code>, <code>selected</code> and <code>disabled</code> in its
-        context. Bind <code>[gogButtonToggleOptionTypeOf]</code> to the same array as
-        <code>options</code> <app-since version="21.15.0" /> and the option is typed as its element
-        — <code>option.icon</code> below is checked under <code>strictTemplates</code>. The binding
-        is never read at runtime; left unbound, the option is <code>unknown</code>, as before.
+        <code>{{ '$' }}implicit</code>, <code>selected</code>, <code>disabled</code> and the
+        resolved <code>label</code> in its context. Bind
+        <code>[gogButtonToggleOptionTypeOf]</code> to the same array as <code>options</code>
+        <app-since version="21.15.0" /> and the option is typed as its element —
+        <code>option.icon</code> below is checked under <code>strictTemplates</code>. The binding is
+        never read at runtime; left unbound, the option is <code>unknown</code>, as before.
       </p>
-      <div class="demo-card__preview">
-        <gog-button-toggle-group ariaLabel="View" [options]="views" [(value)]="slotView">
-          <ng-template
-            gogButtonToggleOption
-            [gogButtonToggleOptionTypeOf]="views"
-            let-option
-            let-selected="selected"
-          >
-            <gog-icon [name]="option.icon" />
-            <span>{{ option.name }}</span>
-            @if (selected) {
-              <gog-icon name="check" />
-            }
-          </ng-template>
-        </gog-button-toggle-group>
-      </div>
-      <app-code-tabs [html]="slotHtml" [ts]="slotTs" />
+      <app-demo [component]="examples.slot" [source]="sources.buttonToggleSlot" layout="rows" />
+      <p class="demo-card__meta">
+        The icon-only group keeps each button's name: <code>label</code> goes into the button as
+        text hidden with the library's <code>gog-visually-hidden</code> class, so a screen reader
+        still hears "Search", "Filter", "Star".
+      </p>
     </article>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Sizes</h3>
+      <h3 class="demo-card__title">Full width</h3>
       <p class="demo-card__meta">
-        Five steps, also settable app-wide through <code>GOG_CONFIG.control.size</code>.
+        <code>fullWidth</code> stretches the group to its container — the dashed box here — and the
+        buttons share the width.
       </p>
-      <div class="demo-card__preview button-toggle-demo__stack">
-        @for (sizeOption of sizes; track sizeOption) {
-          <gog-button-toggle-group
-            [size]="sizeOption"
-            [ariaLabel]="sizeOption"
-            [options]="views"
-            [(value)]="sizeView"
-          />
-        }
-      </div>
-      <app-code-tabs [html]="sizesHtml" [ts]="sizesTs" />
+      <app-demo
+        [component]="examples.fullWidth"
+        [source]="sources.buttonToggleFullWidth"
+        layout="frame"
+      />
     </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Two-way binding and forms</h3>
+      <p class="demo-card__meta">
+        <code>value</code> is a model, so <code>[(value)]</code> works in both modes and
+        <code>valueChange</code> fires on every pick. The group is also a
+        <code>ControlValueAccessor</code>: a <code>formControl</code> drives it, and disabling the
+        control disables the group.
+      </p>
+      <app-demo [component]="examples.forms" [source]="sources.buttonToggleForms" layout="rows" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">App-wide defaults — <code>GOG_CONFIG</code></h3>
+      <p class="demo-card__meta">
+        <code>control.size</code> sets the default size and <code>ripple.enabled</code> the press
+        ripple for every group under the provider; an instance's own input still wins. This example
+        provides the config on itself so it reaches only its own groups — in an app it goes in
+        <code>app.config.ts</code>. See
+        <a routerLink="/general/global-config">Global Configuration</a> for every key.
+      </p>
+      <app-demo [component]="examples.config" [source]="sources.buttonToggleConfig" layout="rows" />
+    </article>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="single-vs-multiple" class="doc-section__title font-heading">
+      Single and multiple are different widgets
+    </h2>
+    <p class="doc-section__intro">
+      <code>multiple</code> is not a cosmetic switch. In single mode the group is a radio group —
+      <code>role="radiogroup"</code> / <code>role="radio"</code> with <code>aria-checked</code>, and
+      the arrow keys move <em>and</em> select, because that is what a radio group does. In multiple
+      mode it is a toolbar of independent toggles — <code>role="group"</code> with
+      <code>aria-pressed</code>, arrows only move, and Space or Enter toggles. Getting this
+      backwards is the usual defect in this component; here it follows from the input. With
+      <code>multiple</code>, <code>value</code> is an array.
+    </p>
+    <div class="demo-card">
+      <app-demo
+        [component]="examples.multiple"
+        [source]="sources.buttonToggleMultiple"
+        layout="rows"
+      />
+    </div>
   </section>
 
   <section class="doc-section">
     <h2 id="accessibility" class="doc-section__title font-heading">Accessibility</h2>
     <p class="doc-section__intro">
-      The roles and keyboard model follow <code>multiple</code>, as described above. Set
-      <code>ariaLabel</code> on the group — the buttons alone ("List", "Grid") rarely say what is
-      being chosen. Disabled options are skipped by arrow navigation rather than merely being
-      unclickable.
+      The roles follow <code>multiple</code>, as described above. The group is one tab stop: Tab
+      lands on the selected option, or on the first enabled one when nothing is selected.
     </p>
+    <ul class="doc-section__intro">
+      <li>
+        <strong>Single mode</strong> — the arrow keys move to the next enabled option and select it.
+      </li>
+      <li>
+        <strong>Multiple mode</strong> — the arrow keys move focus only; Space or Enter toggles the
+        focused option.
+      </li>
+      <li>
+        <strong>Disabled</strong> — a disabled option is skipped by the arrows; a disabled group is
+        out of the tab order.
+      </li>
+      <li>
+        <strong>Name</strong> — set <code>ariaLabel</code> on the group: the buttons alone ("List",
+        "Grid") rarely say what is being chosen. An icon-only button needs its label kept as hidden
+        text, as in <em>Custom button markup</em>.
+      </li>
+    </ul>
   </section>
 
   <section class="doc-section">
     <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
 
     <h3 class="doc-section__subtitle">Inputs</h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Default</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of apiInputs; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-                @if (row.since) {
-                  <app-since [version]="row.since" />
-                }
-              </td>
-              <td>
-                <code>{{ row.type }}</code>
-              </td>
-              <td>
-                <code>{{ row.default }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="apiInputs" kind="inputs" />
 
     <h3 class="doc-section__subtitle">Outputs</h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Payload</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of apiOutputs; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-              </td>
-              <td>
-                <code>{{ row.type }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="apiOutputs" kind="outputs" />
 
     <h3 class="doc-section__subtitle">Content slots</h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Directive</th>
-            <th>Context</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              <code>gogButtonToggleOption</code>
-            </td>
-            <td>
-              <code>{{ '$' }}implicit, selected, disabled</code>
-            </td>
-            <td>Replaces one button's content.</td>
-          </tr>
-          <tr>
-            <td><code>[gogButtonToggleOptionTypeOf]</code> <app-since version="21.15.0" /></td>
-            <td>
-              <code>readonly TOption[]</code> — an input on <code>gogButtonToggleOption</code>
-            </td>
-            <td>
-              Bind the same array as <code>options</code> and <code>{{ '$' }}implicit</code> is
-              typed as its element instead of <code>unknown</code>. Never read at runtime; left
-              unbound, the template compiles exactly as before.
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="apiSlots" kind="slots" />
   </section>
 
   <app-global-config-note component="button-toggle" />
@@ -269,25 +200,6 @@
       <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
       <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
     </p>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Token</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of styleTokens; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="styleTokens" kind="tokens" />
   </section>
 </div>

@@ -1,0 +1,34 @@
+<div>
+  <span>custom content</span>
+  <gog-button-toggle-group ariaLabel="View" [options]="tools" [(value)]="view">
+    <!-- [gogButtonToggleOptionTypeOf] types `option` from the array it renders. -->
+    <ng-template
+      gogButtonToggleOption
+      [gogButtonToggleOptionTypeOf]="tools"
+      let-option
+      let-selected="selected"
+    >
+      <gog-icon [name]="option.icon" />
+      <span>{{ option.name }}</span>
+      @if (selected) {
+        <gog-icon name="check" />
+      }
+    </ng-template>
+  </gog-button-toggle-group>
+</div>
+
+<!-- Icon only: the resolved label stays in the button as visually hidden text. -->
+<div>
+  <span>icon only</span>
+  <gog-button-toggle-group ariaLabel="Tools" [options]="tools" multiple [(value)]="active">
+    <ng-template
+      gogButtonToggleOption
+      [gogButtonToggleOptionTypeOf]="tools"
+      let-option
+      let-label="label"
+    >
+      <gog-icon [name]="option.icon" />
+      <span class="gog-visually-hidden">{{ label }}</span>
+    </ng-template>
+  </gog-button-toggle-group>
+</div>

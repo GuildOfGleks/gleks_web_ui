@@ -1,0 +1,20 @@
+<div>
+  <span>[(value)]</span>
+  <gog-button-toggle-group
+    ariaLabel="Align"
+    [options]="alignments"
+    [(value)]="align"
+    (valueChange)="changes.update((n) => n + 1)"
+  />
+  <code>{{ align() }} · {{ changes() }} valueChange</code>
+</div>
+
+<!-- A ControlValueAccessor: formControl, and the control's disabled state, work as on any input. -->
+<div>
+  <span>formControl</span>
+  <gog-button-toggle-group ariaLabel="Align" [options]="alignments" [formControl]="control" />
+  <gog-button variant="outline" size="sm" (gogClick)="toggleDisabled()">
+    {{ control.disabled ? 'enable()' : 'disable()' }}
+  </gog-button>
+  <code>{{ control.value }}</code>
+</div>

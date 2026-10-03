@@ -1,0 +1,8 @@
+<!-- multiple: a toolbar of independent toggles, and value is an array. -->
+<gog-button-toggle-group
+  ariaLabel="Text formatting"
+  [options]="formats"
+  multiple
+  [(value)]="active"
+/>
+<p>Active: {{ active().join(', ') || 'none' }}</p>

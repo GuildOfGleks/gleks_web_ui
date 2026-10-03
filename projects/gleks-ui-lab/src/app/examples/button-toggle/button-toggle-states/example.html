@@ -1,0 +1,32 @@
+<div>
+  <span>no value</span>
+  <gog-button-toggle-group ariaLabel="Align" [options]="alignments" />
+</div>
+<div>
+  <span>selected</span>
+  <gog-button-toggle-group ariaLabel="Align" [options]="alignments" value="center" />
+</div>
+
+<!-- optionDisabled reads `disabled` off each option by default. -->
+<div>
+  <span>one option disabled</span>
+  <gog-button-toggle-group ariaLabel="Align" [options]="oneDisabled" value="left" />
+</div>
+<div>
+  <span>group disabled</span>
+  <gog-button-toggle-group ariaLabel="Align" [options]="alignments" value="left" disabled />
+</div>
+
+<div>
+  <span>multiple, none</span>
+  <gog-button-toggle-group ariaLabel="Tools" [options]="tools" multiple [value]="[]" />
+</div>
+<div>
+  <span>multiple, all</span>
+  <gog-button-toggle-group
+    ariaLabel="Tools"
+    [options]="tools"
+    multiple
+    [value]="['search', 'filter', 'star']"
+  />
+</div>

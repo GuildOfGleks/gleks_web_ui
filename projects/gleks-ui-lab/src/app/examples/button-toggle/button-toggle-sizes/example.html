@@ -1,0 +1,14 @@
+@for (size of sizes; track size) {
+  <div>
+    <span>{{ size }}</span>
+    @for (appearance of appearances; track appearance) {
+      <gog-button-toggle-group
+        [size]="size"
+        [appearance]="appearance"
+        ariaLabel="Align"
+        [options]="alignments"
+        value="center"
+      />
+    }
+  </div>
+}
