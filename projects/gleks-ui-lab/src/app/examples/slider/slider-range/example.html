@@ -1,0 +1,14 @@
+<div>
+  <gog-slider
+    label="Price"
+    range
+    [min]="0"
+    [max]="200"
+    [step]="5"
+    startAriaLabel="Lowest price"
+    endAriaLabel="Highest price"
+    [(rangeValue)]="price"
+    (rangeValueChange)="changes.update((n) => n + 1)"
+  />
+  <code>rangeValue: {{ price().start }}–{{ price().end }} · {{ changes() }} rangeValueChange</code>
+</div>

@@ -27,6 +27,16 @@ not worth carrying here.
   row, or a minimum column gap — the first changes what is read aloud, so check the accessible
   names stay the full day.
 
+- **`gog-slider`'s docs say a form control is ignored in range mode; it is not.** Found on
+  2026-10-03 while building the lab's Slider page. The `range` JSDoc ("`value`/`writeValue` are
+  ignored while this is `true`") and AGENTS.md's range paragraph ("`value` (and a form control's
+  `writeValue`) is ignored while `range` is on") both read as if `[formControl]` stops working on a
+  range slider. The code does the opposite: `writeValue` sees `range()` and writes a
+  `GogSliderRange` into `rangeValue`, and the thumbs report `{ start, end }` back through
+  `onChange` — `ui-showcase`'s "thumbs that meet" demo binds exactly that. What is true is narrower:
+  the _`value` model_ is ignored in range mode, `rangeValue` outside it, and the form control
+  carries whichever the mode is. Documentation only, JSDoc plus AGENTS.md.
+
 - **With no checkbox column, toggling a focused row may be silent to a screen reader.** 21.15.0
   made the state readable: a selected row's first cell starts with visually hidden "Selected"
   (`GOG_CONFIG.labels.tableRowSelected`), since `aria-selected` on a `<tr>` is supported only in a

@@ -1,0 +1,20 @@
+<div>
+  <gog-slider
+    label="Budget"
+    [formControl]="control"
+    errorDisplay="auto"
+    errorMessage="At least 20"
+  />
+  <div>
+    <gog-button variant="outline" size="sm" (gogClick)="control.markAsTouched()">
+      markAsTouched()
+    </gog-button>
+    <gog-button variant="outline" size="sm" (gogClick)="toggleDisabled()">
+      {{ control.disabled ? 'enable()' : 'disable()' }}
+    </gog-button>
+  </div>
+  <code>
+    value: {{ control.value }} · valid: {{ control.valid }} · touched: {{ control.touched }} ·
+    disabled: {{ control.disabled }}
+  </code>
+</div>

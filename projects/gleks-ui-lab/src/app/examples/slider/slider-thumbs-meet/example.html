@@ -1,0 +1,5 @@
+<div>
+  <!-- In range mode the form control carries the { start, end } pair. -->
+  <gog-slider label="Price" range [min]="0" [max]="200" [formControl]="control" />
+  <code>value: {{ control.value.start }}–{{ control.value.end }}</code>
+</div>

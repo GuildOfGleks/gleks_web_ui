@@ -1,0 +1,8 @@
+<div>
+  <!-- Drawn clamped to [min, max]; the model keeps 150 until the thumb moves. -->
+  <gog-slider label="Clamped" [(value)]="level" />
+  <div>
+    <gog-button variant="outline" size="sm" (gogClick)="level.set(150)">value.set(150)</gog-button>
+  </div>
+  <code>value: {{ level() }}</code>
+</div>

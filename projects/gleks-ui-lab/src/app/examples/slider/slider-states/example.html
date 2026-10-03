@@ -1,0 +1,26 @@
+<gog-slider label="Default" [value]="40" />
+<gog-slider label="Default · range" range [rangeValue]="{ start: 20, end: 70 }" />
+<!-- A meter-like bar that still answers the pointer and the keyboard. -->
+<gog-slider label="showThumb false" [showThumb]="false" [value]="40" />
+<gog-slider
+  label="showThumb false · range"
+  range
+  [showThumb]="false"
+  [rangeValue]="{ start: 20, end: 70 }"
+/>
+<gog-slider label="showValue false" [showValue]="false" [value]="40" />
+<gog-slider
+  label="showValue false · range"
+  range
+  [showValue]="false"
+  [rangeValue]="{ start: 20, end: 70 }"
+/>
+<gog-slider label="Disabled" disabled [value]="40" />
+<gog-slider label="Disabled · range" range disabled [rangeValue]="{ start: 20, end: 70 }" />
+<gog-slider label="Error" errorMessage="Too loud" [value]="40" />
+<gog-slider
+  label="Error · range"
+  range
+  errorMessage="Too wide"
+  [rangeValue]="{ start: 20, end: 70 }"
+/>

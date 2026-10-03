@@ -1,0 +1,12 @@
+<!-- errorDisplay unset: 'auto' from the config holds the error until the slider is touched. -->
+<gog-slider
+  label="errorDisplay from the config"
+  [formControl]="fromConfig"
+  errorMessage="At least 20"
+/>
+<gog-slider
+  label='errorDisplay="manual" — the instance wins'
+  errorDisplay="manual"
+  [formControl]="manual"
+  errorMessage="At least 20"
+/>

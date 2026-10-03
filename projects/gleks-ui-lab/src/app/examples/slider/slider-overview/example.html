@@ -1,0 +1,10 @@
+<div>
+  <gog-slider
+    label="Volume"
+    [step]="5"
+    [(value)]="volume"
+    (valueChange)="changes.update((n) => n + 1)"
+  />
+  <!-- valueChange fires on every step of a drag, not once at the end. -->
+  <code>value: {{ volume() }} · {{ changes() }} valueChange</code>
+</div>
