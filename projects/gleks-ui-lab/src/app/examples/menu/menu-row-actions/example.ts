@@ -31,8 +31,7 @@ interface DocumentRow {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MenuRowActionsExample {
-  // gog-table's `value` takes a mutable T[], so this is not `readonly Document[]`.
-  protected readonly documents: DocumentRow[] = [
+  protected readonly documents: readonly DocumentRow[] = [
     { id: 1, name: 'Q3 roadmap', owner: 'Ada' },
     { id: 2, name: 'Design tokens', owner: 'Grace' },
     { id: 3, name: 'Release notes', owner: 'Linus' },

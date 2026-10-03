@@ -4,7 +4,7 @@
   <!-- A real header rather than an empty one: gog-column falls back to the field name when
        `header` is blank, so `header=""` on a field="id" column renders "ID" above a menu button. -->
   <gog-column field="id" header="Actions" width="88px">
-    <ng-template gogColumnBody let-row>
+    <ng-template gogColumnBody [gogColumnBodyTypeOf]="documents" let-row>
       <span class="row-actions">
         <button
           gogButton
@@ -12,17 +12,17 @@
           size="sm"
           type="button"
           [gogMenuTrigger]="rowMenu"
-          [attr.aria-label]="'Actions for ' + $any(row).name"
+          [attr.aria-label]="'Actions for ' + row.name"
         >
           <gog-icon name="more-vertical" />
         </button>
 
         <gog-menu #rowMenu ariaLabel="Row actions">
-          <button gogMenuItem type="button" (click)="run('Open ' + $any(row).name)">
+          <button gogMenuItem type="button" (click)="run('Open ' + row.name)">
             <gog-icon name="eye" />
             Open
           </button>
-          <button gogMenuItem type="button" (click)="run('Share ' + $any(row).name)">
+          <button gogMenuItem type="button" (click)="run('Share ' + row.name)">
             <gog-icon name="external-link" />
             Share
           </button>
@@ -30,7 +30,7 @@
             <gog-icon name="lock" />
             Transfer ownership
           </button>
-          <button gogMenuItem type="button" (click)="run('Archive ' + $any(row).name)">
+          <button gogMenuItem type="button" (click)="run('Archive ' + row.name)">
             <gog-icon name="download" />
             Archive
           </button>
