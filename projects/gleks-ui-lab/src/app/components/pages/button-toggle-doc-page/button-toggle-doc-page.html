@@ -108,14 +108,21 @@
       <p class="demo-card__meta">
         A <code>gogButtonToggleOption</code> template replaces the button's content, with
         <code>{{ '$' }}implicit</code>, <code>selected</code> and <code>disabled</code> in its
-        context. The template's option arrives as <code>unknown</code> — the directive cannot see
-        the group's <code>TOption</code> — so narrow it with a one-line helper, as below.
+        context. Bind <code>[gogButtonToggleOptionTypeOf]</code> to the same array as
+        <code>options</code> <app-since version="21.15.0" /> and the option is typed as its element
+        — <code>option.icon</code> below is checked under <code>strictTemplates</code>. The binding
+        is never read at runtime; left unbound, the option is <code>unknown</code>, as before.
       </p>
       <div class="demo-card__preview">
         <gog-button-toggle-group ariaLabel="View" [options]="views" [(value)]="slotView">
-          <ng-template gogButtonToggleOption let-option let-selected="selected">
-            <gog-icon [name]="asView(option).icon" />
-            <span>{{ asView(option).name }}</span>
+          <ng-template
+            gogButtonToggleOption
+            [gogButtonToggleOptionTypeOf]="views"
+            let-option
+            let-selected="selected"
+          >
+            <gog-icon [name]="option.icon" />
+            <span>{{ option.name }}</span>
             @if (selected) {
               <gog-icon name="check" />
             }
@@ -235,6 +242,17 @@
               <code>{{ '$' }}implicit, selected, disabled</code>
             </td>
             <td>Replaces one button's content.</td>
+          </tr>
+          <tr>
+            <td><code>[gogButtonToggleOptionTypeOf]</code> <app-since version="21.15.0" /></td>
+            <td>
+              <code>readonly TOption[]</code> — an input on <code>gogButtonToggleOption</code>
+            </td>
+            <td>
+              Bind the same array as <code>options</code> and <code>{{ '$' }}implicit</code> is
+              typed as its element instead of <code>unknown</code>. Never read at runtime; left
+              unbound, the template compiles exactly as before.
+            </td>
           </tr>
         </tbody>
       </table>

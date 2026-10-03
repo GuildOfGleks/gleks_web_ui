@@ -32,7 +32,7 @@ interface ViewOption {
 const API_INPUTS: readonly ApiRow[] = [
   {
     name: 'options',
-    type: 'TOption[]',
+    type: 'readonly TOption[]',
     default: '[]',
     description: 'The buttons. Your own objects — nothing has to be mapped into a fixed shape.',
   },
@@ -296,9 +296,14 @@ export class ButtonToggleDocPage {
 
   protected readonly slotHtml = [
     '<gog-button-toggle-group [options]="views" [(value)]="slotView">',
-    '  <ng-template gogButtonToggleOption let-option let-selected="selected">',
-    '    <gog-icon [name]="asView(option).icon" />',
-    '    <span>{{ asView(option).name }}</span>',
+    '  <ng-template',
+    '    gogButtonToggleOption',
+    '    [gogButtonToggleOptionTypeOf]="views"',
+    '    let-option',
+    '    let-selected="selected"',
+    '  >',
+    '    <gog-icon [name]="option.icon" />',
+    '    <span>{{ option.name }}</span>',
     '    @if (selected) {',
     '      <gog-icon name="check" />',
     '    }',
@@ -318,9 +323,15 @@ export class ButtonToggleDocPage {
     '  imports: [ButtonToggleGroupComponent, GogButtonToggleOptionDirective, IconComponent],',
     '  template: `',
     '    <gog-button-toggle-group [options]="views" [(value)]="slotView">',
-    '      <ng-template gogButtonToggleOption let-option let-selected="selected">',
-    '        <gog-icon [name]="asView(option).icon" />',
-    '        <span>{{ asView(option).name }}</span>',
+    '      <!-- [gogButtonToggleOptionTypeOf] types `option` from the array it renders. -->',
+    '      <ng-template',
+    '        gogButtonToggleOption',
+    '        [gogButtonToggleOptionTypeOf]="views"',
+    '        let-option',
+    '        let-selected="selected"',
+    '      >',
+    '        <gog-icon [name]="option.icon" />',
+    '        <span>{{ option.name }}</span>',
     '        @if (selected) {',
     '          <gog-icon name="check" />',
     '        }',
@@ -329,18 +340,10 @@ export class ButtonToggleDocPage {
     '  `,',
     '})',
     'export class ExampleComponent {',
-    '  // The slot hands the option back as `unknown`, so narrow it once here rather than',
-    '  // sprinkling `$any(...)` through the template.',
-    '  protected asView(option: unknown): ViewOption {',
-    '    return option as ViewOption;',
-    '  }',
+    '  protected readonly views: readonly ViewOption[] = [/* ... */];',
+    "  protected readonly slotView = signal('list');",
     '}',
   ].join('\n');
-
-  /** See `slotTs` — the template context cannot infer `TOption` from the group. */
-  protected asView(option: unknown): ViewOption {
-    return option as ViewOption;
-  }
 
   protected readonly sizesHtml = [
     '@for (sizeOption of sizes; track sizeOption) {',
