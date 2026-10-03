@@ -32,7 +32,10 @@
     </p>
 
     <p class="doc-section__intro">
-      Basic usage — <code>sortable</code> columns cycle asc → desc → unsorted on click:
+      Basic usage — <code>sortable</code> columns cycle asc → desc → unsorted on click. A sortable
+      header holds a real <code>&lt;button&gt;</code> <app-since version="21.15.0" />, so it is one
+      tab stop that Enter and Space sort, a screen reader hears "Component, button", and the order
+      is stated by <code>aria-sort</code> on the header cell:
     </p>
     <div class="demo-card">
       <div class="demo-card__preview">
@@ -67,8 +70,8 @@
             <ng-template gogColumnHeader let-header>
               <span class="status-header">{{ header }}</span>
             </ng-template>
-            <ng-template gogColumnBody let-row let-value="value">
-              <gog-tag [variant]="statusVariant($any(row).status)" size="sm">{{ value }}</gog-tag>
+            <ng-template gogColumnBody [gogColumnBodyTypeOf]="rows" let-row let-value="value">
+              <gog-tag [variant]="statusVariant(row.status)" size="sm">{{ value }}</gog-tag>
             </ng-template>
           </gog-column>
 
@@ -78,9 +81,22 @@
       <app-code-tabs [html]="templatesHtml" [ts]="templatesTs" [css]="templatesCss" />
 
       <p class="demo-card__meta">
-        The template is scoped to the column it belongs to, so the compiler checks the pairing and
-        the context is typed — <code>let-row</code> is the row, <code>let-value="value"</code> the
-        cell's own value.
+        The template is scoped to the column it belongs to, so the compiler checks the pairing.
+        <code>[gogColumnBodyTypeOf]="rows"</code> <app-since version="21.15.0" /> types
+        <code>let-row</code>: bound to the same array the table renders, <code>row.status</code> is
+        checked against the row type under <code>strictTemplates</code> — a typo fails the build
+        instead of rendering an empty cell. It is never read at runtime, and left unbound
+        <code>row</code> is <code>unknown</code>, as before. <code>let-value="value"</code> is the
+        cell's own value and stays <code>unknown</code> either way, since it is read from a
+        <code>field</code> string.
+      </p>
+      <p class="demo-card__meta">
+        <strong
+          >In a sortable column, a <code>gogColumnHeader</code> template renders inside the sort
+          button</strong
+        >
+        and becomes its name — keep it to text and decorative marks. A link, button or form control
+        there would be a control inside a control.
       </p>
     </article>
 
@@ -122,6 +138,13 @@
         <code>overflow-x</code>, and <code>clip</code> to <code>hidden</code>. So nothing outside
         the table can ever be the header's scrollport. Scroll this one down and sideways: it holds
         either way.
+      </p>
+      <p class="demo-card__meta">
+        A capped table draws its frame on the scroll viewport rather than on the table, so the frame
+        stays put while the rows scroll, and the pinned header keeps its bottom edge over them. The
+        vertical scrollbar starts below the header <app-since version="21.15.0" /> — the table sets
+        <a routerLink="/components/scroll">gog-scroll</a>'s <code>--gog-scroll-track-start</code> to
+        the header's measured height.
       </p>
       <div class="demo-card__preview">
         <gog-table [value]="rows" maxHeight="260px" [stickyHeader]="true">
@@ -199,7 +222,11 @@
     <article class="demo-card">
       <h3 class="demo-card__title">Empty state</h3>
       <p class="demo-card__meta">
-        An empty <code>value</code> array renders a built-in placeholder row.
+        An empty <code>value</code> array renders one row saying "No data"
+        <app-since version="21.15.0" /> — before, it was a dash, which told a screen reader nothing.
+        <code>emptyMessage</code> sets it per table, because "No orders yet" and "Nothing matches
+        these filters" are different sentences; <code>GOG_CONFIG.labels.tableEmpty</code> sets it
+        app-wide. <code>emptyPlaceholder</code> is a different thing: the text for one missing cell.
       </p>
       <div class="demo-card__preview">
         <gog-button variant="ghost" type="button" (gogClick)="toggleEmpty()">
@@ -307,9 +334,71 @@
       </li>
     </ul>
     <p class="doc-section__intro">
-      The checkbox column appears on its own — <code>showSelectionColumn</code> turns it off, for a
-      table that selects by row click instead (pair that with <code>interactiveRows</code>). The
+      The checkbox column appears on its own, and <code>showSelectionColumn</code> turns it off. The
       header select-all renders only in <code>'multiple'</code> mode.
+    </p>
+
+    <h3 id="select-on-row-click" class="doc-section__subtitle">
+      Selecting by row — <code>selectOnRowClick</code> <app-since version="21.15.0" />
+    </h3>
+    <p class="doc-section__intro">
+      <code>[selectOnRowClick]="true"</code> toggles a row's selection when the row itself is
+      pressed, so the checkbox column can go. Click a row to select it and again to deselect it; the
+      <em>Open</em> button stands in for an action in a cell.
+    </p>
+    <div class="demo-card">
+      <div class="demo-card__preview">
+        <gog-table
+          [value]="rows"
+          selectionMode="multiple"
+          [(selection)]="rowSelection"
+          dataKey="component"
+          [showSelectionColumn]="false"
+          [selectOnRowClick]="true"
+          size="sm"
+          (gogRowClick)="onSelectRowClick($event)"
+        >
+          <gog-column field="component" header="Component"></gog-column>
+          <gog-column field="owner" header="Owner"></gog-column>
+          <gog-column field="status" header="Action" width="120px">
+            <ng-template gogColumnBody [gogColumnBodyTypeOf]="rows" let-row>
+              <gog-button variant="ghost" size="xsm" type="button" (gogClick)="openRow(row)">
+                Open
+              </gog-button>
+            </ng-template>
+          </gog-column>
+        </gog-table>
+      </div>
+      <p class="doc-section__meta">
+        Selected: {{ rowSelectionSummary() }} · gogRowClick: {{ lastRowClick() }} · opened:
+        {{ lastOpened() }}
+      </p>
+      <app-code-tabs [html]="selectOnRowClickHtml" [ts]="selectOnRowClickTs" />
+    </div>
+    <ul class="table-doc__rules">
+      <li>
+        <strong>It makes the rows interactive on its own</strong> — focusable, styled as pressable,
+        and toggled by Enter or Space on the focused row — so there is no
+        <code>interactiveRows</code> to pair it with.
+      </li>
+      <li>
+        <strong>Two presses do not toggle.</strong> One that lands on a control inside a cell — a
+        link, a button, a form field, the row's own checkbox — keeps its own meaning, which is why
+        <em>Open</em> above does not select its row. And a drag that selects text in the row selects
+        the text, so a value can still be copied.
+      </li>
+      <li>
+        <strong><code>gogRowClick</code> still fires for every press.</strong> A table whose rows
+        navigate — open a detail page — should leave <code>selectOnRowClick</code> off, or one press
+        would select and navigate at once.
+      </li>
+    </ul>
+    <p class="doc-section__intro">
+      <strong>With the checkboxes off, the selection still reaches a screen reader.</strong> A
+      selected row's first cell starts with visually hidden text, "Selected", set app-wide through
+      <code>GOG_CONFIG.labels.tableRowSelected</code>. <code>aria-selected</code> on the row is not
+      enough on its own: ARIA supports it on a row only inside a <code>grid</code>, and a plain
+      table is not one. With the checkbox column shown, the checkbox states it and nothing is added.
     </p>
   </section>
 
@@ -373,6 +462,7 @@
         <gog-table
           [value]="serverRows()"
           [lazy]="true"
+          [sort]="serverSort()"
           [totalRecords]="serverTotal()"
           [pageSize]="serverPageSize()"
           [loading]="serverLoading()"
@@ -399,6 +489,15 @@
       <code>value.length</code>.
       <strong>Do not sort or slice <code>value</code> yourself as well</strong> — that is exactly
       what the flag turns off.
+    </p>
+    <p class="doc-section__intro">
+      <strong>Set <code>sort</code> when the server already orders the data.</strong>
+      <app-since version="21.15.0" /> This endpoint answers by score, highest first, until told
+      otherwise; <code>[sort]="serverSort()"</code> makes the Score header say so on the first
+      render, where an unbound table would show every header unsorted. Setting
+      <code>sort</code> does not fire <code>gogSortChange</code>, so binding the two —
+      <code>[sort]="sort()" (gogSortChange)="sort.set($event)"</code> — is a two-way binding, not a
+      loop.
     </p>
     <p class="doc-section__intro">
       In lazy mode <code>pageSizeChange</code> is the refetch signal for a new page size, so bind
@@ -459,6 +558,12 @@
       handed; <code>virtualize</code> keeps the rows the browser builds small, whatever was fetched.
       One ceiling worth knowing: Chrome clamps an element's height at 33&nbsp;554&nbsp;426px,
       roughly 745&nbsp;000 rows.
+    </p>
+    <p class="doc-section__intro">
+      <strong>The window starts on the server.</strong> <app-since version="21.15.0" /> A
+      server-rendered page carries a screenful of rows rather than all 10&nbsp;000, and hydration
+      takes over from there. <code>maxHeight</code> takes any CSS length for this: <code>rem</code>,
+      <code>vh</code> or <code>calc()</code> window from the first frame as <code>px</code> does.
     </p>
   </section>
 

@@ -87,7 +87,7 @@ interface ApiRow {
 const TABLE_INPUTS: readonly ApiRow[] = [
   {
     name: 'value',
-    type: 'T[]',
+    type: 'readonly T[]',
     default: '[]',
     description: 'The row data array. In lazy mode this is the current page, already sorted.',
   },
@@ -114,7 +114,7 @@ const TABLE_INPUTS: readonly ApiRow[] = [
   },
   {
     name: 'pageSizeOptions',
-    type: 'number[] | undefined',
+    type: 'readonly number[] | undefined',
     default: '[10, 20, 30, 40, 50]',
     description: 'The choices that select offers. Also settable app-wide via GOG_CONFIG.paginator.',
     since: '21.4.0',
@@ -134,6 +134,14 @@ const TABLE_INPUTS: readonly ApiRow[] = [
     description:
       'How many rows exist in total, for lazy mode. Without it pagination stays hidden and the table warns in dev. showTotal reports this rather than value.length.',
     since: '21.4.0',
+  },
+  {
+    name: 'sort',
+    type: 'GogTableSortEvent | null',
+    default: 'null',
+    description:
+      'Seeds the sort, and replaces it whenever it changes — for data that arrives already ordered, so the header says what the server did. A header press still moves it in between. Setting it does not emit gogSortChange, so [sort]="sort()" (gogSortChange)="sort.set($event)" is a two-way binding.',
+    since: '21.15.0',
   },
   {
     name: 'selectionMode',
@@ -163,8 +171,16 @@ const TABLE_INPUTS: readonly ApiRow[] = [
     type: 'boolean',
     default: 'true',
     description:
-      'The checkbox column that appears once selection is on. Turn it off for a table that selects by row click.',
+      'The checkbox column that appears once selection is on. For a table that selects by clicking the row itself, turn it off and set selectOnRowClick. With it off, a selected row carries visually hidden "Selected" text (GOG_CONFIG.labels.tableRowSelected).',
     since: '21.4.0',
+  },
+  {
+    name: 'selectOnRowClick',
+    type: 'boolean',
+    default: 'false',
+    description:
+      "Toggles a row's selection when the row itself is pressed, and makes rows interactive on its own (focusable, Enter/Space toggle) — no interactiveRows needed. A press on a control inside a cell, or a drag that selects text, does not toggle. gogRowClick still fires, so leave it off where rows navigate. A no-op without selectionMode.",
+    since: '21.15.0',
   },
   {
     name: 'interactiveRows',
@@ -186,6 +202,14 @@ const TABLE_INPUTS: readonly ApiRow[] = [
     type: 'string',
     default: "'-'",
     description: 'Fallback text for a cell whose field is null or undefined.',
+  },
+  {
+    name: 'emptyMessage',
+    type: 'string | undefined',
+    default: "'No data'",
+    description:
+      "The text of the one row an empty table renders. Falls back to GOG_CONFIG.labels.tableEmpty, then to 'No data'. Before 21.15.0 that row was a dash.",
+    since: '21.15.0',
   },
   {
     name: 'paginatorPosition',
@@ -232,7 +256,7 @@ const TABLE_INPUTS: readonly ApiRow[] = [
     type: 'boolean',
     default: 'false',
     description:
-      'Renders only the rows in view, measuring each one as it renders since a table row cannot be given a fixed height. Requires maxHeight and fullWidth — without either it turns itself off and warns in dev mode. Composes with lazy rather than replacing it.',
+      'Renders only the rows in view, measuring each one as it renders since a table row cannot be given a fixed height. Requires maxHeight and fullWidth — without either it turns itself off and warns in dev mode. Composes with lazy rather than replacing it. Since 21.15.0 the server renders a window too, not every row.',
     since: '21.13.0',
   },
   {
@@ -327,10 +351,16 @@ const COLUMN_SLOTS: readonly SlotRow[] = [
       "Custom cell markup for this column. value is the already-resolved cell value for the column's field, so a custom cell can decorate it rather than re-derive it. index is the position within the rendered page, not the whole data set.",
   },
   {
+    name: '[gogColumnBodyTypeOf]',
+    context: 'readonly T[] — an input on gogColumnBody',
+    description:
+      'Since 21.15.0. Bind the same array the table renders and let-row is typed as its element instead of unknown. Never read at runtime; left unbound, the template compiles exactly as before. value stays unknown either way, since it is read from a field string.',
+  },
+  {
     name: 'gogColumnHeader',
     context: "$implicit (the column's own header text), field",
     description:
-      'Custom header markup for this column. The header text is handed in so a custom header can decorate it rather than restate it.',
+      'Custom header markup for this column. The header text is handed in so a custom header can decorate it rather than restate it. In a sortable column it renders inside the sort button and names it, so keep links, buttons and form controls out of it.',
   },
 ];
 
@@ -393,6 +423,18 @@ export class TableDocPage implements OnDestroy {
           .join(', '),
   );
 
+  // ── Select-on-row-click demo ───────────────────────────────────────────────────────────────
+  protected readonly rowSelection = signal<DemoRow[]>([]);
+  protected readonly rowSelectionSummary = computed(() =>
+    this.rowSelection().length === 0
+      ? 'nothing'
+      : this.rowSelection()
+          .map((row) => row.component)
+          .join(', '),
+  );
+  protected readonly lastRowClick = signal('—');
+  protected readonly lastOpened = signal('—');
+
   // ── Rows-per-page demo ─────────────────────────────────────────────────────────────────────
   /** A `signal`, because `pageSize` is a `model` the select writes back into. */
   protected readonly rowsPerPage = signal(2);
@@ -402,9 +444,10 @@ export class TableDocPage implements OnDestroy {
   protected readonly serverRows = signal<ServerRow[]>([]);
   protected readonly serverTotal = signal(SERVER_ROWS.length);
   protected readonly serverLoading = signal(false);
-  protected readonly lastServerQuery = signal('page 1, unsorted');
+  protected readonly lastServerQuery = signal('page 1, sorted by score desc');
+  /** The fake server's own default order, seeded into the table through `sort`. */
+  protected readonly serverSort = signal<GogTableSortEvent>({ field: 'score', direction: 'desc' });
   private serverPage = 1;
-  private serverSort: GogTableSortEvent = { field: '', direction: null };
   private serverTimer: ReturnType<typeof setTimeout> | null = null;
 
   constructor() {
@@ -431,8 +474,16 @@ export class TableDocPage implements OnDestroy {
     this.logEvent(`gogRowClick → ${event.row.component} (row ${event.index + 1})`);
   }
 
+  protected onSelectRowClick(event: GogTableRowClickEvent<DemoRow>): void {
+    this.lastRowClick.set(`${event.row.component} (row ${event.index + 1})`);
+  }
+
+  protected openRow(row: DemoRow): void {
+    this.lastOpened.set(row.component);
+  }
+
   protected onServerSort(sort: GogTableSortEvent): void {
-    this.serverSort = sort;
+    this.serverSort.set(sort);
     // The table has already reset itself to page 1 by the time this fires.
     this.serverPage = 1;
     this.fetchPage();
@@ -458,7 +509,7 @@ export class TableDocPage implements OnDestroy {
     this.serverLoading.set(true);
     if (this.serverTimer) clearTimeout(this.serverTimer);
 
-    const { field, direction } = this.serverSort;
+    const { field, direction } = this.serverSort();
     this.lastServerQuery.set(
       `page ${this.serverPage}` + (direction ? `, sorted by ${field} ${direction}` : ', unsorted'),
     );
@@ -536,7 +587,8 @@ export class TableDocPage implements OnDestroy {
     '    <ng-template gogColumnHeader let-header>',
     '      <span class="status-header">{{ header }}</span>',
     '    </ng-template>',
-    '    <ng-template gogColumnBody let-row let-value="value">',
+    '    <!-- [gogColumnBodyTypeOf] types `row` from the array the table renders. -->',
+    '    <ng-template gogColumnBody [gogColumnBodyTypeOf]="rows" let-row let-value="value">',
     '      <gog-tag [variant]="statusVariant(row.status)" size="sm">{{ value }}</gog-tag>',
     '    </ng-template>',
     '  </gog-column>',
@@ -577,7 +629,7 @@ export class TableDocPage implements OnDestroy {
     '        <ng-template gogColumnHeader let-header>',
     '          <span class="status-header">{{ header }}</span>',
     '        </ng-template>',
-    '        <ng-template gogColumnBody let-row let-value="value">',
+    '        <ng-template gogColumnBody [gogColumnBodyTypeOf]="rows" let-row let-value="value">',
     '          <gog-tag [variant]="statusVariant(row.status)" size="sm">{{ value }}</gog-tag>',
     '        </ng-template>',
     '      </gog-column>',
@@ -587,7 +639,7 @@ export class TableDocPage implements OnDestroy {
     '  `,',
     '})',
     'export class ExampleComponent {',
-    '  protected readonly rows: Row[] = [/* ... */];',
+    '  protected readonly rows: readonly Row[] = [/* ... */];',
     '',
     '  protected statusVariant(status: string): GogTagVariant {',
     "    return STATUS_VARIANTS[status] ?? 'info';",
@@ -881,6 +933,58 @@ export class TableDocPage implements OnDestroy {
     '}',
   ].join('\n');
 
+  protected readonly selectOnRowClickHtml = [
+    '<gog-table',
+    '  [value]="rows"',
+    '  selectionMode="multiple"',
+    '  [(selection)]="selection"',
+    '  dataKey="component"',
+    '  [showSelectionColumn]="false"',
+    '  [selectOnRowClick]="true"',
+    '  (gogRowClick)="onRowClick($event)"',
+    '>',
+    '  <gog-column field="component" header="Component"></gog-column>',
+    '  <gog-column field="owner" header="Owner"></gog-column>',
+    '  <gog-column field="status" header="Action" width="120px">',
+    '    <ng-template gogColumnBody [gogColumnBodyTypeOf]="rows" let-row>',
+    '      <!-- A press on a control in a cell does not toggle the row. -->',
+    '      <gog-button variant="ghost" size="xsm" type="button" (gogClick)="open(row)">',
+    '        Open',
+    '      </gog-button>',
+    '    </ng-template>',
+    '  </gog-column>',
+    '</gog-table>',
+  ].join('\n');
+  protected readonly selectOnRowClickTs = [
+    "import { Component, signal } from '@angular/core';",
+    "import { ButtonComponent } from '@guildofgleks/ui';",
+    'import {',
+    '  GogColumn,',
+    '  GogColumnBodyDirective,',
+    '  GogTableRowClickEvent,',
+    '  TableComponent,',
+    "} from '@guildofgleks/ui/table';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [TableComponent, GogColumn, GogColumnBodyDirective, ButtonComponent],',
+    '  template: `/* as in the HTML tab */`,',
+    '})',
+    'export class ExampleComponent {',
+    '  protected readonly rows: readonly Row[] = [/* ... */];',
+    '  protected readonly selection = signal<Row[]>([]);',
+    '',
+    '  // Still fires for every press — selectOnRowClick does not replace it.',
+    '  protected onRowClick(event: GogTableRowClickEvent<Row>): void {',
+    '    console.log(event.row, event.index);',
+    '  }',
+    '',
+    '  protected open(row: Row): void {',
+    '    console.log(row.component);',
+    '  }',
+    '}',
+  ].join('\n');
+
   protected readonly rowsPerPageHtml = [
     '<gog-table',
     '  [value]="rows"',
@@ -952,6 +1056,7 @@ export class TableDocPage implements OnDestroy {
     '<gog-table',
     '  [value]="serverRows()"',
     '  [lazy]="true"',
+    '  [sort]="sort()"',
     '  [totalRecords]="serverTotal()"',
     '  [(pageSize)]="serverPageSize"',
     '  [loading]="serverLoading()"',
@@ -983,15 +1088,16 @@ export class TableDocPage implements OnDestroy {
     '  protected readonly serverPageSize = signal(10);',
     '  protected readonly serverLoading = signal(false);',
     '',
+    '  // The server orders by score until told otherwise; `sort` makes the header say so.',
+    "  protected readonly sort = signal<GogTableSortEvent>({ field: 'score', direction: 'desc' });",
     '  private page = 1;',
-    "  private sort: GogTableSortEvent = { field: '', direction: null };",
     '',
     '  constructor() {',
     '    this.fetchPage();',
     '  }',
     '',
     '  protected onServerSort(sort: GogTableSortEvent): void {',
-    '    this.sort = sort;',
+    '    this.sort.set(sort);',
     '    // The table has already reset itself to page 1 — that reset is part of the sort,',
     '    // which is why gogPageChange stays quiet for it.',
     '    this.page = 1;',
@@ -1011,7 +1117,7 @@ export class TableDocPage implements OnDestroy {
     '',
     '  private fetchPage(): void {',
     '    this.serverLoading.set(true);',
-    '    this.api.list({ page: this.page, size: this.serverPageSize(), sort: this.sort }).subscribe({',
+    '    this.api.list({ page: this.page, size: this.serverPageSize(), sort: this.sort() }).subscribe({',
     '      next: ({ rows, total }) => {',
     '        this.serverRows.set(rows); // already sorted and sliced by the server',
     '        this.serverTotal.set(total);',
