@@ -14,162 +14,150 @@
     <p class="doc-section__intro">Import the component and drop it into a template.</p>
     <app-markdown [markdown]="importSnippet" />
 
-    <p class="doc-section__intro">Basic usage:</p>
+    <p class="doc-section__intro">Basic usage — <code>[(checked)]</code> holds the state:</p>
     <div class="demo-card">
-      <div class="demo-card__preview">
-        <gog-toggle label="Notifications" [(checked)]="notifications" />
-      </div>
-      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
+      <app-demo [component]="examples.overview" [source]="sources.toggleOverview" />
     </div>
-  </section>
-
-  <section class="doc-section">
-    <h2 id="checkbox-or-toggle" class="doc-section__title font-heading">Toggle or checkbox?</h2>
-    <p class="doc-section__intro">
-      A checkbox answers "is this one of the things you selected" and is usually submitted with a
-      form. A switch answers "is this setting on", takes effect immediately, and is announced
-      differently. Reach for <a routerLink="/components/checkbox">Checkbox</a> inside a form and for
-      <code>gog-toggle</code> in a settings list.
-    </p>
   </section>
 
   <section class="doc-section">
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
     <article class="demo-card">
+      <h3 class="demo-card__title">Sizes and states</h3>
+      <p class="demo-card__meta">
+        Off, on, and both disabled, in the five sizes — a switch has no third state, which is the
+        first thing that separates it from a checkbox. The track and thumb have their own scale
+        (<code>--gog-toggle-&lt;size&gt;-*</code>); only the label size is shared with
+        <a routerLink="/components/checkbox">gog-checkbox</a>. Both states stay legible while
+        disabled.
+      </p>
+      <app-demo [component]="examples.states" [source]="sources.toggleStates" layout="rows" />
+    </article>
+
+    <article class="demo-card">
       <h3 class="demo-card__title">Labels inside the track</h3>
       <p class="demo-card__meta">
-        <code>onLabel</code> / <code>offLabel</code> render inside the track itself. Both stay in
-        the DOM and the track sizes to the wider of the two, so its width cannot jump as the switch
-        flips.
+        <code>onLabel</code> / <code>offLabel</code> render inside the track — the one thing a
+        checkbox cannot do. Both stay in the DOM and the track sizes to the wider of the two, so its
+        width cannot jump as the switch flips; the inactive one is faded, not removed. Keep them
+        short, and do not put the state's meaning only there: they are <code>aria-hidden</code>,
+        because the role already announces on and off.
       </p>
-      <div class="demo-card__preview action-column">
-        <gog-toggle label="Analytics" onLabel="ON" offLabel="OFF" [(checked)]="analytics" />
-      </div>
-      <app-code-tabs [html]="trackLabelsHtml" [ts]="trackLabelsTs" />
+      <app-demo
+        [component]="examples.trackLabels"
+        [source]="sources.toggleTrackLabels"
+        layout="row"
+      />
     </article>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Sizes</h3>
+      <h3 class="demo-card__title">Label position</h3>
       <p class="demo-card__meta">
-        Five steps, shared with <code>gog-checkbox</code>. Also settable app-wide through
-        <code>GOG_CONFIG.control.size</code>.
+        The control is a <code>&lt;label&gt;</code> around the input, so its text is the accessible
+        name and the whole row is the hit target. <code>labelPosition="start"</code> puts the text
+        first — what a settings list wants, so the switches line up on one edge.
       </p>
-      <div class="demo-card__preview action-column">
-        @for (sizeOption of sizes; track sizeOption) {
-          <gog-toggle [size]="sizeOption" [label]="sizeOption" [(checked)]="sizeState" />
-        }
-      </div>
-      <app-code-tabs [html]="sizesHtml" [ts]="sizesTs" />
+      <app-demo
+        [component]="examples.labelPosition"
+        [source]="sources.toggleLabelPosition"
+        layout="rows"
+      />
     </article>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Label placement and full width</h3>
+      <h3 class="demo-card__title">A settings list — full width</h3>
       <p class="demo-card__meta">
-        <code>labelPosition</code> moves the label to the other side.
-        <code>fullWidth</code> stretches the row so the switch lands on the far edge — the usual
-        settings-list layout.
+        <code>fullWidth</code> fills the container — the dashed box here. With
+        <code>labelPosition="start"</code> that is the row every settings screen is made of: label
+        at one edge, switch at the other, the whole line pressable.
       </p>
-      <div class="demo-card__preview action-column toggle-demo__rows">
-        <gog-toggle label="Label after the switch" [(checked)]="compactMode" />
-        <gog-toggle label="Label before it" labelPosition="start" [(checked)]="labelStart" />
-        <gog-toggle label="Full width" [fullWidth]="true" [(checked)]="compactMode" />
-      </div>
-      <app-code-tabs [html]="layoutHtml" [ts]="layoutTs" />
+      <app-demo [component]="examples.settings" [source]="sources.toggleSettings" layout="frame" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">No visible label</h3>
+      <p class="demo-card__meta">
+        <code>ariaLabel</code> names a switch when the row around it already says what it is — a
+        table cell, a toolbar. It is the only case that input is for.
+      </p>
+      <app-demo [component]="examples.ariaLabel" [source]="sources.toggleAriaLabel" layout="row" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Two-way binding</h3>
+      <p class="demo-card__meta">
+        A switch takes effect immediately — there is no Save button between the press and the
+        setting, which is the behavioural half of the difference from a checkbox. That makes
+        <code>checkedChange</code> the place to do the work.
+      </p>
+      <app-demo [component]="examples.binding" [source]="sources.toggleBinding" />
     </article>
 
     <article class="demo-card">
       <h3 class="demo-card__title">Reactive forms</h3>
       <p class="demo-card__meta">
         A <code>ControlValueAccessor</code>, so <code>formControl</code> /
-        <code>formControlName</code> work directly — including the control's own disabled state.
+        <code>formControlName</code> work directly: the form drives <code>checked</code>, and
+        disabling through the form ends up as <code>disabled</code> on the native input.
       </p>
-      <div class="demo-card__preview action-column">
-        <gog-toggle label="Dark mode" [formControl]="darkMode" />
-        <p class="doc-section__meta">Control value: {{ darkMode.value }}</p>
-      </div>
-      <app-code-tabs [html]="formsHtml" [ts]="formsTs" />
+      <app-demo [component]="examples.forms" [source]="sources.toggleForms" layout="rows" />
     </article>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Disabled</h3>
-      <p class="demo-card__meta">Both states stay legible while non-interactive.</p>
-      <div class="demo-card__preview action-column">
-        <gog-toggle label="Disabled, off" [disabled]="true" />
-        <gog-toggle label="Disabled, on" [disabled]="true" [checked]="true" />
-      </div>
-      <app-code-tabs [html]="disabledHtml" [ts]="disabledTs" />
+      <h3 class="demo-card__title">App-wide defaults — <code>GOG_CONFIG</code></h3>
+      <p class="demo-card__meta">
+        <code>control.size</code> sets the default size for every toggle under the provider; an
+        instance's own input still wins. This example provides the config on itself so it reaches
+        only its own toggles — in an app it goes in <code>app.config.ts</code>. See
+        <a routerLink="/general/global-config">Global Configuration</a>.
+      </p>
+      <app-demo [component]="examples.config" [source]="sources.toggleConfig" layout="rows" />
     </article>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="checkbox-or-toggle" class="doc-section__title font-heading">Toggle or checkbox?</h2>
+    <p class="doc-section__intro">
+      A switch answers "is this setting on" and applies at once; a checkbox answers "is this one of
+      the things you selected" and waits for the form around it. That is why this component has no
+      <code>indeterminate</code>, no error line and no group: a list of switches is a list of
+      independent settings, while a list of checkboxes is usually one answer made of several parts.
+      Reach for <a routerLink="/components/checkbox">Checkbox</a> inside a form and for
+      <code>gog-toggle</code> in a settings list.
+    </p>
   </section>
 
   <section class="doc-section">
     <h2 id="accessibility" class="doc-section__title font-heading">Accessibility</h2>
     <p class="doc-section__intro">
-      The control is a real checkbox input with <code>role="switch"</code>, so Space toggles it, Tab
-      reaches it, and it participates in a native form — only the announcement and the painting
-      differ. Give it either a <code>label</code> or an <code>ariaLabel</code>; the track labels are
-      <code>aria-hidden</code>, since the switch's own state is already announced.
+      The control is a real checkbox input with <code>role="switch"</code> — the only ARIA on it.
+      The state is the input's own <code>checked</code> property, so there is no
+      <code>aria-checked</code>, and Space, form submission and a <code>:checked</code> selector all
+      keep working.
     </p>
+    <ul class="doc-section__intro">
+      <li><strong>Keyboard</strong> — Tab reaches it, Space flips it.</li>
+      <li>
+        <strong>Name</strong> — the <code>label</code>, or <code>ariaLabel</code> when there is no
+        visible one.
+      </li>
+      <li>
+        <strong>Painting</strong> — the track, the thumb and the two track labels are
+        <code>aria-hidden</code>; painting it differently is the entire difference from
+        <code>gog-checkbox</code>.
+      </li>
+    </ul>
   </section>
 
   <section class="doc-section">
     <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
 
     <h3 class="doc-section__subtitle">Inputs</h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Default</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of apiInputs; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-              </td>
-              <td>
-                <code>{{ row.type }}</code>
-              </td>
-              <td>
-                <code>{{ row.default }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="apiInputs" kind="inputs" />
 
     <h3 class="doc-section__subtitle">Outputs</h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Payload</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of apiOutputs; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-              </td>
-              <td>
-                <code>{{ row.type }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="apiOutputs" kind="outputs" />
   </section>
 
   <app-global-config-note component="toggle" />
@@ -182,25 +170,6 @@
       <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
       <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
     </p>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Token</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of styleTokens; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="styleTokens" kind="tokens" />
   </section>
 </div>

@@ -23,7 +23,12 @@ status, is `docs/lab-component-pages.md`; the rules are stated here because they
    block as a fenced `css` snippet in the card's prose.
 4. **Data belongs to the example**, duplicated per folder — an example that imports from outside its
    folder cannot be pasted anywhere.
-5. **Cover what the showcase covers.** The `ui-showcase` page for the same component is the list of
+5. **Boolean inputs take the attribute form** (`<gog-toggle disabled>`), and examples use it —
+   **except models and tri-state inputs**: `checked`, `open`, `ariaPressed` and the like need
+   `[checked]="true"`, or the build fails with "Type 'string' is not assignable to type 'boolean'".
+   In `layout="rows"` a component must not be a direct child of the example — wrap it in a row
+   `<div>`, or the layout's flex rule lands on the component's own host.
+6. **Cover what the showcase covers.** The `ui-showcase` page for the same component is the list of
    states, inputs and combinations; a lab page that shows fewer is incomplete, not concise.
 
 ## Demo layout

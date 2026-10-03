@@ -1,0 +1,8 @@
+<gog-toggle
+  label="Dark mode"
+  onLabel="ON"
+  offLabel="OFF"
+  [(checked)]="dark"
+  (checkedChange)="changes.update((n) => n + 1)"
+/>
+<p>checked: {{ dark() }} · {{ changes() }} checkedChange</p>

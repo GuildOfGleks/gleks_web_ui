@@ -1,0 +1,16 @@
+<div>
+  <gog-toggle label="Auto-update" [formControl]="control" />
+</div>
+
+<div>
+  <gog-button variant="outline" size="sm" (gogClick)="control.setValue(!control.value)">
+    setValue(!value)
+  </gog-button>
+  <gog-button variant="outline" size="sm" (gogClick)="toggleDisabled()">
+    {{ control.disabled ? 'enable()' : 'disable()' }}
+  </gog-button>
+</div>
+
+<p>
+  value: {{ control.value }} · touched: {{ control.touched }} · disabled: {{ control.disabled }}
+</p>

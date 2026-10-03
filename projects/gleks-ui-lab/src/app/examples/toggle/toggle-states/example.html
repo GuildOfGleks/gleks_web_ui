@@ -1,0 +1,9 @@
+@for (size of sizes; track size) {
+  <div>
+    <span>{{ size }}</span>
+    <gog-toggle [size]="size" label="Off" />
+    <gog-toggle [size]="size" label="On" [checked]="true" />
+    <gog-toggle [size]="size" label="Disabled" disabled />
+    <gog-toggle [size]="size" label="Disabled, on" disabled [checked]="true" />
+  </div>
+}

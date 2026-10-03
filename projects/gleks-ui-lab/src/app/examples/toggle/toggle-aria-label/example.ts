@@ -1,0 +1,10 @@
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ToggleComponent } from '@guildofgleks/ui';
+
+@Component({
+  selector: 'app-example',
+  imports: [ToggleComponent],
+  templateUrl: './example.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class ToggleAriaLabelExample {}
