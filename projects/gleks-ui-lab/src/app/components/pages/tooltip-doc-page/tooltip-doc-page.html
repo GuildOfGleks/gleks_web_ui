@@ -127,6 +127,14 @@
       replay-safe under SSR event replay.
     </p>
     <p class="doc-section__intro">
+      The bubble describes its trigger through <code>aria-describedby</code>, written onto the
+      element that takes focus — on a <code>gog-button</code>, the inner
+      <code>&lt;button&gt;</code>. It adds its id to whatever is already there and removes only its
+      own, so a field's error message stays linked while the tooltip comes and goes. Both are
+      21.15.0: before it, a tooltip on a <code>gog-button</code> described a wrapper no screen
+      reader focuses, and a closed tooltip erased descriptions it did not own.
+    </p>
+    <p class="doc-section__intro">
       A tooltip triggered inside a <a routerLink="/components/dialog">dialog</a> stacks above it —
       the dialog panel raises <code>--gog-tooltip-z</code> the same way it raises the dropdown's.
     </p>

@@ -16,7 +16,11 @@
       Import the component and the two directives. The trigger is a directive rather than a
       component of its own — the same decision as
       <a routerLink="/components/button">[gogButton]</a> — because a menu button is usually an icon
-      button you have already styled, and a wrapper would fight that.
+      button you have already styled, and a wrapper would fight that. It goes on a
+      <code>gog-button</code> as well as on your own <code>&lt;button gogButton&gt;</code>: since
+      21.15.0 it writes <code>aria-haspopup</code>, <code>aria-expanded</code> and
+      <code>aria-controls</code> onto the inner <code>&lt;button&gt;</code> that takes focus, and
+      Escape hands focus back to it.
     </p>
     <app-markdown [markdown]="importSnippet" />
 
