@@ -14,17 +14,15 @@ const LANGUAGE: Record<CodeTab, string> = {
 };
 
 /**
- * The three files of one example — template, component, stylesheet — behind a tab strip.
+ * An example's two files — template and component — behind a tab strip.
  *
- * The `ts` input must be a complete, paste-and-run file: full imports, `@Component` decorator,
- * class body, not just the fragment `html` references.
+ * **HTML and TS, and the TS is TypeScript only** (`docs/lab-component-pages.md`, D1/D2): the
+ * component uses `templateUrl`, so the markup is in the HTML tab and never repeated inside the TS
+ * one. An example carries no stylesheet — its preview layout is `<app-demo>`'s — so there is no
+ * CSS tab.
  *
- * **The strip is the same shape on every card, including for an example that needs no CSS.**
- * Hiding the tab in that case would be smaller, but then a missing tab is ambiguous — the reader
- * cannot tell "this example needs no styles" from "the styles exist and we did not show them",
- * and that second reading is the one that makes someone paste an example and wonder why it looks
- * wrong. An empty CSS tab says so in words instead, and the toolbar keeps its width as the reader
- * moves down the page.
+ * `css` survives only for the pages not yet converted: a CSS tab appears while one of them still
+ * passes a non-empty stylesheet, and the input goes when the last page is converted.
  */
 @Component({
   selector: 'app-code-tabs',
@@ -38,18 +36,16 @@ export class CodeTabsComponent {
 
   readonly html = input.required<string>();
   readonly ts = input.required<string>();
-  /**
-   * The example's own stylesheet. Only what the example genuinely needs to look right when
-   * pasted — not the lab's demo scaffolding (`.action-row`, the size grids), which is this
-   * site's layout and not part of what is being documented.
-   */
+  /** Legacy pages only — see the class comment. */
   readonly css = input<string>('');
 
-  protected readonly tabs: readonly { readonly id: CodeTab; readonly label: string }[] = [
-    { id: 'html', label: 'HTML' },
-    { id: 'ts', label: 'TS' },
-    { id: 'css', label: 'CSS' },
-  ];
+  protected readonly tabs = computed<readonly { readonly id: CodeTab; readonly label: string }[]>(
+    () => [
+      { id: 'html', label: 'HTML' },
+      { id: 'ts', label: 'TS' },
+      ...(this.css().trim() ? [{ id: 'css' as const, label: 'CSS' }] : []),
+    ],
+  );
 
   /** Markup first: it is the part a reader compares against what is rendered above it. */
   protected readonly activeTab = signal<CodeTab>('html');
@@ -67,15 +63,11 @@ export class CodeTabsComponent {
   protected readonly isEmpty = computed(() => this.activeSource().trim() === '');
 
   /**
-   * What an empty tab says. Per tab, because the three empty cases mean different things: an
-   * example with no stylesheet is ordinary, while an example with no template is one that
-   * documents configuration rather than markup — and "no styles" printed over a missing template
-   * would just read as a bug.
+   * What an empty tab says. An example with no template documents configuration rather than
+   * markup, and should say so rather than look broken.
    */
   protected readonly emptyMessage = computed(() => {
     switch (this.activeTab()) {
-      case 'css':
-        return 'This example needs no styles of its own.';
       case 'html':
         return 'This example has no template — it is configuration, not markup.';
       default:

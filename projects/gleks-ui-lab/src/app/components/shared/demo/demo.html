@@ -1,5 +1,5 @@
 @if (component(); as example) {
-  <div class="demo-card__preview">
+  <div class="demo-card__preview demo-preview" [class]="'demo-preview--' + layout()">
     <ng-container *ngComponentOutlet="example" />
   </div>
 }

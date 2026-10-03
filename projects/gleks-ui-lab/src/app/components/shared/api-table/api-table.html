@@ -1,0 +1,37 @@
+<div class="api-table-scroll">
+  <table class="api-table">
+    <thead>
+      <tr>
+        @for (column of columns(); track column.field) {
+          <th>{{ column.label }}</th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @for (row of rows(); track row.name) {
+        <tr>
+          @for (column of columns(); track column.field) {
+            @switch (column.field) {
+              @case ('name') {
+                <td>
+                  <code>{{ row.name }}</code>
+                  @if (row.since) {
+                    <app-since [version]="row.since" />
+                  }
+                </td>
+              }
+              @case ('description') {
+                <td>{{ row.description }}</td>
+              }
+              @default {
+                <td>
+                  <code>{{ row[column.field] ?? '—' }}</code>
+                </td>
+              }
+            }
+          }
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

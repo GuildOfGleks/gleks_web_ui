@@ -4,6 +4,22 @@ import { CodeTabsComponent } from '../code-tabs/code-tabs';
 import type { ExampleSource } from '../example-source';
 
 /**
+ * How the preview arranges what the example renders. The lab's layout, not the example's: an
+ * example carries no stylesheet (`docs/lab-component-pages.md`, D3), so the arrangement a reader
+ * should not copy lives here, once.
+ *
+ * - `block` — the example as it renders, full width.
+ * - `row` — its top-level elements in a wrapping, centred row: buttons, chips, toggles.
+ * - `rows` — its top-level elements stacked, each one a wrapping row; a leading `<span>` in a row
+ *   is drawn as that row's label.
+ * - `stack` — its top-level elements stacked and centred: a control and the line reporting it.
+ * - `frame` — a narrow dashed box, for an example whose point is how it fills its container.
+ *
+ * A new arrangement is added here, never as CSS in an example.
+ */
+export type DemoLayout = 'block' | 'row' | 'rows' | 'stack' | 'frame';
+
+/**
  * One documentation example: the live component, then its three files behind the tab strip.
  *
  * The card's heading and prose stay in the page — they are documentation about the example, not
@@ -27,4 +43,5 @@ export class DemoComponent {
   /** Absent for an example with nothing to render — a `provideGogConfig` snippet. */
   readonly component = input<Type<unknown> | null>(null);
   readonly source = input.required<ExampleSource>();
+  readonly layout = input<DemoLayout>('block');
 }

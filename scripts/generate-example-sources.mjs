@@ -69,8 +69,30 @@ function camel(name) {
   return name.replace(/-([a-z0-9])/g, (_, c) => c.toUpperCase());
 }
 
+/**
+ * The TS tab is TypeScript and nothing else (`docs/lab-component-pages.md`, D2): the template is
+ * `example.html`, reached through `templateUrl`, and never inlined — an inline `template:` is how
+ * the legacy pages ended up showing the same markup twice. `styles:` is refused for the same
+ * reason. `styleUrl` is allowed only while the example still has an `example.css`; the
+ * migration removes both, and its close-out makes an `example.css` an error too.
+ */
+function contractViolations(dir) {
+  const ts = read(dir, 'example.ts');
+  const problems = [];
+  if (/\btemplate\s*:/.test(ts)) problems.push('inline `template:` — use templateUrl');
+  if (/\bstyles\s*:/.test(ts)) problems.push('inline `styles:` — examples carry no styles');
+  if (/\bstyleUrls?\s*:/.test(ts) && !existsSync(join(dir, 'example.css'))) {
+    problems.push('`styleUrl` without an example.css');
+  }
+  if (existsSync(join(dir, 'example.html')) && !/\btemplateUrl\s*:/.test(ts)) {
+    problems.push('example.html exists but example.ts has no templateUrl');
+  }
+  return problems;
+}
+
 let stale = 0;
 let written = 0;
+let violations = 0;
 
 for (const component of dirsIn(EXAMPLES_ROOT)) {
   const componentDir = join(EXAMPLES_ROOT, component);
@@ -78,6 +100,10 @@ for (const component of dirsIn(EXAMPLES_ROOT)) {
 
   const entries = examples.map((name) => {
     const dir = join(componentDir, name);
+    for (const problem of contractViolations(dir)) {
+      console.error(`  ${dir}: ${problem}`);
+      violations++;
+    }
     const files = FILES.map(([key, file]) => `    ${key}: ${literal(read(dir, file))},`).join('\n');
     return `  ${camel(name)}: {\n${files}\n  },`;
   });
@@ -102,6 +128,11 @@ for (const component of dirsIn(EXAMPLES_ROOT)) {
     writeFileSync(target, output, 'utf8');
     written++;
   }
+}
+
+if (violations > 0) {
+  console.error(`\n${violations} example(s) break the two-tab contract.`);
+  process.exit(1);
 }
 
 if (check) {
