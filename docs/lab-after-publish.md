@@ -36,6 +36,11 @@ build.
 
 ## 21.15.0 — select a table row by pressing it
 
+- **A selected row without the checkbox column carries visually hidden "Selected"**, configurable
+  as `GOG_CONFIG.labels.tableRowSelected`. Add the key to the Global Config labels table, and one
+  sentence beside the `selectOnRowClick` demo on the Table page saying how the state reaches a
+  screen reader once the checkboxes are off.
+
 - **`gog-progressbar`'s edge hairlines are off by default** (`--gog-progressbar-edge-width: 0px`).
   The token reference's `--gog-progressbar-edge-*` row in `token-reference-data.ts` describes them
   as always drawn; it should say they are opt-in, set the width to `1px` to turn them on, and why

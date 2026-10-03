@@ -175,7 +175,9 @@
     <p class="table-page__note">
       With <code>selectOnRowClick</code> the whole row toggles, so the checkbox column can go; the
       rows become focusable and Enter or Space toggles them. <code>gogRowClick</code> fires for
-      every press that reaches a row, with the row and its index on the page.
+      every press that reaches a row, with the row and its index on the page. Without the
+      checkboxes, a selected row's first cell starts with visually hidden "Selected"
+      (<code>GOG_CONFIG.labels.tableRowSelected</code>), so the state reaches a screen reader too.
     </p>
     <gog-table
       [value]="rows"

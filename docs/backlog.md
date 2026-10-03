@@ -16,13 +16,15 @@ not worth carrying here.
 
 ## Defects — first
 
-- **With `selectOnRowClick` and no checkbox column, a row's selection may reach no one.** The
-  state is then carried only by `aria-selected` on the `<tr>`, and the table is a plain `<table>`
-  — ARIA 1.2 supports `aria-selected` on a row only inside `grid` or `treegrid`. With the checkbox
-  column shown, the checkbox states it and nothing is lost. **From the spec and the DOM, not from a
-  screen reader**: read on the Table page on 2026-09-26; what Chrome, NVDA and VoiceOver actually
-  announce was not checked, and should be before choosing between a grid role and a visually
-  hidden state.
+- **With no checkbox column, toggling a focused row may be silent to a screen reader.** 21.15.0
+  made the state readable: a selected row's first cell starts with visually hidden "Selected"
+  (`GOG_CONFIG.labels.tableRowSelected`), since `aria-selected` on a `<tr>` is supported only in a
+  `grid` and the table should not take a role that promises arrow-key cell navigation. What it does
+  not do is announce the change: Space on a focused row changes text inside the row, not the row's
+  own state, so whether anything is spoken depends on the screen reader honouring `aria-selected`
+  (kept on the row for that). **Not checked with a real screen reader** — NVDA, JAWS and VoiceOver
+  each need trying before choosing between nothing more and a polite live region, which carries
+  the same "copy outlives the announcement" question as `gog-alert` below.
 
 - **`gog-alert`'s announcement copy outlives the announcement, and is taken only once.** The
   alert copies its heading and body into a visually hidden live region one render after it mounts

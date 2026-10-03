@@ -193,6 +193,15 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- **A selected row in a `gog-table` without its checkbox column said so only to sighted readers.**
+  With `[showSelectionColumn]="false"` — the usual setup for `selectOnRowClick` — the state was
+  carried by the row's highlight and by `aria-selected` on the `<tr>`, and ARIA supports
+  `aria-selected` on a row only inside a `grid` or `treegrid`, which a plain table is not. A
+  selected row's first cell now starts with visually hidden text, "Selected", set through the new
+  `GOG_CONFIG.labels.tableRowSelected`. `aria-selected` stays for the screen readers that honour it.
+  The table does not take `role="grid"`: that role promises cell-by-cell arrow-key navigation the
+  table does not have. With the checkbox column shown nothing changes — the checkbox states it.
+
 - **A sortable `gog-table` header is a button to a screen reader.** It was a `<th tabindex="0">`
   that sorted on click and Enter, with no role saying it could be pressed — an ordinary column
   header that happened to take focus. It now holds a real `<button>`, the ARIA sortable-table

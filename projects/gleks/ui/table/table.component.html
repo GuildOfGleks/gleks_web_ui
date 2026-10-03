@@ -57,6 +57,15 @@
           </span>
         }
       </ng-template>
+      <!--
+        Leads a selected row's first cell when no checkbox states the selection, so a screen reader
+        reads "Selected" before the row's content. See `statesSelectionInText`.
+      -->
+      <ng-template #selectedState let-row>
+        @if (statesSelectionInText() && isSelected(row)) {
+          <span class="gog-visually-hidden">{{ resolvedLabels().rowSelected }}, </span>
+        }
+      </ng-template>
       <thead>
         <tr>
           @if (hasSelectionColumn()) {
@@ -161,11 +170,15 @@
               }
               @if (showRowNumbers()) {
                 <td class="gog-table__td gog-table__td--num">
+                  <ng-container *ngTemplateOutlet="selectedState; context: { $implicit: row }" />
                   {{ globalRowIndex(rowIndexOf(i)) }}
                 </td>
               }
-              @for (col of columns(); track col.field()) {
+              @for (col of columns(); track col.field(); let first = $first) {
                 <td class="gog-table__td">
+                  @if (first && !showRowNumbers()) {
+                    <ng-container *ngTemplateOutlet="selectedState; context: { $implicit: row }" />
+                  }
                   @if (getBodyTemplate(col); as bodyTpl) {
                     <ng-container
                       *ngTemplateOutlet="bodyTpl; context: bodyContext(row, col, rowIndexOf(i))"

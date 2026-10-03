@@ -387,6 +387,7 @@ provideGogConfig({
     tablePagination: 'Tabellennavigation',
     selectRow: 'Zeile auswählen',
     selectAllRows: 'Alle Zeilen auswählen',
+    tableRowSelected: 'Ausgewählt', // gog-table's hidden state text, when the checkbox column is off
     tableEmpty: 'Keine Daten', // gog-table with no rows; an instance's emptyMessage wins
     today: 'Heute',
     thisMonth: 'Aktueller Monat',
@@ -1990,7 +1991,10 @@ where it holds zero or one row — one shape rather than a union to narrow on ev
 - **Set `dataKey`.** Without it rows are matched by object identity, so any refetch that produces
   new objects silently drops the selection. It is also the `@for` track key, which is what lets
   the DOM survive a refetch instead of being rebuilt.
-- The checkbox column renders automatically (`showSelectionColumn` to turn it off).
+- The checkbox column renders automatically (`showSelectionColumn` to turn it off). **With it
+  off, a selected row's first cell starts with visually hidden text** — `'Selected'`, via
+  `GOG_CONFIG.labels.tableRowSelected` — because nothing else states the selection to a screen
+  reader: `aria-selected` on a `<tr>` is supported only in a `grid`, and this is a plain table.
 - **`selectOnRowClick` toggles a row's selection when the row itself is pressed** (since 21.15.0),
   the usual partner of `[showSelectionColumn]="false"`. It makes the rows interactive on its own —
   focusable, and toggled by Enter or Space on the focused row — so do not also reach for

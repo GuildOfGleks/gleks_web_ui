@@ -110,6 +110,7 @@ const DEFAULT_LABELS = {
   pagination: 'Table pagination',
   selectRow: 'Select row',
   selectAllRows: 'Select all rows on this page',
+  rowSelected: 'Selected',
   empty: 'No data',
 } as const;
 
@@ -482,6 +483,11 @@ export class TableComponent<T extends object> {
         configured.selectAllRows,
         DEFAULT_LABELS.selectAllRows,
       ),
+      rowSelected: resolveConfigured(
+        undefined,
+        configured.tableRowSelected,
+        DEFAULT_LABELS.rowSelected,
+      ),
       empty: resolveConfigured(this.emptyMessage(), configured.tableEmpty, DEFAULT_LABELS.empty),
     };
   });
@@ -494,6 +500,14 @@ export class TableComponent<T extends object> {
   );
   protected readonly hasSelectionColumn = computed(
     () => this.hasSelection() && this.showSelectionColumn(),
+  );
+  /**
+   * A selected row states it in text when no checkbox does. `aria-selected` on the `<tr>` stays,
+   * but ARIA supports it on a row only inside a `grid` or `treegrid`, and this is a plain table —
+   * a role it should not take, since a grid promises cell-by-cell arrow-key navigation.
+   */
+  protected readonly statesSelectionInText = computed(
+    () => this.hasSelection() && !this.showSelectionColumn(),
   );
 
   // ── Windowing ────────────────────────────────────────────────────────────────

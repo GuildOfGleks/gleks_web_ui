@@ -336,6 +336,11 @@ export interface GogGlobalConfig {
     tablePagination?: string;
     selectRow?: string;
     selectAllRows?: string;
+    /**
+     * `gog-table`: the visually hidden word a selected row carries when there is no checkbox
+     * column to state it (`showSelectionColumn` off).
+     */
+    tableRowSelected?: string;
     /** `gog-table`'s message when there are no rows; an instance's `emptyMessage` wins. */
     tableEmpty?: string;
     /** `gog-calendar` navigation and shortcuts. */

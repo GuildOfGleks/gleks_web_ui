@@ -833,6 +833,45 @@ describe('TableComponent — outputs, lazy mode and selection', () => {
       expect(host.rowClicks).toEqual([]);
     });
 
+    describe('the selected state without a checkbox column', () => {
+      const stated = () =>
+        [...rows()].map(
+          (row) =>
+            (row as HTMLElement).querySelector('.gog-visually-hidden')?.textContent?.trim() ?? null,
+        );
+
+      it('leads a selected row with hidden text, and only a selected one', async () => {
+        host.showSelectionColumn.set(false);
+        host.selection.set([PAGE_1[1]]);
+        await settle();
+
+        expect(stated()).toEqual([null, 'Selected,']);
+        const firstCell = (rows()[1] as HTMLElement).querySelector('td')!;
+        expect(firstCell.firstElementChild?.classList.contains('gog-visually-hidden')).toBe(true);
+      });
+
+      it('follows the selection as it changes', async () => {
+        host.showSelectionColumn.set(false);
+        host.selectOnRowClick.set(true);
+        await settle();
+
+        (rows()[0] as HTMLElement).click();
+        await settle();
+        expect(stated()).toEqual(['Selected,', null]);
+
+        (rows()[0] as HTMLElement).click();
+        await settle();
+        expect(stated()).toEqual([null, null]);
+      });
+
+      it('adds nothing while the checkbox column states it', async () => {
+        host.selection.set([PAGE_1[0]]);
+        await settle();
+
+        expect(stated()).toEqual([null, null]);
+      });
+    });
+
     describe('selectOnRowClick', () => {
       const ids = () => host.selection().map((row) => row.id);
       const click = async (index: number) => {
