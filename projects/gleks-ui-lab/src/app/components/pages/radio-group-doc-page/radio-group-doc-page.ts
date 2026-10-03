@@ -17,7 +17,7 @@ interface ApiRow {
 const API_INPUTS: readonly ApiRow[] = [
   {
     name: 'options',
-    type: 'GogRadioOption[]',
+    type: 'readonly GogRadioOption[]',
     default: '[]',
     description: 'The choices: { id, label, disabled? }. Rendered as native <input type="radio">s.',
   },
@@ -82,7 +82,8 @@ const API_INPUTS: readonly ApiRow[] = [
     name: 'fullWidth',
     type: 'boolean',
     default: 'false',
-    description: 'Stretches the group to fill its container.',
+    description:
+      'Stretches the group to fill its container. Horizontal, the options share the width in equal parts, each pressable across its whole part, and still wrap once the labels no longer fit; before 21.15.0 a full-width horizontal group stacked its options.',
   },
 ];
 
