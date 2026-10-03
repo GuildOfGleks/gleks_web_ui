@@ -1,0 +1,9 @@
+<div>
+  <p>24-hour, 15-minute steps</p>
+  <gog-calendar showTime hourFormat="24" [minuteStep]="15" [(value)]="meeting" />
+</div>
+<div>
+  <p>12-hour, with seconds</p>
+  <gog-calendar showTime hourFormat="12" showSeconds [(value)]="alarm" />
+</div>
+<p>meeting: {{ show(meeting()) }} · alarm: {{ show(alarm()) }}</p>

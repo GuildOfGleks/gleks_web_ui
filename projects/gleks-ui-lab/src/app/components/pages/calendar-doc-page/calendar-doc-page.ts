@@ -1,19 +1,22 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { CalendarComponent, GogDatepickerValue } from '@guildofgleks/ui/datepicker';
-import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
+import { ApiTableComponent, type ApiRow } from '../../shared/api-table/api-table';
+import { DemoComponent } from '../../shared/demo/demo';
 import { GlobalConfigNote } from '../../shared/global-config-note/global-config-note';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
-
-interface ApiRow {
-  readonly name: string;
-  readonly type: string;
-  readonly default: string;
-  readonly description: string;
-  readonly since?: string;
-}
+import { CALENDAR_EXAMPLES } from '../../../examples/calendar/sources.generated';
+import { CalendarBoundsExample } from '../../../examples/calendar/calendar-bounds/example';
+import { CalendarConfigExample } from '../../../examples/calendar/calendar-config/example';
+import { CalendarEventsExample } from '../../../examples/calendar/calendar-events/example';
+import { CalendarFooterExample } from '../../../examples/calendar/calendar-footer/example';
+import { CalendarLabelsExample } from '../../../examples/calendar/calendar-labels/example';
+import { CalendarLocaleExample } from '../../../examples/calendar/calendar-locale/example';
+import { CalendarOverviewExample } from '../../../examples/calendar/calendar-overview/example';
+import { CalendarSizesExample } from '../../../examples/calendar/calendar-sizes/example';
+import { CalendarTimeExample } from '../../../examples/calendar/calendar-time/example';
+import { CalendarWidthExample } from '../../../examples/calendar/calendar-width/example';
 
 const API_INPUTS: readonly ApiRow[] = [
   {
@@ -128,14 +131,12 @@ const API_OUTPUTS: readonly ApiRow[] = [
   {
     name: 'gogDateSelect',
     type: 'Date | GogDateRange | null',
-    default: '—',
     description:
       'Emitted when a selection is complete — a day in single mode, both ends of a range in range mode. Picking just the first end of a range does not emit.',
   },
   {
     name: 'valueChange',
     type: 'Date | GogDateRange | null',
-    default: '—',
     description: 'The value model’s change event, for [(value)].',
   },
 ];
@@ -143,10 +144,10 @@ const API_OUTPUTS: readonly ApiRow[] = [
 @Component({
   selector: 'app-calendar-doc-page',
   imports: [
-    CalendarComponent,
+    ApiTableComponent,
+    DemoComponent,
     GlobalConfigNote,
     MarkdownComponent,
-    CodeTabsComponent,
     RouterLink,
     SinceBadgeComponent,
   ],
@@ -155,137 +156,25 @@ const API_OUTPUTS: readonly ApiRow[] = [
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CalendarDocPage {
-  protected readonly day = signal<GogDatepickerValue>(new Date());
-  protected readonly range = signal<GogDatepickerValue>(null);
-  protected readonly workday = signal<GogDatepickerValue>(null);
-  protected readonly moment = signal<GogDatepickerValue>(null);
-
-  /** Weekends are the textbook case an array of dates cannot express. */
-  protected readonly weekends = (date: Date): boolean => {
-    const weekday = date.getDay();
-    return weekday === 0 || weekday === 6;
-  };
-
   protected readonly apiInputs = API_INPUTS;
   protected readonly apiOutputs = API_OUTPUTS;
   protected readonly styleTokens =
     TOKEN_SECTIONS.find((section) => section.id === 'calendar')?.tokens ?? [];
 
+  protected readonly sources = CALENDAR_EXAMPLES;
+  protected readonly examples = {
+    overview: CalendarOverviewExample,
+    sizes: CalendarSizesExample,
+    events: CalendarEventsExample,
+    bounds: CalendarBoundsExample,
+    time: CalendarTimeExample,
+    footer: CalendarFooterExample,
+    locale: CalendarLocaleExample,
+    labels: CalendarLabelsExample,
+    width: CalendarWidthExample,
+    config: CalendarConfigExample,
+  };
+
   protected readonly importSnippet =
     "```typescript\nimport { CalendarComponent } from '@guildofgleks/ui/datepicker';\n\n@Component({\n  // ...\n  imports: [CalendarComponent],\n})\n```";
-
-  protected readonly overviewHtml = '<gog-calendar [(value)]="day" />';
-  protected readonly overviewTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { CalendarComponent, GogDatepickerValue } from '@guildofgleks/ui/datepicker';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [CalendarComponent],',
-    '  template: `<gog-calendar [(value)]="day" />`,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly day = signal<GogDatepickerValue>(new Date());',
-    '}',
-  ].join('\n');
-
-  protected readonly rangeHtml = [
-    '<gog-calendar selectionMode="range" [numberOfMonths]="2" [(value)]="range" />',
-  ].join('\n');
-  protected readonly rangeTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { CalendarComponent, GogDatepickerValue } from '@guildofgleks/ui/datepicker';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [CalendarComponent],',
-    '  template: `',
-    '    <gog-calendar selectionMode="range" [numberOfMonths]="2" [(value)]="range" />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  // In range mode the value is a { start, end } pair.',
-    '  protected readonly range = signal<GogDatepickerValue>(null);',
-    '}',
-  ].join('\n');
-
-  protected readonly disabledHtml = [
-    '<gog-calendar [disabledDates]="weekends" [(value)]="workday" />',
-  ].join('\n');
-  protected readonly disabledTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { CalendarComponent, GogDatepickerValue } from '@guildofgleks/ui/datepicker';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [CalendarComponent],',
-    '  template: `<gog-calendar [disabledDates]="weekends" [(value)]="workday" />`,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly workday = signal<GogDatepickerValue>(null);',
-    '',
-    '  // A predicate, not an array — "weekends" has no finite list.',
-    '  protected readonly weekends = (date: Date): boolean => {',
-    '    const weekday = date.getDay();',
-    '    return weekday === 0 || weekday === 6;',
-    '  };',
-    '}',
-  ].join('\n');
-
-  protected readonly timeHtml = [
-    '<gog-calendar',
-    '  [showTime]="true"',
-    '  hourFormat="24"',
-    '  [minuteStep]="15"',
-    '  [showThisMonthButton]="true"',
-    '  [(value)]="moment"',
-    '/>',
-  ].join('\n');
-  protected readonly timeTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { CalendarComponent, GogDatepickerValue } from '@guildofgleks/ui/datepicker';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [CalendarComponent],',
-    '  template: `',
-    '    <gog-calendar',
-    '      [showTime]="true"',
-    '      hourFormat="24"',
-    '      [minuteStep]="15"',
-    '      [showThisMonthButton]="true"',
-    '      [(value)]="moment"',
-    '    />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly moment = signal<GogDatepickerValue>(null);',
-    '}',
-  ].join('\n');
-
-  protected readonly localeHtml = [
-    '<gog-calendar locale="de-DE" [firstDayOfWeek]="1" />',
-    '<gog-calendar locale="ja-JP" />',
-  ].join('\n');
-  protected readonly localeTs = [
-    "import { Component } from '@angular/core';",
-    "import { CalendarComponent } from '@guildofgleks/ui/datepicker';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [CalendarComponent],',
-    '  template: `',
-    '    <gog-calendar locale="de-DE" [firstDayOfWeek]="1" />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {}',
-  ].join('\n');
-
-  protected formatValue(value: GogDatepickerValue): string {
-    if (value === null) return 'null';
-    if (value instanceof Date) return value.toDateString();
-    const start = value.start ? value.start.toDateString() : '—';
-    const end = value.end ? value.end.toDateString() : '—';
-    return `${start} → ${end}`;
-  }
 }

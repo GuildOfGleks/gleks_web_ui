@@ -1,0 +1,25 @@
+<div>
+  <p>single</p>
+  <gog-calendar
+    [(value)]="day"
+    (valueChange)="changes.update((n) => n + 1)"
+    (gogDateSelect)="selects.update((n) => n + 1)"
+  />
+</div>
+
+<!-- In range mode valueChange fires on both presses; gogDateSelect only on the second. -->
+<div>
+  <p>range, two months</p>
+  <gog-calendar
+    selectionMode="range"
+    [numberOfMonths]="2"
+    [(value)]="range"
+    (valueChange)="changes.update((n) => n + 1)"
+    (gogDateSelect)="selects.update((n) => n + 1)"
+  />
+</div>
+
+<p>
+  single: {{ show(day()) }} · range: {{ show(range()) }} · {{ changes() }} valueChange ·
+  {{ selects() }} gogDateSelect
+</p>

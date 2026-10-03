@@ -1,0 +1,9 @@
+<!-- Each calendar is the only child of a full-width block: it caps itself at its own grid. -->
+<p>default</p>
+<gog-calendar />
+
+<p>two months and a time — the same cap, no numbers involved</p>
+<gog-calendar [numberOfMonths]="2" showTime />
+
+<p>--gog-calendar-max-width: 100%</p>
+<gog-calendar style="--gog-calendar-max-width: 100%" />

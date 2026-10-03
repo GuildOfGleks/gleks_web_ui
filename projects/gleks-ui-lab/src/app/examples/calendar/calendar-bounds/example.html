@@ -1,0 +1,13 @@
+<!-- min and max: days outside them are disabled, not hidden. -->
+<div>
+  <p>min and max: this week only</p>
+  <gog-calendar [min]="weekStart" [max]="weekEnd" />
+</div>
+
+<!-- disabledDates is a predicate, so "every weekend" needs no list of dates. -->
+<div>
+  <p>disabledDates: weekends</p>
+  <gog-calendar [disabledDates]="weekends" [(value)]="workday" />
+</div>
+
+<p>workday: {{ show(workday()) }}</p>

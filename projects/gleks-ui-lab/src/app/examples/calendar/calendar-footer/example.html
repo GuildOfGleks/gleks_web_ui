@@ -1,0 +1,17 @@
+<div>
+  <p>default: Today only</p>
+  <gog-calendar size="sm" />
+</div>
+<div>
+  <p>showThisMonthButton</p>
+  <gog-calendar size="sm" showThisMonthButton />
+</div>
+<!-- Where min puts today out of range, Today is disabled rather than doing nothing. -->
+<div>
+  <p>min next year: Today disabled</p>
+  <gog-calendar size="sm" [min]="nextYear" [defaultMonth]="nextYear" showThisMonthButton />
+</div>
+<div>
+  <p>showTodayButton false: no footer</p>
+  <gog-calendar size="sm" [showTodayButton]="false" />
+</div>
