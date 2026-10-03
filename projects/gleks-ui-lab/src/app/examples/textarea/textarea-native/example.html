@@ -1,0 +1,15 @@
+<div>
+  <gog-textarea
+    label="Commit message"
+    name="message"
+    placeholder="Up to 72 characters"
+    [rows]="2"
+    [maxlength]="72"
+    [spellcheck]="true"
+  />
+</div>
+<div>
+  <!-- spellcheck off: a code snippet is not prose. -->
+  <gog-textarea label="Snippet" [rows]="2" [spellcheck]="false" [minlength]="3" [(value)]="code" />
+  <code>{{ code().length }} characters</code>
+</div>

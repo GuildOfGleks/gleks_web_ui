@@ -1,0 +1,22 @@
+<div>
+  <gog-textarea
+    label="Feedback (reactive form)"
+    placeholder="What should we change?"
+    [rows]="2"
+    [formControl]="control"
+    errorMessage="At least 10 characters"
+    errorDisplay="auto"
+  />
+  <div>
+    <gog-button variant="outline" size="sm" (gogClick)="control.markAsTouched()">
+      markAsTouched()
+    </gog-button>
+    <gog-button variant="outline" size="sm" (gogClick)="toggleDisabled()">
+      {{ control.disabled ? 'enable()' : 'disable()' }}
+    </gog-button>
+  </div>
+  <code>
+    {{ control.value.length }} characters · valid: {{ control.valid }} · touched:
+    {{ control.touched }} · disabled: {{ control.disabled }}
+  </code>
+</div>

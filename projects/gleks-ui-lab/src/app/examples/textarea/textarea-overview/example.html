@@ -1,0 +1,10 @@
+<div>
+  <gog-textarea
+    label="Bio"
+    placeholder="Tell us about yourself"
+    [rows]="3"
+    [(value)]="bio"
+    (valueChange)="changes.update((n) => n + 1)"
+  />
+  <code>{{ bio().length }} characters · {{ changes() }} valueChange</code>
+</div>

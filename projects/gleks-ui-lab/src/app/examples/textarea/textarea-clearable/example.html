@@ -1,0 +1,12 @@
+<gog-textarea label="One line" value="Ship on Friday." [rows]="4" clearable />
+<!-- The button steps clear of the scrollbar once the content overflows. -->
+<gog-textarea label="Overflowing" [value]="longText" [rows]="4" clearable />
+<gog-textarea
+  label="clearAriaLabel"
+  value="Ship on Friday."
+  [rows]="4"
+  clearable
+  clearAriaLabel="Erase notes"
+/>
+<!-- Nothing to clear when nothing can be edited. -->
+<gog-textarea label="Readonly: no button" value="Ship on Friday." [rows]="4" clearable readonly />

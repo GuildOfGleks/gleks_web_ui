@@ -1,0 +1,8 @@
+<!-- errorDisplay="manual" (the default): shown for as long as errorMessage is non-empty. -->
+<gog-textarea
+  label="Feedback"
+  placeholder="At least 10 characters"
+  [rows]="3"
+  [(value)]="feedback"
+  [errorMessage]="feedback().length > 0 && feedback().length < 10 ? 'At least 10 characters' : ''"
+/>

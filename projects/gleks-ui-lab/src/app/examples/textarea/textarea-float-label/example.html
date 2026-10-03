@@ -1,0 +1,23 @@
+@for (variant of variants; track variant) {
+  <gog-textarea
+    [floatLabel]="variant"
+    [label]="'floatLabel: ' + variant"
+    placeholder="Anything to add?"
+    [rows]="2"
+  />
+  <gog-textarea
+    [floatLabel]="variant"
+    [label]="'floatLabel: ' + variant"
+    value="Ship on Friday."
+    [rows]="2"
+  />
+}
+
+<!-- The placeholder shows under the floated label once it has somewhere to float to. -->
+<gog-textarea
+  floatLabel="over"
+  floatLabelShowPlaceholder
+  label="floatLabelShowPlaceholder"
+  placeholder="Anything to add?"
+  [rows]="2"
+/>
