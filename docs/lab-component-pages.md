@@ -146,7 +146,7 @@ template.
 | checkbox      | legacy   | 8     | 8   | ✅       |
 | chip          | legacy   | 11    | 11  |          |
 | collapsible   | legacy   | 6     | 6   |          |
-| datepicker    | legacy   | 6     | 6   |          |
+| datepicker    | legacy   | 6     | 6   | ✅       |
 | dialog        | legacy   | 6     | 4   |          |
 | divider       | legacy   | 5     | 5   |          |
 | icon          | legacy   | 5     | 5   |          |

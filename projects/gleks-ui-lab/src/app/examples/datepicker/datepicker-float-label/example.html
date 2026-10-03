@@ -1,0 +1,16 @@
+@for (variant of variants; track variant) {
+  <gog-datepicker
+    [floatLabel]="variant"
+    [label]="'floatLabel: ' + variant"
+    placeholder="dd.MM.yyyy"
+  />
+  <gog-datepicker [floatLabel]="variant" [label]="'floatLabel: ' + variant" [value]="today" />
+}
+
+<!-- The format shows under the floated label once it has somewhere to float to. -->
+<gog-datepicker
+  floatLabel="over"
+  floatLabelShowPlaceholder
+  label="floatLabelShowPlaceholder"
+  placeholder="dd.MM.yyyy"
+/>

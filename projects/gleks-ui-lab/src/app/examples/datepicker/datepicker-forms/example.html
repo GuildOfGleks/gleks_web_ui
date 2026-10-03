@@ -1,0 +1,23 @@
+<div>
+  <!-- Closing the panel marks the control touched, as blurring the field does. -->
+  <gog-datepicker
+    label="Date (reactive form)"
+    placeholder="dd.MM.yyyy"
+    [formControl]="control"
+    errorMessage="Choose a date"
+    errorDisplay="auto"
+    clearable
+  />
+  <div>
+    <gog-button variant="outline" size="sm" (gogClick)="control.markAsTouched()">
+      markAsTouched()
+    </gog-button>
+    <gog-button variant="outline" size="sm" (gogClick)="toggleDisabled()">
+      {{ control.disabled ? 'enable()' : 'disable()' }}
+    </gog-button>
+  </div>
+  <code>
+    value: {{ show(control.value) }} · touched: {{ control.touched }} · disabled:
+    {{ control.disabled }}
+  </code>
+</div>

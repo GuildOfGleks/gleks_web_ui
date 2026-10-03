@@ -1,0 +1,15 @@
+<!-- The half-picked range is a valueChange of its own; gogDateSelect waits for both ends. -->
+<div>
+  <gog-datepicker
+    label="Stay"
+    selectionMode="range"
+    [numberOfMonths]="2"
+    clearable
+    [(value)]="stay"
+    (valueChange)="changes.update((n) => n + 1)"
+    (gogDateSelect)="selects.update((n) => n + 1)"
+  />
+  <code
+    >value: {{ show(stay()) }} · {{ changes() }} valueChange · {{ selects() }} gogDateSelect</code
+  >
+</div>

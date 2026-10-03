@@ -1,0 +1,9 @@
+<!-- format is used to print and to parse: whatever the field shows can be typed back. -->
+<div>
+  <gog-datepicker label="format unset (dd.MM.yyyy)" [(value)]="date" />
+  <code>value: {{ show(date()) }}</code>
+</div>
+<gog-datepicker label='format="yyyy-MM-dd"' format="yyyy-MM-dd" />
+<gog-datepicker label="allowTextInput off" [allowTextInput]="false" [value]="today" />
+<!-- A range field is read-only: there is no pattern for two dates and a dash. -->
+<gog-datepicker label="Range (read-only text)" selectionMode="range" [numberOfMonths]="2" />

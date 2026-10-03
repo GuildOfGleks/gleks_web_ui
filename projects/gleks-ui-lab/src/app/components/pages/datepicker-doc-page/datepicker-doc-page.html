@@ -24,35 +24,16 @@
       101.2 kB to 88.2 kB, and 27 kB of those components' root dependencies stayed in it.
     </p>
 
-    <p class="doc-section__intro">Basic usage:</p>
-    <div class="demo-card">
-      <div class="demo-card__preview datepicker-demo__field">
-        <gog-datepicker label="Date of birth" [max]="today" [(value)]="birthday" />
-        <p class="doc-section__meta">value = {{ formatValue(birthday()) }}</p>
-      </div>
-      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
-    </div>
-  </section>
-
-  <section class="doc-section">
-    <h2 id="format" class="doc-section__title font-heading">One pattern, both directions</h2>
     <p class="doc-section__intro">
-      <code>format</code> is a token pattern — <code>yyyy</code>, <code>MM</code>, <code>dd</code>,
-      <code>HH</code>, <code>hh</code>, <code>mm</code>, <code>ss</code>, <code>a</code> — and it is
-      used for <em>both</em> rendering and parsing. That is what makes
-      <code>allowTextInput</code> safe: whatever the field displays can be typed back in.
-      <code>31.02.2026</code> is rejected rather than silently becoming 3 March, which is what a
-      naive <code>new Date(text)</code> would do.
+      Basic usage — a birth date, so <code>max</code> is today. <code>[(value)]</code> holds a
+      <code>Date</code>:
     </p>
     <div class="demo-card">
-      <p class="demo-card__meta">
-        Type into this one — it renders and parses <code>yyyy-MM-dd</code>.
-      </p>
-      <div class="demo-card__preview datepicker-demo__field">
-        <gog-datepicker label="ISO" format="yyyy-MM-dd" [(value)]="isoDate" />
-        <p class="doc-section__meta">value = {{ formatValue(isoDate()) }}</p>
-      </div>
-      <app-code-tabs [html]="formatHtml" [ts]="formatTs" />
+      <app-demo
+        [component]="examples.overview"
+        [source]="sources.datepickerOverview"
+        layout="fields"
+      />
     </div>
   </section>
 
@@ -60,179 +41,253 @@
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Range</h3>
+      <h3 class="demo-card__title">Sizes</h3>
       <p class="demo-card__meta">
-        <code>selectionMode="range"</code> makes the value a
-        <code>{{ '{' }} start, end {{ '}' }}</code> pair. Pair it with
-        <code>[numberOfMonths]="2"</code> — picking a range one month at a time is painful.
+        Five steps, also settable app-wide through <code>GOG_CONFIG.control.size</code>.
       </p>
-      <div class="demo-card__preview datepicker-demo__field">
-        <gog-datepicker label="Stay" selectionMode="range" [numberOfMonths]="2" [(value)]="stay" />
-        <p class="doc-section__meta">value = {{ formatValue(stay()) }}</p>
-      </div>
-      <app-code-tabs [html]="rangeHtml" [ts]="rangeTs" />
+      <app-demo [component]="examples.sizes" [source]="sources.datepickerSizes" layout="fields" />
     </article>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Date and time</h3>
+      <h3 class="demo-card__title">States</h3>
       <p class="demo-card__meta">
-        <code>showTime</code> adds the clock. Leave <code>format</code> unset and it widens to
-        include <code>HH:mm</code> automatically; if you set <code>format</code> explicitly, widen
-        it yourself to match, or the field will render a time it cannot read back.
+        Empty, holding a value, disabled, and with an error. The calendar button is not optional —
+        it is the one affordance that says this field is more than a text box, and it is what
+        <code>openCalendarLabel</code> names.
       </p>
-      <div class="demo-card__preview datepicker-demo__field">
-        <gog-datepicker
-          label="Meeting"
-          format="dd.MM.yyyy HH:mm"
-          [showTime]="true"
-          hourFormat="24"
-          [minuteStep]="15"
-          [(value)]="meeting"
-        />
-        <p class="doc-section__meta">value = {{ formatValue(meeting()) }}</p>
-      </div>
-      <app-code-tabs [html]="timeHtml" [ts]="timeTs" />
+      <app-demo [component]="examples.states" [source]="sources.datepickerStates" layout="fields" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Clearable</h3>
+      <p class="demo-card__meta">
+        <code>clearable</code> is off by default and puts a second button beside the calendar one.
+        Unlike <a routerLink="/components/autocomplete">gog-autocomplete</a> it watches the
+        <em>value</em>, not the text: a half-typed date that has not parsed yet leaves it hidden,
+        because nothing committed is there to clear.
+      </p>
+      <app-demo
+        [component]="examples.clearable"
+        [source]="sources.datepickerClearable"
+        layout="fields"
+      />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Width</h3>
+      <p class="demo-card__meta">
+        A field fills its container by default — the dashed box here. With
+        <code>[fullWidth]="false"</code> it falls back to a text input's own width; there is no
+        <code>minWidth</code>, since there is no selected label for it to collapse onto.
+      </p>
+      <app-demo [component]="examples.width" [source]="sources.datepickerWidth" layout="frame" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">No visible label</h3>
+      <p class="demo-card__meta">
+        <code>ariaLabel</code> names a field with no <code>label</code>, and the panel takes the
+        same name. <code>placeholder</code> is empty by default, which is why stating the format in
+        it is worth doing.
+      </p>
+      <app-demo
+        [component]="examples.ariaLabel"
+        [source]="sources.datepickerAriaLabel"
+        layout="fields"
+      />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">A single date</h3>
+      <p class="demo-card__meta">
+        <code>[(value)]</code> holds a <code>Date</code>; <code>valueChange</code> fires on every
+        change, a picked day, typed text that parses, and a clear.
+      </p>
+      <app-demo [component]="examples.single" [source]="sources.datepickerSingle" layout="fields" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Range</h3>
+      <p class="demo-card__meta">
+        <code>selectionMode="range"</code> makes the value a
+        <code>{{ '{' }} start, end {{ '}' }}</code> pair, and two months side by side is what makes
+        picking one usable. The panel stays open between the two presses and hovering previews the
+        second; only the second press completes the selection and closes it. The half-picked range
+        is a <code>valueChange</code> of its own, because a form bound to the field has to see what
+        the user currently means — <code>gogDateSelect</code> <app-since version="21.15.0" /> is the
+        event that waits for both ends.
+      </p>
+      <app-demo [component]="examples.range" [source]="sources.datepickerRange" layout="fields" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Bounds and disabled dates</h3>
+      <p class="demo-card__meta">
+        <code>min</code> and <code>max</code> bound the range; <code>disabledDates</code> takes a
+        predicate, because an array cannot express "weekends" or "public holidays" without
+        materialising every date first. A disabled day is a disabled button: announced, and neither
+        the pointer nor Enter takes it. <code>defaultMonth</code> decides which month opens when
+        nothing is selected.
+      </p>
+      <app-demo [component]="examples.bounds" [source]="sources.datepickerBounds" layout="fields" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Time</h3>
+      <p class="demo-card__meta">
+        <code>showTime</code> adds a clock under the grid, and <code>format</code> gains
+        <code>HH:mm</code> on its own.
+        <strong>A field with a time does not close when a day is picked</strong> — the clock would
+        be unreachable — so the panel waits for a press outside or <kbd>Esc</kbd>. If you set
+        <code>format</code> yourself, include the time in it, or the field prints a time it cannot
+        read back.
+      </p>
+      <app-demo [component]="examples.time" [source]="sources.datepickerTime" layout="fields" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Typing — one pattern, both directions</h3>
+      <p class="demo-card__meta">
+        <code>format</code> is a token pattern — <code>yyyy</code>, <code>MM</code>,
+        <code>dd</code>, <code>HH</code>, <code>hh</code>, <code>mm</code>, <code>ss</code>,
+        <code>a</code> — used to print <em>and</em> to parse, so whatever the field shows can be
+        typed back. A draft that does not parse leaves the value alone rather than clearing it, and
+        blur snaps the text back. <code>31.02.2026</code> is rejected rather than becoming 3 March.
+        A range field is read-only whatever <code>allowTextInput</code> says: there is no pattern
+        for two dates and a dash.
+      </p>
+      <app-demo [component]="examples.typing" [source]="sources.datepickerTyping" layout="fields" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Locale</h3>
+      <p class="demo-card__meta">
+        Month and weekday names come from <code>Intl</code>, so a locale is all a translated
+        calendar needs. The first day of the week follows the locale unless
+        <code>firstDayOfWeek</code> overrides it. The date <em>format</em> is deliberately not
+        derived from the locale: it is the pattern in <code>format</code>.
+      </p>
+      <app-demo [component]="examples.locale" [source]="sources.datepickerLocale" layout="fields" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">The labels</h3>
+      <p class="demo-card__meta">
+        The field's own <code>openCalendarLabel</code> and <code>clearAriaLabel</code>, plus the
+        nine strings of the calendar inside it <app-since version="21.15.0" /> — the footer buttons,
+        the four navigation arrows and the three time fields — so one field can be named in another
+        language than the app's config says. Open it: the arrows read German.
+      </p>
+      <app-demo [component]="examples.labels" [source]="sources.datepickerLabels" layout="fields" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">The panel — <code>appendToBody</code></h3>
+      <p class="demo-card__meta">
+        The panel is a <code>role="dialog"</code> holding the calendar. It renders inline by default
+        and is clipped by any scrolling or <code>overflow: hidden</code> ancestor; open both — only
+        the appended one survives its box. It follows the field on scroll, and
+        <code>--gog-datepicker-panel-width</code> is the knob if the panel needs a width.
+      </p>
+      <app-demo
+        [component]="examples.appendToBody"
+        [source]="sources.datepickerAppendToBody"
+        layout="fields"
+      />
     </article>
 
     <article class="demo-card">
       <h3 class="demo-card__title">Inline</h3>
       <p class="demo-card__meta">
-        <code>inline</code> drops the field and shows the calendar permanently. It is literally
-        <a routerLink="/components/calendar">gog-calendar</a> rendered without the field around it.
+        <code>inline</code> drops the field and the panel and renders the calendar permanently —
+        literally <a routerLink="/components/calendar">gog-calendar</a>. The inputs that describe
+        the field (<code>label</code>, <code>clearable</code>, <code>floatLabel</code>,
+        <code>appendToBody</code>) have nothing to act on.
       </p>
-      <div class="demo-card__preview">
-        <gog-datepicker [inline]="true" [(value)]="inlineDate" />
-        <p class="doc-section__meta">value = {{ formatValue(inlineDate()) }}</p>
-      </div>
-      <app-code-tabs [html]="inlineHtml" [ts]="inlineTs" />
+      <app-demo [component]="examples.inline" [source]="sources.datepickerInline" layout="block" />
     </article>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Forms, validation, disabled dates and clearing</h3>
+      <h3 class="demo-card__title">Float label</h3>
       <p class="demo-card__meta">
-        A <code>ControlValueAccessor</code>, so <code>formControl</code> /
-        <code>formControlName</code> work directly. <code>disabledDates</code> is a predicate — an
-        array cannot express "weekends". The clear button appears only once a date is set.
+        <code>'none'</code> keeps the label above the field; <code>'in'</code>,
+        <code>'on'</code> and <code>'over'</code> rest it inside until focus or a value moves it
+        clear — each shown empty, then with a value. <code>floatLabelShowPlaceholder</code> shows
+        the format once the label has floated.
       </p>
-      <div class="demo-card__preview datepicker-demo__field">
-        <gog-datepicker
-          label="Deadline"
-          errorDisplay="auto"
-          errorMessage="A deadline is required"
-          [clearable]="true"
-          [disabledDates]="weekends"
-          [formControl]="deadline"
-        />
-      </div>
-      <app-code-tabs [html]="formsHtml" [ts]="formsTs" />
+      <app-demo
+        [component]="examples.floatLabel"
+        [source]="sources.datepickerFloatLabel"
+        layout="fields"
+      />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Reactive forms</h3>
+      <p class="demo-card__meta">
+        A <code>ControlValueAccessor</code>. With <code>errorDisplay="auto"</code> the error appears
+        once the control is touched and invalid — closing the panel marks it touched, as blurring
+        the field does. Open the panel and close it without choosing.
+      </p>
+      <app-demo [component]="examples.forms" [source]="sources.datepickerForms" layout="fields" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">App-wide defaults — <code>GOG_CONFIG</code></h3>
+      <p class="demo-card__meta">
+        This is the component that earns the config most: an app states its locale, first day of
+        week and date format once, and every field agrees. Open the first field — the week starts on
+        Sunday though <code>de-DE</code> would choose Monday: <code>firstDayOfWeek</code> overrides
+        the locale, one layer down. An instance's own input still wins. In an app the provider goes
+        in <code>app.config.ts</code> — see
+        <a routerLink="/general/global-config">Global Configuration</a>.
+      </p>
+      <app-demo [component]="examples.config" [source]="sources.datepickerConfig" layout="fields" />
     </article>
   </section>
 
   <section class="doc-section">
-    <h2 id="footer-actions" class="doc-section__title font-heading">The two footer actions</h2>
+    <h2 id="accessibility" class="doc-section__title font-heading">Accessibility</h2>
     <p class="doc-section__intro">
-      The panel's footer carries <strong>two separate actions, never one</strong>:
-      <code>showTodayButton</code> (on by default) <em>selects</em> today, and
-      <code>showThisMonthButton</code> (off by default) only moves the view back to the current
-      month. A single button doing both is ambiguous — after paging away, the same label reads as
-      "take me back" to one person and "set it to today" to another.
+      The trigger is a text input that owns a dialog: <code>aria-haspopup="dialog"</code> rather
+      than a combobox, because what opens is a grid of days and not a list of options. The grid
+      follows the ARIA grid pattern — see <a routerLink="/components/calendar">Calendar</a>.
     </p>
-    <p class="doc-section__intro">
-      "Today" is <em>disabled</em> when <code>min</code>/<code>max</code> or
-      <code>disabledDates</code> rule today out, rather than silently doing nothing when pressed.
-    </p>
-  </section>
-
-  <section class="doc-section">
-    <h2 id="keyboard" class="doc-section__title font-heading">Keyboard</h2>
-    <p class="doc-section__intro">
-      From the field, <kbd>↓</kbd> or <kbd>Enter</kbd> opens the panel. <kbd>Escape</kbd> closes it
-      from anywhere inside — the calendar button and the day grid included — and returns focus to
-      the field. In the grid the arrows move by a day and by a week, <kbd>Home</kbd>/<kbd>End</kbd>
-      go to the ends of the week, <kbd>PageUp</kbd>/<kbd>PageDown</kbd> change the month and with
-      <kbd>Shift</kbd> the year, and <kbd>Enter</kbd> or <kbd>Space</kbd> picks. The 42 day cells
-      are one tab stop, not 42.
-    </p>
-    <p class="doc-section__intro">
-      Two of those sentences became true in 21.15.0 <app-since version="21.15.0" />: before it,
-      Escape closed the panel only from the text input, and the arrows moved the highlight while the
-      focus ring — and a screen reader — stayed on the day they had left.
-    </p>
-  </section>
-
-  <section class="doc-section">
-    <h2 id="global-config" class="doc-section__title font-heading">App-wide defaults</h2>
-    <p class="doc-section__intro">
-      A locale and a date format repeated on every date input is exactly the boilerplate
-      <code>GOG_CONFIG</code> exists to remove. An instance's own input always wins.
-    </p>
-    <app-markdown [markdown]="configSnippet" />
+    <ul class="doc-section__intro">
+      <li>
+        <strong>Keyboard</strong> — from the field, <kbd>↓</kbd> or <kbd>Enter</kbd> opens the
+        panel. <kbd>Esc</kbd> closes it from anywhere inside — the calendar button and the day grid
+        included — and returns focus to the field. In the grid the arrows move by a day and a week,
+        <kbd>Home</kbd>/<kbd>End</kbd> to the ends of the week, <kbd>PageUp</kbd>/<kbd
+          >PageDown</kbd
+        >
+        change the month and with <kbd>Shift</kbd> the year, and <kbd>Enter</kbd> or
+        <kbd>Space</kbd> picks. The 42 day cells are one tab stop.
+      </li>
+      <li>
+        <strong>Fixed in 21.15.0</strong> <app-since version="21.15.0" /> — Escape closed the panel
+        only from the text input, and the arrows moved the highlight while the focus ring, and a
+        screen reader, stayed on the day they had left.
+      </li>
+      <li>
+        <strong>Name</strong> — <code>label</code> or <code>ariaLabel</code>; the calendar button is
+        named by <code>openCalendarLabel</code>, the clear button by <code>clearAriaLabel</code>.
+      </li>
+      <li>
+        <strong>Error</strong> — <code>errorMessage</code> sets <code>aria-invalid</code> and links
+        the message with <code>aria-describedby</code>.
+      </li>
+    </ul>
   </section>
 
   <section class="doc-section">
     <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
 
     <h3 class="doc-section__subtitle">Inputs</h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Default</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of apiInputs; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-                @if (row.since) {
-                  <app-since [version]="row.since" />
-                }
-              </td>
-              <td>
-                <code>{{ row.type }}</code>
-              </td>
-              <td>
-                <code>{{ row.default }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="apiInputs" kind="inputs" />
 
     <h3 class="doc-section__subtitle">Outputs</h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Payload</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of apiOutputs; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-                @if (row.since) {
-                  <app-since [version]="row.since" />
-                }
-              </td>
-              <td>
-                <code>{{ row.type }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="apiOutputs" kind="outputs" />
   </section>
 
   <app-global-config-note component="datepicker" />
@@ -240,31 +295,11 @@
   <section class="doc-section">
     <h2 id="styling" class="doc-section__title font-heading">Styling Tokens</h2>
     <p class="doc-section__intro">
-      Every CSS custom property the field and its panel paint with. The grid inside the panel is
-      themed by <a routerLink="/components/calendar">gog-calendar</a>'s own
-      <code>--gog-calendar-*</code> tokens. See the
+      Every CSS custom property the datepicker paints with. The grid in its panel is themed by
+      <a routerLink="/components/calendar">gog-calendar</a>'s tokens. See the
       <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
       <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
     </p>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Token</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of styleTokens; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="styleTokens" kind="tokens" />
   </section>
 </div>

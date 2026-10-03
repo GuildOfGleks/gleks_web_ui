@@ -1,0 +1,9 @@
+<div>
+  <gog-datepicker
+    label="Date"
+    clearable
+    [(value)]="date"
+    (valueChange)="changes.update((n) => n + 1)"
+  />
+  <code>value: {{ show(date()) }} · {{ changes() }} valueChange</code>
+</div>

@@ -1,0 +1,10 @@
+<gog-datepicker label="en-US (default)" [value]="today" />
+<gog-datepicker label="de-DE" locale="de-DE" [value]="today" />
+<gog-datepicker label="ja-JP" locale="ja-JP" [value]="today" />
+<!-- firstDayOfWeek overrides the locale: 0 is Sunday. -->
+<gog-datepicker
+  label="en-GB, week from Sunday"
+  locale="en-GB"
+  [firstDayOfWeek]="0"
+  [value]="today"
+/>

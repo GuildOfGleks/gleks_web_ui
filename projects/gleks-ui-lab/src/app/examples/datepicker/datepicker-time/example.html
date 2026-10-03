@@ -1,0 +1,7 @@
+<!-- With a time the panel stays open after a day is picked: the clock is below the grid. -->
+<div>
+  <gog-datepicker label="24-hour" showTime [(value)]="meeting" />
+  <code>value: {{ show(meeting()) }}</code>
+</div>
+<gog-datepicker label="12-hour" showTime hourFormat="12" />
+<gog-datepicker label="15-minute steps, seconds" showTime [minuteStep]="15" showSeconds />

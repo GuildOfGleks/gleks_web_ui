@@ -1,0 +1,6 @@
+<gog-datepicker label="From today on" [min]="today" />
+<gog-datepicker label="This month only" [min]="monthStart" [max]="monthEnd" />
+<!-- A predicate: "weekends" has no finite list of dates. -->
+<gog-datepicker label="No weekends" [disabledDates]="noWeekends" />
+<!-- defaultMonth: which month opens when nothing is selected yet. -->
+<gog-datepicker label="Opens on next year" [defaultMonth]="nextYear" [min]="nextYear" />

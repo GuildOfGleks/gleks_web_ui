@@ -1,20 +1,30 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { DatepickerComponent, GogDatepickerValue } from '@guildofgleks/ui/datepicker';
-import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
+import { ApiTableComponent, type ApiRow } from '../../shared/api-table/api-table';
+import { DemoComponent } from '../../shared/demo/demo';
 import { GlobalConfigNote } from '../../shared/global-config-note/global-config-note';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
-
-interface ApiRow {
-  readonly name: string;
-  readonly type: string;
-  readonly default: string;
-  readonly description: string;
-  readonly since?: string;
-}
+import { DATEPICKER_EXAMPLES } from '../../../examples/datepicker/sources.generated';
+import { DatepickerAppendToBodyExample } from '../../../examples/datepicker/datepicker-append-to-body/example';
+import { DatepickerAriaLabelExample } from '../../../examples/datepicker/datepicker-aria-label/example';
+import { DatepickerBoundsExample } from '../../../examples/datepicker/datepicker-bounds/example';
+import { DatepickerClearableExample } from '../../../examples/datepicker/datepicker-clearable/example';
+import { DatepickerConfigExample } from '../../../examples/datepicker/datepicker-config/example';
+import { DatepickerFloatLabelExample } from '../../../examples/datepicker/datepicker-float-label/example';
+import { DatepickerFormsExample } from '../../../examples/datepicker/datepicker-forms/example';
+import { DatepickerInlineExample } from '../../../examples/datepicker/datepicker-inline/example';
+import { DatepickerLabelsExample } from '../../../examples/datepicker/datepicker-labels/example';
+import { DatepickerLocaleExample } from '../../../examples/datepicker/datepicker-locale/example';
+import { DatepickerOverviewExample } from '../../../examples/datepicker/datepicker-overview/example';
+import { DatepickerRangeExample } from '../../../examples/datepicker/datepicker-range/example';
+import { DatepickerSingleExample } from '../../../examples/datepicker/datepicker-single/example';
+import { DatepickerSizesExample } from '../../../examples/datepicker/datepicker-sizes/example';
+import { DatepickerStatesExample } from '../../../examples/datepicker/datepicker-states/example';
+import { DatepickerTimeExample } from '../../../examples/datepicker/datepicker-time/example';
+import { DatepickerTypingExample } from '../../../examples/datepicker/datepicker-typing/example';
+import { DatepickerWidthExample } from '../../../examples/datepicker/datepicker-width/example';
 
 const API_INPUTS: readonly ApiRow[] = [
   {
@@ -163,14 +173,12 @@ const API_OUTPUTS: readonly ApiRow[] = [
   {
     name: 'valueChange',
     type: 'Date | GogDateRange | null',
-    default: '—',
     description:
       'Emitted when the value changes — including a half-picked range and typed text. Comes from the value model input.',
   },
   {
     name: 'gogDateSelect',
     type: 'GogDatepickerValue',
-    default: '—',
     description:
       'A complete selection made in the calendar: a day in single mode, both ends of a range. The event the panel closes on — bind it for "the user has finished choosing" rather than inspecting a half-picked value.',
     since: '21.15.0',
@@ -180,11 +188,10 @@ const API_OUTPUTS: readonly ApiRow[] = [
 @Component({
   selector: 'app-datepicker-doc-page',
   imports: [
-    DatepickerComponent,
-    ReactiveFormsModule,
+    ApiTableComponent,
+    DemoComponent,
     GlobalConfigNote,
     MarkdownComponent,
-    CodeTabsComponent,
     RouterLink,
     SinceBadgeComponent,
   ],
@@ -193,201 +200,33 @@ const API_OUTPUTS: readonly ApiRow[] = [
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DatepickerDocPage {
-  protected readonly birthday = signal<GogDatepickerValue>(null);
-  protected readonly stay = signal<GogDatepickerValue>(null);
-  protected readonly meeting = signal<GogDatepickerValue>(null);
-  protected readonly isoDate = signal<GogDatepickerValue>(null);
-  protected readonly inlineDate = signal<GogDatepickerValue>(null);
-  protected readonly deadline = new FormControl<Date | null>(null, Validators.required);
-
-  protected readonly today = new Date();
-  protected readonly weekends = (date: Date): boolean => {
-    const weekday = date.getDay();
-    return weekday === 0 || weekday === 6;
-  };
-
   protected readonly apiInputs = API_INPUTS;
   protected readonly apiOutputs = API_OUTPUTS;
   protected readonly styleTokens =
     TOKEN_SECTIONS.find((section) => section.id === 'datepicker')?.tokens ?? [];
 
+  protected readonly sources = DATEPICKER_EXAMPLES;
+  protected readonly examples = {
+    overview: DatepickerOverviewExample,
+    sizes: DatepickerSizesExample,
+    states: DatepickerStatesExample,
+    clearable: DatepickerClearableExample,
+    width: DatepickerWidthExample,
+    ariaLabel: DatepickerAriaLabelExample,
+    single: DatepickerSingleExample,
+    range: DatepickerRangeExample,
+    bounds: DatepickerBoundsExample,
+    time: DatepickerTimeExample,
+    typing: DatepickerTypingExample,
+    locale: DatepickerLocaleExample,
+    labels: DatepickerLabelsExample,
+    appendToBody: DatepickerAppendToBodyExample,
+    inline: DatepickerInlineExample,
+    floatLabel: DatepickerFloatLabelExample,
+    forms: DatepickerFormsExample,
+    config: DatepickerConfigExample,
+  };
+
   protected readonly importSnippet =
     "```typescript\nimport { DatepickerComponent } from '@guildofgleks/ui/datepicker';\n\n@Component({\n  // ...\n  imports: [DatepickerComponent],\n})\n```";
-
-  protected readonly overviewHtml = [
-    '<gog-datepicker label="Date of birth" [max]="today" [(value)]="birthday" />',
-  ].join('\n');
-  protected readonly overviewTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { DatepickerComponent, GogDatepickerValue } from '@guildofgleks/ui/datepicker';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [DatepickerComponent],',
-    '  template: `<gog-datepicker label="Date of birth" [max]="today" [(value)]="birthday" />`,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly today = new Date();',
-    '  protected readonly birthday = signal<GogDatepickerValue>(null);',
-    '}',
-  ].join('\n');
-
-  protected readonly rangeHtml = [
-    '<gog-datepicker',
-    '  label="Stay"',
-    '  selectionMode="range"',
-    '  [numberOfMonths]="2"',
-    '  [(value)]="stay"',
-    '/>',
-  ].join('\n');
-  protected readonly rangeTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { DatepickerComponent, GogDatepickerValue } from '@guildofgleks/ui/datepicker';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [DatepickerComponent],',
-    '  template: `',
-    '    <gog-datepicker',
-    '      label="Stay"',
-    '      selectionMode="range"',
-    '      [numberOfMonths]="2"',
-    '      [(value)]="stay"',
-    '    />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly stay = signal<GogDatepickerValue>(null);',
-    '}',
-  ].join('\n');
-
-  protected readonly timeHtml = [
-    '<gog-datepicker',
-    '  label="Meeting"',
-    '  format="dd.MM.yyyy HH:mm"',
-    '  [showTime]="true"',
-    '  hourFormat="24"',
-    '  [minuteStep]="15"',
-    '  [(value)]="meeting"',
-    '/>',
-  ].join('\n');
-  protected readonly timeTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { DatepickerComponent, GogDatepickerValue } from '@guildofgleks/ui/datepicker';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [DatepickerComponent],',
-    '  template: `',
-    '    <gog-datepicker',
-    '      label="Meeting"',
-    '      format="dd.MM.yyyy HH:mm"',
-    '      [showTime]="true"',
-    '      [minuteStep]="15"',
-    '      [(value)]="meeting"',
-    '    />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly meeting = signal<GogDatepickerValue>(null);',
-    '}',
-  ].join('\n');
-
-  protected readonly formatHtml = [
-    '<!-- The same pattern renders and parses, so what is written can be read back. -->',
-    '<gog-datepicker label="ISO" format="yyyy-MM-dd" [(value)]="isoDate" />',
-  ].join('\n');
-  protected readonly formatTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { DatepickerComponent, GogDatepickerValue } from '@guildofgleks/ui/datepicker';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [DatepickerComponent],',
-    '  template: `<gog-datepicker label="ISO" format="yyyy-MM-dd" [(value)]="isoDate" />`,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly isoDate = signal<GogDatepickerValue>(null);',
-    '}',
-  ].join('\n');
-
-  protected readonly inlineHtml = '<gog-datepicker [inline]="true" [(value)]="inlineDate" />';
-  protected readonly inlineTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { DatepickerComponent, GogDatepickerValue } from '@guildofgleks/ui/datepicker';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [DatepickerComponent],',
-    '  template: `<gog-datepicker [inline]="true" [(value)]="inlineDate" />`,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly inlineDate = signal<GogDatepickerValue>(null);',
-    '}',
-  ].join('\n');
-
-  protected readonly formsHtml = [
-    '<gog-datepicker',
-    '  label="Deadline"',
-    '  errorDisplay="auto"',
-    '  errorMessage="A deadline is required"',
-    '  [clearable]="true"',
-    '  [disabledDates]="weekends"',
-    '  [formControl]="deadline"',
-    '/>',
-  ].join('\n');
-  protected readonly formsTs = [
-    "import { Component } from '@angular/core';",
-    "import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';",
-    "import { DatepickerComponent } from '@guildofgleks/ui/datepicker';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [DatepickerComponent, ReactiveFormsModule],',
-    '  template: `',
-    '    <gog-datepicker',
-    '      label="Deadline"',
-    '      errorDisplay="auto"',
-    '      errorMessage="A deadline is required"',
-    '      [clearable]="true"',
-    '      [disabledDates]="weekends"',
-    '      [formControl]="deadline"',
-    '    />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly deadline = new FormControl<Date | null>(null, Validators.required);',
-    '',
-    '  protected readonly weekends = (date: Date): boolean => {',
-    '    const weekday = date.getDay();',
-    '    return weekday === 0 || weekday === 6;',
-    '  };',
-    '}',
-  ].join('\n');
-
-  protected readonly configSnippet = [
-    '```typescript',
-    "import { provideGogConfig } from '@guildofgleks/ui';",
-    '',
-    'bootstrapApplication(App, {',
-    '  providers: [',
-    '    provideGogConfig({',
-    '      datepicker: {',
-    "        locale: 'de-DE',",
-    '        firstDayOfWeek: 1,',
-    "        format: 'dd.MM.yyyy',",
-    '      },',
-    '    }),',
-    '  ],',
-    '});',
-    '```',
-  ].join('\n');
-
-  protected formatValue(value: GogDatepickerValue): string {
-    if (value === null) return 'null';
-    if (value instanceof Date) return value.toString();
-    const start = value.start ? value.start.toDateString() : '—';
-    const end = value.end ? value.end.toDateString() : '—';
-    return `${start} → ${end}`;
-  }
 }
