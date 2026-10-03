@@ -61,14 +61,14 @@ const API_INPUTS: readonly ApiRow[] = [
     type: 'boolean',
     default: 'true',
     description:
-      'Renders the viewport as its own tab stop (tabindex="0", role="region"). Turn off when nesting inside a component that already owns focus/keyboard handling.',
+      'Renders the viewport as its own tab stop (tabindex="0", role="region") while its content overflows. Since 21.15.0 the stop, the role and ariaLabel follow the measured overflow, so a frame with nothing to scroll is not a stop, and they come back when the content grows; on the server, before any measurement, it is a stop. Turn off when nesting inside a component that already owns focus/keyboard handling.',
   },
   {
     name: 'ariaLabel',
     type: 'string',
     default: "''",
     description:
-      'Accessible name for the viewport when focusable is true and there is no visible label.',
+      'Accessible name for the viewport when it is a tab stop (focusable, and its content overflows) and there is no visible label.',
   },
   {
     name: 'horizontalWheel',
@@ -104,13 +104,14 @@ const API_OUTPUTS: readonly { name: string; payload: string; description: string
   },
   {
     name: 'gogReachStart',
-    payload: "'vertical' | 'horizontal'",
+    payload: 'GogScrollDirection',
     description: 'Fires once when that axis crosses back within reachThreshold of its start edge.',
   },
   {
     name: 'gogReachEnd',
-    payload: "'vertical' | 'horizontal'",
-    description: 'Fires once when that axis crosses within reachThreshold of its end edge.',
+    payload: 'GogScrollDirection',
+    description:
+      "Fires once when that axis crosses within reachThreshold of its end edge. GogScrollDirection is 'vertical' | 'horizontal', exported since 21.15.0.",
   },
 ];
 
