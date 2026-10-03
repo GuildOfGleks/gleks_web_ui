@@ -51,7 +51,11 @@
       <h3 class="demo-card__title">Removable</h3>
       <p class="demo-card__meta">
         <code>removable</code> adds a trailing (×) button that emits <code>gogRemove</code> and
-        stops the click from also reaching <code>gogClick</code>.
+        stops the click from also reaching <code>gogClick</code>. It works from the keyboard too
+        <app-since version="21.15.0" />: Tab to the (×) and press Enter or Space. The chip and its
+        remove button are two sibling buttons, so the chip is named by its content alone —
+        "Angular", not "Angular Remove filter Angular". Before 21.15.0 the remove button sat inside
+        the chip's own button, and those keys pressed the chip instead.
       </p>
       <div class="demo-card__preview action-row">
         @for (tag of tags(); track tag.id) {
