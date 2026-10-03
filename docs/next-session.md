@@ -1,19 +1,14 @@
 # Where to start
 
-**21.14.0 is released and the lab is caught up with it; 21.15.0 is open** (2026-09-13) with
-`gog-table`'s `selectOnRowClick` and the fix for Space on a row checkbox in an `interactiveRows`
-table. Nothing in it changes the package's shape, so `npm run check:install` is not required for it.
-`docs/lab-after-publish.md` has its 21.15.0 section waiting. The comparison bench is re-measured.
-
-21.15.0 also carries the stylesheet comment rewrite: `theme.css`, the global stylesheets and the
-presets now say why in a few lines, and `styling.instructions.md` has the rule that keeps them so.
+**21.15.0 is released and the lab is caught up with it** (2026-10-03).
+**Next: `docs/lab-component-pages.md`, iteration 1 — the Button page as the pilot.** The owner
+asked for it and set it ahead of the backlog; it reviews the result before any other page moves.
 
 **Deferred by the owner on 2026-09-13 — do not start these without asking:**
 
 - **`themes.md` iteration 4** (five unbuilt theme slots) — later.
 - **Input masking** (`docs/feedback-triage.md`, the one item left) — with the next batch of new
   components, since it is new `gog-inputfield` API.
-- **The lab examples refactor** (`docs/lab-examples-handoff.md`, one legacy page of thirty).
 
 **Decided, not deferred:** no entry points beyond `table`, `datepicker` and `dialog`
 (`docs/entry-points.md`, _Where the split stops_).

@@ -248,6 +248,10 @@ are done or moved.
 
 ## What to work on
 
+**Priority set by the owner on 2026-10-03: `docs/lab-component-pages.md`** — one shape for every
+component page in the lab, piloted on Button. It goes ahead of the backlog below; read its status
+table first.
+
 **`docs/backlog.md` is the live list** — everything known to be worth doing and not yet done, in
 one file. Read it before proposing anything. It replaced two separate backlog sections buried in
 completed plan documents, one of which had been carrying an item that shipped two minors earlier
@@ -401,12 +405,13 @@ implemented**; layer 4 (generated deprecation badges) is deliberately deferred t
 `hardening-21.5.0.md` iteration 3, which needs the same generator. The file also records the
 major-version branch/subdomain approach, which is still only a recommendation.
 
-`docs/lab-examples-handoff.md` is the **running state** of that refactor — which pages are
-converted, the folder shape settled by the pilot, the traps already paid for, and what the next
-page needs. Read it first if you are continuing the work; it is short and it is the file that
-goes stale, so update it as you go. `docs/lab-appearance-baseline.md` is its mechanical check —
-one line per page recording preview geometry and text, captured before the refactor started, so a
-converted page can be diffed against its own before-picture instead of eyeballed.
+`docs/lab-component-pages.md` is **the plan for every component page's shape** — the running
+state of that refactor, with the decisions (two tabs, HTML and TS; the TS tab pure TypeScript; demo
+layout owned by `<app-demo>`; one page outline; one API table), the traps already paid for, and a
+per-page status table. Read it first if you are continuing the work, and tick pages as they land.
+`docs/lab-appearance-baseline.md` is its mechanical check — one line per page recording preview
+geometry and text, so a converted page can be diffed against its own before-picture instead of
+eyeballed.
 
 `docs/lab-stackblitz-plan.md` is the post-mortem of the reverted StackBlitz refactor
 (`b6dc543`, undone by `fca14ba`) and the plan that replaces it. **Read it before touching the
