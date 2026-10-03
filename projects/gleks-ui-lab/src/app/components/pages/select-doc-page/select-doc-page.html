@@ -116,12 +116,15 @@
       <h3 class="demo-card__title">Custom chevron &amp; label-less field</h3>
       <p class="demo-card__meta">
         Project an <code>&lt;ng-template gogDropdownChevron&gt;</code> to swap the trigger's icon.
-        <code>ariaLabel</code> names a field that has no visible <code>label</code> at all.
+        The library turns only its own chevron; a custom one gets <code>let-open</code>
+        <app-since version="21.15.0" /> and draws the open state itself — open the first field to
+        see its glyph change. <code>ariaLabel</code> names a field that has no visible
+        <code>label</code> at all.
       </p>
       <div class="demo-card__preview size-column">
         <gog-select [options]="sortOptions" [(value)]="sortValue">
-          <ng-template gogDropdownChevron>
-            <gog-icon name="sort" />
+          <ng-template gogDropdownChevron let-open>
+            <gog-icon [name]="open ? 'sort-up' : 'sort'" />
           </ng-template>
         </gog-select>
         <gog-select
@@ -280,10 +283,15 @@
           [options]="users"
           [(value)]="slotUserId"
         >
-          <ng-template gogDropdownOption let-user let-label="label">
+          <ng-template
+            gogDropdownOption
+            [gogDropdownOptionTypeOf]="users"
+            let-user
+            let-label="label"
+          >
             <span class="option-row">
               <strong>{{ label }}</strong>
-              <small>{{ asUser(user).profile.role }}</small>
+              <small>{{ user.profile.role }}</small>
             </span>
           </ng-template>
         </gog-select>
@@ -409,10 +417,21 @@
             <td>Replaces one option row.</td>
           </tr>
           <tr>
+            <td><code>[gogDropdownOptionTypeOf]</code> <app-since version="21.15.0" /></td>
+            <td><code>readonly TOption[]</code> — an input on <code>gogDropdownOption</code></td>
+            <td>
+              Bind the same array as <code>options</code> and <code>{{ '$' }}implicit</code> is
+              typed as its element instead of <code>unknown</code>. Never read at runtime; left
+              unbound, the template compiles exactly as before.
+            </td>
+          </tr>
+          <tr>
             <td>
               <code>gogDropdownChevron</code>
             </td>
-            <td>—</td>
+            <td>
+              <code>{{ '$' }}implicit / open</code> <app-since version="21.15.0" />
+            </td>
             <td>Replaces the trigger's chevron.</td>
           </tr>
         </tbody>

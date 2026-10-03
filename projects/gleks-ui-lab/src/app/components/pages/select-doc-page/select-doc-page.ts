@@ -60,7 +60,7 @@ const API_INPUTS: readonly ApiInputRow[] = [
   },
   {
     name: 'options',
-    type: 'TOption[]',
+    type: 'readonly TOption[]',
     default: '[]',
     description:
       'The list of choices — your own objects. GogDropdownOption ({ id, name, disabled? }) is just the shape the default accessors expect, not a requirement.',
@@ -491,8 +491,8 @@ export class SelectDocPage {
 
   protected readonly chevronHtml = [
     '<gog-select [options]="sortOptions" [(value)]="sortValue">',
-    '  <ng-template gogDropdownChevron>',
-    '    <gog-icon name="sort" />',
+    '  <ng-template gogDropdownChevron let-open>',
+    "    <gog-icon [name]=\"open ? 'sort-up' : 'sort'\" />",
     '  </ng-template>',
     '</gog-select>',
     '',
@@ -517,8 +517,9 @@ export class SelectDocPage {
     '  imports: [SelectComponent, GogDropdownChevronDirective, IconComponent],',
     '  template: `',
     '    <gog-select [options]="sortOptions" [(value)]="sortValue">',
-    '      <ng-template gogDropdownChevron>',
-    '        <gog-icon name="sort" />',
+    '      <!-- The library turns only its own chevron; a custom one draws its state from open. -->',
+    '      <ng-template gogDropdownChevron let-open>',
+    "        <gog-icon [name]=\"open ? 'sort-up' : 'sort'\" />",
     '      </ng-template>',
     '    </gog-select>',
     '',
@@ -694,7 +695,13 @@ export class SelectDocPage {
     '  [options]="users"',
     '  [(value)]="slotUserId"',
     '>',
-    '  <ng-template gogDropdownOption let-user let-label="label" let-selected="selected">',
+    '  <ng-template',
+    '    gogDropdownOption',
+    '    [gogDropdownOptionTypeOf]="users"',
+    '    let-user',
+    '    let-label="label"',
+    '    let-selected="selected"',
+    '  >',
     '    <strong>{{ label }}</strong>',
     '    <small>{{ user.profile.role }}</small>',
     '  </ng-template>',
@@ -709,18 +716,16 @@ export class SelectDocPage {
     '  imports: [SelectComponent, GogDropdownOptionDirective],',
     '  template: `',
     '    <gog-select optionLabel="profile.fullName" [options]="users" [(value)]="userId">',
-    '      <ng-template gogDropdownOption let-user let-label="label">',
+    '      <!-- [gogDropdownOptionTypeOf] types `user` from the array the field renders. -->',
+    '      <ng-template gogDropdownOption [gogDropdownOptionTypeOf]="users" let-user let-label="label">',
     '        <strong>{{ label }}</strong>',
-    '        <small>{{ asUser(user).profile.role }}</small>',
+    '        <small>{{ user.profile.role }}</small>',
     '      </ng-template>',
     '    </gog-select>',
     '  `,',
     '})',
     'export class ExampleComponent {',
-    '  // The slot hands the option back as `unknown`, so narrow it once here.',
-    '  protected asUser(option: unknown): User {',
-    '    return option as User;',
-    '  }',
+    '  protected readonly users: readonly User[] = [/* ... */];',
     '}',
   ].join('\n');
 
@@ -731,10 +736,6 @@ export class SelectDocPage {
       profile.fullName.toLowerCase().includes(needle) || profile.role.toLowerCase().includes(needle)
     );
   };
-
-  protected asUser(option: unknown): User {
-    return option as User;
-  }
 
   protected readonly appendToBodyHtml = [
     '<gog-select',
