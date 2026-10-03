@@ -155,7 +155,7 @@ template.
 | paginator     | legacy   | 8     | 8   |          |
 | progressbar   | legacy   | 6     | 6   |          |
 | radio-group   | legacy   | 4     | 4   | ✅       |
-| select        | legacy   | 12    | 12  |          |
+| select        | legacy   | 12    | 12  | ✅       |
 | skeleton      | legacy   | 9     | 9   |          |
 | slider        | legacy   | 9     | 9   |          |
 | spinner       | legacy   | 9     | 9   |          |

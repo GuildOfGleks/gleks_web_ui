@@ -1,43 +1,35 @@
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
-import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import {
-  CheckboxComponent,
-  GogDropdownChevronDirective,
-  GogDropdownOption,
-  GogDropdownOptionDirective,
-  GogSize,
-  IconComponent,
-  SelectComponent,
-} from '@guildofgleks/ui';
-import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
-import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
+import { ApiTableComponent, type ApiRow } from '../../shared/api-table/api-table';
+import { DemoComponent } from '../../shared/demo/demo';
 import { GlobalConfigNote } from '../../shared/global-config-note/global-config-note';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
+import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
+import { SELECT_EXAMPLES } from '../../../examples/select/sources.generated';
+import { SelectAccessorsExample } from '../../../examples/select/select-accessors/example';
+import { SelectAppendToBodyExample } from '../../../examples/select/select-append-to-body/example';
+import { SelectClearableExample } from '../../../examples/select/select-clearable/example';
+import { SelectConfigExample } from '../../../examples/select/select-config/example';
+import { SelectDirectionExample } from '../../../examples/select/select-direction/example';
+import { SelectDisabledOptionExample } from '../../../examples/select/select-disabled-option/example';
+import { SelectFilterExample } from '../../../examples/select/select-filter/example';
+import { SelectFloatLabelExample } from '../../../examples/select/select-float-label/example';
+import { SelectFormsExample } from '../../../examples/select/select-forms/example';
+import { SelectOverviewExample } from '../../../examples/select/select-overview/example';
+import { SelectSizesExample } from '../../../examples/select/select-sizes/example';
+import { SelectSlotsExample } from '../../../examples/select/select-slots/example';
+import { SelectStatesExample } from '../../../examples/select/select-states/example';
+import { SelectVirtualizeExample } from '../../../examples/select/select-virtualize/example';
+import { SelectWidthExample } from '../../../examples/select/select-width/example';
 
-interface ApiInputRow {
-  readonly name: string;
-  readonly type: string;
-  readonly default: string;
-  readonly description: string;
-  readonly since?: string;
-}
-
-/** A deliberately un-`GogDropdownOption`-shaped DTO, to show the accessors doing their job. */
-interface User {
-  readonly uuid: string;
-  readonly profile: { readonly fullName: string; readonly role: string };
-  readonly suspended: boolean;
-}
-
-const API_INPUTS: readonly ApiInputRow[] = [
+const API_INPUTS: readonly ApiRow[] = [
   {
     name: 'value',
-    type: 'string | number | null (model)',
+    type: 'TValue | null (model)',
     default: 'null',
     description:
-      'Two-way bindable selected option id via [(value)]. Also driven by Angular Forms through writeValue/registerOnChange when used with formControlName/[formControl]/ngModel.',
+      'Two-way bindable via [(value)]: the selected option run through optionValue — its id by default, the object itself with [optionValue]="null". Also driven by Angular Forms through writeValue/registerOnChange when used with formControlName/[formControl]/ngModel.',
   },
   { name: 'label', type: 'string', default: "''", description: 'Field label.' },
   {
@@ -229,25 +221,46 @@ const API_INPUTS: readonly ApiInputRow[] = [
   },
 ];
 
-/** Long enough that the difference is the point: 10 000 rows to show about six. */
-const MANY_CITIES: GogDropdownOption[] = Array.from({ length: 10_000 }, (_, i) => ({
-  id: `city-${i}`,
-  name: `City ${(i + 1).toLocaleString('en-US')}`,
-}));
+const API_OUTPUTS: readonly ApiRow[] = [
+  {
+    name: 'valueChange',
+    type: 'TValue | null',
+    description:
+      'Emitted when the selection changes — a pick, the clear button, or a forms write. Comes from the value model input.',
+  },
+];
+
+const API_SLOTS: readonly ApiRow[] = [
+  {
+    name: 'gogDropdownOption',
+    type: '$implicit, selected, disabled, label',
+    description:
+      'Replaces one option row. label is the resolved label, so a custom row can decorate it rather than re-derive it.',
+  },
+  {
+    name: '[gogDropdownOptionTypeOf]',
+    type: 'readonly TOption[] — an input on gogDropdownOption',
+    description:
+      'Bind the same array as options and $implicit is typed as its element instead of unknown. Never read at runtime; left unbound, the template compiles exactly as before.',
+    since: '21.15.0',
+  },
+  {
+    name: 'gogDropdownChevron',
+    type: '$implicit / open',
+    description:
+      'Replaces the trigger chevron. The library turns only its own; a custom one draws its state from open.',
+    since: '21.15.0',
+  },
+];
 
 @Component({
   selector: 'app-select-doc-page',
   imports: [
-    CheckboxComponent,
-    SelectComponent,
-    GogDropdownOptionDirective,
-    GogDropdownChevronDirective,
-    IconComponent,
+    ApiTableComponent,
+    DemoComponent,
     GlobalConfigNote,
     MarkdownComponent,
-    CodeTabsComponent,
     RouterLink,
-    ReactiveFormsModule,
     SinceBadgeComponent,
   ],
   templateUrl: './select-doc-page.html',
@@ -255,558 +268,31 @@ const MANY_CITIES: GogDropdownOption[] = Array.from({ length: 10_000 }, (_, i) =
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SelectDocPage {
-  protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];
-
   protected readonly apiInputs = API_INPUTS;
-
-  protected readonly manyCities = MANY_CITIES;
-  protected readonly windowedCity = signal<string | number | null>(null);
-  protected readonly eagerCity = signal<string | number | null>(null);
-  protected readonly virtualizeOn = signal(true);
+  protected readonly apiOutputs = API_OUTPUTS;
+  protected readonly apiSlots = API_SLOTS;
   protected readonly styleTokens =
     TOKEN_SECTIONS.find((section) => section.id === 'select')?.tokens ?? [];
 
-  protected readonly framework = signal<string | number | null>(null);
-  protected readonly frameworks: GogDropdownOption[] = [
-    { id: 'angular', name: 'Angular' },
-    { id: 'react', name: 'React' },
-    { id: 'vue', name: 'Vue' },
-  ];
-  protected readonly selectionSummary = computed(
-    () => this.frameworks.find((option) => option.id === this.framework())?.name ?? 'None selected',
-  );
-
-  protected readonly sizeDemoValue = signal<string | number | null>('angular');
-
-  protected readonly plansWithDisabled: GogDropdownOption[] = [
-    { id: 'free', name: 'Free' },
-    { id: 'pro', name: 'Pro' },
-    { id: 'enterprise', name: 'Enterprise (contact sales)', disabled: true },
-  ];
-  protected readonly plan = signal<string | number | null>('free');
-  protected readonly requiredValue = signal<string | number | null>(null);
-  protected readonly requiredError = computed(() =>
-    this.requiredValue() === null ? 'Please pick a plan.' : '',
-  );
-
-  protected readonly billingCycles: GogDropdownOption[] = [
-    { id: 'monthly', name: 'Monthly' },
-    { id: 'yearly', name: 'Yearly (2 months free)' },
-  ];
-  protected readonly billingCycleControl = new FormControl<string | number | null>(
-    null,
-    Validators.required,
-  );
-
-  protected readonly countries: GogDropdownOption[] = [
-    { id: 'de', name: 'Germany' },
-    { id: 'fr', name: 'France' },
-    { id: 'es', name: 'Spain' },
-    { id: 'it', name: 'Italy' },
-    { id: 'pl', name: 'Poland' },
-  ];
-  protected readonly fullWidthCountry = signal<string | number | null>(null);
-  protected readonly currencies: GogDropdownOption[] = [
-    { id: 'usd', name: 'USD' },
-    { id: 'eur', name: 'EUR' },
-    { id: 'gbp', name: 'GBP' },
-  ];
-  protected readonly currency = signal<string | number | null>('usd');
-
-  protected readonly sortOptions: GogDropdownOption[] = [
-    { id: 'newest', name: 'Newest first' },
-    { id: 'oldest', name: 'Oldest first' },
-  ];
-  protected readonly sortValue = signal<string | number | null>('newest');
-  protected readonly ariaOnlyValue = signal<string | number | null>(null);
-
-  protected readonly manyCountries: GogDropdownOption[] = Array.from({ length: 20 }, (_, i) => ({
-    id: `country-${i}`,
-    name: `Country ${i + 1}`,
-  }));
-  protected readonly compactPanelValue = signal<string | number | null>(null);
+  protected readonly sources = SELECT_EXAMPLES;
+  protected readonly examples = {
+    overview: SelectOverviewExample,
+    sizes: SelectSizesExample,
+    states: SelectStatesExample,
+    clearable: SelectClearableExample,
+    width: SelectWidthExample,
+    slots: SelectSlotsExample,
+    accessors: SelectAccessorsExample,
+    disabledOption: SelectDisabledOptionExample,
+    filter: SelectFilterExample,
+    direction: SelectDirectionExample,
+    appendToBody: SelectAppendToBodyExample,
+    virtualize: SelectVirtualizeExample,
+    floatLabel: SelectFloatLabelExample,
+    forms: SelectFormsExample,
+    config: SelectConfigExample,
+  };
 
   protected readonly importSnippet =
     "```typescript\nimport { SelectComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [SelectComponent],\n})\n```";
-
-  protected readonly overviewHtml = [
-    '<gog-select label="Framework" [options]="frameworks" [(value)]="framework" />',
-  ].join('\n');
-  protected readonly overviewTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { GogDropdownOption, SelectComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [SelectComponent],',
-    '  template: `<gog-select label="Framework" [options]="frameworks" [(value)]="framework" />`,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly framework = signal<string | number | null>(null);',
-    '  protected readonly frameworks: GogDropdownOption[] = [',
-    "    { id: 'angular', name: 'Angular' },",
-    "    { id: 'react', name: 'React' },",
-    "    { id: 'vue', name: 'Vue' },",
-    '  ];',
-    '}',
-  ].join('\n');
-
-  protected readonly sizesHtml = [
-    '@for (sizeOption of sizes; track sizeOption) {',
-    '  <gog-select [label]="\'Size: \' + sizeOption" [size]="sizeOption" [options]="frameworks" [(value)]="sizeDemoValue" />',
-    '}',
-  ].join('\n');
-  protected readonly sizesTs = [
-    "import { Component } from '@angular/core';",
-    "import { GogDropdownOption, GogSize, SelectComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [SelectComponent],',
-    '  template: `',
-    '    @for (sizeOption of sizes; track sizeOption) {',
-    '      <gog-select [label]="\'Size: \' + sizeOption" [size]="sizeOption" [options]="frameworks" [(value)]="sizeDemoValue" />',
-    '    }',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    "  protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];",
-    '  protected readonly frameworks: GogDropdownOption[] = [/* ... */];',
-    "  protected readonly sizeDemoValue = signal<string | number | null>('angular');",
-    '}',
-  ].join('\n');
-
-  protected readonly statesHtml = [
-    '<gog-select label="Disabled" [options]="frameworks" value="angular" [disabled]="true" />',
-    '',
-    '<gog-select label="Plan (one option disabled)" [options]="plansWithDisabled" [(value)]="plan" />',
-    '',
-    '<gog-select',
-    '  label="Required plan"',
-    '  placeholder="Choose a plan..."',
-    '  [options]="plansWithDisabled"',
-    "  [errorMessage]=\"requiredValue() === null ? 'Please pick a plan.' : ''\"",
-    '  [(value)]="requiredValue"',
-    '/>',
-  ].join('\n');
-  protected readonly statesTs = [
-    "import { Component, computed, signal } from '@angular/core';",
-    "import { GogDropdownOption, SelectComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [SelectComponent],',
-    '  template: `',
-    '    <gog-select label="Disabled" [options]="frameworks" value="angular" [disabled]="true" />',
-    '',
-    '    <gog-select label="Plan (one option disabled)" [options]="plansWithDisabled" [(value)]="plan" />',
-    '',
-    '    <gog-select',
-    '      label="Required plan"',
-    '      placeholder="Choose a plan..."',
-    '      [options]="plansWithDisabled"',
-    '      [errorMessage]="requiredError()"',
-    '      [(value)]="requiredValue"',
-    '    />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly plansWithDisabled: GogDropdownOption[] = [',
-    "    { id: 'free', name: 'Free' },",
-    "    { id: 'pro', name: 'Pro' },",
-    "    { id: 'enterprise', name: 'Enterprise (contact sales)', disabled: true },",
-    '  ];',
-    "  protected readonly plan = signal<string | number | null>('free');",
-    '  protected readonly requiredValue = signal<string | number | null>(null);',
-    '  protected readonly requiredError = computed(() =>',
-    "    this.requiredValue() === null ? 'Please pick a plan.' : '',",
-    '  );',
-    '}',
-  ].join('\n');
-
-  protected readonly formHtml = [
-    '<gog-select',
-    '  label="Billing cycle"',
-    '  placeholder="Choose a cycle..."',
-    '  [options]="billingCycles"',
-    '  [formControl]="billingCycleControl"',
-    '  errorMessage="A billing cycle is required."',
-    '  errorDisplay="auto"',
-    '/>',
-  ].join('\n');
-  protected readonly formTs = [
-    "import { Component } from '@angular/core';",
-    "import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';",
-    "import { GogDropdownOption, SelectComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [SelectComponent, ReactiveFormsModule],',
-    '  template: `',
-    '    <gog-select',
-    '      label="Billing cycle"',
-    '      placeholder="Choose a cycle..."',
-    '      [options]="billingCycles"',
-    '      [formControl]="billingCycleControl"',
-    '      errorMessage="A billing cycle is required."',
-    '      errorDisplay="auto"',
-    '    />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly billingCycles: GogDropdownOption[] = [',
-    "    { id: 'monthly', name: 'Monthly' },",
-    "    { id: 'yearly', name: 'Yearly (2 months free)' },",
-    '  ];',
-    '  protected readonly billingCycleControl = new FormControl<string | number | null>(',
-    '    null,',
-    '    Validators.required,',
-    '  );',
-    '}',
-  ].join('\n');
-
-  protected readonly fullWidthHtml = [
-    '<gog-select label="Country" [options]="countries" [(value)]="fullWidthCountry" />',
-    '<gog-select label="Currency" [options]="currencies" [(value)]="currency" [fullWidth]="false" />',
-  ].join('\n');
-  protected readonly fullWidthTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { GogDropdownOption, SelectComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [SelectComponent],',
-    '  template: `',
-    '    <gog-select label="Country" [options]="countries" [(value)]="fullWidthCountry" />',
-    '    <gog-select label="Currency" [options]="currencies" [(value)]="currency" [fullWidth]="false" />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly fullWidthCountry = signal<string | number | null>(null);',
-    "  protected readonly currency = signal<string | number | null>('usd');",
-    '  protected readonly countries: GogDropdownOption[] = [/* ... */];',
-    '  protected readonly currencies: GogDropdownOption[] = [/* ... */];',
-    '}',
-  ].join('\n');
-
-  protected readonly chevronHtml = [
-    '<gog-select [options]="sortOptions" [(value)]="sortValue">',
-    '  <ng-template gogDropdownChevron let-open>',
-    "    <gog-icon [name]=\"open ? 'sort-up' : 'sort'\" />",
-    '  </ng-template>',
-    '</gog-select>',
-    '',
-    '<gog-select',
-    '  ariaLabel="Country (no visible label)"',
-    '  placeholder="Pick a country"',
-    '  [options]="countries"',
-    '  [(value)]="ariaOnlyValue"',
-    '/>',
-  ].join('\n');
-  protected readonly chevronTs = [
-    "import { Component, signal } from '@angular/core';",
-    'import {',
-    '  GogDropdownChevronDirective,',
-    '  GogDropdownOption,',
-    '  IconComponent,',
-    '  SelectComponent,',
-    "} from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [SelectComponent, GogDropdownChevronDirective, IconComponent],',
-    '  template: `',
-    '    <gog-select [options]="sortOptions" [(value)]="sortValue">',
-    '      <!-- The library turns only its own chevron; a custom one draws its state from open. -->',
-    '      <ng-template gogDropdownChevron let-open>',
-    "        <gog-icon [name]=\"open ? 'sort-up' : 'sort'\" />",
-    '      </ng-template>',
-    '    </gog-select>',
-    '',
-    '    <gog-select',
-    '      ariaLabel="Country (no visible label)"',
-    '      placeholder="Pick a country"',
-    '      [options]="countries"',
-    '      [(value)]="ariaOnlyValue"',
-    '    />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly sortOptions: GogDropdownOption[] = [',
-    "    { id: 'newest', name: 'Newest first' },",
-    "    { id: 'oldest', name: 'Oldest first' },",
-    '  ];',
-    "  protected readonly sortValue = signal<string | number | null>('newest');",
-    '  protected readonly ariaOnlyValue = signal<string | number | null>(null);',
-    '}',
-  ].join('\n');
-
-  // ---- 21.3.0: option accessors, filtering, clearable, option slot -------------------------
-
-  protected readonly users: User[] = [
-    { uuid: 'u1', profile: { fullName: 'Ada Lovelace', role: 'Engineering' }, suspended: false },
-    { uuid: 'u2', profile: { fullName: 'Grace Hopper', role: 'Engineering' }, suspended: false },
-    { uuid: 'u3', profile: { fullName: 'Katherine Johnson', role: 'Research' }, suspended: false },
-    { uuid: 'u4', profile: { fullName: 'Radia Perlman', role: 'Networking' }, suspended: true },
-  ];
-  protected readonly userId = signal<string | number | null>(null);
-  protected readonly userObject = signal<User | null>(null);
-  protected readonly slotUserId = signal<string | number | null>(null);
-  protected readonly filteredCountry = signal<string | number | null>(null);
-  protected readonly clearablePlan = signal<string | number | null>('pro');
-
-  protected readonly accessorsHtml = [
-    '<!-- A real DTO goes straight in: no mapping into { id, name } first. -->',
-    '<gog-select',
-    '  label="Assignee"',
-    '  optionLabel="profile.fullName"',
-    '  optionValue="uuid"',
-    '  optionDisabled="suspended"',
-    '  [options]="users"',
-    '  [(value)]="userId"',
-    '/>',
-    '',
-    '<!-- [optionValue]="null" hands back the option object itself. -->',
-    '<gog-select',
-    '  label="Assignee (object)"',
-    '  optionLabel="profile.fullName"',
-    '  [optionValue]="null"',
-    '  [options]="users"',
-    '  [(value)]="userObject"',
-    '/>',
-  ].join('\n');
-  protected readonly accessorsTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { SelectComponent } from '@guildofgleks/ui';",
-    '',
-    'interface User {',
-    '  uuid: string;',
-    '  profile: { fullName: string; role: string };',
-    '  suspended: boolean;',
-    '}',
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [SelectComponent],',
-    '  template: `',
-    '    <gog-select',
-    '      label="Assignee"',
-    '      optionLabel="profile.fullName"',
-    '      optionValue="uuid"',
-    '      optionDisabled="suspended"',
-    '      [options]="users"',
-    '      [(value)]="userId"',
-    '    />',
-    '',
-    '    <gog-select',
-    '      label="Assignee (object)"',
-    '      optionLabel="profile.fullName"',
-    '      [optionValue]="null"',
-    '      [options]="users"',
-    '      [(value)]="userObject"',
-    '    />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly users: User[] = [/* straight from the API */];',
-    '',
-    '  // An id…',
-    '  protected readonly userId = signal<string | number | null>(null);',
-    '  // …or the object itself, the same reference that went in.',
-    '  protected readonly userObject = signal<User | null>(null);',
-    '}',
-  ].join('\n');
-
-  protected readonly filterHtml = [
-    '<gog-select',
-    '  label="Country"',
-    '  [filter]="true"',
-    '  filterPlaceholder="Search countries…"',
-    '  filterEmptyMessage="No country matches"',
-    '  [options]="manyCountries"',
-    '  [(value)]="filteredCountry"',
-    '/>',
-    '',
-    '<!-- filterMatch replaces the default substring match on the label. -->',
-    '<gog-select',
-    '  label="Assignee"',
-    '  optionLabel="profile.fullName"',
-    '  optionValue="uuid"',
-    '  [filter]="true"',
-    '  [filterMatch]="matchNameOrRole"',
-    '  [options]="users"',
-    '  [(value)]="userId"',
-    '/>',
-  ].join('\n');
-  protected readonly filterTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { SelectComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [SelectComponent],',
-    '  template: `',
-    '    <gog-select',
-    '      label="Assignee"',
-    '      optionLabel="profile.fullName"',
-    '      [filter]="true"',
-    '      [filterMatch]="matchNameOrRole"',
-    '      [options]="users"',
-    '      [(value)]="userId"',
-    '    />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  // Searches a field the label never shows.',
-    '  protected readonly matchNameOrRole = (user: User, query: string): boolean => {',
-    '    const needle = query.toLowerCase();',
-    '    return (',
-    '      user.profile.fullName.toLowerCase().includes(needle) ||',
-    '      user.profile.role.toLowerCase().includes(needle)',
-    '    );',
-    '  };',
-    '}',
-  ].join('\n');
-
-  protected readonly clearableHtml = [
-    '<gog-select label="Plan" [clearable]="true" [options]="plansWithDisabled" [(value)]="plan" />',
-  ].join('\n');
-  protected readonly clearableTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { SelectComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [SelectComponent],',
-    '  template: `',
-    '    <gog-select label="Plan" [clearable]="true" [options]="plans" [(value)]="plan" />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    "  protected readonly plan = signal<string | number | null>('pro');",
-    '}',
-  ].join('\n');
-
-  protected readonly optionSlotHtml = [
-    '<gog-select',
-    '  label="Assignee"',
-    '  optionLabel="profile.fullName"',
-    '  optionValue="uuid"',
-    '  [options]="users"',
-    '  [(value)]="slotUserId"',
-    '>',
-    '  <ng-template',
-    '    gogDropdownOption',
-    '    [gogDropdownOptionTypeOf]="users"',
-    '    let-user',
-    '    let-label="label"',
-    '    let-selected="selected"',
-    '  >',
-    '    <strong>{{ label }}</strong>',
-    '    <small>{{ user.profile.role }}</small>',
-    '  </ng-template>',
-    '</gog-select>',
-  ].join('\n');
-  protected readonly optionSlotTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { GogDropdownOptionDirective, SelectComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [SelectComponent, GogDropdownOptionDirective],',
-    '  template: `',
-    '    <gog-select optionLabel="profile.fullName" [options]="users" [(value)]="userId">',
-    '      <!-- [gogDropdownOptionTypeOf] types `user` from the array the field renders. -->',
-    '      <ng-template gogDropdownOption [gogDropdownOptionTypeOf]="users" let-user let-label="label">',
-    '        <strong>{{ label }}</strong>',
-    '        <small>{{ user.profile.role }}</small>',
-    '      </ng-template>',
-    '    </gog-select>',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly users: readonly User[] = [/* ... */];',
-    '}',
-  ].join('\n');
-
-  protected readonly matchNameOrRole = (user: unknown, query: string): boolean => {
-    const needle = query.toLowerCase();
-    const { profile } = user as User;
-    return (
-      profile.fullName.toLowerCase().includes(needle) || profile.role.toLowerCase().includes(needle)
-    );
-  };
-
-  protected readonly appendToBodyHtml = [
-    '<gog-select',
-    '  label="Country (fixed 220px / 160px panel)"',
-    '  [options]="countries"',
-    '  [appendToBody]="true"',
-    '  dropdownWidth="220px"',
-    '  dropdownMaxHeight="160px"',
-    '  [(value)]="compactPanelValue"',
-    '/>',
-  ].join('\n');
-  protected readonly virtualizeHtml = [
-    '<gog-checkbox label="virtualize the first field" [(checked)]="virtualizeOn" />',
-    '<gog-select',
-    '  label="City (windowed)"',
-    '  [options]="cities"',
-    '  [virtualize]="virtualizeOn()"',
-    '  [filter]="true"',
-    '  [(value)]="windowedCity"',
-    '/>',
-    '<gog-select',
-    '  label="City (eager, for comparison)"',
-    '  [options]="cities"',
-    '  [filter]="true"',
-    '  [(value)]="eagerCity"',
-    '/>',
-  ].join('\n');
-  protected readonly virtualizeTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { CheckboxComponent, GogDropdownOption, SelectComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [CheckboxComponent, SelectComponent],',
-    '  template: `/* as in the HTML tab */`,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly cities: GogDropdownOption[] = Array.from({ length: 10_000 }, (_, i) => ({',
-    '    id: `city-${i}`,',
-    '    name: `City ${i + 1}`,',
-    '  }));',
-    '  protected readonly windowedCity = signal<string | number | null>(null);',
-    '  protected readonly eagerCity = signal<string | number | null>(null);',
-    '  protected readonly virtualizeOn = signal(true);',
-    '}',
-  ].join('\n');
-
-  protected readonly appendToBodyTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { GogDropdownOption, SelectComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [SelectComponent],',
-    '  template: `',
-    '    <gog-select',
-    '      label="Country (fixed 220px / 160px panel)"',
-    '      [options]="countries"',
-    '      [appendToBody]="true"',
-    '      dropdownWidth="220px"',
-    '      dropdownMaxHeight="160px"',
-    '      [(value)]="compactPanelValue"',
-    '    />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly countries: GogDropdownOption[] = Array.from({ length: 20 }, (_, i) => ({',
-    '    id: `country-${i}`,',
-    '    name: `Country ${i + 1}`,',
-    '  }));',
-    '  protected readonly compactPanelValue = signal<string | number | null>(null);',
-    '}',
-  ].join('\n');
 }

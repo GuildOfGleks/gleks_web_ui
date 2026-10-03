@@ -1,0 +1,11 @@
+<div>
+  <gog-select
+    label="Framework"
+    placeholder="Pick a framework"
+    [options]="frameworks"
+    [(value)]="framework"
+    (valueChange)="changes.update((n) => n + 1)"
+  />
+  <!-- The value is the option's id, through the default optionValue: 'id'. -->
+  <code>value: {{ framework() ?? 'null' }} · {{ changes() }} valueChange</code>
+</div>

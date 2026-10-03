@@ -3,9 +3,11 @@
     <p class="select-doc__eyebrow">gog-select</p>
     <h1 class="select-doc__title font-heading">Select</h1>
     <p class="select-doc__lead">
-      A dropdown select with five sizes, disabled options, placement control, a body-portaled panel,
-      and full <code>ControlValueAccessor</code> support. Once open, Arrow Up/Down move between
-      options, Home/End jump to the first/last, and Escape closes.
+      A single-choice dropdown over your own objects: a button trigger, a listbox panel that can
+      filter, virtualize and escape a clipping container, and full
+      <code>ControlValueAccessor</code> support. For several choices see
+      <a routerLink="/components/multiselect">Multiselect</a>; for a typed query, see
+      <a routerLink="/components/autocomplete">Autocomplete</a>.
     </p>
   </header>
 
@@ -14,14 +16,12 @@
     <p class="doc-section__intro">Import the component and drop it into a template.</p>
     <app-markdown [markdown]="importSnippet" />
 
-    <p class="doc-section__intro">Basic usage — a labeled field bound with [(value)]:</p>
+    <p class="doc-section__intro">
+      Basic usage — <code>[(value)]</code> holds the selected option's <code>id</code>:
+    </p>
     <div class="demo-card">
-      <div class="demo-card__preview width-demo">
-        <gog-select label="Framework" [options]="frameworks" [(value)]="framework" />
-      </div>
-      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
+      <app-demo [component]="examples.overview" [source]="sources.selectOverview" layout="fields" />
     </div>
-    <p class="doc-section__meta">Selected: {{ selectionSummary() }}</p>
   </section>
 
   <section class="doc-section">
@@ -29,333 +29,236 @@
 
     <article class="demo-card">
       <h3 class="demo-card__title">Sizes</h3>
-      <p class="demo-card__meta">Five size steps, from xsm to slg.</p>
-      <div class="demo-card__preview size-column">
-        @for (sizeOption of sizes; track sizeOption) {
-          <gog-select
-            [label]="'Size: ' + sizeOption"
-            [size]="sizeOption"
-            [options]="frameworks"
-            [(value)]="sizeDemoValue"
-          />
-        }
-      </div>
-      <app-code-tabs [html]="sizesHtml" [ts]="sizesTs" />
+      <p class="demo-card__meta">
+        Five steps, also settable app-wide through <code>GOG_CONFIG.control.size</code>.
+      </p>
+      <app-demo [component]="examples.sizes" [source]="sources.selectSizes" layout="fields" />
     </article>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Disabled option &amp; disabled field</h3>
+      <h3 class="demo-card__title">States</h3>
       <p class="demo-card__meta">
-        A single option can be marked <code>disabled</code> without disabling the whole field, or
-        the trigger itself can be disabled with <code>[disabled]="true"</code>. The last field shows
-        an error computed entirely by the page — <code>gog-select</code> just renders whatever
-        <code>errorMessage</code> it's given, for as long as it's non-empty.
+        Empty, holding a value, disabled and with an error. With the default
+        <code>errorDisplay="manual"</code> the message shows for as long as
+        <code>errorMessage</code> is non-empty — the timing is yours; see Reactive forms below for
+        the automatic kind.
       </p>
-      <div class="demo-card__preview size-column">
-        <gog-select label="Disabled" [options]="frameworks" value="angular" [disabled]="true" />
-        <gog-select
-          label="Plan (one option disabled)"
-          [options]="plansWithDisabled"
-          [(value)]="plan"
-        />
-        <gog-select
-          label="Required plan"
-          placeholder="Choose a plan..."
-          [options]="plansWithDisabled"
-          [errorMessage]="requiredError()"
-          [(value)]="requiredValue"
-        />
-      </div>
-      <app-code-tabs [html]="statesHtml" [ts]="statesTs" />
+      <app-demo [component]="examples.states" [source]="sources.selectStates" layout="fields" />
     </article>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Reactive Forms — automatic error timing</h3>
+      <h3 class="demo-card__title">Clearable</h3>
       <p class="demo-card__meta">
-        With <code>errorDisplay="auto"</code> and a <code>[formControl]</code>, the field decides
-        for itself when to show the error — once the control has been touched and is invalid —
-        instead of the page computing that timing. Click the field, then click away without choosing
-        anything.
+        The clear button appears only once something is selected, so a field no longer needs a fake
+        <em>"— not selected —"</em> option to make a choice undoable. It takes the outermost
+        trailing position and the chevron shifts inward. It is the one part of the trigger that is
+        not the trigger: a button inside a button is invalid HTML, so it is a sibling laid over the
+        trigger's end edge, named by <code>clearAriaLabel</code>. Off by default here —
+        <a routerLink="/components/multiselect">Multiselect</a> is the one control where it is on.
       </p>
-      <div class="demo-card__preview width-demo">
-        <gog-select
-          label="Billing cycle"
-          placeholder="Choose a cycle..."
-          [options]="billingCycles"
-          [formControl]="billingCycleControl"
-          errorMessage="A billing cycle is required."
-          errorDisplay="auto"
-        />
-      </div>
-      <app-code-tabs [html]="formHtml" [ts]="formTs" />
+      <app-demo
+        [component]="examples.clearable"
+        [source]="sources.selectClearable"
+        layout="fields"
+      />
     </article>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Full width</h3>
+      <h3 class="demo-card__title">Width</h3>
       <p class="demo-card__meta">
-        Full width of its container by default (see every field above).
-        <code>[fullWidth]="false"</code> shrinks the trigger to fit its selected label instead —
-        useful for a compact field alongside one that should keep growing. The dashed outline is the
-        row both share.
+        A field fills its container by default — the dashed box here. With
+        <code>[fullWidth]="false"</code> the trigger sizes to whatever is selected, so a short
+        option collapses it; <code>minWidth</code> is the floor under that.
       </p>
-      <div class="demo-card__preview field-row container-demo">
-        <div class="field-row__grow">
-          <gog-select label="Country" [options]="countries" [(value)]="fullWidthCountry" />
-        </div>
-        <gog-select
-          label="Currency"
-          [options]="currencies"
-          [(value)]="currency"
-          [fullWidth]="false"
-        />
-      </div>
-      <app-code-tabs [html]="fullWidthHtml" [ts]="fullWidthTs" />
+      <app-demo [component]="examples.width" [source]="sources.selectWidth" layout="frame" />
     </article>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Custom chevron &amp; label-less field</h3>
+      <h3 class="demo-card__title">Custom chevron, and no visible label</h3>
       <p class="demo-card__meta">
-        Project an <code>&lt;ng-template gogDropdownChevron&gt;</code> to swap the trigger's icon.
-        The library turns only its own chevron; a custom one gets <code>let-open</code>
-        <app-since version="21.15.0" /> and draws the open state itself — open the first field to
-        see its glyph change. <code>ariaLabel</code> names a field that has no visible
-        <code>label</code> at all.
+        <code>gogDropdownChevron</code> replaces the chevron. The library turns only its own; a
+        custom one gets <code>let-open</code> <app-since version="21.15.0" /> and draws the state
+        itself — open the first field to watch the glyph change. <code>ariaLabel</code> names a
+        field that has no <code>label</code>.
       </p>
-      <div class="demo-card__preview size-column">
-        <gog-select [options]="sortOptions" [(value)]="sortValue">
-          <ng-template gogDropdownChevron let-open>
-            <gog-icon [name]="open ? 'sort-up' : 'sort'" />
-          </ng-template>
-        </gog-select>
-        <gog-select
-          ariaLabel="Country (no visible label)"
-          placeholder="Pick a country"
-          [options]="countries"
-          [(value)]="ariaOnlyValue"
-        />
-      </div>
-      <app-code-tabs [html]="chevronHtml" [ts]="chevronTs" />
+      <app-demo [component]="examples.slots" [source]="sources.selectSlots" layout="fields" />
     </article>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Append to body &amp; custom panel size</h3>
+      <h3 class="demo-card__title">Your own objects</h3>
       <p class="demo-card__meta">
-        <code>appendToBody</code> portals the panel into <code>document.body</code> — useful inside
-        scrollable or overflow-clipped containers, since the panel escapes the clipping.
-        <code>dropdownWidth</code> and <code>dropdownMaxHeight</code> then take any CSS length to
-        override the trigger-derived size; both apply only with <code>appendToBody</code>. The list
-        below has 20 options, capped to 160px so it scrolls internally.
+        <code>optionLabel</code>, <code>optionValue</code> and <code>optionDisabled</code> each take
+        a property path — dot-paths included — or a function, so a real DTO goes in with no mapping
+        into <code>{{ '{' }} id, name {{ '}' }}</code> first.
+        <code>[optionValue]="null"</code> makes the value the option object itself, the same
+        reference that went in. A <code>gogDropdownOption</code> template replaces one row, and its
+        context carries the resolved <code>label</code>; <code>[gogDropdownOptionTypeOf]</code>
+        <app-since version="21.15.0" /> types the option, so a typo in
+        <code>option.profile.role</code> fails the build.
       </p>
-      <div class="demo-card__preview width-demo">
-        <gog-select
-          label="Country (fixed 220px / 160px)"
-          [options]="manyCountries"
-          [appendToBody]="true"
-          dropdownWidth="220px"
-          dropdownMaxHeight="160px"
-          [(value)]="compactPanelValue"
-        />
-      </div>
-      <app-code-tabs [html]="appendToBodyHtml" [ts]="appendToBodyTs" />
+      <app-demo
+        [component]="examples.accessors"
+        [source]="sources.selectAccessors"
+        layout="fields"
+      />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">A disabled option</h3>
+      <p class="demo-card__meta">
+        <code>optionDisabled</code> defaults to the <code>disabled</code> property, so a
+        <code>GogDropdownOption</code> carrying it needs no binding. The row stays in the list, is
+        announced as disabled, and neither the pointer nor the keyboard selects it.
+      </p>
+      <app-demo
+        [component]="examples.disabledOption"
+        [source]="sources.selectDisabledOption"
+        layout="fields"
+      />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Filtering</h3>
+      <p class="demo-card__meta">
+        <code>filter</code> puts a search box in the panel — worth it past about seven options, or
+        order them instead, since a list the reader can predict is one they search rather than
+        choose from. The default matcher is a case-insensitive substring of the resolved label;
+        <code>filterMatch</code> swaps in any predicate. The query resets when the panel closes.
+        <strong>The search box has square corners, and that is the concentric answer</strong>: inset
+        from the panel edge by exactly the panel's radius, its corner sits on the centre of the
+        panel's corner arc, the one shape that keeps the gap constant. Override
+        <code>--gog-select-panel-radius</code> and it reshapes to match.
+      </p>
+      <app-demo [component]="examples.filter" [source]="sources.selectFilter" layout="fields" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Direction</h3>
+      <p class="demo-card__meta">
+        <code>'auto'</code> measures the room under the trigger and flips up when there is not
+        enough; <code>'down'</code> and <code>'up'</code> are fixed, whatever the viewport does.
+      </p>
+      <app-demo
+        [component]="examples.direction"
+        [source]="sources.selectDirection"
+        layout="fields"
+      />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">The panel — <code>appendToBody</code></h3>
+      <p class="demo-card__meta">
+        The panel renders inline by default and is clipped by any scrolling or
+        <code>overflow: hidden</code> ancestor; open the first two — only the appended one survives
+        its box. <code>dropdownWidth</code> and <code>dropdownMaxHeight</code> take any CSS length
+        and apply only while the panel is appended: the third holds 20 options in 160px, so it
+        scrolls.
+      </p>
+      <app-demo
+        [component]="examples.appendToBody"
+        [source]="sources.selectAppendToBody"
+        layout="fields"
+      />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">
+        Virtualized options — <code>virtualize</code> <app-since version="21.13.0" />
+      </h3>
+      <p class="demo-card__meta">
+        Both fields hold 10&nbsp;000 options. Open each and compare how long the panel takes to
+        appear: the windowed one keeps about twenty rows in the DOM, the eager one builds all
+        10&nbsp;000 to show six — measured in Chrome, 512&nbsp;ms against 21&nbsp;ms. The scrollbar
+        looks the same either way, because spacers stand in for the missing rows.
+      </p>
+      <app-demo
+        [component]="examples.virtualize"
+        [source]="sources.selectVirtualize"
+        layout="fields"
+      />
+      <p class="demo-card__meta">
+        <strong>Off by default, and never switched on at a row count.</strong>
+        <code>Ctrl+F</code> finds only the rendered rows, and CSS targeting
+        <code>:last-child</code> matches the last <em>rendered</em> one; a threshold would make that
+        depend on how much data arrived. Set it per field, or app-wide with
+        <code>GOG_CONFIG.dropdown.virtualize</code>. The announced count stays honest —
+        <code>aria-setsize</code> carries the real list — and scrolling a focused row out of view
+        hands focus back to the trigger, since the row no longer exists. <code>gog-table</code>'s
+        <code>virtualize</code> works differently under the same name: see the
+        <a routerLink="/components/table" fragment="virtualize">Table page</a>.
+      </p>
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Float label</h3>
+      <p class="demo-card__meta">
+        <code>'none'</code> keeps the label above the field; <code>'in'</code>,
+        <code>'on'</code> and <code>'over'</code> rest it inside the trigger until focus or a
+        selection moves it clear — each shown empty, then with a value.
+        <code>floatLabelShowPlaceholder</code> brings the placeholder back under the floated label.
+      </p>
+      <app-demo
+        [component]="examples.floatLabel"
+        [source]="sources.selectFloatLabel"
+        layout="fields"
+      />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Reactive forms</h3>
+      <p class="demo-card__meta">
+        With <code>errorDisplay="auto"</code> the error shows once the control is touched and
+        invalid — open the panel and close it without choosing — instead of the page computing when
+        to pass an <code>errorMessage</code>. A choice clears it.
+      </p>
+      <app-demo [component]="examples.forms" [source]="sources.selectForms" layout="fields" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">App-wide defaults — <code>GOG_CONFIG</code></h3>
+      <p class="demo-card__meta">
+        <code>control.size</code>, <code>control.clearable</code>, <code>dropdown.filter</code> and
+        <code>floatLabel.variant</code> set the defaults for every field under the provider; an
+        instance's own input still wins. Open the third field for the filter. In an app the provider
+        goes in <code>app.config.ts</code> — see
+        <a routerLink="/general/global-config">Global Configuration</a>.
+      </p>
+      <app-demo [component]="examples.config" [source]="sources.selectConfig" layout="fields" />
     </article>
   </section>
 
   <section class="doc-section">
-    <h2 id="your-own-objects" class="doc-section__title font-heading">Your own objects</h2>
+    <h2 id="accessibility" class="doc-section__title font-heading">Accessibility</h2>
     <p class="doc-section__intro">
-      <code>optionLabel</code>, <code>optionValue</code> and <code>optionDisabled</code> each take a
-      property path — dot-paths included — or a function. A real DTO goes straight in, with no
-      mapping into <code>{{ '{' }} id, name {{ '}' }}</code> first and nothing lost on the way back
-      out. The defaults are <code>'name'</code> / <code>'id'</code> / <code>'disabled'</code>, so
-      code written before 21.3.0 is unaffected; <code>GogDropdownOption</code> is no longer a
-      requirement, just the shape those defaults expect to find.
-    </p>
-    <p class="doc-section__intro">
-      Set <code>[optionValue]="null"</code> and the control emits the
-      <strong>option object itself</strong> — the same reference you passed in, not a copy.
-    </p>
-    <div class="demo-card">
-      <div class="demo-card__preview size-column">
-        <gog-select
-          label="Assignee"
-          optionLabel="profile.fullName"
-          optionValue="uuid"
-          optionDisabled="suspended"
-          [options]="users"
-          [(value)]="userId"
-        />
-        <gog-select
-          label="Assignee (object)"
-          optionLabel="profile.fullName"
-          [optionValue]="null"
-          [options]="users"
-          [(value)]="userObject"
-        />
-      </div>
-      <p class="demo-card__meta">
-        id = {{ userId() ?? 'null' }} · object =
-        {{ userObject() ? userObject()!.profile.fullName : 'null' }}
-      </p>
-      <app-code-tabs [html]="accessorsHtml" [ts]="accessorsTs" />
-    </div>
-  </section>
-
-  <section class="doc-section">
-    <h2 id="filtering" class="doc-section__title font-heading">Filtering</h2>
-    <p class="doc-section__intro">
-      <code>filter</code> puts a search box in the panel, matching case-insensitively on the
-      resolved <code>optionLabel</code>. The query resets when the panel closes, and
-      <code>filterPosition</code> sticks the box to either end of the list.
-      <code>filterMatch</code> swaps the default match for your own predicate — useful for searching
-      a field the label never shows.
-    </p>
-    <p class="doc-section__intro">
-      <strong
-        >The search box has square corners, and that is the concentric answer rather than a value
-        clamped to zero.</strong
-      >
-      It is inset from the panel edge by exactly the panel's own radius, and at that distance the
-      inner box's corner point sits on the <em>centre</em> of the panel's corner arc — a right angle
-      there is equidistant from the whole curve, which is the only shape that keeps the gap
-      constant. Override <code>--gog-select-panel-radius</code> and the filter reshapes itself to
-      match.
-    </p>
-    <div class="demo-card">
-      <div class="demo-card__preview size-column">
-        <gog-select
-          label="Country (20 options)"
-          [filter]="true"
-          filterPlaceholder="Search countries…"
-          filterEmptyMessage="No country matches"
-          [options]="manyCountries"
-          [(value)]="filteredCountry"
-        />
-        <gog-select
-          label="Assignee — search by name or role"
-          optionLabel="profile.fullName"
-          optionValue="uuid"
-          [filter]="true"
-          [filterMatch]="matchNameOrRole"
-          filterPlaceholder="Try 'research'"
-          [options]="users"
-          [(value)]="userId"
-        />
-      </div>
-      <app-code-tabs [html]="filterHtml" [ts]="filterTs" />
-    </div>
-  </section>
-
-  <section class="doc-section">
-    <h2 id="clearable" class="doc-section__title font-heading">Clearable</h2>
-    <p class="doc-section__intro">
-      The clear button is value-driven: it appears once something is selected and vanishes when
-      nothing is. That is the point — it replaces the fake <code>"— not selected —"</code> option
-      teams add to make a choice undoable. It takes the outermost trailing position, with the
-      chevron shifting inward, so the trigger's width stays stable and the destructive control is
-      not on the very edge.
-    </p>
-    <div class="demo-card">
-      <div class="demo-card__preview size-column">
-        <gog-select
-          label="Plan"
-          [clearable]="true"
-          [options]="plansWithDisabled"
-          [(value)]="clearablePlan"
-        />
-      </div>
-      <app-code-tabs [html]="clearableHtml" [ts]="clearableTs" />
-    </div>
-  </section>
-
-  <section class="doc-section">
-    <h2 id="option-slot" class="doc-section__title font-heading">Custom option rows</h2>
-    <p class="doc-section__intro">
-      A <code>gogDropdownOption</code> template replaces one option row. Its context carries the
-      option itself plus <code>selected</code>, <code>disabled</code> and the already-resolved
-      <code>label</code> — so a custom row can decorate the label rather than re-derive it.
-    </p>
-    <div class="demo-card">
-      <div class="demo-card__preview size-column">
-        <gog-select
-          label="Assignee"
-          optionLabel="profile.fullName"
-          optionValue="uuid"
-          [options]="users"
-          [(value)]="slotUserId"
-        >
-          <ng-template
-            gogDropdownOption
-            [gogDropdownOptionTypeOf]="users"
-            let-user
-            let-label="label"
-          >
-            <span class="option-row">
-              <strong>{{ label }}</strong>
-              <small>{{ user.profile.role }}</small>
-            </span>
-          </ng-template>
-        </gog-select>
-      </div>
-      <app-code-tabs [html]="optionSlotHtml" [ts]="optionSlotTs" />
-    </div>
-  </section>
-
-  <section class="doc-section">
-    <h2 id="virtualize" class="doc-section__title font-heading">
-      Virtualized options — <code>virtualize</code> <app-since version="21.13.0" />
-    </h2>
-    <p class="doc-section__intro">
-      <code>[virtualize]="true"</code> renders only the rows in view. Unwindowed, 10&nbsp;000
-      options build 10&nbsp;000 DOM rows to show about six — measured in Chrome,
-      <strong>512&nbsp;ms</strong> before the panel appears, against
-      <strong>21&nbsp;ms</strong> windowed on the same data. The scrollbar looks the same either
-      way, because spacers stand in for the rows that are not there.
-    </p>
-    <div class="demo-card">
-      <p class="demo-card__meta">
-        Both fields hold the same 10&nbsp;000 options. Open each and compare how long the panel
-        takes to appear — the difference is the whole feature.
-      </p>
-      <div class="demo-card__preview size-column">
-        <gog-checkbox label="virtualize the first field" [(checked)]="virtualizeOn" />
-        <gog-select
-          label="City (windowed)"
-          [options]="manyCities"
-          [virtualize]="virtualizeOn()"
-          [filter]="true"
-          [(value)]="windowedCity"
-        />
-        <gog-select
-          label="City (eager, for comparison)"
-          [options]="manyCities"
-          [filter]="true"
-          [(value)]="eagerCity"
-        />
-      </div>
-      <app-code-tabs [html]="virtualizeHtml" [ts]="virtualizeTs" />
-    </div>
-    <p class="doc-section__intro">
-      <strong>Off by default, and never switched on at some row count.</strong> A windowed list
-      behaves differently in ways nothing about the data predicts: <code>Ctrl+F</code> finds only
-      the rendered rows, and CSS targeting <code>:last-child</code> matches the last
-      <em>rendered</em> row. A threshold would make that depend on how much data happened to arrive,
-      so set it per field, or app-wide with <code>GOG_CONFIG.dropdown.virtualize</code>.
+      The trigger is a native <code>&lt;button&gt;</code>, not a <code>&lt;select&gt;</code>,
+      carrying <code>aria-haspopup="listbox"</code>, <code>aria-expanded</code> and
+      <code>aria-controls</code>; the panel is a <code>role="listbox"</code> of
+      <code>role="option"</code> rows with <code>aria-selected</code> and
+      <code>aria-disabled</code>. The panel exists only while it is open.
     </p>
     <ul class="doc-section__intro">
       <li>
-        <strong>The announced count stays honest:</strong> the <code>aria-setsize</code> and
-        <code>aria-posinset</code> carry the real list, so a screen reader hears "10&nbsp;000 items"
-        rather than "20". Arrow keys walk the whole list — End reaches the last option.
+        <strong>Keyboard</strong> — on the trigger, Enter or Space opens and closes the panel; while
+        it is open <kbd>↓</kbd> / <kbd>↑</kbd> move into the list on the first or last option. In
+        the list the arrows move, wrap and skip disabled options, <kbd>Home</kbd>/<kbd>End</kbd>
+        jump to the ends, Enter or Space selects, <kbd>Esc</kbd> closes and returns focus to the
+        trigger, and <kbd>Tab</kbd> closes and moves on from the trigger — so an appended panel does
+        not send focus to the end of the document. The list is one tab stop. Inside a dialog, Escape
+        closes the list first and the dialog on the next press.
       </li>
       <li>
-        <strong>Scrolling a keyboard-focused row out of view hands focus back to the trigger</strong
-        >, because the row it was on no longer exists. Escape and ArrowDown both work from there. A
-        plain list never has to do this.
+        <strong>Name</strong> — the <code>label</code> through <code>aria-labelledby</code>, because
+        a button is not a labelable element and <code>for</code> would be ignored. Without a label,
+        <code>ariaLabel</code>, then the placeholder. The clear button is named by
+        <code>clearAriaLabel</code>.
       </li>
       <li>
-        <strong><code>gog-table</code>'s <code>virtualize</code> is a different story</strong> under
-        the same name: table rows vary in height, so it measures as it goes — see the
-        <a routerLink="/components/table" fragment="virtualize">Table page</a>.
+        <strong>Error</strong> — <code>aria-invalid</code> on the trigger and an
+        <code>aria-describedby</code> pointing at the message, which is a <code>role="alert"</code>.
+      </li>
+      <li>
+        <strong>Virtualized</strong> — <code>aria-setsize</code> and <code>aria-posinset</code>
+        carry the real list, so a screen reader hears "10&nbsp;000 items", not "20".
       </li>
     </ul>
   </section>
@@ -364,79 +267,13 @@
     <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
 
     <h3 class="doc-section__subtitle">Inputs</h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Default</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of apiInputs; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-                @if (row.since) {
-                  <app-since [version]="row.since" />
-                }
-              </td>
-              <td>
-                <code>{{ row.type }}</code>
-              </td>
-              <td>
-                <code>{{ row.default }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="apiInputs" kind="inputs" />
+
+    <h3 class="doc-section__subtitle">Outputs</h3>
+    <app-api-table [rows]="apiOutputs" kind="outputs" />
 
     <h3 class="doc-section__subtitle">Content slots</h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Directive</th>
-            <th>Context</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              <code>gogDropdownOption</code>
-            </td>
-            <td>
-              <code>{{ '$' }}implicit, selected, disabled, label</code>
-            </td>
-            <td>Replaces one option row.</td>
-          </tr>
-          <tr>
-            <td><code>[gogDropdownOptionTypeOf]</code> <app-since version="21.15.0" /></td>
-            <td><code>readonly TOption[]</code> — an input on <code>gogDropdownOption</code></td>
-            <td>
-              Bind the same array as <code>options</code> and <code>{{ '$' }}implicit</code> is
-              typed as its element instead of <code>unknown</code>. Never read at runtime; left
-              unbound, the template compiles exactly as before.
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <code>gogDropdownChevron</code>
-            </td>
-            <td>
-              <code>{{ '$' }}implicit / open</code> <app-since version="21.15.0" />
-            </td>
-            <td>Replaces the trigger's chevron.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="apiSlots" kind="slots" />
   </section>
 
   <app-global-config-note component="select" />
@@ -449,25 +286,6 @@
       <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
       <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
     </p>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Token</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of styleTokens; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="styleTokens" kind="tokens" />
   </section>
 </div>

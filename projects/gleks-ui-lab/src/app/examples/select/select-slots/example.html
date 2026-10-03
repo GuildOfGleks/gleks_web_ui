@@ -1,0 +1,12 @@
+<!-- The library turns only its own chevron; a custom one draws its state from open. -->
+<gog-select label="Chevron slot" [options]="sortOrders" value="newest">
+  <ng-template gogDropdownChevron let-open>
+    <gog-icon [name]="open ? 'sort-up' : 'sort'" />
+  </ng-template>
+</gog-select>
+
+<gog-select
+  ariaLabel="Framework (no visible label)"
+  placeholder="Pick a framework"
+  [options]="frameworks"
+/>

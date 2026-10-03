@@ -1,0 +1,10 @@
+<gog-select label="fullWidth (default)" [options]="frameworks" value="angular" />
+<!-- Sizes to the selected label, so a short option collapses it. -->
+<gog-select label='[fullWidth]="false"' [fullWidth]="false" [options]="frameworks" value="vue" />
+<gog-select
+  label='[fullWidth]="false" minWidth="12rem"'
+  [fullWidth]="false"
+  minWidth="12rem"
+  [options]="frameworks"
+  value="vue"
+/>

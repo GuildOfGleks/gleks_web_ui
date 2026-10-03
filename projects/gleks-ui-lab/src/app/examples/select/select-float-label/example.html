@@ -1,0 +1,23 @@
+@for (variant of variants; track variant) {
+  <gog-select
+    [floatLabel]="variant"
+    [label]="'floatLabel: ' + variant"
+    placeholder="e.g. Angular"
+    [options]="frameworks"
+  />
+  <gog-select
+    [floatLabel]="variant"
+    [label]="'floatLabel: ' + variant"
+    [options]="frameworks"
+    value="angular"
+  />
+}
+
+<!-- The placeholder shows under the floated label once it has somewhere to float to. -->
+<gog-select
+  floatLabel="over"
+  floatLabelShowPlaceholder
+  label="floatLabelShowPlaceholder"
+  placeholder="e.g. Angular"
+  [options]="frameworks"
+/>

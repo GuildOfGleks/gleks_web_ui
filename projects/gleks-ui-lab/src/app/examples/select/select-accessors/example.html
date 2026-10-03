@@ -1,0 +1,30 @@
+<!-- Property paths, dot-paths included: a DTO goes in unmapped. -->
+<div>
+  <gog-select
+    label="Reviewer (by uuid)"
+    [options]="members"
+    optionLabel="profile.fullName"
+    optionValue="uuid"
+    optionDisabled="suspended"
+    [(value)]="memberId"
+  />
+  <code>value: {{ memberId() ?? 'null' }}</code>
+</div>
+
+<!-- A function label and [optionValue]="null": the value is the option object itself. -->
+<div>
+  <gog-select
+    label="Reviewer (whole object)"
+    placeholder="Pick someone"
+    [options]="members"
+    [optionLabel]="fullName"
+    [optionValue]="null"
+    [(value)]="member"
+  >
+    <!-- [gogDropdownOptionTypeOf] types `option` as a Member. -->
+    <ng-template gogDropdownOption [gogDropdownOptionTypeOf]="members" let-option let-label="label">
+      {{ label }} — <em>{{ option.profile.role }}</em>
+    </ng-template>
+  </gog-select>
+  <code>value: {{ member()?.uuid ?? 'null' }} (the object)</code>
+</div>

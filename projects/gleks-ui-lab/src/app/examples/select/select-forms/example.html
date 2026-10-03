@@ -1,0 +1,22 @@
+<div>
+  <gog-select
+    label="Framework (reactive form)"
+    placeholder="Pick a framework"
+    [options]="frameworks"
+    [formControl]="control"
+    errorMessage="Required"
+    errorDisplay="auto"
+  />
+  <div>
+    <gog-button variant="outline" size="sm" (gogClick)="control.markAsTouched()">
+      markAsTouched()
+    </gog-button>
+    <gog-button variant="outline" size="sm" (gogClick)="toggleDisabled()">
+      {{ control.disabled ? 'enable()' : 'disable()' }}
+    </gog-button>
+  </div>
+  <code>
+    value: {{ control.value ?? 'null' }} · touched: {{ control.touched }} · disabled:
+    {{ control.disabled }}
+  </code>
+</div>

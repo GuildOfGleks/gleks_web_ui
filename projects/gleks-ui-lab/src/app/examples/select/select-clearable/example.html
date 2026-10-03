@@ -1,0 +1,16 @@
+<!-- The clear button shows only while something is selected. -->
+<gog-select label="clearable, with a value" [options]="frameworks" value="angular" clearable />
+<gog-select
+  label="clearable, empty"
+  placeholder="Pick a framework"
+  [options]="frameworks"
+  clearable
+/>
+<gog-select
+  label="clearAriaLabel"
+  [options]="frameworks"
+  value="vue"
+  clearable
+  clearAriaLabel="Clear framework"
+/>
+<gog-select label="clearable, disabled" [options]="frameworks" value="angular" clearable disabled />

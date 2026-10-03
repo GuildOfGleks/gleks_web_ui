@@ -1,0 +1,17 @@
+<gog-select label="filter" placeholder="Pick a country" [options]="countries" filter clearable />
+<gog-select
+  label='filterPosition="bottom"'
+  placeholder="Pick a country"
+  [options]="countries"
+  filter
+  filterPosition="bottom"
+  filterPlaceholder="Type to search…"
+/>
+<gog-select
+  label="filterMatch: prefix only"
+  placeholder="Pick a country"
+  [options]="countries"
+  filter
+  [filterMatch]="startsWith"
+  filterEmptyMessage="No country starts with that"
+/>

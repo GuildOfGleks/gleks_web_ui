@@ -1,0 +1,9 @@
+<gog-select label="Value unset" placeholder="Pick a framework" [options]="frameworks" />
+<gog-select label="Holding a value" [options]="frameworks" value="angular" />
+<gog-select label="Disabled" [options]="frameworks" value="angular" disabled />
+<gog-select
+  label="Error"
+  placeholder="Pick a framework"
+  [options]="frameworks"
+  errorMessage="Required field"
+/>
