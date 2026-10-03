@@ -77,7 +77,11 @@
       <p class="demo-card__meta">
         Icons are <code>aria-hidden</code> by default, since they're almost always paired with a
         visible text label. For a standalone icon that carries meaning on its own, set
-        <code>ariaHidden</code> to <code>false</code> and supply <code>title</code>.
+        <code>ariaHidden</code> to <code>false</code> and supply <code>title</code>: the icon
+        becomes <code>role="img"</code> named by it <app-since version="21.15.0" />, and reads as
+        <em>image "Warning"</em>. Before 21.15.0 the label sat on a roleless custom element, which a
+        screen reader in reading mode passes over. Inside a button with no text, name the button
+        instead (<code>ariaLabel</code> on <code>gog-button</code>).
       </p>
       <div class="demo-card__preview action-row">
         <gog-icon name="warning" [ariaHidden]="false" title="Warning" />

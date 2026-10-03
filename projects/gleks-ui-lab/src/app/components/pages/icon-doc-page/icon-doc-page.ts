@@ -41,7 +41,7 @@ const API_INPUTS: readonly ApiRow[] = [
     type: 'boolean',
     default: 'true',
     description:
-      'Icons are decorative by default and hidden from assistive tech. Set false for a standalone icon that carries its own meaning (with no adjacent text label).',
+      'Icons are decorative by default and hidden from assistive tech. Set false for a standalone icon that carries its own meaning (with no adjacent text label): it becomes role="img", named by title or else name. Before 21.15.0 it got the label without the role, which Chrome exposes as an unnamed generic.',
   },
 ];
 
