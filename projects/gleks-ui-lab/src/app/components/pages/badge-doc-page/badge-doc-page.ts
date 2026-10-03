@@ -10,6 +10,7 @@ import {
 import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
 import { GlobalConfigNote } from '../../shared/global-config-note/global-config-note';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
+import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 interface ApiInputRow {
@@ -78,6 +79,7 @@ const API_INPUTS: readonly ApiInputRow[] = [
     MarkdownComponent,
     CodeTabsComponent,
     RouterLink,
+    SinceBadgeComponent,
   ],
   templateUrl: './badge-doc-page.html',
   styleUrl: './badge-doc-page.scss',
@@ -179,8 +181,17 @@ export class BadgeDocPage {
   ].join('\n');
 
   protected readonly dotHtml = [
-    '<!-- A dot says "something changed here" with no count to give. -->',
-    '<gog-icon name="info" gogBadge badgeDot badgeAriaLabel="Unread updates" />',
+    '<!-- A dot says "something changed here" with no count to give. It goes on the control,',
+    '     not on its icon: a gog-icon is aria-hidden, so a badge inside one is never read. -->',
+    '<gog-button',
+    '  variant="ghost"',
+    '  ariaLabel="Notifications"',
+    '  gogBadge',
+    '  badgeDot',
+    '  badgeAriaLabel="Unread updates"',
+    '>',
+    '  <gog-icon name="info" />',
+    '</gog-button>',
     '',
     '<gog-button gogBadge badgeDot badgeVariant="success">Synced</gog-button>',
   ].join('\n');
@@ -192,7 +203,15 @@ export class BadgeDocPage {
     "  selector: 'app-example',",
     '  imports: [ButtonComponent, IconComponent, GogBadgeDirective],',
     '  template: `',
-    '    <gog-icon name="info" gogBadge badgeDot badgeAriaLabel="Unread updates" />',
+    '    <gog-button',
+    '      variant="ghost"',
+    '      ariaLabel="Notifications"',
+    '      gogBadge',
+    '      badgeDot',
+    '      badgeAriaLabel="Unread updates"',
+    '    >',
+    '      <gog-icon name="info" />',
+    '    </gog-button>',
     '    <gog-button gogBadge badgeDot badgeVariant="success">Synced</gog-button>',
     '  `,',
     '})',

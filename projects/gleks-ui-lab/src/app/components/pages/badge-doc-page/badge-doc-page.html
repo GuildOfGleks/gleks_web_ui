@@ -77,10 +77,21 @@
       <h3 class="demo-card__title">Dot</h3>
       <p class="demo-card__meta">
         <code>badgeDot</code> drops the text and leaves a mark — "something changed here", with no
-        count to give. A dot shows even with no value bound.
+        count to give. A dot shows even with no value bound. It has no text of its own, so give it
+        <code>badgeAriaLabel</code> — and put it on the control it belongs to, not on that control's
+        icon: a <code>gog-icon</code> is <code>aria-hidden</code>, so a badge inside one is never
+        announced.
       </p>
       <div class="demo-card__preview action-row badge-demo__row">
-        <gog-icon name="info" gogBadge badgeDot badgeAriaLabel="Unread updates" />
+        <gog-button
+          variant="ghost"
+          ariaLabel="Notifications"
+          gogBadge
+          badgeDot
+          badgeAriaLabel="Unread updates"
+        >
+          <gog-icon name="info" />
+        </gog-button>
         <gog-button gogBadge badgeDot badgeVariant="success">Synced</gog-button>
       </div>
       <app-code-tabs [html]="dotHtml" [ts]="dotTs" />
@@ -105,11 +116,28 @@
   <section class="doc-section">
     <h2 id="accessibility" class="doc-section__title font-heading">Accessibility</h2>
     <p class="doc-section__intro">
-      Left alone, the badge text is announced inline with the host's own label — "Inbox 12". Set
-      <code>badgeAriaLabel</code> and the visible badge becomes <code>aria-hidden</code> while your
-      wording is announced in its place, so the host reads as "Inbox, 12 unread messages" instead. A
-      dot has no text of its own, so it needs <code>badgeAriaLabel</code> to be announced at all.
+      <code>badgeAriaLabel</code> replaces the visible badge text for assistive tech — the visible
+      badge becomes <code>aria-hidden</code> and your wording is read instead. A dot has no text of
+      its own, so it needs <code>badgeAriaLabel</code> to be announced at all. What the wording
+      becomes depends on the host:
     </p>
+    <ul class="doc-section__intro">
+      <li>
+        <strong>A focusable host</strong> — <code>&lt;button gogBadge&gt;</code>,
+        <code>a[gogButton]</code> — gets it as part of its <em>name</em>: "Inbox 12 unread".
+      </li>
+      <li>
+        <strong>A host whose focusable element is inside it</strong>, like <code>gog-button</code>,
+        gets it as a <em>description</em> of that element, through <code>aria-describedby</code>:
+        "Inbox, button, 12 unread" <app-since version="21.15.0" />. Before 21.15.0 the badge landed
+        beside the inner button rather than on it, and Tab said only "Inbox, button".
+      </li>
+      <li>
+        <strong>A host with nothing focusable</strong> gets plain text after its own — and inside a
+        decorative <code>gog-icon</code>, which is <code>aria-hidden</code>, nothing at all. Put the
+        badge on the control the count belongs to.
+      </li>
+    </ul>
     <p class="doc-section__intro">
       The badge node is created in the browser only. That is deliberate: a node the server renders
       but the client's hydration walk knows nothing about is an <code>NG0500</code> mismatch, so it
