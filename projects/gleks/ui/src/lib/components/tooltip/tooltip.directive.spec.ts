@@ -32,6 +32,18 @@ function bubble(): HTMLElement | null {
   return document.body.querySelector('.gog-tooltip');
 }
 
+/** jsdom lays nothing out: puts an element's box wherever a test says it has scrolled to. */
+function placeAt(element: Element, top: number): void {
+  element.getBoundingClientRect = () =>
+    ({ top, bottom: top + 20, left: 0, right: 100, width: 100, height: 20 }) as DOMRect;
+}
+
+/** A page scroll, then the frame the overlay re-measures in. */
+async function scrollPage(): Promise<void> {
+  document.dispatchEvent(new Event('scroll'));
+  await new Promise((resolve) => requestAnimationFrame(() => resolve(null)));
+}
+
 describe('GogTooltipDirective', () => {
   let fixture: ComponentFixture<HostComponent>;
   let trigger: HTMLButtonElement;
@@ -121,6 +133,23 @@ describe('GogTooltipDirective', () => {
     overrideFixture.detectChanges();
     expect(bubble()).toBeNull();
     overrideFixture.destroy();
+  });
+
+  it('hides once its trigger has scrolled out of view', async () => {
+    vi.useFakeTimers();
+    trigger.dispatchEvent(new FocusEvent('focusin', { bubbles: true }));
+    vi.advanceTimersByTime(300);
+    fixture.detectChanges();
+    vi.useRealTimers();
+    expect(bubble()).not.toBeNull();
+
+    placeAt(trigger, 100);
+    await scrollPage();
+    expect(bubble()).not.toBeNull();
+
+    placeAt(trigger, -40);
+    await scrollPage();
+    expect(bubble()).toBeNull();
   });
 
   it('shows on focusin and hides on focusout', () => {

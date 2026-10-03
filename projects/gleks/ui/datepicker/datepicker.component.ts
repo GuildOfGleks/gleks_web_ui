@@ -25,7 +25,7 @@ import { NgTemplateOutlet } from '@angular/common';
 import { CalendarComponent, type GogDatepickerValue } from './calendar/calendar.component';
 import { IconComponent } from '@guildofgleks/ui';
 import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
-import { GogClearableState } from '@guildofgleks/ui/shared';
+import { GogClearableState, gogScrolledOutOfView } from '@guildofgleks/ui/shared';
 import { GogErrorState, type GogErrorDisplay } from '@guildofgleks/ui/shared';
 import { GogFloatLabelState } from '@guildofgleks/ui/shared';
 import { GogDropdownOverlay } from '@guildofgleks/ui/shared';
@@ -531,7 +531,13 @@ export class DatepickerComponent implements ControlValueAccessor, DoCheck {
 
     this.repositionFrame = requestAnimationFrame(() => {
       this.repositionFrame = null;
-      if (this.isOpen()) this.updatePlacement();
+      if (!this.isOpen()) return;
+      const field = this.elRef.nativeElement.querySelector<HTMLElement>('.gog-datepicker__field');
+      if (field && gogScrolledOutOfView(field)) {
+        this.close();
+        return;
+      }
+      this.updatePlacement();
     });
   }
 

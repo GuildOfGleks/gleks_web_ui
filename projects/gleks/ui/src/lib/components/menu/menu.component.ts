@@ -23,7 +23,11 @@ import {
 } from '@angular/core';
 
 import { GOG_CONFIG, gogAriaTarget } from '@guildofgleks/ui/shared';
-import { resolveLengthToken, resolveNumberToken } from '@guildofgleks/ui/shared';
+import {
+  gogScrolledOutOfView,
+  resolveLengthToken,
+  resolveNumberToken,
+} from '@guildofgleks/ui/shared';
 import { GogDropdownOverlay } from '@guildofgleks/ui/shared';
 import { resolveRipple } from '@guildofgleks/ui/shared';
 import { bindRipple } from '../ripple/ripple-controller';
@@ -224,20 +228,33 @@ export class MenuComponent {
     });
 
     // A fixed panel does not travel with its trigger: scroll the page and it would hang in
-    // mid-air. Re-measuring is cheaper than it looks — two rects and a clamp — and keeps the
-    // menu attached to the button it belongs to, which closing on scroll would not.
+    // mid-air. Re-measuring keeps the menu attached to the button it belongs to, once per frame
+    // however many scroll events arrive. Once that button has scrolled out of sight the menu
+    // closes instead, without taking focus back: it was attached to nothing the reader could see.
     effect((onCleanup) => {
       if (!this.isBrowser || !this.openState()) return;
 
+      let frame: number | null = null;
       const reposition = () => {
-        if (this.triggerEl) this.measure(this.triggerEl, this.panelElement());
+        if (frame !== null) return;
+        frame = requestAnimationFrame(() => {
+          frame = null;
+          const trigger = this.triggerEl;
+          if (!trigger) return;
+          if (gogScrolledOutOfView(trigger)) {
+            this.close(false);
+            return;
+          }
+          this.measure(trigger, this.panelElement());
+        });
       };
 
-      this.document.addEventListener('scroll', reposition, true);
-      window.addEventListener('resize', reposition);
+      this.document.addEventListener('scroll', reposition, { passive: true, capture: true });
+      window.addEventListener('resize', reposition, { passive: true });
       onCleanup(() => {
-        this.document.removeEventListener('scroll', reposition, true);
+        this.document.removeEventListener('scroll', reposition, { capture: true });
         window.removeEventListener('resize', reposition);
+        if (frame !== null) cancelAnimationFrame(frame);
       });
     });
 

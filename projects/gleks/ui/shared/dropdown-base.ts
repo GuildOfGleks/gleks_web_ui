@@ -41,6 +41,7 @@ import {
   isRovingFocusKey,
   nextRovingFocusIndex,
 } from './roving-focus';
+import { gogScrolledOutOfView } from './scrolled-out-of-view';
 import { GogVirtualWindow } from './virtual-window';
 import { GogDropdownFilterPosition, GogFloatLabelVariant, GogSize } from './types';
 import { configurableBooleanAttribute } from './config';
@@ -1021,9 +1022,12 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
 
     this.repositionFrame = requestAnimationFrame(() => {
       this.repositionFrame = null;
-      if (this.isOpen()) {
-        this.updatePlacement();
+      if (!this.isOpen()) return;
+      if (gogScrolledOutOfView(this.triggerElement())) {
+        this.close();
+        return;
       }
+      this.updatePlacement();
     });
   }
 
@@ -1279,9 +1283,12 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
    * which is already positioned purely relative to the trigger via CSS.
    */
   private triggerRect(): GogDropdownTriggerRect {
+    return this.triggerElement().getBoundingClientRect();
+  }
+
+  private triggerElement(): HTMLElement {
     const host = this.elRef.nativeElement as HTMLElement;
-    const trigger = host.querySelector<HTMLElement>(`.${this.triggerClass}`) ?? host;
-    return trigger.getBoundingClientRect();
+    return host.querySelector<HTMLElement>(`.${this.triggerClass}`) ?? host;
   }
 
   /** The stacking order the panel would have had if it were still inside the subtree. */

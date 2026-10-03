@@ -26,7 +26,37 @@ class MenuHostComponent {
   readonly ran: string[] = [];
 }
 
+/** jsdom lays nothing out: puts an element's box wherever a test says it has scrolled to. */
+function placeAt(element: Element, top: number): void {
+  element.getBoundingClientRect = () =>
+    ({ top, bottom: top + 20, left: 0, right: 100, width: 100, height: 20 }) as DOMRect;
+}
+
+/** A page scroll, then the frame the overlay re-measures in. */
+async function scrollPage(): Promise<void> {
+  document.dispatchEvent(new Event('scroll'));
+  await new Promise((resolve) => requestAnimationFrame(() => resolve(null)));
+}
+
 describe('MenuComponent', () => {
+  describe('scrolling', () => {
+    it('stays open while its trigger is in view, and closes once it has scrolled away', async () => {
+      await openByClick();
+      placeAt(trigger(), 100);
+      await scrollPage();
+      fixture.detectChanges();
+      expect(panel()).toBeTruthy();
+
+      placeAt(trigger(), -40);
+      await scrollPage();
+      fixture.detectChanges();
+      await fixture.whenStable();
+      expect(panel()).toBeNull();
+      // Nothing the reader can see was closed, so focus is not pulled back to it.
+      expect(document.activeElement).not.toBe(trigger());
+    });
+  });
+
   let fixture: ComponentFixture<MenuHostComponent>;
   let host: MenuHostComponent;
 

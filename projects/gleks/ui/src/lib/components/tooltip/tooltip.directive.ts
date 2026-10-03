@@ -15,7 +15,11 @@ import {
 } from '@angular/core';
 
 import { GOG_CONFIG, gogAddIdRef, gogAriaTarget, gogRemoveIdRef } from '@guildofgleks/ui/shared';
-import { resolveLengthToken, resolveNumberToken } from '@guildofgleks/ui/shared';
+import {
+  gogScrolledOutOfView,
+  resolveLengthToken,
+  resolveNumberToken,
+} from '@guildofgleks/ui/shared';
 import { GogTooltipOverlay } from './tooltip-overlay';
 import {
   GogTooltipTargetRect,
@@ -238,9 +242,12 @@ export class GogTooltipDirective {
 
     this.repositionFrame = requestAnimationFrame(() => {
       this.repositionFrame = null;
-      if (this.activeRef) {
-        this.applyPlacement(this.activeRef, this.elRef.nativeElement);
+      if (!this.activeRef) return;
+      if (gogScrolledOutOfView(this.elRef.nativeElement)) {
+        this.hide();
+        return;
       }
+      this.applyPlacement(this.activeRef, this.elRef.nativeElement);
     });
   }
 

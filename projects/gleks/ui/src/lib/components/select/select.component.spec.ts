@@ -29,6 +29,18 @@ function stubRect(target: Element, rect: Partial<DOMRect>): void {
   } as DOMRect);
 }
 
+/** jsdom lays nothing out: puts an element's box wherever a test says it has scrolled to. */
+function placeAt(element: Element, top: number): void {
+  element.getBoundingClientRect = () =>
+    ({ top, bottom: top + 20, left: 0, right: 100, width: 100, height: 20 }) as DOMRect;
+}
+
+/** A page scroll, then the frame the overlay re-measures in. */
+async function scrollPage(): Promise<void> {
+  document.dispatchEvent(new Event('scroll'));
+  await new Promise((resolve) => requestAnimationFrame(() => resolve(null)));
+}
+
 describe('SelectComponent', () => {
   let component: DefaultSelect;
   let fixture: ComponentFixture<DefaultSelect>;
@@ -171,6 +183,31 @@ describe('SelectComponent', () => {
 
     const wrapper = fixture.nativeElement.querySelector('.gog-select') as HTMLElement;
     expect(wrapper.classList.contains('gog-contained-layout')).toBe(false);
+  });
+
+  describe('scrolling', () => {
+    it('closes once its trigger has scrolled out of view', async () => {
+      fixture.componentRef.setInput('options', [{ id: 'a', name: 'Alpha' }]);
+      fixture.detectChanges();
+      await fixture.whenStable();
+      const control = fixture.nativeElement.querySelector('.gog-select__control') as HTMLElement;
+      control.click();
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      expect(control.getAttribute('aria-expanded')).toBe('true');
+
+      placeAt(control, 100);
+      await scrollPage();
+      fixture.detectChanges();
+      expect(control.getAttribute('aria-expanded')).toBe('true');
+
+      placeAt(control, window.innerHeight + 10);
+      await scrollPage();
+      fixture.detectChanges();
+      await fixture.whenStable();
+      expect(control.getAttribute('aria-expanded')).toBe('false');
+    });
   });
 
   describe('click outside', () => {

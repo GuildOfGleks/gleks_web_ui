@@ -2102,6 +2102,10 @@ only while no ancestor establishes a containing block. `contain`, `transform`, `
 scroller rather than the page. Place the dialog and toast outlets in the root component. The
 dropdown panels and `gog-menu` sidestep it by rendering into `<body>`.
 
+Those `<body>` overlays — the dropdown panels, the datepicker's panel, `gog-menu` and `gogTooltip`
+— follow their trigger while the page scrolls, and close once the trigger has scrolled entirely out
+of view (past the viewport or a clipping ancestor), without moving focus (since 21.15.0).
+
 #### `gog-menu` + `gogMenuTrigger` / `gogMenuItem`
 
 A command menu. The trigger is a directive on **your own button** — usually the icon button you

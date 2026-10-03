@@ -6,6 +6,18 @@ import { DatepickerComponent } from './datepicker.component';
 import { GOG_CONFIG } from '@guildofgleks/ui/shared';
 import type { GogDateRange } from '@guildofgleks/ui/shared';
 
+/** jsdom lays nothing out: puts an element's box wherever a test says it has scrolled to. */
+function placeAt(element: Element, top: number): void {
+  element.getBoundingClientRect = () =>
+    ({ top, bottom: top + 20, left: 0, right: 100, width: 100, height: 20 }) as DOMRect;
+}
+
+/** A page scroll, then the frame the overlay re-measures in. */
+async function scrollPage(): Promise<void> {
+  document.dispatchEvent(new Event('scroll'));
+  await new Promise((resolve) => requestAnimationFrame(() => resolve(null)));
+}
+
 describe('DatepickerComponent', () => {
   let fixture: ComponentFixture<DatepickerComponent>;
   let component: DatepickerComponent;
@@ -68,6 +80,20 @@ describe('DatepickerComponent', () => {
     fixture.detectChanges();
 
     expect(field().value).toBe('03.02.2026 14:30');
+  });
+
+  it('should close once its field has scrolled out of view', async () => {
+    toggle().click();
+    fixture.detectChanges();
+    const fieldBox = host().querySelector('.gog-datepicker__field')!;
+
+    placeAt(fieldBox, 100);
+    await scrollPage();
+    expect(component.isOpen()).toBe(true);
+
+    placeAt(fieldBox, -40);
+    await scrollPage();
+    expect(component.isOpen()).toBe(false);
   });
 
   it('should open and close the panel from the toggle', () => {

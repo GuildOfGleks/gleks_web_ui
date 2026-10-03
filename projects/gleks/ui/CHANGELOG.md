@@ -193,6 +193,15 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- **A menu, dropdown, datepicker or tooltip stayed open after its trigger scrolled away.** All
+  four render into `<body>` and follow their trigger on scroll; once the trigger had left the
+  screen they followed nothing visible, and a menu hung at the edge of the viewport over whatever
+  the page pinned there. Each now closes once its trigger has scrolled **entirely** out of view —
+  past the viewport, or past the edge of a clipping ancestor such as a `gog-scroll` — and stays
+  open while any part of it is visible. Closing this way does not move focus. `gog-menu` also
+  re-measures once per frame on scroll now, as the other three already did, rather than on every
+  scroll event.
+
 - **`gog-table`'s selection checkboxes were cut in half and sat off the row's centre.** The column
   is 44px wide, and the cell's 16px of inline padding plus the checkbox's own 8px left the 40px
   checkbox 12px to render in, under the cell's `overflow: hidden`. The selection cells now have no
