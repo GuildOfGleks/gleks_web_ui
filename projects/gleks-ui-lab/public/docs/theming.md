@@ -25,7 +25,7 @@ A named part of Foundation, and the short path to a custom look: corner rounding
 (`--gog-radius`), the three border-weight tiers (`--gog-control-border-*` for form fields,
 `--gog-panel-border-*` for raised surfaces like dialogs, and the plain `--gog-border-*` pair
 for everything smaller and inline — chip, tag, table row), emphasis casing and tracking
-(`--gog-text-transform`, `--gog-letter-spacing`), **weight** (`--gog-font-weight-medium` …
+(`--gog-text-transform`, `--gog-letter-spacing`), **weight** (`--gog-font-weight-regular` …
 `-heavy`) and **leading** (`--gog-line-height-none` … `-loose`), and density (`--gog-density`,
 the single multiplier every padding and gap in the library derives from). Most component tokens
 read one of these instead of declaring their own literal, so **a theme is expected to set these —
@@ -44,6 +44,13 @@ edits `--gog-font-weight-*`, not the fifteen component weights that used to each
 number, and one that wants roomier text edits `--gog-line-height-*` rather than the twenty that
 held theirs. Seven of those twenty were the same `1.4`, which is what a missing axis looks like
 from the inside: the same decision made over and over, independently, with nothing naming it.
+
+**Field labels are the same bet one level up.** <span class="since" title="Added in 21.15.0">21.15.0</span>
+Every form control's label — inputfield, select, multiselect, autocomplete, datepicker, slider,
+radio group — reads one family, `--gog-field-label-*` (`-color`, `-font-family`, `-font-size`,
+`-font-weight`, `-letter-spacing`, `-line-height`, `-text-transform`). Set it to restyle all of
+them at once. The per-component tokens (`--gog-select-label-color` and the rest) still work, one
+component at a time.
 
 **`--gog-z-base` is the clearest demonstration**, because you can watch the whole library move.
 It is the stacking floor, and every layer is `base + N` — badge `+1`, toast `+100`, dropdowns,
