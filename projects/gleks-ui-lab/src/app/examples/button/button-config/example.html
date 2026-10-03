@@ -1,0 +1,13 @@
+<div>
+  <span>size unset</span>
+  <gog-button>Takes lg from the config</gog-button>
+</div>
+<div>
+  <span>size="sm"</span>
+  <gog-button size="sm">The instance wins</gog-button>
+</div>
+<div>
+  <span>debounce 1000</span>
+  <gog-button (gogClick)="clicks.update((n) => n + 1)">Click me fast</gog-button>
+  <code>{{ clicks() }}</code>
+</div>

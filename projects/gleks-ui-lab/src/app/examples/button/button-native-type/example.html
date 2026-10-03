@@ -1,5 +1,20 @@
-<form (submit)="onSubmit($event)" (reset)="onReset()">
-  <gog-button variant="primary" type="submit">Submit</gog-button>
-  <gog-button variant="outline" type="reset">Reset</gog-button>
+<!-- type defaults to "button": inside a form it does not submit. -->
+<form (submit)="submit($event, 'unset')">
+  <span>type unset</span>
+  <gog-button>Click</gog-button>
+  <code>{{ submits().unset }} submits</code>
 </form>
-<p>{{ result() }}</p>
+
+<form (submit)="submit($event, 'submit')" (reset)="resets.update((n) => n + 1)">
+  <span>type="submit"</span>
+  <gog-button type="submit">Submit</gog-button>
+  <gog-button variant="outline" type="reset">Reset</gog-button>
+  <code>{{ submits().submit }} submits, {{ resets() }} resets</code>
+</form>
+
+<!-- A loading button does not submit its form. -->
+<form (submit)="submit($event, 'loading')">
+  <span>submit, loading</span>
+  <gog-button type="submit" loading>Submit</gog-button>
+  <code>{{ submits().loading }} submits</code>
+</form>

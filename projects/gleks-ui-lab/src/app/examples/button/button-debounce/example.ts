@@ -8,9 +8,9 @@ import { ButtonComponent } from '@guildofgleks/ui';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ButtonDebounceExample {
-  protected readonly accepted = signal(0);
+  protected readonly clicks = signal({ default: 0, zero: 0, slow: 0 });
 
-  protected count(): void {
-    this.accepted.update((n) => n + 1);
+  protected count(key: 'default' | 'zero' | 'slow'): void {
+    this.clicks.update((clicks) => ({ ...clicks, [key]: clicks[key] + 1 }));
   }
 }

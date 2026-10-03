@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { ButtonComponent, IconComponent } from '@guildofgleks/ui';
+import { ButtonComponent, GogSize, IconComponent } from '@guildofgleks/ui';
 
 @Component({
   selector: 'app-example',
@@ -7,4 +7,6 @@ import { ButtonComponent, IconComponent } from '@guildofgleks/ui';
   templateUrl: './example.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ButtonIconsExample {}
+export class ButtonContentExample {
+  protected readonly sizes: readonly GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];
+}

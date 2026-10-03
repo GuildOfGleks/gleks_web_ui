@@ -8,14 +8,11 @@ import { ButtonComponent } from '@guildofgleks/ui';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ButtonNativeTypeExample {
-  protected readonly result = signal('Neither button pressed yet.');
+  protected readonly submits = signal({ unset: 0, submit: 0, loading: 0 });
+  protected readonly resets = signal(0);
 
-  protected onSubmit(event: Event): void {
+  protected submit(event: Event, key: 'unset' | 'submit' | 'loading'): void {
     event.preventDefault();
-    this.result.set('Submitted via type="submit".');
-  }
-
-  protected onReset(): void {
-    this.result.set('Reset via type="reset".');
+    this.submits.update((submits) => ({ ...submits, [key]: submits[key] + 1 }));
   }
 }

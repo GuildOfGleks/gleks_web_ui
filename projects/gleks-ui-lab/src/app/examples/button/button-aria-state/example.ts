@@ -8,8 +8,10 @@ import { ButtonComponent } from '@guildofgleks/ui';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ButtonAriaStateExample {
+  protected readonly pages = [1, 2, 3] as const;
   protected readonly mirrored = signal(false);
   protected readonly filtersOpen = signal(false);
+  protected readonly current = signal<number>(1);
 
   protected toggleMirror(): void {
     this.mirrored.update((on) => !on);

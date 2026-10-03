@@ -1,11 +1,28 @@
-<a gogButton routerLink="/general/theming">See theming</a>
-<a
-  gogButton
-  variant="ghost"
-  href="https://www.npmjs.com/package/@guildofgleks/ui"
-  target="_blank"
-  rel="noreferrer"
->
-  Package on npm
-</a>
-<button gogButton variant="outline" size="sm" type="button">A real button</button>
+<div>
+  <span>gog-button</span>
+  @for (variant of variants; track variant) {
+    <gog-button [variant]="variant">Button</gog-button>
+  }
+</div>
+
+<div>
+  <span>button[gogButton]</span>
+  @for (variant of variants; track variant) {
+    <button gogButton type="button" [variant]="variant">Button</button>
+  }
+</div>
+
+<!-- A real link: routerLink, href and target work because they are yours. -->
+<div>
+  <span>a[gogButton]</span>
+  @for (variant of variants; track variant) {
+    <a gogButton [variant]="variant" routerLink="/general/theming">Link</a>
+  }
+</div>
+
+<!-- Disabled is an attribute of a <button>; an <a> has no disabled state. -->
+<div>
+  <span>disabled</span>
+  <gog-button disabled>gog-button</gog-button>
+  <button gogButton type="button" disabled>button[gogButton]</button>
+</div>

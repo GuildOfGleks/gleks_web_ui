@@ -1,2 +1,15 @@
-<gog-button variant="primary" [debounce]="300" (gogClick)="count()">Click me fast</gog-button>
-<p>Accepted clicks: {{ accepted() }}</p>
+<div>
+  <span>default (300)</span>
+  <gog-button (gogClick)="count('default')">Click me fast</gog-button>
+  <code>{{ clicks().default }}</code>
+</div>
+<div>
+  <span>[debounce]="0"</span>
+  <gog-button [debounce]="0" (gogClick)="count('zero')">Click me fast</gog-button>
+  <code>{{ clicks().zero }}</code>
+</div>
+<div>
+  <span>[debounce]="1000"</span>
+  <gog-button [debounce]="1000" (gogClick)="count('slow')">Click me fast</gog-button>
+  <code>{{ clicks().slow }}</code>
+</div>

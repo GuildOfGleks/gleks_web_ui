@@ -1,7 +1,15 @@
+<!-- A toggle: false is "a toggle that is off", null would be "not a toggle". -->
 <div>
+  <span>pressed</span>
   <gog-button variant="outline" [ariaPressed]="mirrored()" (gogClick)="toggleMirror()">
     Mirror layout
   </gog-button>
+  <gog-button variant="outline" ariaPressed="mixed">Some rows selected</gog-button>
+</div>
+
+<!-- A disclosure: it states what it opens and whether it is open. -->
+<div>
+  <span>expanded</span>
   <gog-button
     variant="outline"
     [ariaExpanded]="filtersOpen()"
@@ -11,6 +19,22 @@
   >
     Filters
   </gog-button>
+</div>
+
+<!-- The current item of a set: on that one button only. -->
+<div>
+  <span>current</span>
+  @for (page of pages; track page) {
+    <gog-button
+      variant="ghost"
+      size="sm"
+      [ariaCurrent]="page === current() ? 'page' : null"
+      [ariaLabel]="'Page ' + page"
+      (gogClick)="current.set(page)"
+    >
+      {{ page }}
+    </gog-button>
+  }
 </div>
 
 <!-- aria-controls must name an element that exists, so this hides rather than leaves. -->

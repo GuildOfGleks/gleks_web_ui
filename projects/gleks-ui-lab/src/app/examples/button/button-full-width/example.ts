@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { ButtonComponent } from '@guildofgleks/ui';
+import { RouterLink } from '@angular/router';
+import { ButtonComponent, GogButtonDirective } from '@guildofgleks/ui';
 
 @Component({
   selector: 'app-example',
-  imports: [ButtonComponent],
+  imports: [ButtonComponent, GogButtonDirective, RouterLink],
   templateUrl: './example.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

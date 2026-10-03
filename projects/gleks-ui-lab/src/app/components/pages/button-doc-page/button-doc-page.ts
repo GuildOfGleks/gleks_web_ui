@@ -7,11 +7,12 @@ import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 import { BUTTON_EXAMPLES } from '../../../examples/button/sources.generated';
+import { ButtonConfigExample } from '../../../examples/button/button-config/example';
+import { ButtonContentExample } from '../../../examples/button/button-content/example';
 import { ButtonAriaStateExample } from '../../../examples/button/button-aria-state/example';
 import { ButtonDebounceExample } from '../../../examples/button/button-debounce/example';
 import { ButtonDisabledExample } from '../../../examples/button/button-disabled/example';
 import { ButtonFullWidthExample } from '../../../examples/button/button-full-width/example';
-import { ButtonIconsExample } from '../../../examples/button/button-icons/example';
 import { ButtonLinkExample } from '../../../examples/button/button-link/example';
 import { ButtonLoadingExample } from '../../../examples/button/button-loading/example';
 import { ButtonNativeTypeExample } from '../../../examples/button/button-native-type/example';
@@ -199,11 +200,12 @@ export class ButtonDocPage {
     disabled: ButtonDisabledExample,
     loading: ButtonLoadingExample,
     fullWidth: ButtonFullWidthExample,
-    icons: ButtonIconsExample,
+    content: ButtonContentExample,
     ariaState: ButtonAriaStateExample,
     debounce: ButtonDebounceExample,
     nativeType: ButtonNativeTypeExample,
     link: ButtonLinkExample,
+    config: ButtonConfigExample,
   };
 
   protected readonly importSnippet =

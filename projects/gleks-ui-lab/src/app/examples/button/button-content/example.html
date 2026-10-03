@@ -1,17 +1,32 @@
-<!-- No visible label, so ariaLabel names the inner <button>. -->
-<gog-button variant="primary" ariaLabel="Confirm">
-  <gog-icon name="check" />
-</gog-button>
-<gog-button variant="outline" ariaLabel="Dismiss">
-  <gog-icon name="close" />
-</gog-button>
-<gog-button variant="ghost" size="sm" ariaLabel="More info">
-  <gog-icon name="info" />
-</gog-button>
+<div>
+  <span>text</span>
+  @for (size of sizes; track size) {
+    <gog-button [size]="size">Save</gog-button>
+  }
+</div>
 
-<!-- One height with or without an icon; no margin or &nbsp; beside it. -->
-<gog-button variant="outline">
-  <gog-icon name="download" />
-  Export
-</gog-button>
-<gog-button variant="outline">Save</gog-button>
+<!-- An icon beside a label: no margin or &nbsp; of your own. -->
+<div>
+  <span>icon + text</span>
+  @for (size of sizes; track size) {
+    <gog-button [size]="size">
+      <gog-icon name="check" />
+      Save
+    </gog-button>
+  }
+</div>
+
+<!-- No visible label, so ariaLabel names the inner <button>. -->
+<div>
+  <span>icon only</span>
+  @for (size of sizes; track size) {
+    <gog-button [size]="size" ariaLabel="Close">
+      <gog-icon name="close" />
+    </gog-button>
+  }
+</div>
+
+<div>
+  <span>long text</span>
+  <gog-button>Export every selected row to a spreadsheet</gog-button>
+</div>

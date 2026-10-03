@@ -20,7 +20,7 @@
       <code>loading</code>.
     </p>
     <div class="demo-card">
-      <app-demo [component]="examples.overview" [source]="sources.buttonOverview" layout="stack" />
+      <app-demo [component]="examples.overview" [source]="sources.buttonOverview" layout="rows" />
     </div>
   </section>
 
@@ -103,7 +103,8 @@
     <article class="demo-card">
       <h3 class="demo-card__title">Full width</h3>
       <p class="demo-card__meta">
-        <code>fullWidth</code> stretches the button to its container — the dashed box here.
+        <code>fullWidth</code> stretches the button to its container — the dashed box here. The
+        directive takes the same input, on a <code>&lt;button&gt;</code> or a link.
       </p>
       <app-demo
         [component]="examples.fullWidth"
@@ -113,17 +114,19 @@
     </article>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Icons</h3>
+      <h3 class="demo-card__title">Content and icons</h3>
       <p class="demo-card__meta">
-        An icon-only button has no visible label, so <code>ariaLabel</code> is required — it names
-        the inner <code>&lt;button&gt;</code>, unlike a plain <code>aria-label</code> attribute on
+        Text, an icon beside text, an icon alone, and a label too long for one line. An icon-only
+        button has no visible label, so <code>ariaLabel</code> is required — it names the inner
+        <code>&lt;button&gt;</code>, unlike a plain <code>aria-label</code> attribute on
         <code>&lt;gog-button&gt;</code>. Beside a label, put the icon in as a plain
         <code>&lt;gog-icon&gt;</code>: it is centred and spaced <code>--gog-button-gap</code> away,
         with no margin or <code>&amp;nbsp;</code> of your own.
         <strong>Every button of one size is one height</strong>, icon or not
-        <app-since version="21.15.0" /> — the last two line up.
+        <app-since version="21.15.0" /> — read each column down. A long label wraps once its
+        container is narrower than it, and the button grows taller with it.
       </p>
-      <app-demo [component]="examples.icons" [source]="sources.buttonIcons" layout="row" />
+      <app-demo [component]="examples.content" [source]="sources.buttonContent" layout="rows" />
     </article>
 
     <article class="demo-card">
@@ -133,7 +136,9 @@
         <code>[attr.aria-pressed]</code> written on <code>&lt;gog-button&gt;</code> lands on a host
         with no role and reaches no assistive tech — it compiles and looks right, which is why it is
         worth a demo. Use the inputs: <code>ariaPressed</code>, <code>ariaExpanded</code>,
-        <code>ariaControls</code>, <code>ariaHasPopup</code> and <code>ariaCurrent</code>.
+        <code>ariaControls</code>, <code>ariaHasPopup</code> and <code>ariaCurrent</code>
+        <app-since version="21.15.0" /> — the last one marks the current item of a set, the way
+        <a routerLink="/components/paginator">gog-paginator</a> marks its current page.
       </p>
       <app-demo [component]="examples.ariaState" [source]="sources.buttonAriaState" layout="rows" />
       <p class="demo-card__meta">
@@ -151,24 +156,38 @@
       <h3 class="demo-card__title">Debounce guard</h3>
       <p class="demo-card__meta">
         Clicks are throttled leading-edge: the first fires immediately, further clicks are dropped
-        for <code>debounce</code> ms (default 300). Click rapidly and watch the counter lag behind.
-        A dropped click is cancelled, so on a <code>type="submit"</code> button it does not submit
-        the form either.
+        for <code>debounce</code> ms (default 300). Click each one rapidly and compare the counters:
+        <code>0</code> accepts every click, <code>1000</code> one a second. A dropped click is
+        cancelled, so on a <code>type="submit"</code> button it does not submit the form either.
       </p>
-      <app-demo [component]="examples.debounce" [source]="sources.buttonDebounce" layout="stack" />
+      <app-demo [component]="examples.debounce" [source]="sources.buttonDebounce" layout="rows" />
     </article>
 
     <article class="demo-card">
       <h3 class="demo-card__title">Native type semantics</h3>
       <p class="demo-card__meta">
         <code>type</code> is forwarded to the native <code>&lt;button&gt;</code>, so a submit or
-        reset button inside a <code>&lt;form&gt;</code> works as it would without the component.
+        reset button inside a <code>&lt;form&gt;</code> works as it would without the component —
+        and it defaults to <code>"button"</code>, so a button in a form submits only when you ask. A
+        loading submit button does not submit.
       </p>
       <app-demo
         [component]="examples.nativeType"
         [source]="sources.buttonNativeType"
-        layout="stack"
+        layout="rows"
       />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">App-wide defaults — <code>GOG_CONFIG</code></h3>
+      <p class="demo-card__meta">
+        <code>control.size</code> and <code>button.debounce</code> set the default for every button
+        under the provider; an instance's own input still wins. This example provides the config on
+        itself so that it reaches only its own buttons — in an app it goes in
+        <code>app.config.ts</code>. See
+        <a routerLink="/general/global-config">Global Configuration</a> for every key.
+      </p>
+      <app-demo [component]="examples.config" [source]="sources.buttonConfig" layout="rows" />
     </article>
   </section>
 
@@ -184,7 +203,12 @@
     <app-markdown [markdown]="directiveImportSnippet" />
 
     <div class="demo-card">
-      <app-demo [component]="examples.link" [source]="sources.buttonLink" layout="row" />
+      <p class="demo-card__meta">
+        The component and the directive side by side, in every variant. The directive has no
+        <code>disabled</code>, <code>loading</code> or ARIA inputs: those are attributes of the
+        element it is written on, so a disabled one is a <code>&lt;button disabled&gt;</code>.
+      </p>
+      <app-demo [component]="examples.link" [source]="sources.buttonLink" layout="rows" />
     </div>
 
     <p class="doc-section__intro">
