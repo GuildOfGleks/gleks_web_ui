@@ -18,32 +18,37 @@ npm packages.
 
 ## Measured on
 
-|                                      |                                                    |
-| ------------------------------------ | -------------------------------------------------- |
-| Date                                 | **2026-09-13**, all three libraries                |
-| `@guildofgleks/ui`                   | 21.14.0                                            |
-| `@angular/material` / `@angular/cdk` | 22.1.6                                             |
-| `primeng`                            | 22.1.1                                             |
-| Bundler                              | `esbuild` 0.28.2, `--bundle --minify --format=esm` |
-| Compression                          | `node:zlib` `gzipSync`, level 9                    |
-| Toolchain                            | Node 24.15.0, npm 11.12.1                          |
+|                                      |                                                                         |
+| ------------------------------------ | ----------------------------------------------------------------------- |
+| Date                                 | **2026-10-03** for `@guildofgleks/ui`, **2026-09-13** for the other two |
+| `@guildofgleks/ui`                   | 21.15.0                                                                 |
+| `@angular/material` / `@angular/cdk` | 22.1.6                                                                  |
+| `primeng`                            | 22.1.1                                                                  |
+| Bundler                              | `esbuild` 0.28.2, `--bundle --minify --format=esm`                      |
+| Compression                          | `node:zlib` `gzipSync`, level 9                                         |
+| Toolchain                            | Node 24.15.0, npm 11.12.1                                               |
 
 Sizes are reported in bytes and in KB, where **1 KB = 1024 bytes** and 1 MB = 1024 KB.
 The one exception is `dist.unpackedSize`, quoted straight from the registry in bytes.
 
-**Full re-measurement, all three libraries, every table** — the previous pass was 2026-09-02 against
-21.7.2, and seven minors of this library have shipped since. Material and PrimeNG each moved one patch
-and barely moved at all. Three things did, and they are worth stating before the tables rather than
-leaving as unexplained deltas:
+**This library's column was re-measured against 21.15.0 on 2026-10-03; Material's and PrimeNG's are
+the full pass of 2026-09-13**, which re-measured all three against 21.14.0 — the pass before that was
+2026-09-02 against 21.7.2. Material and PrimeNG had each moved one patch by then and barely moved at
+all. Three things on this side did, and they are worth stating before the tables rather than leaving
+as unexplained deltas:
 
-- **`@guildofgleks/ui`'s whole-library bundle grew from 112.8 KB to 123.1 KB gzipped** across seven
-  minors of component work — virtualization in four collection components and `gog-alert` among it;
-  this page measures the total and does not attribute it. It is still smaller than four Material components (153.6 KB), but the gap narrowed from
-  1.36× to 1.25×, and the page says so rather than keeping the old ratio.
-- **Its stylesheet nearly doubled**: `index.css`, which is what `README.md` tells you to include,
-  went from 29.8 KB to 51.4 KB gzipped. Most of that is prose — `theme.css`'s comments are the
-  library's design record and are about three quarters of its gzipped size. That trade is an open
-  decision in the repository's backlog, and this page measures what ships today.
+- **`@guildofgleks/ui`'s whole-library bundle grew from 112.8 KB to 129.8 KB gzipped** between
+  21.7.2 and 21.15.0 — 123.1 KB of that by 21.14.0, across seven minors of component work
+  (virtualization in four collection components and `gog-alert` among it), and 6.7 KB more in
+  21.15.0. This page measures the total and does not
+  attribute it. It is still smaller than four Material components (153.6 KB), but the gap narrowed
+  from 1.36× to 1.18×, and the page says so rather than keeping the old ratio.
+- **Its stylesheet went up and then came back down.** `index.css`, which is what `README.md` tells
+  you to include, went from 29.8 KB gzipped at 21.7.2 to 51.4 KB at 21.14.0, and most of that growth
+  was prose — `theme.css`'s comments carried the library's design record and were about three
+  quarters of its gzipped size. 21.15.0 rewrote every comment in `styles/` to say why a value is what
+  it is in a line or two, moving the history to the changelog, and changed no declaration:
+  `index.css` is **29.4 KB** gzipped now, `theme.css` 22.5 KB.
 - **The whole-library recipe changed shape.** Since 21.14.0 the table, datepicker and dialog are
   exported only from `@guildofgleks/ui/table`, `/datepicker` and `/dialog`, so "everything" is four
   `export *` lines, not one. Bundling the root alone would silently drop three components.
@@ -71,7 +76,7 @@ separate for the measurement, not for the installer.)
 mkdir bench && cd bench
 mkdir gleks material primeng
 
-(cd gleks    && npm init -y && npm install @guildofgleks/ui@21.14.0 esbuild)
+(cd gleks    && npm init -y && npm install @guildofgleks/ui@21.15.0 esbuild)
 (cd material && npm init -y && npm install @angular/material@22.1.6 @angular/cdk@22.1.6 esbuild)
 (cd primeng  && npm init -y && npm install primeng@22.1.1 esbuild)
 ```
@@ -143,22 +148,22 @@ component counts — is one command each, listed in its own section below:
 
 ## The short version
 
-|                                           | Guild of Gleks UI                                               | Angular Material                                       | PrimeNG                               |
-| ----------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------------ | ------------------------------------- |
-| Documented components                     | 32                                                              | ~35                                                    | 90+                                   |
-| Packages installed beyond Angular         | **0**                                                           | 3                                                      | 11                                    |
-| Runtime `dependencies` in package.json    | 1 (`tslib`)                                                     | 1 (`tslib`) + required `@angular/cdk` peer             | 6 + `tslib`                           |
-| npm package, unpacked                     | 3 865 623 B (3.69 MB)                                           | 7 681 586 B (7.33 MB) + CDK 3 572 735 B (3.41 MB)      | 14 089 483 B (13.44 MB)               |
-| Button + Select + Dialog + Table, gzipped | _(not per component — see below)_                               | 157 237 B (**153.6 KB**)                               | 340 718 B (**332.7 KB**)              |
-| **Entire library, gzipped**               | 126 011 B (**123.1 KB**)                                        | _(no combined entry point)_                            | _(no combined entry point)_           |
-| Required stylesheet, gzipped              | 52 589 B (51.4 KB)                                              | 1 296 B (1.3 KB, M3 prebuilt theme)                    | 0 — injected at runtime from JS       |
-| `@deprecated` symbols in the package      | **0**                                                           | 36                                                     | 34                                    |
-| …that name a removal version              | n/a — 0 deprecated (28 symbols and 3 tokens removed in 21.14.0) | 42 `@breaking-change` tags, 40 of them already overdue | 0 of 34                               |
-| `NgModule` classes shipped                | **0**                                                           | 43                                                     | 113                                   |
-| Theming                                   | Plain CSS custom properties, no build step                      | Sass mixins / M3 system tokens                         | JS preset system (`@primeuix/styled`) |
+|                                           | Guild of Gleks UI                          | Angular Material                                       | PrimeNG                               |
+| ----------------------------------------- | ------------------------------------------ | ------------------------------------------------------ | ------------------------------------- |
+| Documented components                     | 32                                         | ~35                                                    | 90+                                   |
+| Packages installed beyond Angular         | **0**                                      | 3                                                      | 11                                    |
+| Runtime `dependencies` in package.json    | 1 (`tslib`)                                | 1 (`tslib`) + required `@angular/cdk` peer             | 6 + `tslib`                           |
+| npm package, unpacked                     | 4 008 146 B (3.82 MB)                      | 7 681 586 B (7.33 MB) + CDK 3 572 735 B (3.41 MB)      | 14 089 483 B (13.44 MB)               |
+| Button + Select + Dialog + Table, gzipped | _(not per component — see below)_          | 157 237 B (**153.6 KB**)                               | 340 718 B (**332.7 KB**)              |
+| **Entire library, gzipped**               | 132 966 B (**129.8 KB**)                   | _(no combined entry point)_                            | _(no combined entry point)_           |
+| Required stylesheet, gzipped              | 30 153 B (29.4 KB)                         | 1 296 B (1.3 KB, M3 prebuilt theme)                    | 0 — injected at runtime from JS       |
+| `@deprecated` symbols in the package      | 4                                          | 36                                                     | 34                                    |
+| …that name a removal version              | **4 of 4**, all 21.16.0 — the next minor   | 42 `@breaking-change` tags, 40 of them already overdue | 0 of 34                               |
+| `NgModule` classes shipped                | **0**                                      | 43                                                     | 113                                   |
+| Theming                                   | Plain CSS custom properties, no build step | Sass mixins / M3 system tokens                         | JS preset system (`@primeuix/styled`) |
 
 The row worth re-reading is the pair in the middle: the **whole** Guild of Gleks UI
-library, gzipped, is **1.25× smaller** than four Material components and **2.70× smaller**
+library, gzipped, is **1.18× smaller** than four Material components and **2.56× smaller**
 than the same four from PrimeNG — both ratios down from 1.36× and 2.95× at 21.7.2, because this
 library grew and the other two did not.
 
@@ -179,7 +184,7 @@ individually and then summed:
 | **Sum**   | **854 680 B (834.6 KB)** | **157 237 B (153.6 KB)** | **1 905 975 B (1861.3 KB)** | **340 718 B (332.7 KB)** |
 
 PrimeNG's table is the outlier of the whole comparison: on its own it gzips to 173.4 KB —
-**1.41× this library's entire catalogue** — because `primeng/table` is a full data grid with
+**1.34× this library's entire catalogue** — because `primeng/table` is a full data grid with
 filtering, grouping, frozen columns, resize and reorder built in. That is a feature
 difference, not waste; see [what this library doesn't try to be](/general/compare-full#what-this-library-doesnt-try-to-be).
 
@@ -203,7 +208,7 @@ Guild of Gleks UI can be imported whole — the root and its three split entry p
 
 | Library                                                             | Minified                    | Gzipped                     |
 | ------------------------------------------------------------------- | --------------------------- | --------------------------- |
-| **@guildofgleks/ui** — all 36 components, 3 services, 32 directives | 883 078 B (862.4 KB)        | **126 011 B (123.1 KB)**    |
+| **@guildofgleks/ui** — all 36 components, 3 services, 32 directives | 916 890 B (895.4 KB)        | **132 966 B (129.8 KB)**    |
 | @angular/material                                                   | _(no combined entry point)_ | _(no combined entry point)_ |
 | primeng                                                             | _(no combined entry point)_ | _(no combined entry point)_ |
 
@@ -218,8 +223,8 @@ cat node_modules/primeng/fesm2022/primeng.mjs              # 107 bytes, `var pub
 so "the whole library" is not a thing you can import from either, by design.
 
 For reference on the same bench: 21.3.0 measured 92.8 KB gzipped, 21.4.1 103.8 KB, 21.6.0
-107.6 KB, 21.6.1 113.6 KB, 21.7.2 112.8 KB — the first decrease this table recorded — and 21.14.0
-is **123.1 KB**. The 21.7.2 decrease, for the record: `gog-card`, `gog-panel` and `gogRipple` (21.6.1) are still in the bundle; what left
+107.6 KB, 21.6.1 113.6 KB, 21.7.2 112.8 KB — the first decrease this table recorded — 21.14.0
+123.1 KB, and 21.15.0 is **129.8 KB**. The 21.7.2 decrease, for the record: `gog-card`, `gog-panel` and `gogRipple` (21.6.1) are still in the bundle; what left
 is the **154-entry `GOG_DEPRECATIONS` manifest**, emptied to `[]` when 21.7.0 removed the three
 abbreviated token prefixes it existed to track. 21.7.0's other headline work — the character
 layer, six new theme presets — added nothing here because it is entirely `theme.css`, a
@@ -255,7 +260,7 @@ route, so this is a saving on the three heaviest components' own code, not a gen
 What npm actually stores and unpacks, straight from the registry:
 
 ```sh
-npm view @guildofgleks/ui@21.14.0 dist.unpackedSize  # 3865623
+npm view @guildofgleks/ui@21.15.0 dist.unpackedSize  # 4008146
 npm view @angular/material@22.1.6 dist.unpackedSize  # 7681586
 npm view @angular/cdk@22.1.6 dist.unpackedSize       # 3572735
 npm view primeng@22.1.1 dist.unpackedSize            # 14089483
@@ -273,8 +278,8 @@ above; what differs is the **token/theme layer** you import separately:
 
 | Library               | File                                                                                    | Raw                  | Gzipped            |
 | --------------------- | --------------------------------------------------------------------------------------- | -------------------- | ------------------ |
-| **@guildofgleks/ui**  | `styles/theme.css` (required — every token the components read)                         | 178 860 B (174.7 KB) | 40 801 B (39.8 KB) |
-| **@guildofgleks/ui**  | `styles/index.css` (theme + typography + utilities + button + menu + surfaces + ripple) | 225 105 B (219.8 KB) | 52 589 B (51.4 KB) |
+| **@guildofgleks/ui**  | `styles/theme.css` (required — every token the components read)                         | 130 905 B (127.8 KB) | 23 037 B (22.5 KB) |
+| **@guildofgleks/ui**  | `styles/index.css` (theme + typography + utilities + button + menu + surfaces + ripple) | 162 925 B (159.1 KB) | 30 153 B (29.4 KB) |
 | **@angular/material** | `prebuilt-themes/azure-blue.css` (M3)                                                   | 7 394 B (7.2 KB)     | 1 296 B (1.3 KB)   |
 | **@angular/material** | `prebuilt-themes/indigo-pink.css` (legacy M2)                                           | 110 763 B (108.2 KB) | 9 649 B (9.4 KB)   |
 | **primeng**           | — none; `@primeuix/styled` generates CSS at runtime                                     | 0 B                  | 0 B                |
@@ -295,15 +300,16 @@ const b=Buffer.concat(['theme','typography','utilities','button','menu','surface
 console.log(b.length,z.gzipSync(b,{level:9}).length)"
 ```
 
-**Read this row against us, not for us.** Material's M3 prebuilt theme is 31× smaller
+**Read this row against us, not for us.** Material's M3 prebuilt theme is 18× smaller
 gzipped than `theme.css`, because it declares a palette and lets Sass bake the rest at
-build time, while this library declares all 1 478 tokens as live custom properties so
-they can be overridden at runtime with no build step. That is the trade: ~51 KB gzipped for
+build time, while this library declares all 1 497 tokens as live custom properties so
+they can be overridden at runtime with no build step. That is the trade: ~29 KB gzipped for
 the whole of `index.css`, once, in exchange for retheming anything from a stylesheet or a
-`style` attribute. **Most of that is not the tokens.** `theme.css` carries its own design record
-as comments — why each value is what it is — and stripped of them it gzips to roughly a quarter of
-its shipped size; whether to keep shipping that prose in the stylesheet is an open decision, not a
-settled one. PrimeNG
+`style` attribute. **About half of it is still comments.** Until 21.14.0 `theme.css` carried its
+whole design record as comments — release history, measurements, why each value moved — and
+stripped of them it gzipped to roughly a quarter of its shipped size. 21.15.0 cut each comment
+down to why the value is what it is, moved the record to the changelog, and changed no
+declaration; stripped of comments `theme.css` now gzips to about half of what ships. PrimeNG
 ships no stylesheet at all — its CSS is generated in the browser from the preset, which
 means it is already inside the JS numbers above and costs main-thread time instead of
 bytes.
@@ -353,27 +359,27 @@ counted from each package's own published type definitions:
 ```sh
 grep -rc '@deprecated' node_modules/@angular/material/types | awk -F: '{s+=$2} END {print s}'   # 36
 grep -rc '@deprecated' node_modules/primeng/types          | awk -F: '{s+=$2} END {print s}'   # 34
-grep -rc '@deprecated' node_modules/@guildofgleks/ui/types | awk -F: '{s+=$2} END {print s}'  # 1
+grep -rc '@deprecated' node_modules/@guildofgleks/ui/types | awk -F: '{s+=$2} END {print s}'  # 5
 
-# that single hit is prose, not a tag — it is the sentence describing the deprecation manifest,
-# which lives in the internal /shared entry point's types. The manifest states the real counts:
+# one of the five is prose, not a tag — the sentence describing the deprecation manifest, which
+# lives in the internal /shared entry point's types. The manifest states the real counts:
 grep -rho 'currently deprecates: .*' node_modules/@guildofgleks/ui/types
-# → currently deprecates: 0 symbol(s) and 0 token(s). (28 symbols and 3 tokens until 21.14.0)
+# → currently deprecates: 4 symbol(s) and 0 token(s).
 
 grep -rh 'declare class.*Module\b' node_modules/@angular/material/types | wc -l                # 43
 grep -rh 'declare class.*Module\b' node_modules/primeng/types          | wc -l                 # 113
 grep -rh 'NgModule\|declare class.*Module\b' node_modules/@guildofgleks/ui/types | wc -l      # 0
 ```
 
-|                                         | Guild of Gleks UI  | Angular Material           | PrimeNG |
-| --------------------------------------- | ------------------ | -------------------------- | ------- |
-| `@deprecated` symbols                   | 0                  | 36                         | 34      |
-| Deprecations naming when they disappear | n/a — 0 deprecated | 42 `@breaking-change` tags | 0       |
-| `NgModule` classes                      | 0                  | 43                         | 113     |
+|                                         | Guild of Gleks UI | Angular Material           | PrimeNG |
+| --------------------------------------- | ----------------- | -------------------------- | ------- |
+| `@deprecated` symbols                   | 4                 | 36                         | 34      |
+| Deprecations naming when they disappear | 4 of 4 (21.16.0)  | 42 `@breaking-change` tags | 0       |
+| `NgModule` classes                      | 0                 | 43                         | 113     |
 
 Restricted to the four-component slice the bundle section uses: Material 1 (`table`),
-PrimeNG 5 (`button`), and this library 0 — it has no deprecated symbol anywhere, in that
-slice or outside it.
+PrimeNG 5 (`button`), and this library 0 — its four are all on `gog-autocomplete`, outside that
+slice.
 
 **On removal discipline.** Material annotates deprecations with `@breaking-change <major>`,
 which is a real schedule and better than nothing — but 40 of its 42 tags name a major at
@@ -388,7 +394,10 @@ Removed in <version>.` **Two had overrun that date** — `GogSelectOption` and
 already been reached, so a deprecation cannot overrun its date again. The overrun is
 recorded in the changelog rather than quietly re-dated.
 
-**Nothing is deprecated, as of 21.14.0 — and as of 21.7.0 before it.** 21.14.0 removed the
+**Four inputs are deprecated as of 21.15.0, all on `gog-autocomplete`** — `filter`,
+`filterPlaceholder`, `filterPosition` and `filterEmptyMessage`, which the field never needed (it
+filters as you type and its panel has no search box), each tagged for removal in 21.16.0, the next
+minor. Before them nothing had been deprecated since 21.14.0, which removed the
 second wave on the date it announced: 25 symbols that moved to the table, datepicker and dialog
 entry points, three internal helpers, and three renamed tokens, each after one minor of overlap.
 Before that: The last deprecation on the books was 154
@@ -403,7 +412,7 @@ overruns its own stated removal version.
 
 ```sh
 grep -o 'Removed in [0-9.]*' node_modules/@guildofgleks/ui/types/guildofgleks-ui.d.ts | sort | uniq -c
-# → nothing: no symbol is deprecated
+# →       4 Removed in 21.16.0
 grep -rho '@breaking-change [0-9]*' node_modules/@angular/material/types | sort | uniq -c
 ```
 
