@@ -1,37 +1,29 @@
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
-import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import {
-  GogDropdownChevronDirective,
-  GogDropdownOption,
-  GogDropdownOptionDirective,
-  GogMultiselectClearIconDirective,
-  GogSize,
-  IconComponent,
-  MultiselectComponent,
-} from '@guildofgleks/ui';
-import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
+import { ApiTableComponent, type ApiRow } from '../../shared/api-table/api-table';
+import { DemoComponent } from '../../shared/demo/demo';
 import { GlobalConfigNote } from '../../shared/global-config-note/global-config-note';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
+import { MULTISELECT_EXAMPLES } from '../../../examples/multiselect/sources.generated';
+import { MultiselectAccessorsExample } from '../../../examples/multiselect/multiselect-accessors/example';
+import { MultiselectAppendToBodyExample } from '../../../examples/multiselect/multiselect-append-to-body/example';
+import { MultiselectConfigExample } from '../../../examples/multiselect/multiselect-config/example';
+import { MultiselectControlsExample } from '../../../examples/multiselect/multiselect-controls/example';
+import { MultiselectDisabledOptionExample } from '../../../examples/multiselect/multiselect-disabled-option/example';
+import { MultiselectFilterExample } from '../../../examples/multiselect/multiselect-filter/example';
+import { MultiselectFloatLabelExample } from '../../../examples/multiselect/multiselect-float-label/example';
+import { MultiselectFormsExample } from '../../../examples/multiselect/multiselect-forms/example';
+import { MultiselectOverflowExample } from '../../../examples/multiselect/multiselect-overflow/example';
+import { MultiselectOverviewExample } from '../../../examples/multiselect/multiselect-overview/example';
+import { MultiselectSizesExample } from '../../../examples/multiselect/multiselect-sizes/example';
+import { MultiselectSlotsExample } from '../../../examples/multiselect/multiselect-slots/example';
+import { MultiselectStatesExample } from '../../../examples/multiselect/multiselect-states/example';
+import { MultiselectVirtualizeExample } from '../../../examples/multiselect/multiselect-virtualize/example';
+import { MultiselectWidthExample } from '../../../examples/multiselect/multiselect-width/example';
 
-interface ApiInputRow {
-  readonly name: string;
-  readonly type: string;
-  readonly default: string;
-  readonly description: string;
-  readonly since?: string;
-}
-
-/** A deliberately un-`GogDropdownOption`-shaped DTO, to show the accessors doing their job. */
-interface User {
-  readonly uuid: string;
-  readonly profile: { readonly fullName: string; readonly role: string };
-  readonly suspended: boolean;
-}
-
-const API_INPUTS: readonly ApiInputRow[] = [
+const API_INPUTS: readonly ApiRow[] = [
   {
     name: 'selectAllLabel',
     type: 'string | undefined',
@@ -250,25 +242,50 @@ const API_INPUTS: readonly ApiInputRow[] = [
   },
 ];
 
-/** Long enough that the difference is the point: 10 000 rows to show about six. */
-const MANY_CITIES: GogDropdownOption[] = Array.from({ length: 10_000 }, (_, i) => ({
-  id: `city-${i}`,
-  name: `City ${(i + 1).toLocaleString('en-US')}`,
-}));
+const API_OUTPUTS: readonly ApiRow[] = [
+  {
+    name: 'valueChange',
+    type: 'TValue[]',
+    description: 'Emitted when the selection changes. Comes from the value model input.',
+  },
+];
+
+const API_SLOTS: readonly ApiRow[] = [
+  {
+    name: 'gogDropdownOption',
+    type: '$implicit, selected, disabled, label',
+    description: 'Replaces one option row. The per-option checkbox stays.',
+  },
+  {
+    name: '[gogDropdownOptionTypeOf]',
+    type: 'readonly TOption[] — an input on gogDropdownOption',
+    description:
+      'Bind the same array as options and $implicit is typed as its element instead of unknown. Never read at runtime; left unbound, the template compiles exactly as before.',
+    since: '21.15.0',
+  },
+  {
+    name: 'gogDropdownChevron',
+    type: '$implicit / open',
+    description:
+      'Replaces the trigger chevron. The library turns only its own; a custom one draws its state from open.',
+    since: '21.15.0',
+  },
+  {
+    name: 'gogMultiselectClearIcon',
+    type: '—',
+    description:
+      "Replaces the glyph inside the clear button; the button and its name stay the component's.",
+  },
+];
 
 @Component({
   selector: 'app-multiselect-doc-page',
   imports: [
-    MultiselectComponent,
-    GogDropdownOptionDirective,
-    GogDropdownChevronDirective,
-    GogMultiselectClearIconDirective,
-    IconComponent,
+    ApiTableComponent,
+    DemoComponent,
     GlobalConfigNote,
     MarkdownComponent,
-    CodeTabsComponent,
     RouterLink,
-    ReactiveFormsModule,
     SinceBadgeComponent,
   ],
   templateUrl: './multiselect-doc-page.html',
@@ -276,554 +293,31 @@ const MANY_CITIES: GogDropdownOption[] = Array.from({ length: 10_000 }, (_, i) =
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MultiselectDocPage {
-  protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];
-
   protected readonly apiInputs = API_INPUTS;
+  protected readonly apiOutputs = API_OUTPUTS;
+  protected readonly apiSlots = API_SLOTS;
   protected readonly styleTokens =
     TOKEN_SECTIONS.find((section) => section.id === 'multiselect')?.tokens ?? [];
 
-  protected readonly selectedFeatures = signal<(string | number)[]>([]);
-  protected readonly features: GogDropdownOption[] = [
-    { id: 'toast', name: 'Toast' },
-    { id: 'dialog', name: 'Dialog' },
-    { id: 'forms', name: 'Forms' },
-    { id: 'table', name: 'Table' },
-  ];
-  protected readonly featureSummary = computed(
-    () => this.selectedFeatures().join(', ') || 'None selected',
-  );
-
-  protected readonly sizeDemoValue = signal<(string | number)[]>(['toast']);
-
-  protected readonly permissionsWithDisabled: GogDropdownOption[] = [
-    { id: 'read', name: 'Read' },
-    { id: 'write', name: 'Write' },
-    { id: 'admin', name: 'Admin (contact owner)', disabled: true },
-  ];
-  protected readonly permissions = signal<(string | number)[]>(['read']);
-  protected readonly requiredValue = signal<(string | number)[]>([]);
-  protected readonly requiredError = computed(() =>
-    this.requiredValue().length === 0 ? 'Pick at least one option.' : '',
-  );
-
-  protected readonly permissionsFormControl = new FormControl<(string | number)[]>([], {
-    nonNullable: true,
-    validators: Validators.required,
-  });
-
-  protected readonly tags: GogDropdownOption[] = [
-    { id: 'urgent', name: 'Urgent' },
-    { id: 'bug', name: 'Bug' },
-    { id: 'feature', name: 'Feature' },
-    { id: 'docs', name: 'Docs' },
-  ];
-  protected readonly fullWidthTags = signal<(string | number)[]>(['bug']);
-  protected readonly fullWidthFeatures = signal<(string | number)[]>([]);
-
-  protected readonly countries: GogDropdownOption[] = [
-    { id: 'de', name: 'Germany' },
-    { id: 'fr', name: 'France' },
-    { id: 'es', name: 'Spain' },
-    { id: 'it', name: 'Italy' },
-    { id: 'pl', name: 'Poland' },
-  ];
-  protected readonly topControlsValue = signal<(string | number)[]>([]);
-  protected readonly bottomControlsValue = signal<(string | number)[]>([]);
-
-  protected readonly sortOptions: GogDropdownOption[] = [
-    { id: 'name', name: 'Name' },
-    { id: 'date', name: 'Date' },
-  ];
-  protected readonly sortValue = signal<(string | number)[]>([]);
-  protected readonly ariaOnlyValue = signal<(string | number)[]>([]);
-
-  protected readonly manyCountries: GogDropdownOption[] = Array.from({ length: 20 }, (_, i) => ({
-    id: `country-${i}`,
-    name: `Country ${i + 1}`,
-  }));
-  protected readonly compactPanelValue = signal<(string | number)[]>([]);
+  protected readonly sources = MULTISELECT_EXAMPLES;
+  protected readonly examples = {
+    overview: MultiselectOverviewExample,
+    sizes: MultiselectSizesExample,
+    states: MultiselectStatesExample,
+    overflow: MultiselectOverflowExample,
+    width: MultiselectWidthExample,
+    slots: MultiselectSlotsExample,
+    accessors: MultiselectAccessorsExample,
+    disabledOption: MultiselectDisabledOptionExample,
+    filter: MultiselectFilterExample,
+    controls: MultiselectControlsExample,
+    appendToBody: MultiselectAppendToBodyExample,
+    virtualize: MultiselectVirtualizeExample,
+    floatLabel: MultiselectFloatLabelExample,
+    forms: MultiselectFormsExample,
+    config: MultiselectConfigExample,
+  };
 
   protected readonly importSnippet =
     "```typescript\nimport { MultiselectComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [MultiselectComponent],\n})\n```";
-
-  protected readonly overviewHtml = [
-    '<gog-multiselect label="Features" [options]="features" [(value)]="selectedFeatures" />',
-  ].join('\n');
-  protected readonly overviewTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { GogDropdownOption, MultiselectComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [MultiselectComponent],',
-    '  template: `<gog-multiselect label="Features" [options]="features" [(value)]="selectedFeatures" />`,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly selectedFeatures = signal<(string | number)[]>([]);',
-    '  protected readonly features: GogDropdownOption[] = [',
-    "    { id: 'toast', name: 'Toast' },",
-    "    { id: 'dialog', name: 'Dialog' },",
-    "    { id: 'forms', name: 'Forms' },",
-    "    { id: 'table', name: 'Table' },",
-    '  ];',
-    '}',
-  ].join('\n');
-
-  protected readonly selectedNamesHtml = [
-    '<gog-multiselect #ms label="Tags" [options]="tags" [(value)]="fullWidthTags" />',
-    '<p>Selected: {{ ms.selectedNames() }}</p>',
-  ].join('\n');
-  protected readonly selectedNamesTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { GogDropdownOption, MultiselectComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [MultiselectComponent],',
-    '  template: `',
-    '    <gog-multiselect #ms label="Tags" [options]="tags" [(value)]="selectedTags" />',
-    '    <p>Selected: {{ ms.selectedNames() }}</p>',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    "  protected readonly selectedTags = signal<(string | number)[]>(['bug']);",
-    '  protected readonly tags: GogDropdownOption[] = [/* ... */];',
-    '}',
-  ].join('\n');
-
-  protected readonly sizesHtml = [
-    '@for (sizeOption of sizes; track sizeOption) {',
-    '  <gog-multiselect [label]="\'Size: \' + sizeOption" [size]="sizeOption" [options]="features" [(value)]="sizeDemoValue" />',
-    '}',
-  ].join('\n');
-  protected readonly sizesTs = [
-    "import { Component } from '@angular/core';",
-    "import { GogDropdownOption, GogSize, MultiselectComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [MultiselectComponent],',
-    '  template: `',
-    '    @for (sizeOption of sizes; track sizeOption) {',
-    '      <gog-multiselect [label]="\'Size: \' + sizeOption" [size]="sizeOption" [options]="features" [(value)]="sizeDemoValue" />',
-    '    }',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    "  protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];",
-    '  protected readonly features: GogDropdownOption[] = [/* ... */];',
-    "  protected readonly sizeDemoValue = signal<(string | number)[]>(['toast']);",
-    '}',
-  ].join('\n');
-
-  protected readonly controlsHtml = [
-    '<gog-multiselect',
-    '  label="Top (default)"',
-    '  [options]="countries"',
-    '  [showControls]="true"',
-    '  [(value)]="topControlsValue"',
-    '/>',
-    '',
-    '<gog-multiselect',
-    '  label="Bottom"',
-    '  [options]="countries"',
-    '  [showControls]="true"',
-    '  controlsPosition="bottom"',
-    '  [(value)]="bottomControlsValue"',
-    '/>',
-  ].join('\n');
-  protected readonly controlsTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { GogDropdownOption, MultiselectComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [MultiselectComponent],',
-    '  template: `',
-    '    <gog-multiselect',
-    '      label="Top (default)"',
-    '      [options]="countries"',
-    '      [showControls]="true"',
-    '      [(value)]="topControlsValue"',
-    '    />',
-    '',
-    '    <gog-multiselect',
-    '      label="Bottom"',
-    '      [options]="countries"',
-    '      [showControls]="true"',
-    '      controlsPosition="bottom"',
-    '      [(value)]="bottomControlsValue"',
-    '    />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly countries: GogDropdownOption[] = [/* ... */];',
-    '  protected readonly topControlsValue = signal<(string | number)[]>([]);',
-    '  protected readonly bottomControlsValue = signal<(string | number)[]>([]);',
-    '}',
-  ].join('\n');
-
-  protected readonly statesHtml = [
-    '<gog-multiselect label="Disabled" [options]="features" [value]="[\'toast\']" [disabled]="true" />',
-    '',
-    '<gog-multiselect label="Permissions (one disabled)" [options]="permissionsWithDisabled" [(value)]="permissions" />',
-    '',
-    '<gog-multiselect',
-    '  label="Required tags"',
-    '  placeholder="Pick at least one..."',
-    '  [options]="permissionsWithDisabled"',
-    '  [errorMessage]="requiredError()"',
-    '  [(value)]="requiredValue"',
-    '/>',
-  ].join('\n');
-  protected readonly statesTs = [
-    "import { Component, computed, signal } from '@angular/core';",
-    "import { GogDropdownOption, MultiselectComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [MultiselectComponent],',
-    '  template: `',
-    '    <gog-multiselect label="Disabled" [options]="features" [value]="[\'toast\']" [disabled]="true" />',
-    '',
-    '    <gog-multiselect label="Permissions (one disabled)" [options]="permissionsWithDisabled" [(value)]="permissions" />',
-    '',
-    '    <gog-multiselect',
-    '      label="Required tags"',
-    '      placeholder="Pick at least one..."',
-    '      [options]="permissionsWithDisabled"',
-    '      [errorMessage]="requiredError()"',
-    '      [(value)]="requiredValue"',
-    '    />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly permissionsWithDisabled: GogDropdownOption[] = [',
-    "    { id: 'read', name: 'Read' },",
-    "    { id: 'write', name: 'Write' },",
-    "    { id: 'admin', name: 'Admin (contact owner)', disabled: true },",
-    '  ];',
-    "  protected readonly permissions = signal<(string | number)[]>(['read']);",
-    '  protected readonly requiredValue = signal<(string | number)[]>([]);',
-    '  protected readonly requiredError = computed(() =>',
-    "    this.requiredValue().length === 0 ? 'Pick at least one option.' : '',",
-    '  );',
-    '}',
-  ].join('\n');
-
-  protected readonly formHtml = [
-    '<gog-multiselect',
-    '  label="Permissions"',
-    '  placeholder="Pick at least one..."',
-    '  [options]="permissionsWithDisabled"',
-    '  [formControl]="permissionsFormControl"',
-    '  errorMessage="Pick at least one permission."',
-    '  errorDisplay="auto"',
-    '/>',
-  ].join('\n');
-  protected readonly formTs = [
-    "import { Component } from '@angular/core';",
-    "import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';",
-    "import { GogDropdownOption, MultiselectComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [MultiselectComponent, ReactiveFormsModule],',
-    '  template: `',
-    '    <gog-multiselect',
-    '      label="Permissions"',
-    '      placeholder="Pick at least one..."',
-    '      [options]="permissionsWithDisabled"',
-    '      [formControl]="permissionsFormControl"',
-    '      errorMessage="Pick at least one permission."',
-    '      errorDisplay="auto"',
-    '    />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly permissionsFormControl = new FormControl<(string | number)[]>([], {',
-    '    nonNullable: true,',
-    '    validators: Validators.required,',
-    '  });',
-    '}',
-  ].join('\n');
-
-  protected readonly fullWidthHtml = [
-    '<gog-multiselect label="Features" [options]="features" [(value)]="fullWidthFeatures" />',
-    '<gog-multiselect label="Tags" [options]="tags" [(value)]="fullWidthTags" [fullWidth]="false" />',
-  ].join('\n');
-  protected readonly fullWidthTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { GogDropdownOption, MultiselectComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [MultiselectComponent],',
-    '  template: `',
-    '    <gog-multiselect label="Features" [options]="features" [(value)]="fullWidthFeatures" />',
-    '    <gog-multiselect label="Tags" [options]="tags" [(value)]="fullWidthTags" [fullWidth]="false" />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly fullWidthFeatures = signal<(string | number)[]>([]);',
-    "  protected readonly fullWidthTags = signal<(string | number)[]>(['bug']);",
-    '  protected readonly features: GogDropdownOption[] = [/* ... */];',
-    '  protected readonly tags: GogDropdownOption[] = [/* ... */];',
-    '}',
-  ].join('\n');
-
-  protected readonly chevronHtml = [
-    '<gog-multiselect [options]="sortOptions" [(value)]="sortValue">',
-    '  <ng-template gogDropdownChevron let-open>',
-    "    <gog-icon [name]=\"open ? 'sort-up' : 'sort'\" />",
-    '  </ng-template>',
-    '  <ng-template gogMultiselectClearIcon>',
-    '    <gog-icon name="error" />',
-    '  </ng-template>',
-    '</gog-multiselect>',
-    '',
-    '<gog-multiselect',
-    '  ariaLabel="Tags (no visible label)"',
-    '  placeholder="Pick tags"',
-    '  [options]="tags"',
-    '  [(value)]="ariaOnlyValue"',
-    '/>',
-  ].join('\n');
-  protected readonly chevronTs = [
-    "import { Component, signal } from '@angular/core';",
-    'import {',
-    '  GogDropdownChevronDirective,',
-    '  GogDropdownOption,',
-    '  GogMultiselectClearIconDirective,',
-    '  IconComponent,',
-    '  MultiselectComponent,',
-    "} from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [',
-    '    MultiselectComponent,',
-    '    GogDropdownChevronDirective,',
-    '    GogMultiselectClearIconDirective,',
-    '    IconComponent,',
-    '  ],',
-    '  template: `',
-    '    <gog-multiselect [options]="sortOptions" [(value)]="sortValue">',
-    '      <!-- The library turns only its own chevron; a custom one draws its state from open. -->',
-    '      <ng-template gogDropdownChevron let-open>',
-    "        <gog-icon [name]=\"open ? 'sort-up' : 'sort'\" />",
-    '      </ng-template>',
-    '      <ng-template gogMultiselectClearIcon>',
-    '        <gog-icon name="error" />',
-    '      </ng-template>',
-    '    </gog-multiselect>',
-    '',
-    '    <gog-multiselect',
-    '      ariaLabel="Tags (no visible label)"',
-    '      placeholder="Pick tags"',
-    '      [options]="tags"',
-    '      [(value)]="ariaOnlyValue"',
-    '    />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly sortOptions: GogDropdownOption[] = [',
-    "    { id: 'name', name: 'Name' },",
-    "    { id: 'date', name: 'Date' },",
-    '  ];',
-    '  protected readonly sortValue = signal<(string | number)[]>([]);',
-    '  protected readonly ariaOnlyValue = signal<(string | number)[]>([]);',
-    '}',
-  ].join('\n');
-
-  protected readonly appendToBodyHtml = [
-    '<gog-multiselect',
-    '  label="Country (fixed 240px / 160px panel)"',
-    '  [options]="countries"',
-    '  [appendToBody]="true"',
-    '  dropdownWidth="240px"',
-    '  dropdownMaxHeight="160px"',
-    '  [(value)]="compactPanelValue"',
-    '/>',
-  ].join('\n');
-  protected readonly appendToBodyTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { GogDropdownOption, MultiselectComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [MultiselectComponent],',
-    '  template: `',
-    '    <gog-multiselect',
-    '      label="Country (fixed 240px / 160px panel)"',
-    '      [options]="countries"',
-    '      [appendToBody]="true"',
-    '      dropdownWidth="240px"',
-    '      dropdownMaxHeight="160px"',
-    '      [(value)]="compactPanelValue"',
-    '    />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly countries: GogDropdownOption[] = Array.from({ length: 20 }, (_, i) => ({',
-    '    id: `country-${i}`,',
-    '    name: `Country ${i + 1}`,',
-    '  }));',
-    '  protected readonly compactPanelValue = signal<(string | number)[]>([]);',
-    '}',
-  ].join('\n');
-
-  // ---- 21.3.0: option accessors, filtering, option slot -----------------------------------
-
-  protected readonly users: User[] = [
-    { uuid: 'u1', profile: { fullName: 'Ada Lovelace', role: 'Engineering' }, suspended: false },
-    { uuid: 'u2', profile: { fullName: 'Grace Hopper', role: 'Engineering' }, suspended: false },
-    { uuid: 'u3', profile: { fullName: 'Katherine Johnson', role: 'Research' }, suspended: false },
-    { uuid: 'u4', profile: { fullName: 'Radia Perlman', role: 'Networking' }, suspended: true },
-  ];
-  protected readonly reviewerIds = signal<(string | number)[]>([]);
-  protected readonly slotReviewerIds = signal<(string | number)[]>([]);
-  protected readonly filteredCountries = signal<(string | number)[]>([]);
-  protected readonly overflowCountries = signal<(string | number)[]>([]);
-
-  protected readonly accessorsHtml = [
-    '<gog-multiselect',
-    '  label="Reviewers"',
-    '  optionLabel="profile.fullName"',
-    '  optionValue="uuid"',
-    '  optionDisabled="suspended"',
-    '  [options]="users"',
-    '  [(value)]="reviewerIds"',
-    '/>',
-  ].join('\n');
-  protected readonly accessorsTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { MultiselectComponent } from '@guildofgleks/ui';",
-    '',
-    'interface User {',
-    '  uuid: string;',
-    '  profile: { fullName: string; role: string };',
-    '  suspended: boolean;',
-    '}',
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [MultiselectComponent],',
-    '  template: `',
-    '    <gog-multiselect',
-    '      label="Reviewers"',
-    '      optionLabel="profile.fullName"',
-    '      optionValue="uuid"',
-    '      optionDisabled="suspended"',
-    '      [options]="users"',
-    '      [(value)]="reviewerIds"',
-    '    />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly users: User[] = [/* straight from the API */];',
-    '  protected readonly reviewerIds = signal<(string | number)[]>([]);',
-    '}',
-  ].join('\n');
-
-  protected readonly filterHtml = [
-    '<gog-multiselect',
-    '  label="Country"',
-    '  [filter]="true"',
-    '  [showControls]="true"',
-    '  filterPlaceholder="Search countries…"',
-    '  filterEmptyMessage="No country matches"',
-    '  [options]="countries"',
-    '  [(value)]="selected"',
-    '/>',
-  ].join('\n');
-  protected readonly filterTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { MultiselectComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [MultiselectComponent],',
-    '  template: `',
-    '    <gog-multiselect',
-    '      label="Country"',
-    '      [filter]="true"',
-    '      [showControls]="true"',
-    '      [options]="countries"',
-    '      [(value)]="selected"',
-    '    />',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  // With a filter active, "select all" takes only what is visible.',
-    '  protected readonly selected = signal<(string | number)[]>([]);',
-    '}',
-  ].join('\n');
-
-  protected readonly optionSlotHtml = [
-    '<gog-multiselect',
-    '  label="Reviewers"',
-    '  optionLabel="profile.fullName"',
-    '  optionValue="uuid"',
-    '  [options]="users"',
-    '  [(value)]="reviewerIds"',
-    '>',
-    '  <ng-template gogDropdownOption [gogDropdownOptionTypeOf]="users" let-user let-label="label">',
-    '    <strong>{{ label }}</strong>',
-    '    <small>{{ user.profile.role }}</small>',
-    '  </ng-template>',
-    '</gog-multiselect>',
-  ].join('\n');
-  protected readonly optionSlotTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { GogDropdownOptionDirective, MultiselectComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [MultiselectComponent, GogDropdownOptionDirective],',
-    '  template: `',
-    '    <gog-multiselect optionLabel="profile.fullName" [options]="users" [(value)]="reviewerIds">',
-    '      <!-- [gogDropdownOptionTypeOf] types `user` from the array the field renders. -->',
-    '      <ng-template gogDropdownOption [gogDropdownOptionTypeOf]="users" let-user let-label="label">',
-    '        <strong>{{ label }}</strong>',
-    '        <small>{{ user.profile.role }}</small>',
-    '      </ng-template>',
-    '    </gog-multiselect>',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly users: readonly User[] = [/* ... */];',
-    '}',
-  ].join('\n');
-
-  protected readonly manyCities = MANY_CITIES;
-  protected readonly windowedCities = signal<(string | number)[]>([]);
-
-  protected readonly virtualizeHtml = [
-    '<gog-multiselect',
-    '  label="Cities"',
-    '  [options]="cities"',
-    '  [virtualize]="true"',
-    '  [filter]="true"',
-    '  [showControls]="true"',
-    '  [(value)]="windowedCities"',
-    '/>',
-  ].join('\n');
-  protected readonly virtualizeTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { GogDropdownOption, MultiselectComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [MultiselectComponent],',
-    '  template: `/* as in the HTML tab */`,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly cities: GogDropdownOption[] = Array.from({ length: 10_000 }, (_, i) => ({',
-    '    id: `city-${i}`,',
-    '    name: `City ${i + 1}`,',
-    '  }));',
-    '  protected readonly windowedCities = signal<(string | number)[]>([]);',
-    '}',
-  ].join('\n');
 }

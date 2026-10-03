@@ -1,0 +1,30 @@
+<!-- Property paths, dot-paths included: a DTO goes in unmapped. -->
+<div>
+  <gog-multiselect
+    label="Reviewers (by uuid)"
+    [options]="members"
+    optionLabel="profile.fullName"
+    optionValue="uuid"
+    optionDisabled="suspended"
+    [(value)]="memberIds"
+  />
+  <code>value: {{ memberIds().join(', ') || 'none' }}</code>
+</div>
+
+<!-- A function label and [optionValue]="null": the value holds the option objects. -->
+<div>
+  <gog-multiselect
+    label="Reviewers (whole objects)"
+    placeholder="Pick people"
+    [options]="members"
+    [optionLabel]="fullName"
+    [optionValue]="null"
+    [(value)]="selected"
+  >
+    <!-- [gogDropdownOptionTypeOf] types `option` as a Member. -->
+    <ng-template gogDropdownOption [gogDropdownOptionTypeOf]="members" let-option let-label="label">
+      {{ label }} — <em>{{ option.profile.role }}</em>
+    </ng-template>
+  </gog-multiselect>
+  <code>value: {{ selected().length }} object(s)</code>
+</div>

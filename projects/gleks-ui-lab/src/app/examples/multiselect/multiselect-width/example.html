@@ -1,0 +1,14 @@
+<gog-multiselect label="fullWidth (default)" [options]="frameworks" [value]="['angular', 'vue']" />
+<!-- Sizes to its own summary, so an empty selection collapses it. -->
+<gog-multiselect
+  label='[fullWidth]="false"'
+  [fullWidth]="false"
+  [options]="frameworks"
+  [value]="['angular', 'vue']"
+/>
+<gog-multiselect
+  label='[fullWidth]="false" minWidth="16rem"'
+  [fullWidth]="false"
+  minWidth="16rem"
+  [options]="frameworks"
+/>

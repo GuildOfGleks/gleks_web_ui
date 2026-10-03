@@ -1,0 +1,5 @@
+<!-- optionDisabled reads `disabled` by default; "Select all" never picks a disabled row. -->
+<div>
+  <gog-multiselect label="Plans" [options]="plans" showControls [(value)]="picked" />
+  <code>value: {{ picked().join(', ') || 'none' }}</code>
+</div>

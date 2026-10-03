@@ -1,0 +1,10 @@
+<!-- "Select all" takes the visible options — the whole filtered list, not the rendered window. -->
+<gog-multiselect
+  label="virtualize"
+  placeholder="Pick cities"
+  [options]="cities"
+  virtualize
+  filter
+  showControls
+/>
+<gog-multiselect label="Eager (default)" placeholder="Pick cities" [options]="cities" filter />

@@ -1,0 +1,4 @@
+<gog-multiselect label="Value unset" placeholder="Pick frameworks" [options]="frameworks" />
+<gog-multiselect label="Two selected" [options]="frameworks" [value]="['angular', 'vue']" />
+<gog-multiselect label="Disabled" [options]="frameworks" [value]="['angular', 'vue']" disabled />
+<gog-multiselect label="Error" [options]="frameworks" errorMessage="Pick at least one" />

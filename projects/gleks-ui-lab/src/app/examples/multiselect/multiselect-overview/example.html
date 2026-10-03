@@ -1,0 +1,12 @@
+<div>
+  <gog-multiselect
+    #frameworksField
+    label="Frameworks"
+    placeholder="Pick frameworks"
+    [options]="frameworks"
+    [(value)]="picked"
+    (valueChange)="changes.update((n) => n + 1)"
+  />
+  <!-- selectedNames: the joined labels of the selection, straight off the component. -->
+  <code>{{ frameworksField.selectedNames() || 'none' }} · {{ changes() }} valueChange</code>
+</div>

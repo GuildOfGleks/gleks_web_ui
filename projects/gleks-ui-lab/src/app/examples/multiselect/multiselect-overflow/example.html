@@ -1,0 +1,5 @@
+<!-- Ten selected: what fits stays, the rest collapses to +N, listed in full in the tooltip. -->
+<div>
+  <gog-multiselect label="Countries" [options]="countries" showControls [(value)]="picked" />
+  <code>{{ picked().length }} selected</code>
+</div>

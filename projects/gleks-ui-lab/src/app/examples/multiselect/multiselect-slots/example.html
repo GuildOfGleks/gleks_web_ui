@@ -1,0 +1,19 @@
+<!-- The library turns only its own chevron; a custom one draws its state from open. -->
+<gog-multiselect label="Chevron slot" [options]="frameworks" [value]="['angular']">
+  <ng-template gogDropdownChevron let-open>
+    <gog-icon [name]="open ? 'sort-up' : 'sort'" />
+  </ng-template>
+</gog-multiselect>
+
+<!-- The glyph inside the clear button, not the button: its name is still clearAriaLabel. -->
+<gog-multiselect label="Clear-icon slot" [options]="frameworks" [value]="['angular']">
+  <ng-template gogMultiselectClearIcon>
+    <gog-icon name="trash" />
+  </ng-template>
+</gog-multiselect>
+
+<gog-multiselect
+  ariaLabel="Frameworks (no visible label)"
+  placeholder="Pick frameworks"
+  [options]="frameworks"
+/>

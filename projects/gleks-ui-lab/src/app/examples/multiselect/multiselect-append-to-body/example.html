@@ -1,0 +1,21 @@
+<!-- Each box clips its content, as an overflow: hidden card or a scroller does. -->
+<div style="overflow: hidden; padding: 12px; border: 1px dashed var(--gog-border-color)">
+  <gog-multiselect label="Inline panel (clipped)" [options]="countries" dropdownDirection="down" />
+</div>
+<div style="overflow: hidden; padding: 12px; border: 1px dashed var(--gog-border-color)">
+  <gog-multiselect
+    label="appendToBody (escapes)"
+    [options]="countries"
+    dropdownDirection="down"
+    appendToBody
+  />
+</div>
+<div>
+  <gog-multiselect
+    label="Panel 240px wide, 160px tall"
+    [options]="countries"
+    appendToBody
+    dropdownWidth="240px"
+    dropdownMaxHeight="160px"
+  />
+</div>
