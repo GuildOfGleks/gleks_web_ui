@@ -102,8 +102,11 @@
     <p class="doc-section__intro">
       The host carries <code>role="separator"</code> and an <code>aria-orientation</code> matching
       the <code>orientation</code> input, so a screen reader announces the break rather than
-      skipping it. The two rule segments are <code>aria-hidden</code>; only the projected label is
-      read.
+      skipping it. The two rule segments are <code>aria-hidden</code>. A projected label is the
+      separator's accessible name, through <code>aria-labelledby</code> on the host (since 21.15.0)
+      — before, it was ordinary content inside a role whose children ARIA treats as presentational,
+      so whether it was read at all was up to the browser. Keep labels short: every one is announced
+      as a name now. A divider with nothing projected stays unnamed.
     </p>
   </section>
 
