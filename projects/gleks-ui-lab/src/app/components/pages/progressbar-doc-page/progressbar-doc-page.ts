@@ -9,6 +9,7 @@ import {
 import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
 import { GlobalConfigNote } from '../../shared/global-config-note/global-config-note';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
+import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 interface ApiInputRow {
@@ -77,6 +78,7 @@ const API_INPUTS: readonly ApiInputRow[] = [
     MarkdownComponent,
     CodeTabsComponent,
     RouterLink,
+    SinceBadgeComponent,
   ],
   templateUrl: './progressbar-doc-page.html',
   styleUrl: './progressbar-doc-page.scss',
@@ -161,6 +163,38 @@ export class ProgressbarDocPage {
     "    'warning',",
     "    'info',",
     '  ];',
+    '}',
+  ].join('\n');
+
+  protected readonly edgeHtml = [
+    '<gog-progressbar variant="info" [value]="65" ariaLabel="Upload" />',
+    '',
+    '<div class="marked">',
+    '  <gog-progressbar variant="info" [value]="65" ariaLabel="Upload" />',
+    '  <gog-progressbar mode="buffer" variant="info" [value]="40" [buffer]="70" ariaLabel="Playback" />',
+    '</div>',
+  ].join('\n');
+  protected readonly edgeTs = [
+    "import { Component } from '@angular/core';",
+    "import { ProgressbarComponent } from '@guildofgleks/ui';",
+    '',
+    '@Component({',
+    "  selector: 'app-example',",
+    '  imports: [ProgressbarComponent],',
+    '  template: `',
+    '    <gog-progressbar variant="info" [value]="65" ariaLabel="Upload" />',
+    '    <div class="marked">',
+    '      <gog-progressbar variant="info" [value]="65" ariaLabel="Upload" />',
+    '    </div>',
+    '  `,',
+    "  styles: '.marked { --gog-progressbar-edge-width: 1px; }',",
+    '})',
+    'export class ExampleComponent {}',
+  ].join('\n');
+  protected readonly edgeCss = [
+    '/* Off by default since 21.15.0. Set it on :root to mark every bar, or on one subtree. */',
+    '.marked {',
+    '  --gog-progressbar-edge-width: 1px;',
     '}',
   ].join('\n');
 

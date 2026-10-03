@@ -119,24 +119,45 @@
       <code>prefers-reduced-motion</code>.
     </p>
     <p class="doc-section__intro">
-      <strong>The fill's leading edge is marked by two hairlines</strong>, since 21.10.0. With
-      <code>showValue</code> off — the default — that boundary is the only thing stating the value,
-      and WCAG 1.4.11 asks 3:1 of the part of a graphic that carries its meaning. Fill against track
-      could not carry it: 51 of the 55 shipped fill/track combinations were below 3:1, because the
-      five fills straddle mid-luminance and no single track colour clears all of them in any theme
-      but <code>primeng</code>. One marker tone does not work either, so there are two — the theme's
-      ink outermost against the track, the surface colour just inside the fill — and whichever tone
-      a fill sits close to, the other one reads. Worst case across the eleven themes is 3.25:1. The
-      tones are <code>--gog-progressbar-edge-color</code> / <code>-edge-backing-color</code>, each
-      <code>--gog-progressbar-edge-width</code> wide, and they flip end under
-      <code>dir="rtl"</code>.
+      <strong>An edge marker you can turn on.</strong> With <code>showValue</code> off — the default
+      — the boundary between fill and track is the only thing stating the value, and WCAG 1.4.11
+      asks 3:1 of the part of a graphic that carries its meaning. Fill against track cannot always
+      carry it: 51 of the 55 shipped fill/track combinations are below 3:1, because the five fills
+      straddle mid-luminance and no single track colour clears all of them in any theme but
+      <code>primeng</code>. So the bar can mark where the fill ends — and, in <code>buffer</code>
+      mode, where the buffer ends — with two hairlines: the theme's ink outermost against the track,
+      the surface colour just inside the fill. Whichever tone a fill sits close to, the other one
+      reads, and the worst case across the eleven themes is 3.25:1.
     </p>
     <p class="doc-section__intro">
-      <strong>Since 21.13.0 the buffer level ends with the same pair.</strong> Its boundary against
-      the track was under 3:1 in every shipped theme and variant — 1.06:1 at worst — so in
-      <code>buffer</code> mode you could not locate where the buffered region stopped. The same two
-      tokens draw it, and nothing new needs overriding.
+      <strong>The marker is off by default</strong> <app-since version="21.15.0" /> —
+      <code>--gog-progressbar-edge-width</code> is <code>0px</code>. It was drawn on every bar from
+      21.10.0, and in use the light line read as an outline at the end of the bar rather than as the
+      value, most of all on a dark fill. Set the width to <code>1px</code>, on <code>:root</code> or
+      on one bar, where the value has to be readable without colour — or turn on
+      <code>showValue</code> instead. The tones are <code>--gog-progressbar-edge-color</code> /
+      <code>-edge-backing-color</code>, and they flip end under <code>dir="rtl"</code>.
     </p>
+    <div class="demo-card">
+      <div class="demo-card__preview progressbar-demo__stack">
+        <div>
+          <p class="doc-section__meta">default — no marker</p>
+          <gog-progressbar variant="info" [value]="65" ariaLabel="Without marker" />
+        </div>
+        <div style="--gog-progressbar-edge-width: 1px">
+          <p class="doc-section__meta">--gog-progressbar-edge-width: 1px</p>
+          <gog-progressbar variant="info" [value]="65" ariaLabel="With marker" />
+          <gog-progressbar
+            mode="buffer"
+            variant="info"
+            [value]="40"
+            [buffer]="70"
+            ariaLabel="Buffer with marker"
+          />
+        </div>
+      </div>
+      <app-code-tabs [html]="edgeHtml" [ts]="edgeTs" [css]="edgeCss" />
+    </div>
   </section>
 
   <section class="doc-section">
