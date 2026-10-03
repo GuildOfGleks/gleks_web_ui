@@ -12,6 +12,7 @@ import {
 import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
 import { GlobalConfigNote } from '../../shared/global-config-note/global-config-note';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
+import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 
 interface DemoDialogData {
@@ -75,6 +76,7 @@ interface ApiRow {
   readonly type: string;
   readonly default: string;
   readonly description: string;
+  readonly since?: string;
 }
 
 const CONFIG_OPTIONS: readonly ApiRow[] = [
@@ -88,7 +90,16 @@ const CONFIG_OPTIONS: readonly ApiRow[] = [
     name: 'title',
     type: 'string',
     default: 'undefined',
-    description: 'Header title. The header renders if either title or closable is set.',
+    description:
+      "Header title, and the dialog's accessible name unless ariaLabelledBy is set. The header renders if either title or closable is set. A dialog with neither title nor ariaLabelledBy is unnamed, and dev mode warns.",
+  },
+  {
+    name: 'ariaLabelledBy',
+    type: 'string',
+    default: 'undefined',
+    description:
+      'Id of a heading inside the body component that names the dialog; wins over title. Use it when the content shows its own heading, rather than repeating it as a title above — ConfirmationDialogComponent renders its heading with data.titleId for exactly this.',
+    since: '21.15.0',
   },
   {
     name: 'data',
@@ -101,7 +112,7 @@ const CONFIG_OPTIONS: readonly ApiRow[] = [
     type: 'boolean',
     default: 'true',
     description:
-      'Locks body scroll, traps Tab focus inside the panel, and restores focus to the trigger on close.',
+      'Dims the page, locks body scroll, traps Tab focus inside the panel, and restores focus to the trigger on close. false leaves the page usable: a press on it reaches the page and leaves the dialog open (since 21.15.0), which then closes by its own buttons, the close button or Escape.',
   },
   {
     name: 'closable',
@@ -185,7 +196,14 @@ const INJECTION_TOKENS: readonly ServiceRow[] = [
 
 @Component({
   selector: 'app-dialog-doc-page',
-  imports: [ButtonComponent, GlobalConfigNote, MarkdownComponent, CodeTabsComponent, RouterLink],
+  imports: [
+    ButtonComponent,
+    GlobalConfigNote,
+    MarkdownComponent,
+    CodeTabsComponent,
+    RouterLink,
+    SinceBadgeComponent,
+  ],
   templateUrl: './dialog-doc-page.html',
   styleUrl: './dialog-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -231,10 +249,12 @@ export class DialogDocPage {
     '',
     '  protected async openConfirm(): Promise<void> {',
     '    const handle = this.dialogService.open<boolean>({',
-    "      title: 'Delete workspace?',",
     '      component: ConfirmationDialogComponent,',
     "      role: 'alertdialog',",
+    "      // Named by the component's own heading, so the question is not shown twice.",
+    "      ariaLabelledBy: 'delete-workspace-question',",
     '      data: {',
+    "        titleId: 'delete-workspace-question',",
     "        title: 'Delete workspace?',",
     "        description: 'This action cannot be undone.',",
     "        confirmText: 'Delete',",
@@ -317,7 +337,7 @@ export class DialogDocPage {
     "  title: 'Non-modal',",
     '  component: DialogBodyComponent,',
     '  modal: false,',
-    "  data: { message: 'Background stays scrollable and interactive, and Tab is not trapped inside the panel.' },",
+    "  data: { message: 'The page behind stays usable, and a press on it does not close this dialog.' },",
     '});',
   ].join('\n');
 
@@ -367,10 +387,11 @@ export class DialogDocPage {
 
   protected async openConfirm(): Promise<void> {
     const handle = this.dialogService.open<boolean>({
-      title: 'Delete workspace?',
       component: ConfirmationDialogComponent,
       role: 'alertdialog',
+      ariaLabelledBy: 'delete-workspace-question',
       data: {
+        titleId: 'delete-workspace-question',
         title: 'Delete workspace?',
         description: 'This action cannot be undone.',
         confirmText: 'Delete',
@@ -415,7 +436,7 @@ export class DialogDocPage {
       modal: false,
       data: {
         message:
-          'Background stays scrollable and interactive, and Tab is not trapped inside the panel.',
+          'The page behind stays usable — press it, scroll it, Tab to it — and this dialog stays open until you close it.',
       },
     });
 

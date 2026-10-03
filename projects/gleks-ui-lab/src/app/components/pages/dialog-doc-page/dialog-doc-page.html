@@ -33,7 +33,12 @@
 
     <p class="doc-section__intro">
       Basic usage — the library ships a ready-made <code>ConfirmationDialogComponent</code> for
-      confirm/cancel prompts:
+      confirm/cancel prompts. It shows the question as its own heading, so the dialog is named by
+      that heading rather than given a <code>title</code> that would print the question twice:
+      <code>ariaLabelledBy</code> on the config and <code>titleId</code> in its data
+      <app-since version="21.15.0" /> are the same id. Every dialog needs a name — a
+      <code>title</code> or an <code>ariaLabelledBy</code> — and dev mode warns about one that has
+      neither.
     </p>
     <div class="demo-card">
       <div class="demo-card__preview">
@@ -52,7 +57,10 @@
       <p class="demo-card__meta">
         Any component can be the dialog body. Inject <code>DIALOG_DATA</code> to read the data
         passed to <code>open()</code>, and <code>DIALOG_REF</code> to close the dialog and resolve
-        <code>afterClosed</code> from inside the body itself.
+        <code>afterClosed</code> from inside the body itself. Escape is shared fairly with what the
+        body contains <app-since version="21.15.0" />: an open select or multiselect in a dialog
+        closes its list on the first press and the dialog on the next, and a control of your own can
+        claim the key the same way, by calling <code>preventDefault()</code> on it.
       </p>
       <div class="demo-card__preview action-row">
         <gog-button (gogClick)="openCustomContent()">Open custom dialog</gog-button>
@@ -77,8 +85,11 @@
     <article class="demo-card">
       <h3 class="demo-card__title">Non-modal</h3>
       <p class="demo-card__meta">
-        <code>modal: false</code> leaves the page behind it scrollable and interactive, and drops
-        the Tab focus trap — useful for a lightweight panel rather than a blocking prompt.
+        <code>modal: false</code> leaves the page behind it usable — no dim, no scroll lock, no Tab
+        focus trap — for a lightweight panel rather than a blocking prompt. A press on the page
+        reaches the page and leaves the dialog open <app-since version="21.15.0" />; it closes by
+        its own buttons, the close button or Escape. Before 21.15.0 an invisible backdrop still
+        covered the page and closed the dialog on any press.
       </p>
       <div class="demo-card__preview action-row">
         <gog-button variant="outline" (gogClick)="openNonModal()">Open non-modal dialog</gog-button>
@@ -131,6 +142,9 @@
             <tr>
               <td>
                 <code>{{ row.name }}</code>
+                @if (row.since) {
+                  <app-since [version]="row.since" />
+                }
               </td>
               <td>
                 <code>{{ row.type }}</code>
