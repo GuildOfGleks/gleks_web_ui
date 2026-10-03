@@ -791,6 +791,17 @@ Carried over from `consumer-dx-plan.md`'s backlog, which was the project's secon
 2026-08-23. Not defects: each is a known wart with a stated reason for living with it, and the
 reason may stop holding.
 
+- **`AGENTS.md` does not say that `gog-calendar` is not an event calendar.** Raised by the owner
+  on 2026-10-03: "Calendar" also names full-page schedulers such as FullCalendar, and an agent
+  asked to build a booking or schedule view could reach for `gog-calendar` and try to bend it. The
+  lab's Calendar page says so in its lead (same day); `AGENTS.md`'s `gog-datepicker` /
+  `gog-calendar` section wants the same line — a date grid that picks a day, a range or a time,
+  not a week or month view of events — so it reaches the reader who never opens the site. It is
+  a package change, so it ships with the next release. No rename: the name follows the common
+  convention (`mat-calendar`, Ant Design's `Calendar`), the `gog-` prefix keeps the selector
+  unique, and a class-name clash with another `CalendarComponent` in one file is solved by an
+  import alias.
+
 - **A `gog-scroll` that does scroll is an unnamed region by default.** Since 21.15.0 the tab stop
   and `role="region"` appear only while the content overflows, so the dead stop is gone; what is
   left is the name — `ariaLabel` defaults to `''`, the same default-empty shape as the tablist and
@@ -1142,6 +1153,11 @@ primitive at all: its rows genuinely vary in height, so it needed a second one.
    matter — check what `provideGogIcons` costs a consumer who wants three of them before growing
    the built-in set.
 7. **More `gog-progressbar` variants (animations).** Smallest of the features; a good warm-up.
+8. **If the library ever gets a full-page event calendar, it is `gog-scheduler`.** Decided by
+   the owner on 2026-10-03, when the overlap with FullCalendar's name came up. The industry calls
+   that component a scheduler (Syncfusion, DevExtreme, Kendo); `gog-calendar` is already the date
+   grid and keeps that meaning. Not planned — this records the name so a future plan does not
+   reach for "big calendar" or "full calendar".
 
 ---
 
