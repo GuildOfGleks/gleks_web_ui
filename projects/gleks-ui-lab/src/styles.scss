@@ -310,6 +310,17 @@ h3[id] {
   gap: 12px;
 }
 
+/* A `<div>` in a block example is a group read top to bottom — a parent checkbox and its
+   children, a control and its actions — so it stacks its contents, left-aligned. */
+/* Two levels and no deeper: a descendant selector would reach the components' own <div>s. */
+.demo-preview--block > * > div,
+.demo-preview--block > * > div > div {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
 /* `row` — one wrapping, centred row of controls. */
 .demo-preview--row > * {
   display: flex;

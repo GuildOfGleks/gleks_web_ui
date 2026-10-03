@@ -8,7 +8,8 @@ import type { ExampleSource } from '../example-source';
  * example carries no stylesheet (`docs/lab-component-pages.md`, D3), so the arrangement a reader
  * should not copy lives here, once.
  *
- * - `block` — each top-level element centred on its own line (the default).
+ * - `block` — each top-level element centred on its own line (the default); a `<div>` stacks its
+ *   contents, left-aligned — a group read top to bottom.
  * - `row` — its top-level elements in one wrapping, centred row: buttons, chips, toggles; a `<p>`
  *   among them takes a line of its own, and a `<div>` is a captioned cell, top-aligned.
  * - `rows` — each top-level element a wrapping row, the rows centred as one block; a leading
