@@ -10,6 +10,8 @@
     [axis]="maxHeight() ? 'both' : 'horizontal'"
     [style.max-height]="maxHeight()"
     class="gog-table-scroll"
+    [class.gog-table-scroll--framed]="maxHeight()"
+    [class.gog-table-scroll--fit]="maxHeight() && !fullWidth()"
     (gogScroll)="onTableScroll($event)"
   >
     <table
@@ -19,6 +21,7 @@
       [class.gog-table--loading]="loading()"
       [class.gog-table--sticky-header]="stickyHeader()"
       [class.gog-table--auto-layout]="!fullWidth()"
+      [class.gog-table--in-frame]="maxHeight()"
       [style.width]="fullWidth() ? '100%' : 'fit-content'"
       [attr.aria-rowcount]="ariaRowCount()"
     >

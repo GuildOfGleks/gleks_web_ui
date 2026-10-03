@@ -17,9 +17,25 @@
   width: 100%;
 }
 
+/* A capped table scrolls inside its frame, so the frame belongs to the viewport, not to the table:
+   on the table it scrolled away with the rows, leaving a pinned header with no edge above it. */
+.gog-table-scroll--framed {
+  border: var(--gog-table-border-width) var(--gog-table-border-style) var(--gog-table-border-color);
+}
+
+.gog-table-scroll--fit {
+  width: fit-content;
+  max-width: 100%;
+}
+
+/* `separate` with no spacing, so every border belongs to a cell. Under `collapse` the borders
+   belong to the table, and a sticky header cell left its bottom border behind when it pinned — the
+   header floated over the rows with nothing between them, and the rows showed through the
+   1px seam above it. */
 .gog-table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   border: var(--gog-table-border-width) var(--gog-table-border-style) var(--gog-table-border-color);
   background-color: var(--gog-table-surface);
   color: var(--gog-table-text-color);
@@ -40,6 +56,10 @@
  */
 .gog-table--auto-layout {
   table-layout: auto;
+}
+
+.gog-table--in-frame {
+  border: 0;
 }
 
 /* === Sizes ===
@@ -114,9 +134,26 @@
 
 .gog-table__th--select,
 .gog-table__td--select {
-  /* Sized to the checkbox, not to content: this column never grows. */
+  /* Sized to the checkbox, not to content: this column never grows. The cell's own inline padding
+     and the checkbox's 8px of padding would need 72px; at 44px the checkbox was cut in half by the
+     cell's `overflow: hidden`, and its 40px label pushed it off the row's centre. The box alone is
+     the 24x24 pointer target, so the padding goes. */
   width: var(--gog-table-select-col-width);
   text-align: center;
+  line-height: 0;
+  --gog-control-checkbox-padding: 0px;
+}
+
+/* Doubled class: `.gog-table__th`/`__td` declare their padding later in this file. */
+.gog-table__th.gog-table__th--select,
+.gog-table__td.gog-table__td--select {
+  padding-inline: 0;
+}
+
+.gog-table__th--select gog-checkbox,
+.gog-table__td--select gog-checkbox {
+  display: inline-flex;
+  vertical-align: middle;
 }
 
 .gog-table__th--sortable {

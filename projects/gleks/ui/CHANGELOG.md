@@ -193,6 +193,19 @@ reached 1.0, so breaking changes may land in minor versions.
 
 ### Fixed
 
+- **`gog-table`'s selection checkboxes were cut in half and sat off the row's centre.** The column
+  is 44px wide, and the cell's 16px of inline padding plus the checkbox's own 8px left the 40px
+  checkbox 12px to render in, under the cell's `overflow: hidden`. The selection cells now have no
+  inline padding and the checkbox no padding of its own — the 24x24 box is the pointer target — so
+  it renders whole and centred, in every row size.
+
+- **A pinned `stickyHeader` lost its bottom edge, and the rows showed through above it.** The table
+  used `border-collapse: collapse`, where borders belong to the table rather than to a cell, so a
+  sticky header cell left its border behind when it pinned and floated over the rows with nothing
+  between them. The table is `separate` with no spacing now, so the header keeps its edge; and a
+  table with `maxHeight` draws its frame on the scroll viewport instead of on the table, so the
+  frame no longer scrolls away with the rows.
+
 - **A selected row in a `gog-table` without its checkbox column said so only to sighted readers.**
   With `[showSelectionColumn]="false"` — the usual setup for `selectOnRowClick` — the state was
   carried by the row's highlight and by `aria-selected` on the `<tr>`, and ARIA supports
