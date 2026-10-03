@@ -39,7 +39,7 @@ interface ApiRow {
 const API_INPUTS: readonly ApiRow[] = [
   {
     name: 'items',
-    type: 'GogAccordionItem[]',
+    type: 'readonly GogAccordionItem[]',
     default: '[]',
     description: 'The sections to render. Each item needs an id and title, and may set disabled.',
   },
