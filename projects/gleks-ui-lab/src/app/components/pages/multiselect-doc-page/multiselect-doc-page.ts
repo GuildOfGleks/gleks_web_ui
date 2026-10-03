@@ -69,7 +69,7 @@ const API_INPUTS: readonly ApiInputRow[] = [
   },
   {
     name: 'options',
-    type: 'TOption[]',
+    type: 'readonly TOption[]',
     default: '[]',
     description:
       'The list of choices — your own objects. GogDropdownOption ({ id, name, disabled? }) is just the shape the default accessors expect, not a requirement.',
@@ -574,8 +574,8 @@ export class MultiselectDocPage {
 
   protected readonly chevronHtml = [
     '<gog-multiselect [options]="sortOptions" [(value)]="sortValue">',
-    '  <ng-template gogDropdownChevron>',
-    '    <gog-icon name="sort" />',
+    '  <ng-template gogDropdownChevron let-open>',
+    "    <gog-icon [name]=\"open ? 'sort-up' : 'sort'\" />",
     '  </ng-template>',
     '  <ng-template gogMultiselectClearIcon>',
     '    <gog-icon name="error" />',
@@ -609,8 +609,9 @@ export class MultiselectDocPage {
     '  ],',
     '  template: `',
     '    <gog-multiselect [options]="sortOptions" [(value)]="sortValue">',
-    '      <ng-template gogDropdownChevron>',
-    '        <gog-icon name="sort" />',
+    '      <!-- The library turns only its own chevron; a custom one draws its state from open. -->',
+    '      <ng-template gogDropdownChevron let-open>',
+    "        <gog-icon [name]=\"open ? 'sort-up' : 'sort'\" />",
     '      </ng-template>',
     '      <ng-template gogMultiselectClearIcon>',
     '        <gog-icon name="error" />',
@@ -767,7 +768,7 @@ export class MultiselectDocPage {
     '  [options]="users"',
     '  [(value)]="reviewerIds"',
     '>',
-    '  <ng-template gogDropdownOption let-user let-label="label">',
+    '  <ng-template gogDropdownOption [gogDropdownOptionTypeOf]="users" let-user let-label="label">',
     '    <strong>{{ label }}</strong>',
     '    <small>{{ user.profile.role }}</small>',
     '  </ng-template>',
@@ -782,18 +783,16 @@ export class MultiselectDocPage {
     '  imports: [MultiselectComponent, GogDropdownOptionDirective],',
     '  template: `',
     '    <gog-multiselect optionLabel="profile.fullName" [options]="users" [(value)]="reviewerIds">',
-    '      <ng-template gogDropdownOption let-user let-label="label">',
+    '      <!-- [gogDropdownOptionTypeOf] types `user` from the array the field renders. -->',
+    '      <ng-template gogDropdownOption [gogDropdownOptionTypeOf]="users" let-user let-label="label">',
     '        <strong>{{ label }}</strong>',
-    '        <small>{{ asUser(user).profile.role }}</small>',
+    '        <small>{{ user.profile.role }}</small>',
     '      </ng-template>',
     '    </gog-multiselect>',
     '  `,',
     '})',
     'export class ExampleComponent {',
-    '  // The slot hands the option back as `unknown`, so narrow it once here.',
-    '  protected asUser(option: unknown): User {',
-    '    return option as User;',
-    '  }',
+    '  protected readonly users: readonly User[] = [/* ... */];',
     '}',
   ].join('\n');
 
@@ -827,8 +826,4 @@ export class MultiselectDocPage {
     '  protected readonly windowedCities = signal<(string | number)[]>([]);',
     '}',
   ].join('\n');
-
-  protected asUser(option: unknown): User {
-    return option as User;
-  }
 }

@@ -88,7 +88,10 @@
         A single option can be marked <code>disabled</code> without disabling the whole field, or
         the trigger itself can be disabled with <code>[disabled]="true"</code>. The last field shows
         an error computed entirely by the page — <code>gog-multiselect</code> just renders whatever
-        <code>errorMessage</code> it's given, for as long as it's non-empty.
+        <code>errorMessage</code> it's given, for as long as it's non-empty. The trigger carries
+        <code>aria-invalid</code> and points <code>aria-describedby</code> at the message
+        <app-since version="21.15.0" />, so a screen reader reads the error with the field, as it
+        does on every other control.
       </p>
       <div class="demo-card__preview size-column">
         <gog-multiselect
@@ -159,12 +162,15 @@
       <p class="demo-card__meta">
         Project an <code>&lt;ng-template gogDropdownChevron&gt;</code> to swap the trigger's icon,
         and <code>&lt;ng-template gogMultiselectClearIcon&gt;</code> to swap the clear control's.
+        The library turns only its own chevron: before 21.15.0 a custom one turned 180° here and
+        never in a select, and now neither does — it gets <code>let-open</code>
+        <app-since version="21.15.0" /> and draws the open state itself, as the first field does.
         <code>ariaLabel</code> names a field that has no visible <code>label</code> at all.
       </p>
       <div class="demo-card__preview size-column">
         <gog-multiselect [options]="sortOptions" [(value)]="sortValue">
-          <ng-template gogDropdownChevron>
-            <gog-icon name="sort" />
+          <ng-template gogDropdownChevron let-open>
+            <gog-icon [name]="open ? 'sort-up' : 'sort'" />
           </ng-template>
           <ng-template gogMultiselectClearIcon>
             <gog-icon name="error" />
@@ -303,10 +309,15 @@
           [options]="users"
           [(value)]="slotReviewerIds"
         >
-          <ng-template gogDropdownOption let-user let-label="label">
+          <ng-template
+            gogDropdownOption
+            [gogDropdownOptionTypeOf]="users"
+            let-user
+            let-label="label"
+          >
             <span class="option-row">
               <strong>{{ label }}</strong>
-              <small>{{ asUser(user).profile.role }}</small>
+              <small>{{ user.profile.role }}</small>
             </span>
           </ng-template>
         </gog-multiselect>
@@ -426,10 +437,21 @@
             <td>Replaces one option row. The per-option checkbox stays.</td>
           </tr>
           <tr>
+            <td><code>[gogDropdownOptionTypeOf]</code> <app-since version="21.15.0" /></td>
+            <td><code>readonly TOption[]</code> — an input on <code>gogDropdownOption</code></td>
+            <td>
+              Bind the same array as <code>options</code> and <code>{{ '$' }}implicit</code> is
+              typed as its element instead of <code>unknown</code>. Never read at runtime; left
+              unbound, the template compiles exactly as before.
+            </td>
+          </tr>
+          <tr>
             <td>
               <code>gogDropdownChevron</code>
             </td>
-            <td>—</td>
+            <td>
+              <code>{{ '$' }}implicit / open</code> <app-since version="21.15.0" />
+            </td>
             <td>Replaces the trigger's arrow.</td>
           </tr>
           <tr>
