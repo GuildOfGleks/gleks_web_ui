@@ -148,7 +148,7 @@ export class GogBadgeDirective {
     this.renderer.setAttribute(this.badgeEl, 'class', className);
     this.renderer.setProperty(this.badgeEl, 'textContent', text);
 
-    const inner = this.innerFocusable();
+    const inner = this.innerFocusable() ?? this.presentationalHost();
     const spoken = ariaLabel || text;
 
     if (inner && spoken) {
@@ -179,6 +179,16 @@ export class GogBadgeDirective {
     const host = this.hostRef.nativeElement as HTMLElement;
     if (host.matches(FOCUSABLE)) return null;
     return host.querySelector<HTMLElement>(FOCUSABLE);
+  }
+
+  /**
+   * The host itself, when its role makes its children presentational — `gog-avatar` is
+   * `role="img"`, and a screen reader reads an image by its name alone, so a badge drawn inside one
+   * would never be heard. Described instead, the same way a focusable element inside the host is.
+   */
+  private presentationalHost(): HTMLElement | null {
+    const host = this.hostRef.nativeElement as HTMLElement;
+    return host.getAttribute('role') === 'img' ? host : null;
   }
 
   private renderDescription(host: HTMLElement, wording: string): HTMLElement {

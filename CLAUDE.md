@@ -112,8 +112,9 @@ holding the heavy four; the 27 kB left over is their root dependencies, which st
 root component (`docs/backlog.md`, Structural) — **and the split stops there, by decision on
 2026-09-13**: at best a quarter of a four-route app's initial transfer, not worth another import break. **21.15.0, 21.15.1 and 21.16.0 are released**
 (2026-10-03/04); 21.16.0 removed `gog-autocomplete`'s four panel-filter inputs (the search box
-lives in `GogFilterableDropdownBase` now) and left `GOG_DEPRECATIONS` empty. Nothing is open, so
-`npm run check:release` passes until the next version is opened.
+lives in `GogFilterableDropdownBase` now) and left `GOG_DEPRECATIONS` empty. **21.17.0 is open, heading
+`planned`** — `gog-avatar` (`docs/avatar.md`, iteration 1 of 2) and two `gogBadge` refinements it
+needed; so `npm run check:release` fails again, correctly.
 
 ### The release sequence
 

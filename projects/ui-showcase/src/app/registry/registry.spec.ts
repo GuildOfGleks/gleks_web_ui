@@ -7,6 +7,8 @@ import { UNITS } from './units';
  */
 const NOT_DOCUMENTED: Readonly<Record<string, string>> = {
   GogDropdownBase: 'abstract base the three dropdowns extend; not used in a template',
+  GogFilterableDropdownBase:
+    'abstract base select and multiselect extend for the panel search box; not used in a template',
 };
 
 type Compiled = Partial<Record<'ɵcmp' | 'ɵdir' | 'ɵprov', { selectors?: unknown[][] }>>;

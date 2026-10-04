@@ -5,6 +5,33 @@ All notable changes to `@guildofgleks/ui` are documented here. Format follows
 semantic versioning**: a patch fixes, a minor adds, and only a major breaks — see the README's
 _Versioning_ section. Before 21.16.0 a minor could carry a breaking change, and its entry said so.
 
+## [21.17.0] - planned
+
+### Added
+
+- **`gog-avatar`** — a person or an entity as a picture with a fallback: picture → initials → icon.
+  A missing `src`, one that fails, and one that failed before hydration on a server-rendered page
+  all show the initials (derived from `name`, per grapheme, or set with `initials`) instead of the
+  browser's broken-image glyph; with no name either, the `user` glyph. While a slow picture loads
+  the initials show under it, so nothing moves when it lands. With a `name` it is `role="img"`
+  named once by it; `decorative` hides it beside a name already written out, and an avatar with no
+  name hides itself. Five sizes that are `gog-skeleton`'s circle by reference — so the skeleton is
+  its placeholder — and `shape="circle" | "rounded"`. New exports: `AvatarComponent`,
+  `GogAvatarShape`, `gogAvatarInitials`. New tokens: `--gog-avatar-*`. Plan in `docs/avatar.md`.
+
+### Changed
+
+- **`gogBadge` on a host whose children are not read now describes the host.** A screen reader
+  reads a `role="img"` element by its name alone, so a badge drawn inside one was never heard. It
+  is now the host's description (`aria-describedby`), the way a badge on `gog-button` already
+  describes the button inside it.
+- **`gogBadge` can anchor somewhere other than its host's box corner.** Two new tokens, both
+  inert unless a host sets them: `--gog-badge-host-inset` moves the anchor in from the corner
+  (0px by default), and `--gog-badge-dot-offset` gives the dot its own offset (the shared
+  `--gog-badge-offset` by default). A round `gog-avatar` sets both, so a count sits on the edge of
+  the circle and a status dot is centred on it rather than floating in the empty corner of the
+  avatar's box. Every other host is unchanged.
+
 ## [21.16.0] - 04.10.2026
 
 **The release the 21 line is stable from.** It carries the last scheduled breaking change, and

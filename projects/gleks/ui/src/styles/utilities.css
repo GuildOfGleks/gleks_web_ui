@@ -107,6 +107,9 @@
 
 /* A dot carries no text, so it collapses to a circle and drops its padding. */
 .gog-badge--dot {
+  /* Its own offset, the shared one unless a host says otherwise: a round avatar centres the dot on
+     its circle, which the count badge's offset would push 4px off it. */
+  --gog-badge-offset: var(--gog-badge-dot-offset);
   min-width: var(--gog-badge-dot-size);
   width: var(--gog-badge-dot-size);
   height: var(--gog-badge-dot-size);
@@ -114,25 +117,32 @@
   border-radius: 50%;
 }
 
-/* Logical insets rather than a translate, so the corners follow the writing direction. */
+/*
+ * Logical insets rather than a translate, so the corners follow the writing direction.
+ *
+ * `--gog-badge-host-inset` moves the anchor in from the host's box corner, for a host whose corner
+ * is not where its shape is: a round `gog-avatar` sets it to where its circle crosses the
+ * diagonal, so the badge sits on the circle rather than floating in the empty corner of its box.
+ * It is 0 in theme.css, so every other host is unchanged.
+ */
 .gog-badge--top-end {
-  top: calc(-1 * var(--gog-badge-offset));
-  inset-inline-end: calc(-1 * var(--gog-badge-offset));
+  top: calc(var(--gog-badge-host-inset) - var(--gog-badge-offset));
+  inset-inline-end: calc(var(--gog-badge-host-inset) - var(--gog-badge-offset));
 }
 
 .gog-badge--top-start {
-  top: calc(-1 * var(--gog-badge-offset));
-  inset-inline-start: calc(-1 * var(--gog-badge-offset));
+  top: calc(var(--gog-badge-host-inset) - var(--gog-badge-offset));
+  inset-inline-start: calc(var(--gog-badge-host-inset) - var(--gog-badge-offset));
 }
 
 .gog-badge--bottom-end {
-  bottom: calc(-1 * var(--gog-badge-offset));
-  inset-inline-end: calc(-1 * var(--gog-badge-offset));
+  bottom: calc(var(--gog-badge-host-inset) - var(--gog-badge-offset));
+  inset-inline-end: calc(var(--gog-badge-host-inset) - var(--gog-badge-offset));
 }
 
 .gog-badge--bottom-start {
-  bottom: calc(-1 * var(--gog-badge-offset));
-  inset-inline-start: calc(-1 * var(--gog-badge-offset));
+  bottom: calc(var(--gog-badge-host-inset) - var(--gog-badge-offset));
+  inset-inline-start: calc(var(--gog-badge-host-inset) - var(--gog-badge-offset));
 }
 
 .gog-badge--success {

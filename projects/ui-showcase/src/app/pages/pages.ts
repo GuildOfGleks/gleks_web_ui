@@ -4,6 +4,7 @@ import type { DocApi } from '../doc/doc-api';
 import { ACCORDION_API } from './accordion/accordion.api';
 import { ALERT_API } from './alert/alert.api';
 import { AUTOCOMPLETE_API } from './autocomplete/autocomplete.api';
+import { AVATAR_API } from './avatar/avatar.api';
 import { BADGE_API } from './badge/badge.api';
 import { BUTTON_API } from './button/button.api';
 import { BUTTON_TOGGLE_API } from './button-toggle/button-toggle.api';
@@ -124,6 +125,11 @@ export const PAGES: Readonly<Record<string, DocPageEntry>> = {
     load: () => import('./icon/icon-page').then((m) => m.IconPage),
     api: ICON_API,
     tokens: ['Icon & spinner', 'Icon'],
+  },
+  avatar: {
+    load: () => import('./avatar/avatar-page').then((m) => m.AvatarPage),
+    api: AVATAR_API,
+    tokens: ['Avatar'],
   },
   badge: {
     load: () => import('./badge/badge-page').then((m) => m.BadgePage),

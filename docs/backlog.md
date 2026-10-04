@@ -658,8 +658,9 @@ Each is additive: nothing here breaks an existing consumer, and none blocks anot
 
 - **Missing components**, in rough order of how often a real site wants them.
   ~~`alert`/`banner`~~ **came off this list on 2026-09-12** — `gog-alert` ships in the in-progress
-  21.13.0, plan and iterations in `docs/alert.md`. What is left: `avatar`,
-  `breadcrumbs`, `stepper`, `file upload`, `rating`, `empty state`. Each is additive and
+  21.13.0, plan and iterations in `docs/alert.md`. `avatar` **came off on 2026-10-04**, built
+  into the in-progress 21.17.0 (`docs/avatar.md`). What is left: `breadcrumbs`, `stepper`,
+  `file upload`, `rating`, `empty state`. Each is additive and
   independent; none blocks anything else.
 
   **What building the first one taught, and it is not about alerts.** The plan's required question
@@ -683,6 +684,12 @@ Each is additive: nothing here breaks an existing consumer, and none blocks anot
   the card/panel split earned itself when the one showcase block in 250 that refused to become a
   `gog-panel` turned out to be exactly what `gog-card` was for. An `empty state` that cannot
   survive the same question — what does it own that a `<div>` and a class do not — is not ready.
+
+- **`gog-chip`'s `avatarUrl` is a bare `<img>`, with none of `gog-avatar`'s fallback.** A broken
+  URL in a chip still shows the broken-image glyph. Rendering a `gog-avatar` inside the chip would
+  fix that, but the chip sizes its avatar in `em` of its own font (`--gog-chip-*-avatar-size`,
+  1.5em) and the avatar's five sizes are fixed pixel steps, so it is a geometry decision, not a
+  swap. Found while planning `gog-avatar` (`docs/avatar.md`, "What it is not").
 
 - ~~**`gog-table`'s ceiling.**~~ **Written down 2026-09-12**, in `README.md` where a consumer
   evaluates the table and in `AGENTS.md` where an agent writes against it. No column resizing or

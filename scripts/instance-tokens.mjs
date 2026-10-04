@@ -20,6 +20,8 @@ export const INSTANCE_TOKENS = new Set([
   '--gog-accordion-letter-spacing',
   '--gog-accordion-padding-x',
   '--gog-accordion-padding-y',
+  // gog-avatar
+  '--gog-avatar-size',
   // gog-button
   '--gog-button-press-bg',
   '--gog-button-press-color',

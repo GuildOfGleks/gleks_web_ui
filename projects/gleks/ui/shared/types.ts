@@ -29,6 +29,8 @@ export type GogSpinnerVariant = 'runic' | 'ring' | 'custom';
 export type GogTagVariant = 'success' | 'danger' | 'warning' | 'info';
 export type GogTagShape = 'rounded' | 'pill';
 export type GogSkeletonShape = 'text' | 'circle' | 'rect';
+/** `'circle'` for a person, `'rounded'` for an organisation or a product. */
+export type GogAvatarShape = 'circle' | 'rounded';
 export type GogSkeletonAnimation = 'pulse' | 'wave' | 'none';
 export type GogPaginatorRangeMode = 'window' | 'ellipsis';
 export type GogSliderOrientation = GogOrientation;

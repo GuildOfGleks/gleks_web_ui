@@ -3,6 +3,7 @@ import {
   AccordionComponent,
   AlertComponent,
   AutocompleteComponent,
+  AvatarComponent,
   ButtonComponent,
   ButtonToggleGroupComponent,
   CardComponent,
@@ -227,6 +228,13 @@ export const UNITS: readonly GogUnit[] = [
     group: 'display',
     entry: 'root',
     parts: [cmp(IconComponent)],
+  },
+  {
+    id: 'avatar',
+    name: 'Avatar',
+    group: 'display',
+    entry: 'root',
+    parts: [cmp(AvatarComponent)],
   },
   {
     id: 'badge',

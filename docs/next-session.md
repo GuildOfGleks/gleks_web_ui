@@ -4,9 +4,11 @@
 line is stable from: semantic versioning from here (README, _Versioning_), `GOG_DEPRECATIONS`
 empty. A change that would remove or rename public API now waits for 22.0.0 behind a deprecation.
 
-**Next: `docs/backlog.md`.** The two Defects left need a real screen reader (the table's row
-announcement and `gog-alert`'s live-region copy) — the owner's to check, not an agent's. After
-them come Gaps (the unbuilt components lead it), each one a minor.
+**In progress: 21.17.0, `gog-avatar`** (`docs/avatar.md`). Iteration 1 — the component, its
+showcase page, the docs — is done and committed; iteration 2, `gog-avatar-group` (overlap, a ring in
+the surface colour, a named `+N`), is next. Then the rest of Gaps: `breadcrumbs`, `stepper`,
+`file upload`, `rating`, `empty state`, each a minor. The two Defects left need a real screen
+reader — the owner's to check.
 
 **Deferred by the owner on 2026-09-13 — do not start these without asking:**
 

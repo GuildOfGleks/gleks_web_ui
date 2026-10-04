@@ -1,0 +1,85 @@
+/*
+ * Token layering (see styles/theme.css):
+ *   --gog-avatar-size                   per-instance override of the diameter (layer 3, undeclared).
+ *   --gog-avatar-size-size              internal, set by the size classes below.
+ *   --gog-avatar-<name>                 the actual values, all in styles/theme.css.
+ */
+:host {
+  /* Internal: the diameter every length below is drawn from. */
+  --gog-avatar-resolved-size: var(
+    --gog-avatar-size,
+    var(--gog-avatar-size-size, var(--gog-avatar-md-size))
+  );
+
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: var(--gog-avatar-resolved-size);
+  height: var(--gog-avatar-resolved-size);
+  /* No `overflow: hidden`: `gogBadge` on an avatar draws outside its host on purpose, and clipping
+     here would cut it off. The picture takes the host's corner instead (below). */
+  background-color: var(--gog-avatar-bg);
+  color: var(--gog-avatar-color);
+  font-family: var(--gog-avatar-font-family);
+  font-weight: var(--gog-avatar-font-weight);
+  line-height: var(--gog-avatar-line-height);
+  vertical-align: middle;
+  user-select: none;
+}
+
+:host(.gog-avatar--circle) {
+  border-radius: 50%;
+  /* Where the circle crosses its box's diagonal, read by `gogBadge` as its anchor. */
+  --gog-badge-host-inset: calc(
+    var(--gog-avatar-resolved-size) * var(--gog-avatar-badge-inset-ratio)
+  );
+  /* A status dot centred on that point, half of it over the circle. */
+  --gog-badge-dot-offset: calc(var(--gog-badge-dot-size) / 2);
+}
+
+:host(.gog-avatar--rounded) {
+  border-radius: var(--gog-avatar-rounded-radius);
+}
+
+.gog-avatar__initials {
+  font-size: calc(var(--gog-avatar-resolved-size) * var(--gog-avatar-initials-ratio));
+  white-space: nowrap;
+}
+
+/* The basis the glyph is drawn from; `gog-icon` sizes itself at --gog-icon-size of it. */
+.gog-avatar__icon {
+  font-size: calc(var(--gog-avatar-resolved-size) * var(--gog-avatar-icon-ratio));
+}
+
+.gog-avatar__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* The host's own corner, inherited rather than restated, so the two can never disagree —
+     `check:radii` has nothing nested to derive. */
+  border-radius: inherit;
+}
+
+/* === Sizes ===
+   `md` needs no block: it is what the chain above falls back to. */
+
+:host(.gog-avatar--xsm) {
+  --gog-avatar-size-size: var(--gog-avatar-xsm-size);
+}
+
+:host(.gog-avatar--sm) {
+  --gog-avatar-size-size: var(--gog-avatar-sm-size);
+}
+
+:host(.gog-avatar--lg) {
+  --gog-avatar-size-size: var(--gog-avatar-lg-size);
+}
+
+:host(.gog-avatar--slg) {
+  --gog-avatar-size-size: var(--gog-avatar-slg-size);
+}

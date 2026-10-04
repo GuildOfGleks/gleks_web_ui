@@ -226,3 +226,30 @@ describe('GogBadgeDirective on a host whose focusable element is inside it', () 
     expect(button().getAttribute('aria-describedby')).toBe('own-hint');
   });
 });
+
+/**
+ * The shape of a named `gog-avatar`: the host is `role="img"`, whose children a screen reader does
+ * not read, so a badge drawn inside it would never be heard.
+ */
+@Component({
+  imports: [GogBadgeDirective],
+  template: `<span role="img" aria-label="Ada Lovelace" [gogBadge]="value()"></span>`,
+})
+class ImageBadgeHost {
+  readonly value = signal<string | number | null>(3);
+}
+
+describe('GogBadgeDirective on a host whose children are presentational', () => {
+  it('describes the host itself with the badge text', async () => {
+    await TestBed.configureTestingModule({ imports: [ImageBadgeHost] }).compileComponents();
+    const fixture = TestBed.createComponent(ImageBadgeHost);
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const host = (fixture.nativeElement as HTMLElement).querySelector<HTMLElement>('[role="img"]')!;
+    const description = host.querySelector<HTMLElement>('.gog-visually-hidden')!;
+    expect(host.getAttribute('aria-describedby')).toBe(description.id);
+    expect(description.textContent).toBe('3');
+    expect(host.querySelector('.gog-badge')!.getAttribute('aria-hidden')).toBe('true');
+  });
+});

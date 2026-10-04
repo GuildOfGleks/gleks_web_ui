@@ -1244,6 +1244,44 @@ Two things it deliberately does not do: no `disabled` on an `<a>` (there is no s
 the `href` or render a real `<button>`), and no loading state (the spinner is a projected child a
 directive cannot add without taking over the element's content).
 
+#### `gog-avatar`
+
+A person or an entity as a picture, with a fallback: **picture → initials → icon**. Use it rather
+than an `<img>`: a missing or broken picture shows the initials instead of the browser's
+broken-image glyph — including a picture that failed before hydration on a server-rendered page.
+
+| Input        | Type                                     | Default                           |
+| ------------ | ---------------------------------------- | --------------------------------- |
+| `src`        | `string \| null`                         | `null`                            |
+| `name`       | `string`                                 | `''`                              |
+| `initials`   | `string \| undefined`                    | `undefined` — derived from `name` |
+| `iconName`   | `GogIconName`                            | `'user'`                          |
+| `size`       | `GogSize`                                | `'md'`                            |
+| `shape`      | `GogAvatarShape` (`'circle'\|'rounded'`) | `'circle'`                        |
+| `decorative` | `boolean`                                | `false`                           |
+
+No outputs. Initials are the first grapheme of the first and the last word of `name`, upper-cased
+("Ada King Lovelace" → `AL`); `gogAvatarInitials(name)` is exported if you need the same rule
+elsewhere. While a slow `src` loads, the initials show under it, so nothing moves when it lands.
+
+```html
+<gog-avatar name="Ada Lovelace" [src]="user.photoUrl" />
+<gog-avatar name="Acme Inc." initials="AC" shape="rounded" size="lg" />
+<gog-avatar name="Ada Lovelace" size="sm" decorative /> Ada Lovelace
+```
+
+**Accessibility.** With a `name` it is `role="img"` named by it, once — the picture inside is
+`alt=""` and the letters are hidden. Set `decorative` when the name is already written beside it;
+an avatar with no `name` is decorative on its own. **An avatar that opens something is not a
+button**: put it inside a `gog-button` (or `gogMenuTrigger`), name the button, and make the avatar
+`decorative`.
+
+**Sizes** are the skeleton circle's (`--gog-skeleton-circle-size-*`: 24/32/48/64/96px), so
+`<gog-skeleton shape="circle" [size]>` is its loading placeholder and swaps for it without moving
+anything. `--gog-avatar-size` overrides the diameter on one instance. **Status** is `gogBadge` on
+the avatar — no `status` input; on a circle the badge sits on the circle rather than in the empty
+corner of its box, and its text reaches a screen reader as the avatar's description.
+
 #### `[gogBadge]` — directive, not a component
 
 Decorates an existing element (a button, an icon, an avatar) with a count/status dot — it never
@@ -1265,8 +1303,10 @@ are impossible by design.
 **What a screen reader hears.** On a focusable host (`<button gogBadge>`, `a[gogButton]`) the
 badge text — or `badgeAriaLabel` in its place — is part of the host's name: "Inbox 12 unread".
 On a host whose focusable element is _inside_ it, like `gog-button`, the badge describes that
-element through `aria-describedby` instead: "Inbox, button, 12 unread". On a host with nothing
-focusable in it the badge is plain text after the host's own — and inside a decorative
+element through `aria-describedby` instead: "Inbox, button, 12 unread". On a host whose children are
+not read — `role="img"`, which a named `gog-avatar` is — it describes the host itself the same way:
+"Ada Lovelace, image, 3". On a host with nothing focusable in it the badge is plain text after the
+host's own — and inside a decorative
 `gog-icon`, which is `aria-hidden`, nothing is said at all, so put a count on the control it
 belongs to rather than on its icon.
 

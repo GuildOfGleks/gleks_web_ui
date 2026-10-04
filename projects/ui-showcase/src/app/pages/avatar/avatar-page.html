@@ -1,0 +1,127 @@
+<app-doc-page unit="avatar">
+  <app-doc-section
+    id="states"
+    title="States"
+    lead="Picture, initials or icon — whichever the inputs and the network leave — at the five sizes of the skeleton circle."
+  >
+    <h3>fallback × size</h3>
+    <p class="avatar-page__note">
+      The third row's <code>src</code> is a URL that does not exist. The page is server-rendered, so
+      that picture fails before the app hydrates and its <code>error</code> event has fired before
+      any listener exists: the initials there are the component reading the image's own state on its
+      first browser render. A bare <code>&lt;img&gt;</code> would show the broken-image glyph.
+    </p>
+    <app-doc-matrix rowAxis="fallback" colAxis="size">
+      <ng-template appDocCell [rows]="fallbacks" [cols]="sizes" let-fallback let-size="col">
+        <gog-avatar [src]="fallback.value.src" [name]="fallback.value.person" [size]="size" />
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>shape</h3>
+    <p class="avatar-page__note">
+      <code>circle</code> for a person, <code>rounded</code> for an organisation or a product. The
+      picture takes the avatar's own corner, so the two can never disagree.
+    </p>
+    <div class="avatar-page__row">
+      @for (shape of shapes; track shape) {
+        <gog-avatar [shape]="shape" [src]="ada" name="Ada Lovelace" size="lg" />
+        <gog-avatar [shape]="shape" name="Acme Incorporated" size="lg" />
+      }
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="content"
+    title="Content"
+    lead="The initials are the first grapheme of the first and the last word, upper-cased; initials overrides them."
+  >
+    <h3>initials from name</h3>
+    <p class="avatar-page__note">
+      Per grapheme, not per UTF-16 unit — the fox is one character of two code units, and taking
+      <code>name[0]</code> would draw half of it.
+    </p>
+    <div class="avatar-page__row">
+      @for (person of names; track person) {
+        <figure class="avatar-page__figure">
+          <gog-avatar [name]="person" />
+          <figcaption>{{ person }}</figcaption>
+        </figure>
+      }
+      <figure class="avatar-page__figure">
+        <gog-avatar name="Acme Incorporated" initials="AC" shape="rounded" />
+        <figcaption>initials="AC"</figcaption>
+      </figure>
+    </div>
+
+    <h3>with a badge</h3>
+    <p class="avatar-page__note">
+      Status is <code>gogBadge</code> on the avatar — there is no <code>status</code> input. On a
+      circle the badge anchors where the circle crosses its box's diagonal rather than in the empty
+      corner, and because an image's children are not read, the count reaches a screen reader as the
+      avatar's description (<code>aria-describedby</code>).
+    </p>
+    <div class="avatar-page__row">
+      <gog-avatar [src]="ada" name="Ada Lovelace" gogBadge="3" />
+      <gog-avatar name="Grace Hopper" size="lg" gogBadge="" badgeDot badgeVariant="success" />
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="behaviour"
+    title="Behaviour"
+    lead="A new src gets its own chance; a skeleton circle at the same size is the avatar's placeholder."
+  >
+    <h3>swapping src after a failure</h3>
+    <p class="avatar-page__note">
+      Press the button: the URL alternates between one that fails and one that loads. Each new
+      <code>src</code> starts over, so a picture that failed once does not stay failed.
+    </p>
+    <div class="avatar-page__row">
+      <gog-avatar [src]="swapSrc()" name="Grace Hopper" size="lg" />
+      <button type="button" (click)="toggleSrc()">swap src</button>
+    </div>
+
+    <h3>the skeleton circle is its placeholder</h3>
+    <p class="avatar-page__note">
+      The avatar's sizes are <code>--gog-skeleton-circle-size-*</code> by reference. Toggle the row:
+      nothing beside it moves.
+    </p>
+    <div class="avatar-page__row">
+      @for (size of sizes; track size) {
+        @if (loading()) {
+          <gog-skeleton shape="circle" [size]="size" />
+        } @else {
+          <gog-avatar [size]="size" [src]="grace" name="Grace Hopper" />
+        }
+      }
+      <button type="button" (click)="loading.set(!loading())">
+        {{ loading() ? 'load' : 'unload' }}
+      </button>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="Named once by name, as an image; hidden when decorative, and when it has no name to give."
+  >
+    <h3>named, decorative, nameless</h3>
+    <p class="avatar-page__note">
+      The picture inside is <code>alt=""</code> and the letters are <code>aria-hidden</code>, so a
+      screen reader hears the name once rather than "Ada Lovelace, A L".
+    </p>
+    <div class="avatar-page__stack">
+      <app-doc-attrs target="gog-avatar">
+        <gog-avatar [src]="ada" name="Ada Lovelace" />
+      </app-doc-attrs>
+      <app-doc-attrs target="gog-avatar">
+        <span class="avatar-page__inline">
+          <gog-avatar name="Ada Lovelace" size="sm" decorative /> Ada Lovelace
+        </span>
+      </app-doc-attrs>
+      <app-doc-attrs target="gog-avatar">
+        <gog-avatar />
+      </app-doc-attrs>
+    </div>
+  </app-doc-section>
+</app-doc-page>

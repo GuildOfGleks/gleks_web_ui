@@ -1,0 +1,22 @@
+<!--
+  The fallback is drawn under the picture rather than swapped for it, so a slow picture shows the
+  initials first and lands without moving anything. Both halves are aria-hidden: the host is the
+  image, named once by `name`, and "Ada Lovelace, A L" is the double reading this exists to avoid.
+-->
+@if (!loaded()) {
+  @if (resolvedInitials(); as letters) {
+    <span class="gog-avatar__initials" aria-hidden="true">{{ letters }}</span>
+  } @else {
+    <gog-icon class="gog-avatar__icon" [name]="iconName()" />
+  }
+}
+@if (showImage()) {
+  <img
+    #image
+    class="gog-avatar__image"
+    [src]="src()"
+    alt=""
+    (error)="onError()"
+    (load)="onLoad()"
+  />
+}

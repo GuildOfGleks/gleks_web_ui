@@ -57,6 +57,10 @@ const OUTERMOST = new Map([
   ['panel', 'the outermost surface tier; a panel frames page content rather than sitting in a box'],
   ['accordion', 'the item is the outermost box; a stack of items sits on the page'],
   ['alert', 'a message placed in the consumer’s own flow; it frames content, nothing frames it'],
+  [
+    'avatar-rounded',
+    'an inline mark in the consumer’s flow; it clips its own picture rather than nesting one',
+  ],
   ['button', 'sits in the consumer layout'],
   ['button-toggle', 'its own component — it shares a name prefix with the button, not a box'],
   ['card', 'the outermost surface'],

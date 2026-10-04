@@ -504,6 +504,15 @@ const WASH_PAIRS = [
     ['--gog-background-color', '--gog-surface-color'],
     4.5,
   ],
+  // An avatar's initials (and its fallback icon) on its own fill. Body text, not large text: at
+  // `xsm` the letters are under 10px.
+  [
+    'avatar initials',
+    '--gog-avatar-color',
+    '--gog-avatar-bg',
+    ['--gog-background-color', '--gog-surface-color'],
+    4.5,
+  ],
   ['chip hover', '--gog-chip-color', '--gog-chip-hover-bg', ['--gog-chip-bg'], 4.5],
   ['chip press', '--gog-chip-color', '--gog-chip-press-bg', ['--gog-chip-bg'], 4.5],
   // The selected filter chip's ring (21.9.0), against the two backgrounds it has to stay visible

@@ -195,6 +195,21 @@ export type GogTokenName =
   | '--gog-autocomplete-spinner-size'
   | '--gog-autocomplete-text-color'
   | '--gog-autocomplete-transition-duration'
+  | '--gog-avatar-badge-inset-ratio'
+  | '--gog-avatar-bg'
+  | '--gog-avatar-color'
+  | '--gog-avatar-font-family'
+  | '--gog-avatar-font-weight'
+  | '--gog-avatar-icon-ratio'
+  | '--gog-avatar-initials-ratio'
+  | '--gog-avatar-lg-size'
+  | '--gog-avatar-line-height'
+  | '--gog-avatar-md-size'
+  | '--gog-avatar-rounded-radius'
+  | '--gog-avatar-size'
+  | '--gog-avatar-slg-size'
+  | '--gog-avatar-sm-size'
+  | '--gog-avatar-xsm-size'
   | '--gog-background-color'
   | '--gog-badge-bg'
   | '--gog-badge-border-color'
@@ -203,10 +218,12 @@ export type GogTokenName =
   | '--gog-badge-color'
   | '--gog-badge-danger-bg'
   | '--gog-badge-danger-color'
+  | '--gog-badge-dot-offset'
   | '--gog-badge-dot-size'
   | '--gog-badge-font-family'
   | '--gog-badge-font-size'
   | '--gog-badge-font-weight'
+  | '--gog-badge-host-inset'
   | '--gog-badge-info-bg'
   | '--gog-badge-info-color'
   | '--gog-badge-line-height'
@@ -2025,6 +2042,26 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
     ],
   },
   {
+    section: 'Avatar',
+    layer: 'component',
+    tokens: [
+      '--gog-avatar-badge-inset-ratio',
+      '--gog-avatar-bg',
+      '--gog-avatar-color',
+      '--gog-avatar-font-family',
+      '--gog-avatar-font-weight',
+      '--gog-avatar-icon-ratio',
+      '--gog-avatar-initials-ratio',
+      '--gog-avatar-lg-size',
+      '--gog-avatar-line-height',
+      '--gog-avatar-md-size',
+      '--gog-avatar-rounded-radius',
+      '--gog-avatar-slg-size',
+      '--gog-avatar-sm-size',
+      '--gog-avatar-xsm-size',
+    ],
+  },
+  {
     section: 'Collapsible',
     layer: 'component',
     tokens: [
@@ -2546,10 +2583,12 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-badge-border-width',
       '--gog-badge-danger-bg',
       '--gog-badge-danger-color',
+      '--gog-badge-dot-offset',
       '--gog-badge-dot-size',
       '--gog-badge-font-family',
       '--gog-badge-font-size',
       '--gog-badge-font-weight',
+      '--gog-badge-host-inset',
       '--gog-badge-info-bg',
       '--gog-badge-info-color',
       '--gog-badge-line-height',
@@ -3443,6 +3482,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-autocomplete-font-size',
       '--gog-autocomplete-padding-x',
       '--gog-autocomplete-padding-y',
+      '--gog-avatar-size',
       '--gog-badge-bg',
       '--gog-badge-color',
       '--gog-button-bg',
