@@ -509,6 +509,20 @@ A few things worth knowing before you reach for a workaround:
   free. Its own family (background, padding, heading, toggle, footer) sits alongside them.
 - **`[(ngModel)]` is untested.** The library never imports `FormsModule`; use Reactive Forms.
 
+## Versioning
+
+**From 21.16.0 the package follows semantic versioning:**
+
+- **A patch fixes.** Behaviour, styling, accessibility, documentation — never a new input.
+- **A minor adds.** A new component, input, output, token or config key. Nothing that exists
+  changes its contract, and a default changes only where the old one was a bug.
+- **A major breaks**, and its number follows Angular's (`21.x` is the Angular 21 line). A removal
+  or rename is deprecated first, in a minor — `@deprecated` in the typings and an entry in
+  `GOG_DEPRECATIONS` — and goes no earlier than the next major.
+
+So `^21.16.0` is a safe range. Before 21.16.0 a minor could break, and its changelog entry said
+so.
+
 ## Documentation
 
 |                                                                                                      |                                                                                                             |
