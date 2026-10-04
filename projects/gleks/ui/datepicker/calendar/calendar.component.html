@@ -59,7 +59,9 @@
       <thead>
         <tr class="gog-calendar__weekdays">
           @for (weekday of weekdays(); track $index) {
-            <th class="gog-calendar__weekday" scope="col" [attr.abbr]="weekday">{{ weekday }}</th>
+            <th class="gog-calendar__weekday" scope="col" [attr.aria-label]="weekday.name">
+              {{ weekday.label }}
+            </th>
           }
         </tr>
       </thead>

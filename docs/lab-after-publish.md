@@ -39,3 +39,8 @@ build.
   21.15.1 (the settled body's transform, and `contain: layout` on the root). A `Profile` item and a
   `Region` item whose body holds a `gog-select` of time zones, in `layout="wide"`; the prose says
   the body clips only while it animates. Open it in a browser and check the list covers the code block before ticking.
+- **Calendar page: say what the small sizes draw in the weekday row.** On 21.15.0 the sizes
+  example shows the names running together at `xsm` and `sm`; from 21.15.1 those two sizes draw the
+  narrow form (`S M T …`) and every column header is named by the whole day. Add a sentence to the
+  sizes card (and the Accessibility section: the column's name is the full day, at every size),
+  then look at the five calendars side by side in a browser before ticking.

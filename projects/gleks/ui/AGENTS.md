@@ -1112,7 +1112,9 @@ width. `--gog-calendar-max-width` (default `max-content`) is the cap, and it cov
 variants, `numberOfMonths`, `showTime` and wider locales on its own; set it to `100%` for a
 calendar that fills its container. This is also what sizes `inline` mode, because `inline` is
 `gog-calendar` with a border and nothing else. The dropdown panel is separate:
-`--gog-datepicker-panel-width`, also `max-content`.
+`--gog-datepicker-panel-width`, also `max-content`. At `xsm` and `sm` the weekday row draws the
+locale's narrow form (`S M T …`), since a short name outgrows a 24px or 28px column; at every size
+each column header carries the whole day as its `aria-label` (since 21.15.1).
 
 ```html
 <gog-datepicker label="Birth date" [(value)]="birthDate" [max]="today" />

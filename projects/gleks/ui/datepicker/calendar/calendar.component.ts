@@ -231,9 +231,23 @@ export class CalendarComponent {
       this.globalConfig.datepicker?.firstDayOfWeek ??
       localeFirstDayOfWeek(this.resolvedLocale()),
   );
-  protected readonly weekdays = computed(() =>
-    weekdayNames(this.resolvedLocale(), this.resolvedFirstDayOfWeek()),
-  );
+  /**
+   * The column headers: `label` is what is drawn, `name` the whole day, which is what assistive
+   * tech reads for the column.
+   *
+   * At `xsm` and `sm` the drawn label is the locale's `narrow` form ("S M T"): a column there is
+   * 24 or 28px, and a three-letter name in capitals measured up to 29px at `--gog-text-xs`, so
+   * neighbouring names ran together and the widest pushed its column past the day under it.
+   * The narrow form repeats letters (two S, two T), which is why the name is never taken from it.
+   */
+  protected readonly weekdays = computed(() => {
+    const locale = this.resolvedLocale();
+    const first = this.resolvedFirstDayOfWeek();
+    const compact = this.size() === 'xsm' || this.size() === 'sm';
+    const labels = weekdayNames(locale, first, compact ? 'narrow' : 'short');
+    const names = weekdayNames(locale, first, 'long');
+    return labels.map((label, i) => ({ label, name: names[i] }));
+  });
   private readonly months = computed(() => monthNames(this.resolvedLocale()));
 
   private readonly range = computed<GogDateRange>(() => {

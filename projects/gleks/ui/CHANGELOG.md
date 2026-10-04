@@ -20,6 +20,15 @@ reached 1.0, so breaking changes may land in minor versions.
   Nothing about the accordion's own layout depended on either. The showcase's Accordion page now
   puts a positioned box under the case, so it can fail.
 
+- **`gog-calendar`'s weekday names no longer run together at `xsm` and `sm`.** A column is as
+  wide as a day — 24px at `xsm`, 28px at `sm` — and a three-letter name in capitals measured up to
+  29px, so neighbouring names touched ("SUNMONTUE") and the widest pushed its column past the day
+  under it. The two small sizes now draw the locale's narrow form (`S M T …`, from `Intl`); `md`
+  and up keep the short one. Because the narrow form repeats letters, every column header now
+  carries the whole day as its `aria-label` at every size, which is also what a screen reader
+  hears where it used to hear "Mon". The showcase's Datepicker page shows the five sizes side by
+  side.
+
 ## [21.15.0] - 03.10.2026
 
 ### Added

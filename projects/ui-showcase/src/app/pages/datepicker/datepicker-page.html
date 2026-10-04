@@ -389,6 +389,23 @@
       </div>
     </div>
 
+    <h3>the five sizes</h3>
+    <p class="datepicker-page__note">
+      The weekday row is the part to compare. A column is as wide as a day, 24px at
+      <code>xsm</code> and 28px at <code>sm</code>, which a three-letter name in capitals outgrows —
+      the names ran together, and the widest pushed its column past the day under it. So the two
+      small sizes draw the locale's narrow form (<code>S M T …</code>). Every size names its columns
+      by the whole day (<code>aria-label="Monday"</code>), which is what a screen reader hears.
+    </p>
+    <div class="datepicker-page__row">
+      @for (size of sizes; track size) {
+        <div class="datepicker-page__block">
+          <p class="datepicker-page__note">{{ size }}</p>
+          <gog-calendar [size]="size" [showTodayButton]="false" />
+        </div>
+      }
+    </div>
+
     <h3>width in a block container</h3>
     <p class="datepicker-page__note">
       The case a flex row hides. Each calendar below is the only child of a plain full-width block:

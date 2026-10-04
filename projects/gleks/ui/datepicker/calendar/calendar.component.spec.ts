@@ -62,6 +62,43 @@ describe('CalendarComponent', () => {
     expect(weekdays[0]).toBe('Mon');
   });
 
+  it('should name each weekday column by the whole day, whatever is drawn', () => {
+    const names = Array.from(host().querySelectorAll('.gog-calendar__weekday')).map((cell) =>
+      cell.getAttribute('aria-label'),
+    );
+    expect(names).toEqual([
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+      'Sunday',
+    ]);
+  });
+
+  it('should draw the narrow weekday form at xsm and sm, where a short name outgrows its column', async () => {
+    // A three-letter name in capitals measured up to 29px against a 24px (xsm) or 28px (sm)
+    // column, so the names ran together and the widest pushed its column past the day under it.
+    const drawn = () =>
+      Array.from(host().querySelectorAll('.gog-calendar__weekday')).map((cell) =>
+        cell.textContent?.trim(),
+      );
+    for (const size of ['xsm', 'sm'] as const) {
+      fixture.componentRef.setInput('size', size);
+      await fixture.whenStable();
+      fixture.detectChanges();
+      expect(drawn()).toEqual(['M', 'T', 'W', 'T', 'F', 'S', 'S']);
+      expect(host().querySelector('.gog-calendar__weekday')?.getAttribute('aria-label')).toBe(
+        'Monday',
+      );
+    }
+    fixture.componentRef.setInput('size', 'md');
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(drawn()[0]).toBe('Mon');
+  });
+
   it('should page by month and by year', () => {
     // Four nav buttons: ‹‹ year, ‹ month, month ›, year ››. The titles sit between them but
     // are not `.gog-calendar__nav`, so there is no gap in this list.

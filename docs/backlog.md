@@ -16,17 +16,6 @@ not worth carrying here.
 
 ## Defects — first
 
-- **`gog-calendar`'s weekday names touch at `xsm` and `sm`.** Found on 2026-10-03 while building
-  the lab's Calendar page, which shows all five sizes side by side. The weekday header cell is
-  exactly as wide as its three-letter name, so neighbouring names run together ("SUNMONTUE") — and
-  at `xsm` one or two names are wider than their column: measured in Chrome, 2 of 7 overflow in
-  `dark` and `light` (uppercase with tracking), 1 of 7 in `material` and `primeng`, none in
-  `terminal`. At `sm` every name fills its cell to the pixel, with no gap left. The day cells below
-  are fine; it is the header row only. Options to weigh: a narrower weekday format at the small
-  sizes (`'narrow'` from `Intl`, "S M T"), the theme's casing and tracking left off the weekday
-  row, or a minimum column gap — the first changes what is read aloud, so check the accessible
-  names stay the full day.
-
 - **`gog-slider`'s docs say a form control is ignored in range mode; it is not.** Found on
   2026-10-03 while building the lab's Slider page. The `range` JSDoc ("`value`/`writeValue` are
   ignored while this is `true`") and AGENTS.md's range paragraph ("`value` (and a form control's
