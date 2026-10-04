@@ -249,9 +249,9 @@ are done or moved.
 
 ## What to work on
 
-**Priority set by the owner on 2026-10-03: `docs/lab-component-pages.md`** — one shape for every
-component page in the lab, piloted on Button. It goes ahead of the backlog below; read its status
-table first.
+**`docs/lab-component-pages.md` is done (2026-10-04)** — every component page in the lab has one
+shape, set by the owner as the priority on 2026-10-03. It is a record now; the rules it produced
+live in `gleks-ui-lab.instructions.md`. Work comes off the backlog below again.
 
 **`docs/backlog.md` is the live list** — everything known to be worth doing and not yet done, in
 one file. Read it before proposing anything. It replaced two separate backlog sections buried in

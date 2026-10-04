@@ -1,8 +1,12 @@
 # Where to start
 
 **21.15.0 is released and the lab is caught up with it** (2026-10-03).
-**Next: `docs/lab-component-pages.md`, iteration 1 — the Button page as the pilot.** The owner
-asked for it and set it ahead of the backlog; it reviews the result before any other page moves.
+**`docs/lab-component-pages.md` is done** (2026-10-04): every component page in the lab has one
+shape, its examples carry no stylesheet, and the generator now refuses one. The plan is a record.
+
+**Next: back to `docs/backlog.md`, Defects first.** The newest entry came out of that work — an
+open `gog-accordion` body keeps its `translateY(0)`, so a dropdown inside it paints under later
+positioned content; the lab's Accordion page waits for the fix (`docs/lab-after-publish.md`).
 
 **Deferred by the owner on 2026-09-13 — do not start these without asking:**
 
