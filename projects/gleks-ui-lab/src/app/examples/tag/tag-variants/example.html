@@ -1,0 +1,10 @@
+@for (size of sizes; track size) {
+  <div>
+    <span>size: {{ size }}</span>
+    @for (variant of variants; track variant) {
+      <gog-tag [size]="size" [variant]="variant" [iconName]="variantIcons[variant]">
+        {{ variant }}
+      </gog-tag>
+    }
+  </div>
+}

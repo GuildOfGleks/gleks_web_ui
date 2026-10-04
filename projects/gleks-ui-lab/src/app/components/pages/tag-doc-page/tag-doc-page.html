@@ -13,12 +13,9 @@
     <p class="doc-section__intro">Import the component and drop it into a template.</p>
     <app-markdown [markdown]="importSnippet" />
 
-    <p class="doc-section__intro">Basic usage:</p>
+    <p class="doc-section__intro">Basic usage — a status label with a leading icon:</p>
     <div class="demo-card">
-      <div class="demo-card__preview">
-        <gog-tag variant="success" iconName="check">In stock</gog-tag>
-      </div>
-      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
+      <app-demo [component]="examples.overview" [source]="sources.tagOverview" layout="row" />
     </div>
   </section>
 
@@ -26,126 +23,90 @@
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Semantic variants</h3>
-      <p class="demo-card__meta">Four variants cover the common status meanings.</p>
-      <div class="demo-card__preview action-row">
-        @for (variantOption of variants; track variantOption) {
-          <gog-tag [variant]="variantOption" [iconName]="variantIcons[variantOption]">
-            {{ variantOption }}
-          </gog-tag>
-        }
-      </div>
-      <app-code-tabs [html]="variantsHtml" [ts]="variantsTs" />
-    </article>
-
-    <article class="demo-card">
-      <h3 class="demo-card__title">Sizes</h3>
-      <p class="demo-card__meta">Five size steps, from xsm to slg.</p>
-      <div class="demo-card__preview action-row">
-        @for (sizeOption of sizes; track sizeOption) {
-          <gog-tag [size]="sizeOption" variant="success">Available</gog-tag>
-        }
-      </div>
-      <app-code-tabs [html]="sizesHtml" [ts]="sizesTs" />
-    </article>
-
-    <article class="demo-card">
-      <h3 class="demo-card__title">Shapes</h3>
-      <p class="demo-card__meta">Square-ish rounded corners, or a fully rounded pill.</p>
-      <div class="demo-card__preview action-row">
-        <gog-tag shape="rounded" variant="success" iconName="check">Available</gog-tag>
-        <gog-tag shape="pill" variant="success" iconName="check">Available</gog-tag>
-      </div>
-      <app-code-tabs [html]="shapesHtml" [ts]="shapesTs" />
-    </article>
-
-    <article class="demo-card">
-      <h3 class="demo-card__title">Custom icon</h3>
+      <h3 class="demo-card__title">Variants and sizes</h3>
       <p class="demo-card__meta">
-        Project an <code>&lt;ng-template gogTagIcon&gt;</code> to replace the leading icon. It takes
-        priority over <code>iconName</code>.
+        Four status colours at each of five sizes. Every surface — the fill, the border, the text —
+        is mixed from one colour per variant, so the four read as one family in every theme. The
+        colour is a hint, never the message: the text has to say "Paid" or "Overdue" on its own, for
+        anyone who cannot tell green from red. A tag has no interactive states.
       </p>
-      <div class="demo-card__preview">
-        <gog-tag variant="success">
-          <ng-template gogTagIcon>
-            <gog-icon name="checkbox-checked" />
-          </ng-template>
-          Featured
-        </gog-tag>
-      </div>
-      <app-code-tabs [html]="customIconHtml" [ts]="customIconTs" />
+      <app-demo [component]="examples.variants" [source]="sources.tagVariants" layout="rows" />
     </article>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Full width</h3>
+      <h3 class="demo-card__title">Shapes and icons</h3>
       <p class="demo-card__meta">
-        Fits its text with no wrapping by default (see every tag above).
-        <code>fullWidth</code> stretches it to fill its container instead — wrapped here in a
-        narrower box to show it.
+        <code>rounded</code> (the default) or <code>pill</code>, without an icon, with
+        <code>iconName</code> — any built-in or registered name — and with a
+        <code>gogTagIcon</code> template, which replaces the icon with any markup and wins when both
+        are set. The icon is sized from the tag's own scale, not from <code>--gog-icon-size</code>.
       </p>
-      <div class="demo-card__preview width-demo">
-        <gog-tag variant="info" [fullWidth]="true">Full width</gog-tag>
-      </div>
-      <app-code-tabs [html]="fullWidthHtml" [ts]="fullWidthTs" />
+      <app-demo [component]="examples.shapes" [source]="sources.tagShapes" layout="rows" />
     </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Width</h3>
+      <p class="demo-card__meta">
+        A tag fits its text and never wraps: two words of a status splitting across lines reads as
+        two tags. <code>fullWidth</code> stretches it across its container — the dashed box — text
+        centred. Text longer than its room ends in an ellipsis inside the border
+        <app-since version="21.15.0" />. A screen reader still reads it in full, but a sighted
+        reader loses it, so keep a status short or show the whole of it somewhere else.
+      </p>
+      <app-demo [component]="examples.width" [source]="sources.tagWidth" layout="frame" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">A colour outside the four — <code>--gog-tag-accent</code></h3>
+      <p class="demo-card__meta">
+        The four variants cover status. For a category — a team, a label colour a user picked — set
+        <code>--gog-tag-accent</code> on the tag and the fill, border and text are all derived from
+        it the same way. Check the contrast of a colour you bring: the library's own four are
+        measured in every theme, and yours is not.
+      </p>
+      <app-demo [component]="examples.accent" [source]="sources.tagAccent" layout="row" />
+    </article>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="accessibility" class="doc-section__title font-heading">Accessibility</h2>
+    <p class="doc-section__intro">
+      A tag is text in a coloured box. It has no role and no name of its own, and its icon is
+      decorative.
+    </p>
+    <ul class="doc-section__intro">
+      <li>
+        <strong>Host</strong> — no ARIA at all, so a screen reader reads the tag's text where it
+        stands, as it would any span.
+      </li>
+      <li>
+        <strong>Icon</strong> — <code>aria-hidden</code> whichever way it was given, so an icon
+        cannot be the only thing that says what a tag means.
+      </li>
+      <li>
+        <strong>Changes</strong> — a tag that must interrupt, like a status that changes while the
+        page is open, needs a live region around it;
+        <a routerLink="/components/alert">gog-alert</a> is the component for a message that has to
+        be heard.
+      </li>
+      <li><strong>Keyboard</strong> — none. A tag is not focusable.</li>
+      <li>
+        <strong>Tag, chip or badge</strong> — a tag labels something and does nothing when pressed.
+        A <a routerLink="/components/chip">chip</a> is something to press, toggle or remove. A
+        <a routerLink="/components/badge">badge</a> is a count pinned to the corner of another
+        control. If a tag starts needing a click handler, it has become a chip.
+      </li>
+    </ul>
   </section>
 
   <section class="doc-section">
     <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
 
     <h3 class="doc-section__subtitle">Inputs</h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Default</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of apiInputs; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-              </td>
-              <td>
-                <code>{{ row.type }}</code>
-              </td>
-              <td>
-                <code>{{ row.default }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="apiInputs" kind="inputs" />
 
     <h3 class="doc-section__subtitle">Content slots</h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Slot</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>(default)</code></td>
-            <td>The tag's text.</td>
-          </tr>
-          <tr>
-            <td>
-              <code>&lt;ng-template gogTagIcon&gt;</code>
-            </td>
-            <td>Replaces the leading icon. Wins over <code>iconName</code>.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="apiSlots" kind="slots" />
   </section>
 
   <app-global-config-note component="tag" />
@@ -158,25 +119,6 @@
       <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
       <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
     </p>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Token</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of styleTokens; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="styleTokens" kind="tokens" />
   </section>
 </div>

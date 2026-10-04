@@ -1,0 +1,12 @@
+@for (shape of shapes; track shape) {
+  <div>
+    <span>shape="{{ shape }}"</span>
+    <gog-tag [shape]="shape" variant="success">Paid</gog-tag>
+    <gog-tag [shape]="shape" variant="success" iconName="success">Paid</gog-tag>
+    <!-- The template replaces the icon with any markup, and wins over iconName. -->
+    <gog-tag [shape]="shape" variant="warning">
+      <ng-template gogTagIcon><gog-icon name="clock" /></ng-template>
+      Due in 3 days
+    </gog-tag>
+  </div>
+}

@@ -161,7 +161,7 @@ template.
 | spinner       | legacy   | 9     | 9   |          |
 | table         | legacy   | 14    | 14  |          |
 | tabs          | legacy   | 4     | 4   |          |
-| tag           | legacy   | 6     | 6   |          |
+| tag           | legacy   | 6     | 6   | ✅       |
 | textarea      | legacy   | 10    | 10  | ✅       |
 | toast         | legacy   | 6     | 6   |          |
 | toggle        | legacy   | 6     | 6   | ✅       |
