@@ -4,13 +4,14 @@
 `docs/backlog.md` are the two that need a real screen reader (the table's row announcement and
 `gog-alert`'s live-region copy) — the owner's to check, not an agent's.
 
-**Next: 21.16.0, the release the 21 line is declared stable from** (agreed with the owner on
-2026-10-04). It carries the last scheduled break — `gog-autocomplete`'s four deprecated filter
-inputs removed by splitting `GogDropdownBase` (`docs/backlog.md` has the shape) — and then says so
-in writing: the changelog's "not yet reached 1.0" preamble, a versioning section in the README,
-and `docs/branching-and-support.md`'s open question about breaking changes in minors. From
-21.16.0: patches fix, minors add (new components are minors, not patches), and only 22.0.0
-breaks, alongside the Angular upgrade.
+**21.16.0 is built and `planned`, waiting for the owner to publish it** (2026-10-04). It is the
+release the 21 line is declared stable from: `gog-autocomplete`'s four panel-filter inputs are
+removed (the search box moved into `GogFilterableDropdownBase`), `GOG_DEPRECATIONS` is `[]`, and
+the README's _Versioning_ section, the changelog preamble and `docs/branching-and-support.md` all
+state the rule — patches fix, minors add (new components are minors), only a major breaks.
+`check:install` is not triggered: no export, entry point or package file changed. Once it is on
+npm, `docs/lab-after-publish.md`'s 21.16.0 section has three lab items (FAQ, Autocomplete page,
+Releases page).
 
 **Deferred by the owner on 2026-09-13 — do not start these without asking:**
 
