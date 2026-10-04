@@ -215,10 +215,6 @@
   overflow: visible;
 }
 
-.gog-accordion__body--settled .gog-accordion__body-inner {
-  transform: none;
-}
-
 .gog-accordion__body-inner {
   min-height: 0;
   overflow: hidden;
@@ -258,6 +254,15 @@
     var(--gog-accordion-size-body-padding-bottom, var(--gog-accordion-lg-body-padding-bottom))
   );
   transform: translateY(0);
+}
+
+/*
+ * After the open rule, not beside the settled overflow rule above: the two have the same
+ * specificity, so the later one wins, and `translateY(0)` is still a transform — a stacking
+ * context that paints a dropdown inside the body under any positioned element after it.
+ */
+.gog-accordion__body--settled .gog-accordion__body-inner {
+  transform: none;
 }
 
 /* === Sizes ===

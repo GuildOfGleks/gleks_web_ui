@@ -4,6 +4,22 @@ All notable changes to `@guildofgleks/ui` are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project has not yet
 reached 1.0, so breaking changes may land in minor versions.
 
+## [21.15.1] - planned
+
+### Fixed
+
+- **A dropdown inside an open `gog-accordion` body no longer paints under the content after the
+  accordion.** 21.15.0 dropped the body's clip once it settled, but two stacking contexts were left
+  around the list, so a select opened in the last item was covered by any positioned element that
+  followed — a code block, a sticky footer, a card with `position: relative`. The settled body's
+  `transform: none` lost to the open body's `translateY(0)`, which had the same specificity and came
+  later in the stylesheet; and the accordion's root carried `contain: layout style`, which the
+  library's own utility says never to put on an element whose popup must escape it. The rule now
+  comes after the one it overrides, and the root is no longer a contained-layout box — the same
+  choice `gog-select`, `gog-multiselect`, `gog-autocomplete` and `gog-datepicker` already make.
+  Nothing about the accordion's own layout depended on either. The showcase's Accordion page now
+  puts a positioned box under the case, so it can fail.
+
 ## [21.15.0] - 03.10.2026
 
 ### Added

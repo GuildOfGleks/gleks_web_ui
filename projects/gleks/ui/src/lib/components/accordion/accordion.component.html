@@ -1,8 +1,9 @@
-<div
-  [class.gog-accordion--loading]="loading()"
-  class="gog-accordion gog-contained-layout"
-  [class]="sizeClass()"
->
+<!--
+  Deliberately not `gog-contained-layout`: `contain: layout` makes this element a stacking
+  context, and a body holds whatever the consumer projects — a select's list opened in it would
+  paint under any positioned element after the accordion.
+-->
+<div [class.gog-accordion--loading]="loading()" class="gog-accordion" [class]="sizeClass()">
   @if (loading()) {
     @for (row of skeletonRows(); track row) {
       <div class="gog-accordion__item gog-accordion__item--skeleton">

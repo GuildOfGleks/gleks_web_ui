@@ -106,7 +106,10 @@
       Open the last item and its select: the list runs past the body and the items below. The body
       clips only while it animates; open and settled it does not, and its lift transform is dropped
       too, so the list is not painted under the next item. The last item rounds its corners on its
-      header and body rather than by clipping.
+      header and body rather than by clipping. The box under the accordion is positioned, the way a
+      code block or a sticky footer often is: the list must cover it. Until 21.15.1 two stacking
+      contexts trapped it — the settled body kept <code>translateY(0)</code>, and the accordion's
+      root carried <code>contain: layout</code> — and the box covered the list.
     </p>
     <div class="accordion-page__stack">
       <gog-accordion [items]="regionItems" size="md">
@@ -114,6 +117,7 @@
           <gog-select label="Time zone" [options]="timezones" [(value)]="timezone" />
         </ng-template>
       </gog-accordion>
+      <p class="accordion-page__positioned">A positioned element after the accordion.</p>
     </div>
   </app-doc-section>
 

@@ -27,19 +27,6 @@ not worth carrying here.
   row, or a minimum column gap — the first changes what is read aloud, so check the accessible
   names stay the full day.
 
-- **An open `gog-accordion` body keeps its transform, so a dropdown in it still sits under later
-  content.** Found on 2026-10-04 while building the lab's Accordion page. 21.15.0's fix drops the
-  body-inner's lift once the body settles — `.gog-accordion__body--settled .gog-accordion__body-inner
-{ transform: none }` — but `.gog-accordion__body--open .gog-accordion__body-inner { transform:
-translateY(0) }` has the same specificity and comes later in `accordion.component.scss`, so it
-  wins: the settled body-inner computes `matrix(1, 0, 0, 1, 0, 0)` and is still a stacking context.
-  A select's list in the body then paints under any positioned element after the accordion — in the
-  lab, the code block under the demo. The showcase's case passes only because nothing positioned
-  follows its last item. Fix by ordering the settled rule after the open one (or raising its
-  specificity), and give the showcase case a positioned element below the accordion so it can fail.
-  The lab's Accordion page leaves its overlay example out until this ships
-  (`docs/lab-after-publish.md`).
-
 - **`gog-slider`'s docs say a form control is ignored in range mode; it is not.** Found on
   2026-10-03 while building the lab's Slider page. The `range` JSDoc ("`value`/`writeValue` are
   ignored while this is `true`") and AGENTS.md's range paragraph ("`value` (and a form control's

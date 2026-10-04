@@ -479,4 +479,21 @@ describe('AccordionComponent — settled bodies', () => {
     fixture.detectChanges();
     expect(settled(1)).toBe(false);
   });
+
+  it('drops the body transform once settled, so a dropdown inside is not trapped under later content', () => {
+    fixture.componentRef.setInput('openIds', new Set(['b']));
+    fixture.detectChanges();
+    vi.runAllTimers();
+    fixture.detectChanges();
+
+    const inner = body(1).querySelector('.gog-accordion__body-inner') as HTMLElement;
+    // `translateY(0)` would still be a transform, and so a stacking context.
+    expect(getComputedStyle(inner).transform).toBe('none');
+  });
+
+  it('is not a contained-layout root, which would trap the same dropdown', () => {
+    const root = (fixture.nativeElement as HTMLElement).querySelector('.gog-accordion');
+    // `contain: layout` is a stacking context too; see utilities.css.
+    expect(root?.classList.contains('gog-contained-layout')).toBe(false);
+  });
 });

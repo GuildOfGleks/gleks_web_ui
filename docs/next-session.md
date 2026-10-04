@@ -4,9 +4,9 @@
 **`docs/lab-component-pages.md` is done** (2026-10-04): every component page in the lab has one
 shape, its examples carry no stylesheet, and the generator now refuses one. The plan is a record.
 
-**Next: back to `docs/backlog.md`, Defects first.** The newest entry came out of that work — an
-open `gog-accordion` body keeps its `translateY(0)`, so a dropdown inside it paints under later
-positioned content; the lab's Accordion page waits for the fix (`docs/lab-after-publish.md`).
+**Next: back to `docs/backlog.md`, Defects first.** The accordion defect that work turned up is
+fixed for 21.15.1 (`planned`); once it is published, the lab's Accordion page gets its overlay
+example back (`docs/lab-after-publish.md`).
 
 **Deferred by the owner on 2026-09-13 — do not start these without asking:**
 

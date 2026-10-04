@@ -51,3 +51,15 @@
   width: 1em;
   line-height: 1;
 }
+
+// position: relative and a background of its own, so a list painted under it is visibly hidden.
+.accordion-page__positioned {
+  position: relative;
+  margin-block: var(--gog-space-8) 0;
+  padding: var(--gog-space-16);
+  border: 1px solid var(--gog-border-color);
+  border-radius: var(--gog-radius);
+  background: var(--gog-surface-color);
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-sm);
+}
