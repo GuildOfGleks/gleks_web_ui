@@ -1,26 +1,20 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import {
-  ButtonComponent,
-  ChipComponent,
-  GogTooltipDirective,
-  GogTooltipPosition,
-  IconComponent,
-  TagComponent,
-} from '@guildofgleks/ui';
-import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
+import { ApiTableComponent, type ApiRow } from '../../shared/api-table/api-table';
+import { DemoComponent } from '../../shared/demo/demo';
 import { GlobalConfigNote } from '../../shared/global-config-note/global-config-note';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
+import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
+import { TOOLTIP_EXAMPLES } from '../../../examples/tooltip/sources.generated';
+import { TooltipConfigExample } from '../../../examples/tooltip/tooltip-config/example';
+import { TooltipContentExample } from '../../../examples/tooltip/tooltip-content/example';
+import { TooltipDelaysExample } from '../../../examples/tooltip/tooltip-delays/example';
+import { TooltipDismissExample } from '../../../examples/tooltip/tooltip-dismiss/example';
+import { TooltipOverviewExample } from '../../../examples/tooltip/tooltip-overview/example';
+import { TooltipPositionsExample } from '../../../examples/tooltip/tooltip-positions/example';
 
-interface ApiInputRow {
-  readonly name: string;
-  readonly type: string;
-  readonly default: string;
-  readonly description: string;
-}
-
-const API_INPUTS: readonly ApiInputRow[] = [
+const API_INPUTS: readonly ApiRow[] = [
   {
     name: 'gogTooltip',
     type: 'string | TemplateRef<unknown> | null',
@@ -66,148 +60,46 @@ const API_INPUTS: readonly ApiInputRow[] = [
 @Component({
   selector: 'app-tooltip-doc-page',
   imports: [
-    GogTooltipDirective,
-    ButtonComponent,
-    ChipComponent,
-    IconComponent,
-    TagComponent,
+    ApiTableComponent,
+    DemoComponent,
     GlobalConfigNote,
     MarkdownComponent,
-    CodeTabsComponent,
     RouterLink,
+    SinceBadgeComponent,
   ],
   templateUrl: './tooltip-doc-page.html',
   styleUrl: './tooltip-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TooltipDocPage {
-  protected readonly positions: GogTooltipPosition[] = ['top', 'bottom', 'left', 'right'];
-
-  protected readonly longText =
-    'A tooltip taller than --gog-tooltip-max-height scrolls inside an internal gog-scroll, ' +
-    'using the same themeable scrollbar as every other overflowing panel in this library. ' +
-    'Move the pointer onto the bubble and the pending hide is cancelled rather than raced, ' +
-    'so you can actually read it — that is WCAG 2.1 SC 1.4.13. Content under the cap renders ' +
-    'at exactly its own height, so a short tooltip is never padded out to a fixed box.';
-
   protected readonly apiInputs = API_INPUTS;
   protected readonly styleTokens =
     TOKEN_SECTIONS.find((section) => section.id === 'tooltip')?.tokens ?? [];
 
+  protected readonly sources = TOOLTIP_EXAMPLES;
+  protected readonly examples = {
+    overview: TooltipOverviewExample,
+    positions: TooltipPositionsExample,
+    content: TooltipContentExample,
+    delays: TooltipDelaysExample,
+    dismiss: TooltipDismissExample,
+    config: TooltipConfigExample,
+  };
+
   protected readonly importSnippet =
     "```typescript\nimport { GogTooltipDirective } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [GogTooltipDirective],\n})\n```";
 
-  protected readonly overviewHtml = [
-    '<button gogTooltip="Save changes">Save</button>',
+  protected readonly classSnippet = [
+    '```html',
+    '<button gogButton gogTooltip="Styled" gogTooltipClass="brand-tooltip">Styled</button>',
+    '```',
     '',
-    '<!-- Or on a gog-* component’s own host tag — it needs to know nothing about it. -->',
-    '<gog-chip [gogTooltip]="hint">Draft</gog-chip>',
-  ].join('\n');
-  protected readonly overviewTs = [
-    "import { Component } from '@angular/core';",
-    "import { ChipComponent, GogTooltipDirective } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [ChipComponent, GogTooltipDirective],',
-    '  template: `',
-    '    <button gogTooltip="Save changes">Save</button>',
-    '    <gog-chip [gogTooltip]="hint">Draft</gog-chip>',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    "  protected readonly hint = 'Not visible to anyone else yet';",
+    '```css',
+    '/* styles.css — global, because the bubble is outside every component. */',
+    '.brand-tooltip {',
+    '  --gog-tooltip-bg: var(--gog-accent-color);',
+    '  --gog-tooltip-color: var(--gog-surface-color);',
     '}',
-  ].join('\n');
-
-  protected readonly positionsHtml = [
-    '<gog-button gogTooltip="Above" gogTooltipPosition="top">top</gog-button>',
-    '<gog-button gogTooltip="Below" gogTooltipPosition="bottom">bottom</gog-button>',
-    '<gog-button gogTooltip="To the left" gogTooltipPosition="left">left</gog-button>',
-    '<gog-button gogTooltip="To the right" gogTooltipPosition="right">right</gog-button>',
-  ].join('\n');
-  protected readonly positionsTs = [
-    "import { Component } from '@angular/core';",
-    "import { ButtonComponent, GogTooltipDirective, GogTooltipPosition } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [ButtonComponent, GogTooltipDirective],',
-    '  template: `',
-    '    @for (position of positions; track position) {',
-    '      <gog-button [gogTooltip]="position" [gogTooltipPosition]="position">',
-    '        {{ position }}',
-    '      </gog-button>',
-    '    }',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    "  protected readonly positions: GogTooltipPosition[] = ['top', 'bottom', 'left', 'right'];",
-    '}',
-  ].join('\n');
-
-  protected readonly templateHtml = [
-    '<ng-template #richHint>',
-    '  <strong>Deployment blocked</strong>',
-    '  <p>Two checks are still running. <gog-tag variant="warning">CI</gog-tag></p>',
-    '</ng-template>',
-    '',
-    '<gog-button [gogTooltip]="richHint">Deploy</gog-button>',
-  ].join('\n');
-  protected readonly templateTs = [
-    "import { Component } from '@angular/core';",
-    "import { ButtonComponent, GogTooltipDirective, TagComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [ButtonComponent, TagComponent, GogTooltipDirective],',
-    '  template: `',
-    '    <ng-template #richHint>',
-    '      <strong>Deployment blocked</strong>',
-    '      <p>Two checks are still running. <gog-tag variant="warning">CI</gog-tag></p>',
-    '    </ng-template>',
-    '',
-    '    <gog-button [gogTooltip]="richHint">Deploy</gog-button>',
-    '  `,',
-    '})',
-    'export class ExampleComponent {}',
-  ].join('\n');
-
-  protected readonly delaysHtml = [
-    '<gog-button gogTooltip="Appears at once" [gogTooltipShowDelay]="0">No delay</gog-button>',
-    '<gog-button gogTooltip="Takes a second" [gogTooltipShowDelay]="1000">Slow</gog-button>',
-    '<gog-button gogTooltip="Never shown" [gogTooltipDisabled]="true">Disabled</gog-button>',
-  ].join('\n');
-  protected readonly delaysTs = [
-    "import { Component } from '@angular/core';",
-    "import { ButtonComponent, GogTooltipDirective } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [ButtonComponent, GogTooltipDirective],',
-    '  template: `',
-    '    <gog-button gogTooltip="Appears at once" [gogTooltipShowDelay]="0">No delay</gog-button>',
-    '    <gog-button gogTooltip="Never shown" [gogTooltipDisabled]="true">Disabled</gog-button>',
-    '  `,',
-    '})',
-    'export class ExampleComponent {}',
-  ].join('\n');
-
-  protected readonly configSnippet = [
-    '```typescript',
-    "import { provideGogConfig } from '@guildofgleks/ui';",
-    '',
-    'bootstrapApplication(App, {',
-    '  providers: [',
-    '    provideGogConfig({',
-    '      tooltip: {',
-    "        position: 'top',",
-    '        showDelay: 150,',
-    '        hideDelay: 100,',
-    '      },',
-    '    }),',
-    '  ],',
-    '});',
     '```',
   ].join('\n');
 }

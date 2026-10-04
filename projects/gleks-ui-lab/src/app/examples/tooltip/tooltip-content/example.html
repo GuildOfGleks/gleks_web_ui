@@ -1,0 +1,19 @@
+<gog-button variant="outline" gogTooltip="Save changes">Save</gog-button>
+<!-- A long string wraps at the bubble's width cap. -->
+<gog-button
+  variant="outline"
+  gogTooltip="Publishing makes this version visible to everyone with the link, including people outside your organisation. Earlier versions stay in the history."
+>
+  Publish
+</gog-button>
+<gog-button variant="outline" [gogTooltip]="shortcut">Undo</gog-button>
+<ng-template #shortcut>Undo <kbd>Ctrl+Z</kbd></ng-template>
+
+<gog-button variant="outline" [gogTooltip]="deployHint">Deploy</gog-button>
+<ng-template #deployHint>
+  <strong>Deployment blocked</strong>
+  <p>Two checks are still running. <gog-tag variant="warning" size="xsm">CI</gog-tag></p>
+</ng-template>
+
+<!-- Taller than --gog-tooltip-max-height: it scrolls inside the bubble. -->
+<gog-button variant="outline" [gogTooltip]="longText">Read the long one</gog-button>

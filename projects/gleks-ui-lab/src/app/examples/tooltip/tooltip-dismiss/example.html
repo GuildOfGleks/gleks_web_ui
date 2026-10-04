@@ -1,0 +1,5 @@
+<!-- Move onto the bubble: it stays. Press Escape: it goes, and the trigger keeps focus. -->
+<gog-button variant="outline" gogTooltip="Hints can be switched off" [gogTooltipDisabled]="muted()">
+  Hint {{ muted() ? 'off' : 'on' }}
+</gog-button>
+<gog-toggle label="gogTooltipDisabled" [(checked)]="muted" />
