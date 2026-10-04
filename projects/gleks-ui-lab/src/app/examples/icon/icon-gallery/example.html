@@ -1,0 +1,9 @@
+@for (group of groups; track group.title) {
+  <p>{{ group.title }}</p>
+  @for (name of group.names; track name) {
+    <div>
+      <gog-icon [name]="name" />
+      <code>{{ name }}</code>
+    </div>
+  }
+}

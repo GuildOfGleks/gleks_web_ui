@@ -1,0 +1,11 @@
+<!-- Neither is an input: the icon takes both from where it is placed. -->
+@for (size of fontSizes; track size) {
+  <div>
+    <span>font-size: {{ size }}</span>
+    @for (stroke of strokeWidths; track stroke) {
+      <span [style.font-size]="size" [style.--gog-icon-stroke-width]="stroke">
+        <gog-icon name="settings" /> stroke {{ stroke }}
+      </span>
+    }
+  </div>
+}

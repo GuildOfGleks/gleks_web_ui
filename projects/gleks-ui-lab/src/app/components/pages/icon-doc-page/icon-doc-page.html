@@ -16,12 +16,11 @@
     <p class="doc-section__intro">Import the component and drop it into a template.</p>
     <app-markdown [markdown]="importSnippet" />
 
-    <p class="doc-section__intro">Basic usage — render one of the built-in icons by name:</p>
+    <p class="doc-section__intro">
+      Basic usage — one of the built-in icons by name, beside the text it illustrates:
+    </p>
     <div class="demo-card">
-      <div class="demo-card__preview">
-        <gog-icon name="check" />
-      </div>
-      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
+      <app-demo [component]="examples.overview" [source]="sources.iconOverview" layout="row" />
     </div>
   </section>
 
@@ -29,89 +28,87 @@
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">All icons</h3>
+      <h3 class="demo-card__title">The built-in set</h3>
       <p class="demo-card__meta">
-        The complete built-in set — <strong>{{ iconCount }}</strong> glyphs, all from
-        <a href="https://lucide.dev" target="_blank" rel="noopener">Lucide</a> (ISC licence, notice
-        shipped in the package) and inlined, so the library keeps its single runtime dependency.
-        This gallery is driven off <code>Object.keys(ICON_DEFS)</code> rather than a hand-written
-        list, which is the only way it stays right.
+        Every <code>GogBuiltinIconName</code>, read off <code>ICON_DEFS</code> rather than typed in,
+        so the list cannot fall behind the package. All of them are
+        <a href="https://lucide.dev" target="_blank" rel="noopener">Lucide</a> glyphs (ISC licence,
+        notice shipped in the package) on one 24×24 grid, drawn with <code>currentColor</code> and
+        inlined — no icon font and no runtime dependency. The set is outline-only apart from two
+        pairs, <code>checkbox</code> / <code>checkbox-checked</code> and <code>star</code> /
+        <code>star-filled</code>, which exist for a toggle that has to show both states; anything
+        else is registered by the app.
       </p>
-      @for (group of iconGroups; track group.title) {
-        <h4 class="icon-gallery__group">{{ group.title }}</h4>
-        <div class="demo-card__preview icon-gallery">
-          @for (iconName of group.names; track iconName) {
-            <div class="icon-gallery__item">
-              <gog-icon [name]="iconName" />
-              <span class="icon-gallery__label">{{ iconName }}</span>
-            </div>
-          }
-        </div>
-      }
-      <p class="demo-card__meta">
-        <code>star</code> / <code>star-filled</code> is the one outline/filled pair, for a rating or
-        favourite <em>toggle</em> — the same reason <code>checkbox</code> /
-        <code>checkbox-checked</code> exists. The set is otherwise outline-only on purpose: a solid
-        duplicate of every glyph would double the payload for a distinction almost nothing needs.
-        Register the filled variant you actually want instead.
-      </p>
-      <app-code-tabs [html]="galleryHtml" [ts]="galleryTs" />
+      <app-demo [component]="examples.gallery" [source]="sources.iconGallery" layout="row" />
     </article>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Sizing</h3>
+      <h3 class="demo-card__title">Size and stroke from the context</h3>
       <p class="demo-card__meta">
-        There is no <code>size</code> input — icons are sized purely through the
-        <code>--gog-icon-size</code> CSS custom property, settable per-instance or globally through
-        a theme.
+        <code>--gog-icon-size</code> is <code>1.2em</code>, so an icon follows the font size of
+        whatever it sits in — an icon in a heading is a heading-sized icon without anyone passing a
+        size. The stroke width is <code>--gog-icon-stroke-width</code>, in the glyph's own units, so
+        it stays proportional as the icon scales and a thin set is one token away.
       </p>
-      <div class="demo-card__preview action-row">
-        <gog-icon name="success" style="--gog-icon-size: 16px" />
-        <gog-icon name="success" style="--gog-icon-size: 24px" />
-        <gog-icon name="success" style="--gog-icon-size: 40px" />
-      </div>
-      <app-code-tabs [html]="sizingHtml" [ts]="sizingTs" />
+      <app-demo [component]="examples.context" [source]="sources.iconContext" layout="rows" />
     </article>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Meaningful icon</h3>
+      <h3 class="demo-card__title">An explicit size</h3>
       <p class="demo-card__meta">
-        Icons are <code>aria-hidden</code> by default, since they're almost always paired with a
-        visible text label. For a standalone icon that carries meaning on its own, set
-        <code>ariaHidden</code> to <code>false</code> and supply <code>title</code>: the icon
-        becomes <code>role="img"</code> named by it <app-since version="21.15.0" />, and reads as
-        <em>image "Warning"</em>. Before 21.15.0 the label sat on a roleless custom element, which a
-        screen reader in reading mode passes over. Inside a button with no text, name the button
-        instead (<code>ariaLabel</code> on <code>gog-button</code>).
+        There is no <code>size</code> input. Set <code>--gog-icon-size</code> on the instance — or
+        on a subtree, or in a theme — when the icon should not follow the text.
       </p>
-      <div class="demo-card__preview action-row">
-        <gog-icon name="warning" [ariaHidden]="false" title="Warning" />
-      </div>
-      <app-code-tabs [html]="meaningfulHtml" [ts]="meaningfulTs" />
+      <app-demo [component]="examples.size" [source]="sources.iconSize" layout="row" />
     </article>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Custom template</h3>
+      <h3 class="demo-card__title">Colour</h3>
       <p class="demo-card__meta">
-        <code>template</code> replaces the SVG entirely — the same mechanism other components expose
-        as a projected icon slot (checkbox's <code>gogCheckboxIcon</code>, tag's
-        <code>gogTagIcon</code>). It costs an <code>&lt;ng-template&gt;</code> at every use site, so
-        reach for it for <em>one-offs</em>; for a whole icon set, register the names instead.
+        There is no <code>color</code> input either: the glyph strokes with
+        <code>currentColor</code>, so it takes the colour of the text around it — a status colour, a
+        link, a muted label.
       </p>
-      <div class="demo-card__preview action-row">
-        <gog-icon [template]="customDot" />
-        <ng-template #customDot>
-          <span class="icon-doc__dot"></span>
-        </ng-template>
-      </div>
-      <app-code-tabs [html]="customTemplateHtml" [ts]="customTemplateTs" />
+      <app-demo [component]="examples.colour" [source]="sources.iconColour" layout="row" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Decorative or named</h3>
+      <p class="demo-card__meta">
+        Icons are <code>aria-hidden</code> by default, since they almost always repeat the text
+        beside them. For a standalone icon that carries meaning on its own, set
+        <code>[ariaHidden]="false"</code> and a <code>title</code>: it becomes
+        <code>role="img"</code> named by it <app-since version="21.15.0" />. As the only content of
+        a button, leave the icon decorative and name the button with <code>ariaLabel</code>.
+      </p>
+      <app-demo [component]="examples.named" [source]="sources.iconNamed" layout="row" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">A one-off template</h3>
+      <p class="demo-card__meta">
+        <code>template</code> replaces the SVG entirely and wins over <code>name</code> outright. It
+        costs an <code>&lt;ng-template&gt;</code> at every use site, so it is for the single glyph
+        that has no business in a shared set; anything used twice belongs in
+        <code>provideGogIcons</code>.
+      </p>
+      <app-demo [component]="examples.template" [source]="sources.iconTemplate" layout="row" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">An unknown name</h3>
+      <p class="demo-card__meta">
+        The icon asks for <code>rokcet</code>. It renders an empty host and, in dev mode, logs one
+        console warning per name — not one per instance, so a typo inside an
+        <code>&#64;for</code> of a thousand rows is one line. It never throws: an icon is
+        decoration, and taking a page down over a misspelt glyph would be the worse failure.
+      </p>
+      <app-demo [component]="examples.unknown" [source]="sources.iconUnknown" layout="row" />
     </article>
   </section>
 
   <section class="doc-section">
-    <h2 id="your-own-icons" class="doc-section__title font-heading">
-      Your own icons <app-since version="21.4.0" />
-    </h2>
+    <h2 id="your-own-icons" class="doc-section__title font-heading">Your own icons</h2>
     <p class="doc-section__intro">
       <code>name</code> is not a closed list. It is typed
       <code>GogIconName = GogBuiltinIconName | (string &amp; &#123;&#125;)</code>: the built-ins
@@ -120,45 +117,75 @@
     </p>
     <app-markdown [markdown]="registerTs" />
 
-    <p class="doc-section__intro">
-      From then on the name works anywhere an icon <em>name</em> is taken — not just in
-      <code>gog-icon</code>:
-    </p>
-    <app-markdown [markdown]="registerUsageHtml" />
+    <article class="demo-card">
+      <h3 class="demo-card__title">Used by name, everywhere</h3>
+      <p class="demo-card__meta">
+        A registered name works anywhere an icon <em>name</em> is taken —
+        <code>gog-icon</code> itself, wherever it is placed, and the <code>iconName</code> inputs of
+        components such as the tag and the chip — with no <code>&lt;ng-template&gt;</code> at the
+        use site. That is why a registry beats the <code>template</code> input for an icon set.
+      </p>
+      <app-demo [component]="examples.registry" [source]="sources.iconRegistry" layout="row" />
+    </article>
 
-    <h3 class="doc-section__subtitle">A registered name beats a built-in</h3>
-    <p class="doc-section__intro">
-      This is the point of the registry rather than a side effect: it is how you swap the library's
-      glyphs for your own across every component at once, without touching a single call site.
-    </p>
-    <app-markdown [markdown]="overrideTs" />
+    <article class="demo-card">
+      <h3 class="demo-card__title">
+        A registration wins over a built-in, and a nested one layers on
+      </h3>
+      <p class="demo-card__meta">
+        The second group sits under a directive that calls <code>provideGogIcons</code> again with
+        one icon named <code>copy</code>. Inside it, <code>copy</code> is the registered glyph —
+        that is how an app swaps the library's checkmark or chevrons everywhere at once, with no
+        call site touched — while <code>cart</code>, registered above it, is still there: a nested
+        registration adds to its parent's set rather than replacing it, the same as
+        <a routerLink="/general/global-config">provideGogConfig</a>.
+      </p>
+      <app-demo [component]="examples.override" [source]="sources.iconOverride" layout="row" />
+    </article>
 
-    <h3 class="doc-section__subtitle">Rules worth knowing</h3>
-    <ul class="icon-doc__rules">
+    <h3 class="doc-section__subtitle">Write the SVG for inheritance — and only markup you wrote</h3>
+    <ul class="doc-section__intro">
       <li>
-        <strong>It layers down the injector tree.</strong> A nested
-        <code>provideGogIcons(...)</code> adds to the parent's set instead of replacing it — the
-        same as <a routerLink="/general/global-config">provideGogConfig</a> — so a lazy route can
-        register only the three icons it uses and still see the app-wide ones.
+        Give it a <code>viewBox</code> and <code>stroke="currentColor"</code> (or
+        <code>fill</code>), and no width or height — <code>gog-icon</code> drives size and stroke
+        width from the <code>--gog-icon-*</code> tokens, so a registered icon scales and colours
+        exactly like a built-in.
       </li>
       <li>
-        <strong>An unknown name renders nothing and warns in dev mode.</strong> It never throws: an
-        icon is decoration, and failing a render over a typo is the worse outcome.
+        <strong>Security.</strong> Registered markup is inserted with
+        <code>bypassSecurityTrustHtml</code>, because Angular's HTML sanitizer strips SVG. That is
+        safe for static markup you authored or imported at build time, and
+        <strong>unsafe</strong> for anything derived from user input or fetched at runtime. For
+        remote icons, fetch them yourself, run them through a real SVG sanitizer, and register the
+        result.
+      </li>
+    </ul>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="accessibility" class="doc-section__title font-heading">Accessibility</h2>
+    <p class="doc-section__intro">
+      Decorative by default: an icon usually repeats the text beside it, and announcing both says
+      everything twice.
+    </p>
+    <ul class="doc-section__intro">
+      <li>
+        <strong>Default</strong> — <code>aria-hidden="true"</code> on the host. Beside text, there
+        is nothing to do.
       </li>
       <li>
-        <strong>Write the SVG for inheritance.</strong> Give it a <code>viewBox</code> and
-        <code>stroke="currentColor"</code> (or <code>fill</code>), and no width or height —
-        <code>gog-icon</code> drives size and stroke width from the <code>--gog-icon-*</code>
-        tokens, so a registered icon scales and colours exactly like a built-in.
+        <strong>Named</strong> — <code>[ariaHidden]="false"</code> makes it <code>role="img"</code>,
+        named by <code>title</code> or else by the icon's <code>name</code>. A name like
+        <code>more-vertical</code> is rarely what a person should hear, so set the title. Written as
+        a plain attribute, <code>title</code> also lands on the host as the HTML <code>title</code>,
+        so the browser shows it as a tooltip on hover.
       </li>
       <li>
-        <strong>Security — the one part that can actually bite.</strong> Registered markup is
-        inserted with <code>bypassSecurityTrustHtml</code>, because Angular's HTML sanitizer strips
-        SVG and would leave you with nothing. That is safe for static markup you authored or
-        imported at build time, and <strong>unsafe</strong> for anything derived from user input or
-        fetched at runtime. If you need remote icons, fetch them yourself, run them through a real
-        SVG sanitizer, and register the result.
+        <strong>In a button</strong> — when the icon is a button's only content, keep it decorative
+        and name the button (<code>ariaLabel</code> on <code>gog-button</code>): the name then
+        belongs to the thing that is pressed, and a screen reader says it once.
       </li>
+      <li><strong>Keyboard</strong> — none. An icon is never focusable.</li>
     </ul>
   </section>
 
@@ -166,79 +193,10 @@
     <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
 
     <h3 class="doc-section__subtitle">Inputs</h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Default</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of apiInputs; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-              </td>
-              <td>
-                <code>{{ row.type }}</code>
-              </td>
-              <td>
-                <code>{{ row.default }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="apiInputs" kind="inputs" />
 
-    <h3 class="doc-section__subtitle">Providers &amp; types</h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Default</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of providerRows; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-                @if (row.since) {
-                  <app-since [version]="row.since" />
-                }
-              </td>
-              <td>
-                <code>{{ row.type }}</code>
-              </td>
-              <td>
-                <code>{{ row.default }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-    <p class="doc-section__intro">
-      Two type names, and the difference matters when you are enumerating icons:
-      <code>GogBuiltinIconName</code> <app-since version="21.4.0" /> is the closed union of the
-      {{ iconCount }} glyphs that ship with the library — use it for a gallery or an icon picker,
-      where an exhaustive list is the point. <code>GogIconName</code> is the open one every input
-      takes, so a registered name type-checks.
-    </p>
-    <p class="doc-section__intro">
-      <code>provideGogIcons</code> is <strong>not</strong> part of <code>GOG_CONFIG</code> — it is
-      its own provider, so there is no <code>icons</code> key to look for on the
-      <a routerLink="/general/global-config">Global Configuration</a> page.
-    </p>
+    <h3 class="doc-section__subtitle">Providers &amp; tokens</h3>
+    <app-api-table [rows]="providerRows" kind="inputs" />
   </section>
 
   <app-global-config-note component="icon" />
@@ -251,25 +209,6 @@
       <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
       <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
     </p>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Token</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of styleTokens; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="styleTokens" kind="tokens" />
   </section>
 </div>

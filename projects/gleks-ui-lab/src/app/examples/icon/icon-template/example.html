@@ -1,0 +1,4 @@
+<gog-icon name="user" style="--gog-icon-size: 40px" />
+<!-- template wins over name outright; the registry is never consulted. -->
+<gog-icon name="user" [template]="initials" style="--gog-icon-size: 40px" />
+<ng-template #initials><strong>GG</strong></ng-template>

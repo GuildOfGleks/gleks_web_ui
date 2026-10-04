@@ -1,0 +1,11 @@
+<div>
+  <p>outer registration</p>
+  <span><gog-icon name="copy" /> copy</span>
+  <span><gog-icon name="cart" /> cart</span>
+</div>
+<!-- Inside, copy is the registered glyph, and cart from the outer set is still there. -->
+<div appNestedIcons>
+  <p>nested provideGogIcons</p>
+  <span><gog-icon name="copy" /> copy</span>
+  <span><gog-icon name="cart" /> cart</span>
+</div>
