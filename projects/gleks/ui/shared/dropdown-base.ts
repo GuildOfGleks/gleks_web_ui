@@ -43,7 +43,7 @@ import {
 } from './roving-focus';
 import { gogScrolledOutOfView } from './scrolled-out-of-view';
 import { GogVirtualWindow } from './virtual-window';
-import { GogDropdownFilterPosition, GogFloatLabelVariant, GogSize } from './types';
+import { GogFloatLabelVariant, GogSize } from './types';
 import { configurableBooleanAttribute } from './config';
 
 /** Context handed to a `gogDropdownChevron` template. */
@@ -155,8 +155,6 @@ const DEFAULT_SIZE: GogSize = 'md';
 const DEFAULT_ERROR_DISPLAY: GogErrorDisplay = 'manual';
 const DEFAULT_APPEND_TO_BODY = false;
 const DEFAULT_DROPDOWN_DIRECTION: GogDropdownDirection = 'auto';
-const DEFAULT_FILTER = false;
-const DEFAULT_FILTER_POSITION: GogDropdownFilterPosition = 'top';
 const DEFAULT_CLEAR_SELECTION_LABEL = 'Clear selection';
 
 /**
@@ -229,22 +227,6 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
    */
   readonly minWidth = input<string | null>(null);
   /**
-   * Whether the panel shows a search box that narrows the option list. Unset, falls back to
-   * `GOG_CONFIG.dropdown.filter`, then to `false`.
-   */
-  readonly filter = input<boolean | undefined, unknown>(undefined, {
-    transform: configurableBooleanAttribute,
-  });
-  readonly filterPlaceholder = input('Search...');
-  /**
-   * Which end of the panel the search box sticks to. Named to match `gog-multiselect`'s
-   * `controlsPosition`, which is the same idea for its select-all row. Unset, falls back to
-   * `GOG_CONFIG.dropdown.filterPosition`, then to `'top'`.
-   */
-  readonly filterPosition = input<GogDropdownFilterPosition | undefined>(undefined);
-  /** Shown in place of the list when the query matches nothing. */
-  readonly filterEmptyMessage = input('No matches');
-  /**
    * How an option is matched against the query. Left null, the resolved `optionLabel` is
    * matched case-insensitively as a substring — pass a function to search other fields, match
    * on a prefix, or plug in your own fuzzy matcher.
@@ -285,8 +267,6 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
     transform: configurableBooleanAttribute,
   });
   readonly disabled = input(false, { transform: booleanAttribute });
-  /** Projected `gogDropdownChevron` template, replacing the built-in chevron. */
-  protected readonly chevronSlot = contentChild(GogDropdownChevronDirective);
   /**
    * Full width of the container by default, matching every other field-style control.
    * Set to `false` to shrink the trigger to fit its selected label instead.
@@ -516,44 +496,14 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
   /** Whether to render the clear button right now — see `GogClearableState`. */
   protected readonly showClear = this.clearableState.isVisible;
 
-  protected readonly resolvedFilter = computed(() =>
-    resolveConfigured(this.filter(), this.globalConfig.dropdown?.filter, DEFAULT_FILTER),
-  );
-  protected readonly resolvedFilterPosition = computed(() =>
-    resolveConfigured(
-      this.filterPosition(),
-      this.globalConfig.dropdown?.filterPosition,
-      DEFAULT_FILTER_POSITION,
-    ),
-  );
-  /** Current search text. Cleared whenever the panel closes, so reopening starts fresh. */
-  protected readonly filterQuery = signal('');
-
   /**
    * The options actually rendered. Everything downstream — the loops, the keyboard navigation
    * target list, the panel height estimate, and multiselect's select-all — reads this rather
-   * than `options()`, so filtering stays consistent instead of only hiding rows visually.
+   * than `options()`. A subclass that narrows the list overrides this one signal — the panel's
+   * search box in `GogFilterableDropdownBase`, the typed query in `gog-autocomplete` — so
+   * filtering stays consistent instead of only hiding rows visually.
    */
-  protected readonly visibleOptions = computed(() => {
-    const query = this.filterQuery().trim();
-    if (!this.resolvedFilter() || query === '') return this.options();
-
-    const match = this.filterMatch();
-    if (match) return this.options().filter((option) => match(option, query));
-
-    const needle = query.toLowerCase();
-    return this.options().filter((option) => this.labelOf(option).toLowerCase().includes(needle));
-  });
-
-  protected onFilterInput(event: Event): void {
-    this.filterQuery.set((event.target as HTMLInputElement).value);
-    // Typing can take 10 000 options to 3. The window's range and the scroller's position have
-    // to reset *together*: leave the scroller where it was and the range is computed from a
-    // scrollTop that is past the end of the new list, so the panel renders rows 400-420 of a
-    // three-row list and shows nothing. The panel still looks right until you type, which is
-    // why this is the bug a reviewer does not see.
-    this.resetPanelScroll();
-  }
+  protected readonly visibleOptions: Signal<readonly TOption[]> = computed(() => this.options());
 
   /**
    * Scrolls `index` into view **without moving focus**, which is what a combobox needs: focus
@@ -982,7 +932,6 @@ export abstract class GogDropdownBase<TValue, TOption = GogDropdownOption>
     if (!this.isOpen()) return;
 
     this.isOpen.set(false);
-    this.filterQuery.set('');
     this.overlay.detach();
     // Closing is this control's equivalent of a blur, which is when a form control is
     // conventionally considered touched.

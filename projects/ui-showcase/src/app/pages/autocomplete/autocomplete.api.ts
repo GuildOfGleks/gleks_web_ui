@@ -62,24 +62,6 @@ export const AUTOCOMPLETE_API: readonly DocApi[] = [
         default: "'Clear selection'",
         config: 'GOG_CONFIG.labels.clearSelection',
       },
-      // Inherited from GogDropdownBase and never read here — this panel has no search box, the
-      // trigger is one. Deprecated on this component in 21.15.0, removed in 21.16.0.
-      { name: 'filter', type: 'boolean | undefined', default: 'deprecated — removed in 21.16.0' },
-      {
-        name: 'filterPlaceholder',
-        type: 'string',
-        default: 'deprecated — use placeholder; removed in 21.16.0',
-      },
-      {
-        name: 'filterPosition',
-        type: 'GogDropdownFilterPosition | undefined',
-        default: 'deprecated — removed in 21.16.0',
-      },
-      {
-        name: 'filterEmptyMessage',
-        type: 'string',
-        default: 'deprecated — use emptyMessage; removed in 21.16.0',
-      },
       { name: 'errorMessage', type: 'string', default: "''" },
       {
         name: 'errorDisplay',

@@ -1,8 +1,37 @@
 # Changelog
 
 All notable changes to `@guildofgleks/ui` are documented here. Format follows
-[Keep a Changelog](https://keepachangelog.com/en/1.0.0/); this project has not yet
-reached 1.0, so breaking changes may land in minor versions.
+[Keep a Changelog](https://keepachangelog.com/en/1.0.0/). **From 21.16.0 the package follows
+semantic versioning**: a patch fixes, a minor adds, and only a major breaks — see the README's
+_Versioning_ section. Before 21.16.0 a minor could carry a breaking change, and its entry said so.
+
+## [21.16.0] - planned
+
+**The release the 21 line is stable from.** It carries the last scheduled breaking change, and
+from here on the package follows semantic versioning: patches fix, minors add — new components
+included — and anything that breaks waits for the next major, which follows Angular's.
+`GOG_DEPRECATIONS` is `[]` again.
+
+### Removed
+
+- **`gog-autocomplete`'s `filter`, `filterPlaceholder`, `filterPosition` and
+  `filterEmptyMessage`**, deprecated in 21.15.0. They describe a search box inside the panel, which
+  an autocomplete does not have — its own text field is the filter — and they never did anything
+  on it. Binding one is now a template compile error: delete `filter` and `filterPosition`, and
+  move `filterPlaceholder` to `placeholder` and `filterEmptyMessage` to `emptyMessage`.
+  `filterMatch` stays: it does narrow the autocomplete's list.
+
+### Changed
+
+- **The panel search box moved out of `GogDropdownBase` into a new `GogFilterableDropdownBase`**,
+  which extends it and which `gog-select` and `gog-multiselect` now extend; `gog-autocomplete`
+  still extends `GogDropdownBase` and no longer inherits the four inputs above or the chevron slot
+  it never rendered. Both classes are exported only because they appear in the components' public
+  types, and neither is meant to be subclassed — but code that reached `filter`,
+  `filterPlaceholder`, `filterPosition`, `filterEmptyMessage` or `filterQuery` through a
+  `GogDropdownBase` reference now finds them on `GogFilterableDropdownBase` instead. Select and
+  multiselect behave exactly as before, and `GOG_CONFIG.dropdown.filter`/`filterPosition` still
+  reach exactly those two.
 
 ## [21.15.1] - 04.10.2026
 

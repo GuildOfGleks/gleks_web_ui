@@ -195,15 +195,15 @@
       </div>
     </div>
 
-    <h3>four deprecated inputs</h3>
+    <h3>no panel search box</h3>
     <p class="autocomplete-page__note">
-      <code>filter</code>, <code>filterPlaceholder</code>, <code>filterPosition</code> and
-      <code>filterEmptyMessage</code> are inherited from the same <code>GogDropdownBase</code> as
-      <code>gog-select</code>, and describe the search box <em>inside</em> a panel. There is no such
-      box here — the trigger is the search box — so they never did anything on this control. They
-      are deprecated on it since 21.15.0 and go in 21.16.0; use <code>placeholder</code> and
-      <code>emptyMessage</code>. <code>filterMatch</code> is not among them: the local filtering
-      above reads it.
+      <code>gog-select</code> and <code>gog-multiselect</code> can show a search box inside the
+      panel (<code>filter</code>, <code>filterPlaceholder</code>, <code>filterPosition</code>,
+      <code>filterEmptyMessage</code>). Here the trigger is the search box, so this control has none
+      of the four: until 21.16.0 it inherited them and they did nothing, and now binding one fails
+      to compile. Use <code>placeholder</code> and <code>emptyMessage</code>.
+      <code>filterMatch</code>
+      stays — the local filtering above reads it.
     </p>
   </app-doc-section>
 

@@ -805,8 +805,10 @@ Model: `value: string`. CVA: yes.
 #### `gog-select`
 
 Extends the shared listbox behaviour (`GogDropdownBase`) that also backs `gog-multiselect` and
-partly `gog-autocomplete` — placement, the append-to-body overlay, click-outside, keyboard nav,
-and CVA all come from there. Full shared input surface (documented once, applies to both select
+`gog-autocomplete` — placement, the append-to-body overlay, click-outside, keyboard nav, and CVA
+all come from there. The panel search box (`filter`, `filterPlaceholder`, `filterPosition`,
+`filterEmptyMessage`) and the chevron slot come from `GogFilterableDropdownBase` on top of it,
+which only select and multiselect extend. Full shared input surface (documented once, applies to both select
 and multiselect unless noted otherwise):
 
 | Input                                                  | Type                                    | Default                                                      | Notes                                                                               |
@@ -905,25 +907,25 @@ the app rather than per dropdown, which is usually the right place for it.
 #### `gog-autocomplete`
 
 Shares `GogDropdownBase` too, but the trigger is a real `<input>` (combobox pattern,
-`aria-activedescendant`), not a listbox button — so it does **not** reuse the base's built-in
-panel-filter box; it filters/searches off what's typed in the field itself.
+`aria-activedescendant`), not a listbox button — so it has **no** panel search box; it
+filters/searches off what's typed in the field itself.
 
-| Input                                                                                                  | Type                   | Default        | Notes                                                                                                                                    |
-| ------------------------------------------------------------------------------------------------------ | ---------------------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| _(all the shared `GogDropdownBase` inputs above except `filter`/`filterPlaceholder`/`filterPosition`)_ |                        |                |                                                                                                                                          |
-| `filterLocal`                                                                                          | `boolean`              | `true`         | narrow `options` client-side as you type; turn **off** when `gogSearch` already returns a filtered server list (avoids double-filtering) |
-| `minLength`                                                                                            | `number \| undefined`  | `1`            | via `GOG_CONFIG.autocomplete.minLength`                                                                                                  |
-| `openOnFocus`                                                                                          | `boolean \| undefined` | `true`         | via `GOG_CONFIG.autocomplete.openOnFocus`                                                                                                |
-| `searchDebounce`                                                                                       | `number \| undefined`  | `300`          | ms before `gogSearch` fires; via `GOG_CONFIG.autocomplete.searchDebounce`                                                                |
-| `loading`                                                                                              | `boolean`              | `false`        | shows a spinner in the trailing slot                                                                                                     |
-| `emptyMessage`                                                                                         | `string`               | `'No matches'` |                                                                                                                                          |
-| `forceSelection`                                                                                       | `boolean`              | `true`         | see note below                                                                                                                           |
-| `ripple`                                                                                               | `boolean \| undefined` | `false`        | press ripple; via `GOG_CONFIG.ripple.enabled`                                                                                            |
+| Input                                                                                   | Type                   | Default        | Notes                                                                                                                                    |
+| --------------------------------------------------------------------------------------- | ---------------------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| _(all the shared inputs above except the panel search box's four and the chevron slot)_ |                        |                |                                                                                                                                          |
+| `filterLocal`                                                                           | `boolean`              | `true`         | narrow `options` client-side as you type; turn **off** when `gogSearch` already returns a filtered server list (avoids double-filtering) |
+| `minLength`                                                                             | `number \| undefined`  | `1`            | via `GOG_CONFIG.autocomplete.minLength`                                                                                                  |
+| `openOnFocus`                                                                           | `boolean \| undefined` | `true`         | via `GOG_CONFIG.autocomplete.openOnFocus`                                                                                                |
+| `searchDebounce`                                                                        | `number \| undefined`  | `300`          | ms before `gogSearch` fires; via `GOG_CONFIG.autocomplete.searchDebounce`                                                                |
+| `loading`                                                                               | `boolean`              | `false`        | shows a spinner in the trailing slot                                                                                                     |
+| `emptyMessage`                                                                          | `string`               | `'No matches'` |                                                                                                                                          |
+| `forceSelection`                                                                        | `boolean`              | `true`         | see note below                                                                                                                           |
+| `ripple`                                                                                | `boolean \| undefined` | `false`        | press ripple; via `GOG_CONFIG.ripple.enabled`                                                                                            |
 
-**`filter`, `filterPlaceholder`, `filterPosition` and `filterEmptyMessage` are deprecated on
-`gog-autocomplete`** (since 21.15.0, removed in 21.16.0). They are inherited from the shared base
-and describe a search box inside the panel, which this control does not have — they never did
-anything here. Do not bind them: use `placeholder` and `emptyMessage`. `filterMatch` does apply.
+**`filter`, `filterPlaceholder`, `filterPosition` and `filterEmptyMessage` do not exist on
+`gog-autocomplete`** (removed in 21.16.0; deprecated since 21.15.0). They describe a search box
+inside the panel, which this control does not have, and never did anything here — binding one is
+now a template compile error. Use `placeholder` and `emptyMessage`. `filterMatch` does apply.
 
 Outputs: `gogSearch: string` (debounced query — wire your server lookup here),
 `gogLoadMore: void` (panel scrolled to the end — fetch the next page).
@@ -2227,7 +2229,8 @@ GOG_DEPRECATIONS; // []
 list is generated from the library's source — tags for symbols, stylesheets for tokens — so it
 matches what actually still resolves in the version you installed.
 
-**As of 21.7.0 the list is empty on both halves.** Nothing in the TypeScript API is deprecated, and
+**As of 21.16.0 the list is empty on both halves** (it was in 21.7.0 too, until 21.15.0 deprecated
+`gog-autocomplete`'s four panel-filter inputs, removed in 21.16.0). Nothing in the TypeScript API is deprecated, and
 the three abbreviated token prefixes that used to fill the token half are gone rather than
 deprecated — see the removal table below. An empty list here means exactly that: nothing to
 migrate away from right now.

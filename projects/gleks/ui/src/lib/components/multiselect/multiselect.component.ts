@@ -19,7 +19,7 @@ import {
 } from '@angular/core';
 
 import { resolveConfigured } from '@guildofgleks/ui/shared';
-import { GogDropdownBase, type GogDropdownOption } from '@guildofgleks/ui/shared';
+import { GogFilterableDropdownBase, type GogDropdownOption } from '@guildofgleks/ui/shared';
 import { ButtonComponent } from '../button/button.component';
 import { GogRippleDirective } from '../ripple/ripple.directive';
 import { IconComponent } from '../icon/icon.component';
@@ -67,7 +67,7 @@ export class GogMultiselectClearIconDirective {
 export class MultiselectComponent<
   TOption = GogDropdownOption,
   TValue = string | number,
-> extends GogDropdownBase<TValue[], TOption> {
+> extends GogFilterableDropdownBase<TValue[], TOption> {
   readonly showControls = input(false, { transform: booleanAttribute });
   /** Where the "select all"/"clear" row sits relative to the option list. Sticky either way. */
   readonly controlsPosition = input<'top' | 'bottom'>('top');

@@ -171,10 +171,9 @@ export interface GogGlobalConfig {
    * - `appendToBody` and `direction` reach `gog-select`, `gog-multiselect`,
    *   `gog-autocomplete` (all three through `GogDropdownBase`) and `gog-datepicker`, which
    *   resolves the same pair itself.
-   * - `filter` and `filterPosition` reach `gog-select` and `gog-multiselect` only.
-   *   `gog-autocomplete` inherits both inputs from the same base class and renders no filter
-   *   box for them — its own text field *is* the filter, so a second search box inside the
-   *   panel would be a duplicate. Setting these does nothing to an autocomplete.
+   * - `filter` and `filterPosition` reach `gog-select` and `gog-multiselect` only, through
+   *   `GogFilterableDropdownBase`. `gog-autocomplete` has no panel search box — its own text
+   *   field *is* the filter — so it has neither input, and setting these does nothing to it.
    */
   dropdown?: {
     /**

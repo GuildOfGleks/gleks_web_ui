@@ -3,6 +3,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 import { AutocompleteComponent } from './autocomplete.component';
+import { MultiselectComponent } from '../multiselect/multiselect.component';
+import { SelectComponent } from '../select/select.component';
 import { GOG_CONFIG } from '@guildofgleks/ui/shared';
 import type { GogDropdownOption } from '@guildofgleks/ui/shared';
 
@@ -131,6 +133,21 @@ describe('AutocompleteComponent', () => {
         'Animation',
       ]);
     });
+  });
+
+  it('has none of the panel search box inputs, which select and multiselect keep', () => {
+    // Inherited from GogDropdownBase until 21.16.0, where they did nothing on this component;
+    // they now live on GogFilterableDropdownBase, which only the two button-triggered ones extend.
+    const panelFilter = ['filter', 'filterPlaceholder', 'filterPosition', 'filterEmptyMessage'];
+    const inputsOf = (type: unknown) =>
+      Object.keys((type as { ɵcmp: { inputs: Record<string, unknown> } }).ɵcmp.inputs);
+
+    for (const name of panelFilter) {
+      expect(inputsOf(AutocompleteComponent)).not.toContain(name);
+      expect(inputsOf(SelectComponent)).toContain(name);
+      expect(inputsOf(MultiselectComponent)).toContain(name);
+    }
+    expect(inputsOf(AutocompleteComponent)).toContain('filterMatch');
   });
 
   it('should filter locally, case-insensitively', () => {

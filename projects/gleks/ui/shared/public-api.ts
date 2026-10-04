@@ -18,6 +18,7 @@ export * from './control-id';
 export * from './date-utils';
 export * from './deprecations';
 export * from './dropdown-base';
+export * from './filterable-dropdown-base';
 export * from './dropdown-overlay';
 export * from './dropdown-position';
 export * from './error-state';

@@ -9,7 +9,7 @@ import {
   viewChild,
 } from '@angular/core';
 
-import { GogDropdownBase, type GogDropdownOption } from '@guildofgleks/ui/shared';
+import { GogFilterableDropdownBase, type GogDropdownOption } from '@guildofgleks/ui/shared';
 import { GogRippleDirective } from '../ripple/ripple.directive';
 import { IconComponent } from '../icon/icon.component';
 import { ScrollComponent } from '../scroll/scroll.component';
@@ -29,7 +29,7 @@ import { configurableBooleanAttribute } from '@guildofgleks/ui/shared';
 export class SelectComponent<
   TOption = GogDropdownOption,
   TValue = string | number | null,
-> extends GogDropdownBase<TValue, TOption> {
+> extends GogFilterableDropdownBase<TValue, TOption> {
   readonly inputId = input('');
 
   /**

@@ -113,6 +113,7 @@ export { GOG_CONFIG, provideGogConfig, resolveConfigured } from '@guildofgleks/u
 export type { GogGlobalConfig } from '@guildofgleks/ui/shared';
 export {
   GogDropdownBase,
+  GogFilterableDropdownBase,
   GogDropdownChevronDirective,
   GogDropdownOptionDirective,
 } from '@guildofgleks/ui/shared';

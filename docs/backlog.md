@@ -48,18 +48,6 @@ not worth carrying here.
   region when there is no `heading`") that was never built — the host has no role and needs no
   name, so the input would have nothing to name. The plan's table is what is wrong, not the code.
 
-- **21.16.0: remove `gog-autocomplete`'s four deprecated filter inputs, by splitting the base.**
-  Deprecated in 21.15.0 (`@deprecated` tags on the autocomplete's own restatements, listed in
-  `GOG_DEPRECATIONS`); `check:deprecations` fails once 21.16.0 is the version. The removal is a
-  structural move, not four deletions: `filter`, `filterPlaceholder`, `filterPosition`,
-  `filterEmptyMessage`, `resolvedFilter`, `resolvedFilterPosition`, `filterQuery`,
-  `onFilterInput`, the filter half of `visibleOptions` and the `chevronSlot` query go into a
-  second abstract base that `gog-select` and `gog-multiselect` extend, and the autocomplete keeps
-  extending `GogDropdownBase` without them. `close()` resets `filterQuery` today and has to move
-  with it. `GogDropdownBase` is exported, so the move is its own changelog line. The chevron slot
-  on an autocomplete never rendered and is documented as such; with the query gone it is simply
-  unread.
-
 - ~~**The dropdown panel's open-direction decision rests on a row height that is wrong in every
   theme.**~~ **Closed 2026-09-12, in the in-progress 21.13.0.** Found the same day by
   `docs/virtualization.md`'s iteration 0, which existed to check exactly this before anything new
