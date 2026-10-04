@@ -44,6 +44,16 @@ not worth carrying here.
   `polite` alert that updates every second should speak every second). Until then the Alert page
   says both, and recommends `live="off"` for anything that does not need announcing.
 
+  **Orca, checked by the owner on 2026-10-04** (Orca 50.2, Chrome 154, Fedora 44, GNOME on
+  Wayland): every component read, and an alert's text — and a `gog-empty-state`'s, which uses the
+  same copy — was read **once**, not twice, reading down the page. So "heard twice" does not happen
+  in Orca; NVDA, JAWS and VoiceOver are still unchecked, and VoiceOver's timing is still the open
+  question for clearing the copy. **Setup trap worth keeping**: Orca heard nothing of any page at
+  first — only key echo and the GTK file chooser — because Chrome had been started before Orca with
+  `org.gnome.desktop.interface toolkit-accessibility` off. Chrome decides at startup whether to
+  expose its accessibility tree; restarting it after Orca, with `--force-renderer-accessibility`,
+  fixed it. A silent screen reader on Linux is a setup problem until shown otherwise.
+
   Also noticed beside it: `docs/alert.md`'s API table lists an `ariaLabel` input ("Names the
   region when there is no `heading`") that was never built — the host has no role and needs no
   name, so the input would have nothing to name. The plan's table is what is wrong, not the code.
