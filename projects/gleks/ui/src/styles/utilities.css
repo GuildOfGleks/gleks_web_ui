@@ -166,6 +166,26 @@
 }
 
 /*
+ * `gog-avatar-group`'s rules for the avatars projected into it, which its scoped stylesheet cannot
+ * reach. Each avatar steps back over the one before it by a fraction of the diameter, and a ring in
+ * the group's ground colour separates the two edges. `box-shadow` rather than a border, so the
+ * ring follows the avatar's own corner and adds nothing to its size.
+ */
+.gog-avatar-group > .gog-avatar {
+  margin-inline-start: calc(-1 * var(--gog-avatar-size) * var(--gog-avatar-group-overlap-ratio));
+  box-shadow: 0 0 0 var(--gog-avatar-group-ring-width) var(--gog-avatar-group-ring-color);
+}
+
+.gog-avatar-group > .gog-avatar.gog-avatar-group__overflowed {
+  display: none;
+}
+
+/* The `+N` draws up to three characters ("99+") where an avatar draws two. */
+.gog-avatar-group__more {
+  --gog-avatar-initials-ratio: var(--gog-avatar-group-more-initials-ratio);
+}
+
+/*
  * `gog-collapsible`'s trigger and content classes are global: the directives mark elements the
  * consumer projects, which the component's scoped stylesheet cannot reach.
  */

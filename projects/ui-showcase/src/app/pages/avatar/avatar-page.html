@@ -101,6 +101,52 @@
   </app-doc-section>
 
   <app-doc-section
+    id="group"
+    title="Group"
+    lead="gog-avatar-group overlaps the avatars projected into it, rings them in the ground colour, and turns the ones past max into a named +N."
+  >
+    <h3>max</h3>
+    <p class="avatar-page__note">
+      <code>max</code> counts the <code>+N</code> avatar, so the row's width is known from
+      <code>max</code> alone: seven people at <code>max="5"</code> draw four and <code>+3</code>.
+      The ones not drawn leave the accessibility tree; the <code>+N</code> is named for them ("3
+      more", <code>GOG_CONFIG.labels.moreAvatars</code>).
+    </p>
+    <div class="avatar-page__stack">
+      @for (max of maxes; track $index) {
+        <div class="avatar-page__row">
+          <code class="avatar-page__caption">max={{ max ?? 'unset' }}</code>
+          <gog-avatar-group [max]="max" ariaLabel="Team">
+            @for (person of team; track person.name) {
+              <gog-avatar [name]="person.name" [src]="person.src" />
+            }
+          </gog-avatar-group>
+        </div>
+      }
+    </div>
+
+    <h3>size, and a long tail</h3>
+    <p class="avatar-page__note">
+      The group's <code>size</code> reaches every avatar through <code>--gog-avatar-size</code>, so
+      the row is one size whatever each avatar says. Past 99 the <code>+N</code> draws
+      <code>99+</code>, the way <code>gogBadge</code> caps its count; its name keeps the exact
+      number.
+    </p>
+    <div class="avatar-page__stack">
+      @for (size of sizes; track size) {
+        <div class="avatar-page__row">
+          <code class="avatar-page__caption">{{ size }}</code>
+          <gog-avatar-group [size]="size" [max]="4" ariaLabel="Members">
+            @for (person of crowd; track person) {
+              <gog-avatar [name]="person" />
+            }
+          </gog-avatar-group>
+        </div>
+      }
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
     id="accessibility"
     title="Accessibility"
     lead="Named once by name, as an image; hidden when decorative, and when it has no name to give."

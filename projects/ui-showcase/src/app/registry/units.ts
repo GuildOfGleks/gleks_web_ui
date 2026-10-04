@@ -4,6 +4,7 @@ import {
   AlertComponent,
   AutocompleteComponent,
   AvatarComponent,
+  AvatarGroupComponent,
   ButtonComponent,
   ButtonToggleGroupComponent,
   CardComponent,
@@ -234,7 +235,7 @@ export const UNITS: readonly GogUnit[] = [
     name: 'Avatar',
     group: 'display',
     entry: 'root',
-    parts: [cmp(AvatarComponent)],
+    parts: [cmp(AvatarComponent), cmp(AvatarGroupComponent)],
   },
   {
     id: 'badge',

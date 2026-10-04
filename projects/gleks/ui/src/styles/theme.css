@@ -636,12 +636,14 @@
   --gog-avatar-md-size: var(--gog-skeleton-circle-size-md);
   --gog-avatar-lg-size: var(--gog-skeleton-circle-size-lg);
   --gog-avatar-slg-size: var(--gog-skeleton-circle-size-slg);
-  --gog-avatar-bg: var(--gog-accent-pale);
+  /* The fallback for an engine without color-mix(); the supported value is in the block below. */
+  --gog-avatar-bg: var(--gog-hover-color);
   --gog-avatar-color: var(--gog-text-color);
   --gog-avatar-font-family: var(--gog-font-body);
   --gog-avatar-font-weight: var(--gog-font-weight-semibold);
-  /* Two capitals inside the circle's inscribed square (side d/sqrt(2), about 0.71d): measured on
-     the widest pair ("WM") at 0.4 of the diameter, they take 0.59d, inside it at every size. */
+  /* The letters' box stays inside the circle. Measured across the eleven themes, the widest pair is
+     "WW" in `parchment`, 0.80d wide at this ratio and 0.28d tall: its corners sit 0.42d from the
+     centre, inside the 0.5d radius. "AL" is 0.49d, "GH" 0.6d. */
   --gog-avatar-initials-ratio: 0.4;
   /* Of the box, as the basis the glyph is drawn from: the icon is --gog-icon-size (1.2em) of it,
      so 0.5 draws the user glyph at 0.6 of the diameter. */
@@ -652,6 +654,17 @@
   /* How far in from its box corner a circle crosses the diagonal: (1 - 1/sqrt(2)) / 2 of the
      diameter. A `gogBadge` on a round avatar anchors there instead of at the empty box corner. */
   --gog-avatar-badge-inset-ratio: 0.1464;
+  /* How far each avatar in a gog-avatar-group steps back over the one before, of the diameter. The
+     next avatar and its ring cover the trailing (ratio * d + ring) of this one, and a typical pair
+     of initials ("GH", 0.6d) ends 0.2d from the edge: an eighth plus a 2px ring leaves it uncovered
+     at every size. The widest pairs ("WW", 0.75-0.8d) lose a few pixels of their outer stroke. */
+  --gog-avatar-group-overlap-ratio: 0.125;
+  /* Separates two overlapping edges; set the colour to whatever the group sits on. */
+  --gog-avatar-group-ring-width: var(--gog-control-border-width);
+  --gog-avatar-group-ring-color: var(--gog-background-color);
+  /* Three characters where an avatar draws two: "99+" is 0.51d at this ratio (0.69d at 0.4), so it
+     stays narrower than a typical pair of initials. */
+  --gog-avatar-group-more-initials-ratio: 0.3;
 
   /* ── Collapsible ───────────────────────────────────────────────────────────
      No owned markup: the `.gog-collapsible__*` rules live in utilities.css, because they style content
@@ -2348,6 +2361,10 @@
     /* Translucent ink rather than a fixed colour, so a bone stands off whatever it sits on by the
        same step — a filled card's tint as much as the page. A fixed colour vanished on `filled`. */
     --gog-skeleton-base: color-mix(in srgb, var(--gog-text-color) 12%, transparent);
+    /* The skeleton's step, made opaque: an avatar in a group lies over the one before it, and a
+       translucent fill would show that one through. accent-pale was the first choice and sat within
+       a hair of the page in the light themes, so overlapping avatars merged into one band. */
+    --gog-avatar-bg: color-mix(in srgb, var(--gog-text-color) 12%, var(--gog-surface-color));
     --gog-skeleton-shine: color-mix(in srgb, var(--gog-skeleton-base), white 35%);
     --gog-slider-track-bg: color-mix(in srgb, var(--gog-text-color) 30%, var(--gog-border-color));
     --gog-slider-thumb-glow-color: color-mix(in srgb, var(--gog-accent-bright) 40%, transparent);

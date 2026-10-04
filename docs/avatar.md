@@ -98,7 +98,7 @@ is `AL` and "Plato" is `P`.
 | #   | What                                                                                                                                                                     | Status        |
 | --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------- |
 | 1   | `gog-avatar`: the fallback chain including the pre-hydration failure, the name rule, sizes, shapes, tokens, specs, showcase page, `AGENTS.md`/`README.md`/`CHANGELOG.md` | ✅ 2026-10-04 |
-| 2   | `gog-avatar-group`: overlap, a ring in the surface colour, `max` with a `+N` that is named ("3 more")                                                                    | open          |
+| 2   | `gog-avatar-group`: overlap, a ring in the surface colour, `max` with a `+N` that is named ("3 more")                                                                    | ✅ 2026-10-04 |
 
 Iteration 2 is separate because it answers a different question — how a row of avatars overlaps
 and what the overflow says — and iteration 1 is complete without it.
@@ -106,8 +106,8 @@ and what the overflow says — and iteration 1 is complete without it.
 ## Geometry, colour and the gates
 
 - **Sizes** alias `--gog-skeleton-circle-size-*` (§3); nothing new is chosen.
-- **Initials** are drawn at a ratio of the box: two capitals must sit inside the circle's inscribed
-  square (side `d/√2`), measured in a browser on the widest pair the fallback can produce.
+- **Initials** are drawn at a ratio of the box: the letters' box must stay inside the circle,
+  measured in a browser on the widest pair the fallback can produce.
 - **The icon** follows `styling.instructions.md`'s rule for a mark in a box: one declaration sizes
   the glyph's basis, and the box is the avatar.
 - **`check:contrast`** gets the initials/icon colour against the avatar's fill, at 4.5:1 — the
@@ -140,7 +140,44 @@ avatar in the showcase rather than by reading code.**
 The picture takes the host's corner with `border-radius: inherit` instead.
 
 Measured in Chrome: the five sizes are 24/32/48/64/96px, equal to the skeleton circle at every
-step; "AL" at 0.4 of the diameter is 0.49d wide, inside the inscribed square's 0.71d; the
+step; "AL" at 0.4 of the diameter is 0.49d wide; the
 `src fails` row of the showcase, a URL that 404s on a server-rendered page, shows initials and no
 broken image. `check:contrast` measures the initials on the fill in all eleven themes (22 pairs,
 all passing).
+
+## Iteration 2, as it finished
+
+`gog-avatar-group`: projected avatars, `max` counting the `+N`, a `+N` named for what it hides
+(`GOG_CONFIG.labels.moreAvatars`, a formatter like `page`), one size for the row through
+`--gog-avatar-size`, and the overlap and ring in `utilities.css`, since a scoped stylesheet cannot
+reach projected content.
+
+**The overlap was derived wrong first, and so was iteration 1's note it leaned on.** Iteration 1's
+token comment said the widest pair of initials ("WM") takes 0.59d at a ratio of 0.4. That number
+was never measured. Measured across the eleven themes it is 0.75d, and the widest pair is "WW" in
+`parchment` at 0.80d; "AL" is 0.49d and "GH" 0.6d. The group was then built on "the initials take
+the middle 0.49d, so a quarter of overlap covers none of them" — and in the showcase "GH" read as
+"GI". Two corrections:
+
+- **The initials ratio stands, on the right criterion.** The inscribed square was too strict a
+  test: what matters is that the letters' box stays inside the circle, and even "WW" at 0.80d by
+  0.28d has its corners 0.42d from the centre, inside the 0.5d radius.
+- **The overlap is an eighth, the ring one control border.** The next avatar and its ring cover
+  the trailing `ratio * d + ring` of this one; a typical pair ends 0.2d from the edge, so an eighth
+  plus 2px leaves it uncovered — measured at most 0.2px of the initials' box covered, at `xsm`.
+  The widest pairs lose a few pixels of outer stroke, which is stated rather than hidden.
+
+**And the fill changed, found by looking at a group on a card in the light theme.** Iteration 1
+filled the avatar with `--gog-accent-pale`, which in the light themes sits within a hair of the page:
+a single avatar read, but in a group the ring (the page colour) vanished against the fill and four
+avatars merged into one band. The fill is now the skeleton's step made opaque —
+`color-mix(in srgb, var(--gog-text-color) 12%, var(--gog-surface-color))`, with `--gog-hover-color`
+where `color-mix()` is unsupported — so it stands off any ground by the same amount, and the
+placeholder and the avatar it becomes are one tone. Opaque rather than the skeleton's translucent
+ink, because an avatar in a group lies over the one before it.
+
+The lesson is the project's usual one, paid for again: a number in a comment that reads like a
+measurement is believed by the next piece of work built on it.
+
+Measured in Chrome: each avatar steps 0.875d along the row at all five sizes; `99+` at 0.3 of the diameter is 0.51d; the accessibility tree of a `max="5"` group of seven
+reads four images and `image "3 more"`.

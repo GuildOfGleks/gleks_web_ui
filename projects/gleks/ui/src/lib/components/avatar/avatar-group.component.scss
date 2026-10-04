@@ -1,0 +1,12 @@
+/*
+ * The rules for the projected avatars — overlap, ring, the ones past `max` — are in utilities.css:
+ * a scoped stylesheet cannot reach projected content. This one lays out the row itself.
+ */
+:host {
+  display: inline-flex;
+  align-items: center;
+  /* Left of the first avatar's own overlap: the row starts where its first avatar does. */
+  padding-inline-start: calc(
+    var(--gog-avatar-size, var(--gog-avatar-md-size)) * var(--gog-avatar-group-overlap-ratio)
+  );
+}

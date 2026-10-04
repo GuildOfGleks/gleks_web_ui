@@ -353,7 +353,7 @@ parent's config**, one level deep per key — it does not replace it.
 | `paginator`    | `showPageSizeSelect`, `pageSizeOptions`                                               | `gog-paginator`, and through it `gog-table`'s built-in pagination.                                                                                                                                                                                                                                                                                                                                                                         |
 | `toast`        | `position`, `duration`                                                                | `ToastService`.                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | `theme`        | `storageKey`, `defaultTheme`, `followSystem`, `lightTheme`, `darkTheme`               | `ThemeService`. All off/neutral by default — see below.                                                                                                                                                                                                                                                                                                                                                                                    |
-| `labels`       | every fixed string the library renders — see below                                    | inputfield, textarea, select, multiselect, autocomplete, datepicker, calendar, paginator, table, `DialogService`, `ToastService`.                                                                                                                                                                                                                                                                                                          |
+| `labels`       | every fixed string the library renders — see below                                    | inputfield, textarea, select, multiselect, autocomplete, datepicker, calendar, paginator, table, avatar-group, `DialogService`, `ToastService`.                                                                                                                                                                                                                                                                                            |
 
 Anything visual does **not** belong here — override the `--gog-*` token instead.
 
@@ -398,9 +398,10 @@ provideGogConfig({
     hours: 'Stunden',
     minutes: 'Minuten',
     seconds: 'Sekunden',
-    // The one non-string field: it interpolates the page number, and word order and
-    // agreement around a number vary by language, so it takes a formatter.
+    // The two non-string fields: they interpolate a number, and word order and agreement
+    // around a number vary by language, so they take a formatter.
     page: (page, isCurrent) => (isCurrent ? `Seite ${page}` : `Zu Seite ${page} wechseln`),
+    moreAvatars: (count) => `${count} weitere`, // gog-avatar-group's +N avatar
   },
 });
 ```
@@ -1281,6 +1282,35 @@ button**: put it inside a `gog-button` (or `gogMenuTrigger`), name the button, a
 anything. `--gog-avatar-size` overrides the diameter on one instance. **Status** is `gogBadge` on
 the avatar — no `status` input; on a circle the badge sits on the circle rather than in the empty
 corner of its box, and its text reaches a screen reader as the avatar's description.
+
+#### `gog-avatar-group`
+
+A row of overlapping `gog-avatar`s, with a `+N` for the ones past `max`. Project the avatars; each
+keeps its own inputs.
+
+| Input       | Type                  | Default                     |
+| ----------- | --------------------- | --------------------------- |
+| `max`       | `number \| null`      | `null` — draw every avatar  |
+| `size`      | `GogSize`             | `'md'`                      |
+| `ariaLabel` | `string \| undefined` | `undefined` — names the row |
+
+```html
+<gog-avatar-group [max]="4" size="sm" ariaLabel="Assignees">
+  @for (person of assignees; track person.id) {
+  <gog-avatar [name]="person.name" [src]="person.photoUrl" />
+  }
+</gog-avatar-group>
+```
+
+- **`max` counts the `+N` avatar**: seven avatars at `max="4"` draw three and `+4`, so the row's
+  width is known from `max`. The ones not drawn are `display: none` — out of the accessibility tree
+  — and the `+N` is named for them: "4 more", from `GOG_CONFIG.labels.moreAvatars`
+  (`(count) => string`). Past 99 it draws `99+`; the name keeps the exact count.
+- **The group's `size` wins** over each avatar's own: it sets `--gog-avatar-size` on itself, and
+  the avatars inherit it.
+- **It is `role="group"`**; give it an `ariaLabel` saying what the people are to the content.
+- **The ring between avatars is the page background** (`--gog-avatar-group-ring-color`). On a card
+  or a panel, set it to that surface: `style="--gog-avatar-group-ring-color: var(--gog-surface-color)"`.
 
 #### `[gogBadge]` — directive, not a component
 

@@ -456,7 +456,7 @@ dropdowns, always for the menu.
 | Layout & disclosure | `gog-accordion`, `gog-tabs` (+ `gog-tab`), `gog-collapsible`, `gog-card`, `gog-panel`, `gog-divider`, `gog-scroll`                                                                                                |
 | Overlays            | `gog-dialog`, `gog-confirmation-dialog`, `gog-toast` (+ `gog-toast-container`), `gog-menu` (+ `gogMenuTrigger` / `gogMenuItem`)                                                                                   |
 | Feedback            | `gog-spinner`, `gog-spinner-overlay`, `gog-progressbar`, `gog-skeleton`, `gog-alert`                                                                                                                              |
-| Content             | `gog-icon`, `gog-avatar`                                                                                                                                                                                          |
+| Content             | `gog-icon`, `gog-avatar` (+ `gog-avatar-group`)                                                                                                                                                                   |
 
 **Directives:** `gogButton` (a link that looks like a button), `gogTooltip`, `gogBadge`,
 `gogRipple` (a press wash on any element), `gogCollapsibleTrigger`, `gogCollapsibleContent`,

@@ -9,6 +9,7 @@ import {
   CardComponent,
   CheckboxComponent,
   AvatarComponent,
+  AvatarGroupComponent,
   ChipComponent,
   CollapsibleComponent,
   DividerComponent,
@@ -118,6 +119,7 @@ import {
     CardComponent,
     CheckboxComponent,
     AvatarComponent,
+    AvatarGroupComponent,
     ChipComponent,
     CollapsibleComponent,
     DatepickerComponent,
@@ -199,6 +201,7 @@ export class SpecimenPage {
   protected readonly sessions = SESSIONS;
 
   protected readonly fullName = signal('Mila Kovacs');
+  protected readonly buyers = ['Ana Petrova', 'Jonas Berg', 'Lea Novak', 'Tomas Ruiz', 'Yuki Sato'];
   protected readonly email = signal('mila@');
   protected readonly website = signal('gleks.example');
   protected readonly bio = signal('Runs the finance team. Prefers spreadsheets to meetings.');

@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import {
   AvatarComponent,
+  AvatarGroupComponent,
   GogBadgeDirective,
   SkeletonComponent,
   type GogAvatarShape,
@@ -33,6 +34,7 @@ interface Fallback {
   selector: 'app-avatar-page',
   imports: [
     AvatarComponent,
+    AvatarGroupComponent,
     GogBadgeDirective,
     SkeletonComponent,
     DocAttrs,
@@ -75,4 +77,16 @@ export class AvatarPage {
   }
 
   protected readonly loading = signal(true);
+
+  protected readonly team: readonly { readonly name: string; readonly src: string | null }[] = [
+    { name: 'Ada Lovelace', src: this.ada },
+    { name: 'Grace Hopper', src: null },
+    { name: 'Alan Turing', src: this.grace },
+    { name: 'Edsger Dijkstra', src: null },
+    { name: 'Barbara Liskov', src: null },
+    { name: 'Donald Knuth', src: '/no-such-avatar.png' },
+    { name: 'Margaret Hamilton', src: null },
+  ];
+  protected readonly maxes: readonly (number | null)[] = [null, 5, 3];
+  protected readonly crowd = Array.from({ length: 140 }, (_, i) => `Member ${i + 1}`);
 }

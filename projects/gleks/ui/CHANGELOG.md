@@ -18,6 +18,13 @@ _Versioning_ section. Before 21.16.0 a minor could carry a breaking change, and 
   name hides itself. Five sizes that are `gog-skeleton`'s circle by reference — so the skeleton is
   its placeholder — and `shape="circle" | "rounded"`. New exports: `AvatarComponent`,
   `GogAvatarShape`, `gogAvatarInitials`. New tokens: `--gog-avatar-*`. Plan in `docs/avatar.md`.
+- **`gog-avatar-group`** — a row of projected `gog-avatar`s that overlap by an eighth of the
+  diameter, ringed in the ground colour, with `max` (which counts the `+N` avatar, so the row's
+  width is known from it) and a `+N` named for the avatars it stands for ("4 more"). The ones past
+  `max` leave the accessibility tree. Its `size` reaches every avatar through
+  `--gog-avatar-size`; it is `role="group"`, named by `ariaLabel`. New label:
+  `GOG_CONFIG.labels.moreAvatars`, a `(count) => string` formatter like `page`. New export:
+  `AvatarGroupComponent`.
 
 ### Changed
 

@@ -1,4 +1,4 @@
-import { AvatarComponent } from '@guildofgleks/ui';
+import { AvatarComponent, AvatarGroupComponent } from '@guildofgleks/ui';
 
 import type { DocApi } from '../../doc/doc-api';
 
@@ -13,6 +13,15 @@ export const AVATAR_API: readonly DocApi[] = [
       { name: 'size', type: 'GogSize', default: "'md'" },
       { name: 'shape', type: 'GogAvatarShape', default: "'circle'" },
       { name: 'decorative', type: 'boolean', default: 'false' },
+    ],
+    outputs: [],
+  },
+  {
+    type: AvatarGroupComponent,
+    inputs: [
+      { name: 'max', type: 'number | null', default: 'null (draw every avatar)' },
+      { name: 'size', type: 'GogSize', default: "'md'" },
+      { name: 'ariaLabel', type: 'string | undefined', default: 'undefined' },
     ],
     outputs: [],
   },

@@ -35,3 +35,9 @@
   font-size: var(--gog-text-xs);
   max-width: 60rem;
 }
+
+.avatar-page__caption {
+  min-width: 6rem;
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-xs);
+}

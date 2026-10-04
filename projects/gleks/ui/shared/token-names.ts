@@ -200,6 +200,10 @@ export type GogTokenName =
   | '--gog-avatar-color'
   | '--gog-avatar-font-family'
   | '--gog-avatar-font-weight'
+  | '--gog-avatar-group-more-initials-ratio'
+  | '--gog-avatar-group-overlap-ratio'
+  | '--gog-avatar-group-ring-color'
+  | '--gog-avatar-group-ring-width'
   | '--gog-avatar-icon-ratio'
   | '--gog-avatar-initials-ratio'
   | '--gog-avatar-lg-size'
@@ -2050,6 +2054,10 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-avatar-color',
       '--gog-avatar-font-family',
       '--gog-avatar-font-weight',
+      '--gog-avatar-group-more-initials-ratio',
+      '--gog-avatar-group-overlap-ratio',
+      '--gog-avatar-group-ring-color',
+      '--gog-avatar-group-ring-width',
       '--gog-avatar-icon-ratio',
       '--gog-avatar-initials-ratio',
       '--gog-avatar-lg-size',

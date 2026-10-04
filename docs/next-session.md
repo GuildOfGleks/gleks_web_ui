@@ -4,11 +4,12 @@
 line is stable from: semantic versioning from here (README, _Versioning_), `GOG_DEPRECATIONS`
 empty. A change that would remove or rename public API now waits for 22.0.0 behind a deprecation.
 
-**In progress: 21.17.0, `gog-avatar`** (`docs/avatar.md`). Iteration 1 — the component, its
-showcase page, the docs — is done and committed; iteration 2, `gog-avatar-group` (overlap, a ring in
-the surface colour, a named `+N`), is next. Then the rest of Gaps: `breadcrumbs`, `stepper`,
-`file upload`, `rating`, `empty state`, each a minor. The two Defects left need a real screen
-reader — the owner's to check.
+**21.17.0 is built and `planned`, waiting for the owner to publish it** (2026-10-04):
+`gog-avatar` and `gog-avatar-group`, both iterations of `docs/avatar.md`, plus the two `gogBadge`
+refinements the avatar needed. Additive only, so `check:install` is not triggered. Once it is on
+npm, `docs/lab-after-publish.md`'s 21.17.0 section is the lab's work. After that, the rest of Gaps:
+`breadcrumbs`, `stepper`, `file upload`, `rating`, `empty state`, each a minor. The two Defects
+left need a real screen reader — the owner's to check.
 
 **Deferred by the owner on 2026-09-13 — do not start these without asking:**
 

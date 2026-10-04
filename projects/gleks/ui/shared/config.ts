@@ -320,6 +320,12 @@ export interface GogGlobalConfig {
      * own, so a translation should not say "current" again.
      */
     page?: (page: number, isCurrent: boolean) => string;
+    /**
+     * `gog-avatar-group`'s name for the `+N` avatar that stands for the ones it does not draw.
+     * A function for the same reason as `page`: it interpolates a count. The default is
+     * `` (count) => `${count} more` ``.
+     */
+    moreAvatars?: (count: number) => string;
     /** `gog-datepicker`'s button that opens the calendar panel. */
     openCalendar?: string;
     /**
