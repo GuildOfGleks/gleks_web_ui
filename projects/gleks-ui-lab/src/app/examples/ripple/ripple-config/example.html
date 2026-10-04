@@ -1,0 +1,21 @@
+<!-- The library's own components, which wire their own ripple: on from the config. -->
+<gog-button>gog-button</gog-button>
+<gog-chip>gog-chip</gog-chip>
+<gog-button variant="outline" [ripple]="false">[ripple]="false"</gog-button>
+<gog-button disabled>disabled</gog-button>
+<!-- Your own gogRipple is already a per-element decision: the config does not reach it. -->
+<button
+  type="button"
+  gogRipple
+  rippleDisabled
+  style="
+    padding: 12px 20px;
+    border: 1px solid var(--gog-border-color);
+    background: var(--gog-surface-color);
+    color: inherit;
+    font: inherit;
+    border-radius: var(--gog-radius);
+  "
+>
+  gogRipple rippleDisabled
+</button>

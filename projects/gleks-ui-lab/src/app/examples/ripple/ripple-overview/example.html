@@ -1,6 +1,54 @@
-<div class="row">
-  <button class="surface" gogRipple>Plain button</button>
-  <div class="surface surface--pill" gogRipple>A pill</div>
-  <div class="surface surface--square" gogRipple>Square corners</div>
-  <div class="surface surface--tile" gogRipple>A larger tile, so the wave has room to travel</div>
+<!-- Ordinary markup of your own: the directive adds no wrapper and changes no layout. -->
+<button
+  type="button"
+  gogRipple
+  style="
+    padding: 12px 20px;
+    border: 1px solid var(--gog-border-color);
+    background: var(--gog-surface-color);
+    color: inherit;
+    font: inherit;
+    border-radius: var(--gog-radius);
+  "
+>
+  Plain button
+</button>
+<div
+  gogRipple
+  style="
+    padding: 12px 20px;
+    border: 1px solid var(--gog-border-color);
+    background: var(--gog-surface-color);
+    color: inherit;
+    font: inherit;
+    border-radius: 999px;
+  "
+>
+  A pill
+</div>
+<div
+  gogRipple
+  style="
+    padding: 12px 20px;
+    border: 1px solid var(--gog-border-color);
+    background: var(--gog-surface-color);
+    color: inherit;
+    font: inherit;
+  "
+>
+  Square corners
+</div>
+<div
+  gogRipple
+  style="
+    padding: 12px 20px;
+    border: 1px solid var(--gog-border-color);
+    background: var(--gog-surface-color);
+    color: inherit;
+    font: inherit;
+    border-radius: var(--gog-radius);
+    min-height: 96px;
+  "
+>
+  A larger tile, so the wave has room to travel
 </div>

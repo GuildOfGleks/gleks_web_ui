@@ -1,5 +1,44 @@
-<div class="row">
-  <div class="surface surface--accent" gogRipple>Accent-coloured wash</div>
-  <div class="surface surface--strong" gogRipple>Higher opacity</div>
-  <div class="surface surface--slow" gogRipple>Slower</div>
+<!-- Ordinary inherited custom properties: set one on the element, or anything above it. -->
+<div
+  gogRipple
+  style="
+    padding: 12px 20px;
+    border: 1px solid var(--gog-border-color);
+    background: var(--gog-surface-color);
+    color: inherit;
+    font: inherit;
+    border-radius: var(--gog-radius);
+    --gog-ripple-color: var(--gog-accent-color);
+  "
+>
+  Accent-coloured wash
+</div>
+<div
+  gogRipple
+  style="
+    padding: 12px 20px;
+    border: 1px solid var(--gog-border-color);
+    background: var(--gog-surface-color);
+    color: inherit;
+    font: inherit;
+    border-radius: var(--gog-radius);
+    --gog-ripple-opacity: 0.55;
+  "
+>
+  Higher opacity
+</div>
+<div
+  gogRipple
+  style="
+    padding: 12px 20px;
+    border: 1px solid var(--gog-border-color);
+    background: var(--gog-surface-color);
+    color: inherit;
+    font: inherit;
+    border-radius: var(--gog-radius);
+    --gog-ripple-enter-duration: 900ms;
+    --gog-ripple-exit-duration: 700ms;
+  "
+>
+  Slower
 </div>

@@ -1,0 +1,26 @@
+@for (setting of settings; track setting.name) {
+  <div>
+    <span>{{ setting.name }}</span>
+    @for (radius of radii; track radius) {
+      <button
+        type="button"
+        gogRipple
+        [rippleCentred]="setting.centred"
+        [rippleDisabled]="setting.rippleDisabled"
+        [disabled]="setting.disabled"
+        [attr.aria-disabled]="setting.ariaDisabled ? 'true' : null"
+        style="
+          padding: 12px 20px;
+          border: 1px solid var(--gog-border-color);
+          background: var(--gog-surface-color);
+          color: inherit;
+          font: inherit;
+        "
+        [style.border-radius]="radius"
+        [style.opacity]="setting.disabled || setting.ariaDisabled ? 0.55 : null"
+      >
+        Press
+      </button>
+    }
+  </div>
+}

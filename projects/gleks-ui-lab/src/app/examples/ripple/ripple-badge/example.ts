@@ -5,7 +5,6 @@ import { GogBadgeDirective, GogRippleDirective } from '@guildofgleks/ui';
   selector: 'app-example',
   imports: [GogBadgeDirective, GogRippleDirective],
   templateUrl: './example.html',
-  styleUrl: './example.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RippleBadgeExample {}

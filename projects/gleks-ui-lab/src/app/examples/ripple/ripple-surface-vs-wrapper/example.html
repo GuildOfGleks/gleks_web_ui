@@ -1,11 +1,34 @@
-<div class="row">
-  <!-- Wrong: the wrapper has no radius, so the layer inherits 0 and the wash squares off. -->
-  <span class="wrapper" gogRipple>
-    <button class="surface surface--pill">On the wrapper</button>
-  </span>
+<!-- Wrong: the wrapper has no radius, so the layer inherits 0 and the wash squares off. -->
+<span gogRipple style="display: inline-block">
+  <button
+    type="button"
+    style="
+      padding: 12px 20px;
+      border: 1px solid var(--gog-border-color);
+      background: var(--gog-surface-color);
+      color: inherit;
+      font: inherit;
+      border-radius: 999px;
+    "
+  >
+    On the wrapper
+  </button>
+</span>
 
-  <!-- Right: the directive sits on the element that actually paints the rounded background. -->
-  <span class="wrapper">
-    <button class="surface surface--pill" gogRipple>On the surface</button>
-  </span>
-</div>
+<!-- Right: the directive sits on the element that actually paints the rounded background. -->
+<span style="display: inline-block">
+  <button
+    type="button"
+    gogRipple
+    style="
+      padding: 12px 20px;
+      border: 1px solid var(--gog-border-color);
+      background: var(--gog-surface-color);
+      color: inherit;
+      font: inherit;
+      border-radius: 999px;
+    "
+  >
+    On the surface
+  </button>
+</span>

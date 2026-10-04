@@ -5,7 +5,6 @@ import { GogRippleDirective } from '@guildofgleks/ui';
   selector: 'app-example',
   imports: [GogRippleDirective],
   templateUrl: './example.html',
-  styleUrl: './example.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RippleThemingExample {}
