@@ -1,0 +1,105 @@
+<app-doc-page unit="file-upload">
+  <app-doc-section
+    id="states"
+    title="States"
+    lead="A dashed zone around a real file input. Hover it, Tab to it, drag a file over it; with an error the border takes the danger colour."
+  >
+    <h3>state</h3>
+    <app-doc-matrix rowAxis="state" colAxis="">
+      <ng-template appDocCell [rows]="states" [cols]="column" let-state>
+        <div class="file-upload-page__cell">
+          <gog-file-upload
+            label="Contract"
+            hint="PDF, up to 5 MB"
+            accept=".pdf"
+            [maxSize]="5242880"
+            [disabled]="state.value.disabled"
+            [errorMessage]="state.value.error"
+          />
+        </div>
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>size</h3>
+    <app-doc-matrix rowAxis="size" colAxis="">
+      <ng-template appDocCell [rows]="sizes" [cols]="column" let-size>
+        <div class="file-upload-page__cell">
+          <gog-file-upload label="Attachment" hint="Any file" [size]="size" />
+        </div>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section
+    id="validation"
+    title="Validation"
+    lead="Every file is checked the same way however it arrived — accept, maxSize, maxFiles — because accept is only a hint to the picker and a drop ignores it."
+  >
+    <h3>accept, maxSize, maxFiles</h3>
+    <p class="file-upload-page__note">
+      <code>accept=".pdf,image/*"</code>, 1 MB each, at most three. Drop an executable, a large file
+      or a fourth file and see what is refused and why: <code>gogReject</code> reports each one, and
+      a polite live region says it. The picker filters by <code>accept</code> too, but a reader can
+      switch it to "All files" — the check is the component's, not the picker's.
+    </p>
+    <div class="file-upload-page__stack">
+      <gog-file-upload
+        label="Documents"
+        hint="PDF or images, up to 1 MB each, at most three"
+        accept=".pdf,image/*"
+        multiple
+        [maxSize]="1048576"
+        [maxFiles]="3"
+        [(value)]="files"
+        (gogReject)="rejections.set($event)"
+      />
+      <code
+        >value: {{ files().length }} file(s) · last gogReject: {{ rejectionSummary() | json }}</code
+      >
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="forms"
+    title="Forms"
+    lead="A ControlValueAccessor holding a File[]; errorDisplay='auto' shows the message once the control is touched and invalid."
+  >
+    <h3>[formControl], Validators.required, errorDisplay="auto"</h3>
+    <div class="file-upload-page__stack">
+      <gog-file-upload
+        label="Signed contract"
+        accept=".pdf"
+        errorMessage="Attach the signed contract"
+        errorDisplay="auto"
+        [formControl]="control"
+      />
+      <code
+        >control: {{ controlNames() | json }} · touched {{ control.touched }} · valid
+        {{ control.valid }}</code
+      >
+      <div class="file-upload-page__row">
+        <button type="button" (click)="control.markAsTouched()">markAsTouched()</button>
+        <button type="button" (click)="control.disabled ? control.enable() : control.disable()">
+          {{ control.disabled ? 'enable()' : 'disable()' }}
+        </button>
+        <button type="button" (click)="control.reset()">reset()</button>
+      </div>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="The input is the control: labelled, described by the hint and the error, opened with Enter or Space. Removing a file moves focus to the next remove button."
+  >
+    <h3>what assistive tech gets</h3>
+    <div class="file-upload-page__stack">
+      <app-doc-attrs target="input[type=file]">
+        <gog-file-upload label="Avatar" hint="An image" accept="image/*" errorMessage="Required" />
+      </app-doc-attrs>
+      <app-doc-attrs target="[aria-live]">
+        <gog-file-upload ariaLabel="Attachments" multiple />
+      </app-doc-attrs>
+    </div>
+  </app-doc-section>
+</app-doc-page>

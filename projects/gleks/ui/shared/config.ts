@@ -337,6 +337,16 @@ export interface GogGlobalConfig {
     stepCompleted?: string;
     stepError?: string;
     stepOptional?: string;
+    /**
+     * `gog-file-upload`: the zone's prompt ("Drop files here or" … "browse"), each file's remove
+     * button, and what its live region says when files are added or refused. The last three take
+     * formatters, like `page`, because they interpolate a name or a count.
+     */
+    fileDrop?: string;
+    fileBrowse?: string;
+    fileRemove?: (name: string) => string;
+    filesAdded?: (count: number) => string;
+    fileRejected?: (name: string, reason: 'type' | 'size' | 'count') => string;
     /** `gog-datepicker`'s button that opens the calendar panel. */
     openCalendar?: string;
     /**

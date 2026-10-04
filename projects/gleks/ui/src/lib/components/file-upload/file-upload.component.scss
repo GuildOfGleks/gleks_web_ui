@@ -1,0 +1,205 @@
+/*
+ * Token layering (see styles/theme.css):
+ *   --gog-file-upload-size-<prop>   internal, set by the size classes below.
+ *   --gog-file-upload-<name>        the actual values, all in styles/theme.css.
+ */
+:host {
+  display: block;
+  font-family: var(--gog-file-upload-font-family);
+  font-size: var(--gog-file-upload-size-font-size, var(--gog-file-upload-md-font-size));
+}
+
+.gog-file-upload {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gog-file-upload-gap);
+}
+
+.gog-file-upload__label {
+  font-family: var(--gog-file-upload-label-font-family);
+  font-size: var(--gog-file-upload-label-font-size);
+  line-height: var(--gog-file-upload-label-line-height);
+  font-weight: var(--gog-file-upload-label-font-weight);
+  color: var(--gog-file-upload-label-color);
+  text-transform: var(--gog-file-upload-label-text-transform);
+  letter-spacing: var(--gog-file-upload-label-letter-spacing);
+}
+
+/*
+ * A surface, not a control: it frames the prompt and the input laid over it, so law 3's 2:1
+ * padding ratio does not apply (styling.instructions.md, "Geometry and typography").
+ */
+.gog-file-upload__zone {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gog-file-upload-zone-gap);
+  padding: var(--gog-file-upload-size-zone-padding, var(--gog-file-upload-md-zone-padding));
+  border: var(--gog-file-upload-zone-border-width) dashed var(--gog-file-upload-zone-border-color);
+  border-radius: var(--gog-file-upload-zone-radius);
+  background-color: var(--gog-file-upload-zone-bg);
+  color: var(--gog-file-upload-prompt-color);
+  line-height: var(--gog-file-upload-line-height);
+  text-align: center;
+  transition:
+    background-color var(--gog-file-upload-transition-duration) var(--gog-easing),
+    border-color var(--gog-file-upload-transition-duration) var(--gog-easing);
+}
+
+.gog-file-upload__zone:hover,
+.gog-file-upload__zone--dragging {
+  border-color: var(--gog-file-upload-zone-active-border-color);
+  background-color: var(--gog-file-upload-zone-active-bg);
+}
+
+/* The input is invisible and takes the whole zone, so the zone shows its focus. */
+.gog-file-upload__zone:has(.gog-file-upload__input:focus-visible) {
+  outline: var(--gog-file-upload-focus-ring-width) solid var(--gog-file-upload-focus-ring-color);
+  outline-offset: var(--gog-file-upload-focus-ring-offset);
+}
+
+.gog-file-upload__zone--error {
+  border-color: var(--gog-file-upload-error-color);
+}
+
+.gog-file-upload__icon {
+  color: var(--gog-file-upload-icon-color);
+  font-size: var(--gog-file-upload-icon-font-size);
+  line-height: var(--gog-file-upload-icon-line-height);
+}
+
+.gog-file-upload__browse {
+  color: var(--gog-file-upload-browse-color);
+  font-weight: var(--gog-file-upload-browse-font-weight);
+  text-decoration: underline;
+}
+
+.gog-file-upload__hint {
+  color: var(--gog-file-upload-hint-color);
+  font-size: var(--gog-file-upload-hint-font-size);
+  line-height: var(--gog-file-upload-hint-line-height);
+}
+
+.gog-file-upload__input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.gog-file-upload__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gog-file-upload-list-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.gog-file-upload__file {
+  display: flex;
+  align-items: center;
+  gap: var(--gog-file-upload-file-gap);
+  min-width: 0;
+  line-height: var(--gog-file-upload-line-height);
+}
+
+.gog-file-upload__name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--gog-file-upload-name-color);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gog-file-upload__size {
+  flex-shrink: 0;
+  color: var(--gog-file-upload-hint-color);
+  font-size: var(--gog-file-upload-hint-font-size);
+  font-variant-numeric: tabular-nums;
+}
+
+.gog-file-upload__remove {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: var(--gog-file-upload-remove-radius);
+  background: transparent;
+  color: var(--gog-file-upload-hint-color);
+  cursor: pointer;
+}
+
+/* WCAG 2.5.8: the glyph stays its size, the target is 24x24. */
+.gog-file-upload__remove::before {
+  content: '';
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  translate: -50% -50%;
+  min-inline-size: 24px;
+  min-block-size: 24px;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.gog-file-upload__remove:hover:not(:disabled) {
+  color: var(--gog-file-upload-name-color);
+}
+
+.gog-file-upload__remove:focus-visible {
+  outline: var(--gog-file-upload-focus-ring-width) solid var(--gog-file-upload-focus-ring-color);
+  outline-offset: var(--gog-file-upload-focus-ring-offset);
+}
+
+.gog-file-upload__error {
+  color: var(--gog-file-upload-error-color);
+  font-size: var(--gog-file-upload-hint-font-size);
+  line-height: var(--gog-file-upload-hint-line-height);
+}
+
+.gog-file-upload--disabled {
+  opacity: var(--gog-file-upload-disabled-opacity);
+}
+
+.gog-file-upload--disabled .gog-file-upload__zone,
+.gog-file-upload--disabled .gog-file-upload__input {
+  cursor: not-allowed;
+}
+
+/* === Sizes ===
+   `md` needs no block: it is what the chains above fall back to. */
+
+:host(.gog-file-upload--xsm) {
+  --gog-file-upload-size-font-size: var(--gog-file-upload-xsm-font-size);
+  --gog-file-upload-size-zone-padding: var(--gog-file-upload-xsm-zone-padding);
+}
+
+:host(.gog-file-upload--sm) {
+  --gog-file-upload-size-font-size: var(--gog-file-upload-sm-font-size);
+  --gog-file-upload-size-zone-padding: var(--gog-file-upload-sm-zone-padding);
+}
+
+:host(.gog-file-upload--lg) {
+  --gog-file-upload-size-font-size: var(--gog-file-upload-lg-font-size);
+  --gog-file-upload-size-zone-padding: var(--gog-file-upload-lg-zone-padding);
+}
+
+:host(.gog-file-upload--slg) {
+  --gog-file-upload-size-font-size: var(--gog-file-upload-slg-font-size);
+  --gog-file-upload-size-zone-padding: var(--gog-file-upload-slg-zone-padding);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gog-file-upload__zone {
+    transition: none;
+  }
+}

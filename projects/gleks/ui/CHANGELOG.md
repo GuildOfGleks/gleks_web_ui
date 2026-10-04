@@ -28,6 +28,16 @@ _Versioning_ section. Before 21.16.0 a minor could carry a breaking change, and 
   RTL. New exports: `StepperComponent`, `GogStep`. New labels: `GOG_CONFIG.labels.stepper`,
   `stepCompleted`, `stepError`, `stepOptional`. New tokens: `--gog-stepper-*`. Plan in
   `docs/stepper.md`.
+- **`gog-file-upload`** — choosing files by the picker or by a drop, as a form control holding a
+  `File[]`. The native `accept` only filters the system picker, and a dropped file is never checked
+  against it; the component checks every file, however it arrived, against `accept`, `maxSize`
+  and `maxFiles`, emits `gogReject` with each refusal's reason, and says what happened in a polite
+  live region. The real file input stays the control — labelled, described by `hint` and the error,
+  opened with Enter or Space — laid over the drop zone. Removing a file moves focus to the next
+  remove button. It does not upload. New exports: `FileUploadComponent`, `GogFileRejection`,
+  `GogFileRejectionReason`, `gogFileMatchesAccept`. New labels: `fileDrop`, `fileBrowse`,
+  `fileRemove`, `filesAdded`, `fileRejected`. New tokens: `--gog-file-upload-*`. Plan in
+  `docs/file-upload.md`.
 
 ## [21.17.0] - 04.10.2026
 

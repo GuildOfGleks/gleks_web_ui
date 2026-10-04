@@ -49,7 +49,13 @@ build.
   why an unreachable step is text rather than a disabled button. Route, navigation (Layout &
   Navigation), SEO, sitemap, Global Config note and labels list, generator catalogue and gallery,
   token reference; `theme-starter.css` regenerated.
+- **A new File upload page**, in the D6 shape: states and sizes, validation (`accept`, `maxSize`,
+  `maxFiles` and `gogReject`, with the point that a drop bypasses the native `accept`), `multiple`
+  off replacing the file, forms with `errorDisplay="auto"`, and accessibility (the input as the
+  control, the live region, focus after a removal). Route, navigation (Forms & Inputs), SEO,
+  sitemap, Global Config note and labels list (five keys), generator catalogue and gallery, token
+  reference; `theme-starter.css` regenerated.
 - **Consider using it in the lab itself**: a doc page under `/components/` is two levels deep and
   has no trail. Not required — decide by looking.
-- **Counts**: 33 components becomes 35 on the comparison page, the FAQ and `nav-data.ts`; the
+- **Counts**: 33 components becomes 36 on the comparison page, the FAQ and `nav-data.ts`; the
   whole-library bundle row is a re-measurement, not an edit.

@@ -7,6 +7,7 @@ import {
   AvatarGroupComponent,
   BreadcrumbsComponent,
   StepperComponent,
+  FileUploadComponent,
   ButtonComponent,
   ButtonToggleGroupComponent,
   CardComponent,
@@ -214,6 +215,13 @@ export const UNITS: readonly GogUnit[] = [
     group: 'form',
     entry: 'root',
     parts: [cmp(SliderComponent)],
+  },
+  {
+    id: 'file-upload',
+    name: 'File upload',
+    group: 'form',
+    entry: 'root',
+    parts: [cmp(FileUploadComponent)],
   },
   {
     id: 'datepicker',

@@ -353,7 +353,7 @@ parent's config**, one level deep per key — it does not replace it.
 | `paginator`    | `showPageSizeSelect`, `pageSizeOptions`                                               | `gog-paginator`, and through it `gog-table`'s built-in pagination.                                                                                                                                                                                                                                                                                                                                                                         |
 | `toast`        | `position`, `duration`                                                                | `ToastService`.                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | `theme`        | `storageKey`, `defaultTheme`, `followSystem`, `lightTheme`, `darkTheme`               | `ThemeService`. All off/neutral by default — see below.                                                                                                                                                                                                                                                                                                                                                                                    |
-| `labels`       | every fixed string the library renders — see below                                    | inputfield, textarea, select, multiselect, autocomplete, datepicker, calendar, paginator, table, avatar-group, breadcrumbs, stepper, `DialogService`, `ToastService`.                                                                                                                                                                                                                                                                      |
+| `labels`       | every fixed string the library renders — see below                                    | inputfield, textarea, select, multiselect, autocomplete, datepicker, calendar, paginator, table, avatar-group, breadcrumbs, stepper, file-upload, `DialogService`, `ToastService`.                                                                                                                                                                                                                                                         |
 
 Anything visual does **not** belong here — override the `--gog-*` token instead.
 
@@ -408,6 +408,11 @@ provideGogConfig({
     stepCompleted: 'erledigt', // hidden words after a step's label
     stepError: 'fehlerhaft',
     stepOptional: 'Optional',
+    fileDrop: 'Dateien hierher ziehen oder', // gog-file-upload's prompt
+    fileBrowse: 'durchsuchen',
+    fileRemove: (name) => `${name} entfernen`,
+    filesAdded: (count) => `${count} Datei(en) hinzugefügt`,
+    fileRejected: (name, reason) => `${name} wurde nicht hinzugefügt (${reason})`,
   },
 });
 ```
@@ -1056,6 +1061,53 @@ with `ariaLabel` when there is no label (`'Price Minimum'`). `startDisabled`/`en
 end while the other stays movable — they are ORed with `disabled` rather than overriding it, and
 unlike it they do not dim the whole control or cut pointer events over the track, which would
 take the still-enabled thumb with them.
+
+#### `gog-file-upload`
+
+Choosing files, by the system picker or by a drop. **It does not upload**: it holds `File` objects
+in `value` (and a form control); sending them is your app's.
+
+```html
+<gog-file-upload
+  label="Attachments"
+  hint="PDF or images, up to 5 MB"
+  accept=".pdf,image/*"
+  [maxSize]="5 * 1024 * 1024"
+  [maxFiles]="3"
+  multiple
+  [formControl]="attachments"
+  (gogReject)="onRejected($event)"
+/>
+```
+
+| Input / model                  | Type                           | Default    |
+| ------------------------------ | ------------------------------ | ---------- |
+| `value`                        | `File[]` (model; and CVA)      | `[]`       |
+| `multiple`                     | `boolean`                      | `false`    |
+| `accept`                       | `string` (native syntax)       | `''`       |
+| `maxSize`                      | `number \| null` (bytes)       | `null`     |
+| `maxFiles`                     | `number \| null`               | `null`     |
+| `label` / `hint` / `ariaLabel` | `string`                       | `''`       |
+| `errorMessage`                 | `string`                       | `''`       |
+| `errorDisplay`                 | `GogErrorDisplay \| undefined` | `'manual'` |
+| `disabled`                     | `boolean`                      | `false`    |
+| `size`                         | `GogSize`                      | `'md'`     |
+
+Output `gogReject: GogFileRejection[]` — `{ file, reason: 'type' | 'size' | 'count' }` for every
+file a pick or drop refused.
+
+- **`accept` is enforced, not only passed to the picker.** The native attribute filters the
+  operating system's dialog and nothing else — a reader can switch it to "All files", and a dropped
+  file is never checked against it. The component checks every file, picked or dropped, against
+  `accept`, `maxSize` and `maxFiles` (which counts files already chosen). `gogFileMatchesAccept(file,
+accept)` is exported for the same check elsewhere.
+- **Without `multiple`** it holds one file, and a new one replaces it.
+- **The real `<input type="file">` is the control**, laid over the zone: it is focusable, named by
+  `label` (or `ariaLabel`), described by `hint` and the error, and opens with Enter or Space.
+- A polite live region says what happened ("2 files added", "setup.exe was not added: its type is
+  not accepted"); removing a file moves focus to the next remove button, or the input. Words come
+  from `GOG_CONFIG.labels`: `fileDrop`, `fileBrowse`, and the formatters `fileRemove(name)`,
+  `filesAdded(count)`, `fileRejected(name, reason)`.
 
 #### `gog-datepicker` / `gog-calendar`
 

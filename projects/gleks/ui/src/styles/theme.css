@@ -739,6 +739,61 @@
   --gog-stepper-lg-font-size: var(--gog-text-md);
   --gog-stepper-slg-font-size: var(--gog-text-lg);
 
+  /* ── File upload ───────────────────────────────────────────────────────────
+     A dashed surface around an invisible file input. The dash is the control boundary colour, so
+     the zone stays visible at 3:1; hover and a drag over it tint it with the accent. */
+  --gog-file-upload-font-family: var(--gog-font-body);
+  /* Prompt, file names: short lines of text. */
+  --gog-file-upload-line-height: var(--gog-line-height-snug);
+  --gog-file-upload-gap: var(--gog-space-8);
+  --gog-file-upload-label-font-family: var(--gog-field-label-font-family);
+  --gog-file-upload-label-font-size: var(--gog-field-label-font-size);
+  --gog-file-upload-label-line-height: var(--gog-field-label-line-height);
+  --gog-file-upload-label-font-weight: var(--gog-field-label-font-weight);
+  --gog-file-upload-label-color: var(--gog-field-label-color);
+  --gog-file-upload-label-text-transform: var(--gog-field-label-text-transform);
+  --gog-file-upload-label-letter-spacing: var(--gog-field-label-letter-spacing);
+  --gog-file-upload-zone-gap: var(--gog-space-4);
+  --gog-file-upload-zone-border-width: var(--gog-control-border-width);
+  --gog-file-upload-zone-border-color: var(--gog-control-boundary-color);
+  --gog-file-upload-zone-radius: var(--gog-radius);
+  --gog-file-upload-zone-bg: transparent;
+  --gog-file-upload-zone-active-border-color: var(--gog-accent-color);
+  --gog-file-upload-zone-active-bg: var(--gog-hover-color);
+  --gog-file-upload-transition-duration: var(--gog-duration-fast);
+  --gog-file-upload-prompt-color: var(--gog-text-color);
+  /* Marked by its underline and weight, not a colour: accent-dim fell to 4.29:1 on the hover tint in
+     one-dark, and the text colour clears every ground. */
+  --gog-file-upload-browse-color: var(--gog-text-color);
+  --gog-file-upload-browse-font-weight: var(--gog-font-weight-semibold);
+  --gog-file-upload-icon-color: var(--gog-muted-text-color);
+  /* Of the prompt's own size, as the basis the glyph is drawn from (1.2em of it). */
+  --gog-file-upload-icon-font-size: 1.5em;
+  /* A glyph in its own box: leading would push it off centre. */
+  --gog-file-upload-icon-line-height: var(--gog-line-height-none);
+  --gog-file-upload-hint-color: var(--gog-muted-text-color);
+  --gog-file-upload-hint-font-size: var(--gog-text-xs);
+  --gog-file-upload-hint-line-height: var(--gog-line-height-snug);
+  --gog-file-upload-list-gap: var(--gog-space-4);
+  --gog-file-upload-file-gap: var(--gog-space-8);
+  --gog-file-upload-name-color: var(--gog-text-color);
+  --gog-file-upload-remove-radius: var(--gog-radius);
+  --gog-file-upload-error-color: var(--gog-danger-color);
+  --gog-file-upload-focus-ring-width: var(--gog-focus-ring-width);
+  --gog-file-upload-focus-ring-offset: var(--gog-focus-ring-offset);
+  --gog-file-upload-focus-ring-color: var(--gog-accent-color);
+  --gog-file-upload-disabled-opacity: var(--gog-disabled-opacity);
+  --gog-file-upload-xsm-font-size: var(--gog-text-xs);
+  --gog-file-upload-sm-font-size: var(--gog-text-sm);
+  --gog-file-upload-md-font-size: var(--gog-text-sm);
+  --gog-file-upload-lg-font-size: var(--gog-text-md);
+  --gog-file-upload-slg-font-size: var(--gog-text-lg);
+  --gog-file-upload-xsm-zone-padding: var(--gog-space-12);
+  --gog-file-upload-sm-zone-padding: var(--gog-space-16);
+  --gog-file-upload-md-zone-padding: var(--gog-space-24);
+  --gog-file-upload-lg-zone-padding: var(--gog-space-32);
+  --gog-file-upload-slg-zone-padding: var(--gog-space-40);
+
   /* ── Collapsible ───────────────────────────────────────────────────────────
      No owned markup: the `.gog-collapsible__*` rules live in utilities.css, because they style content
      the consumer projects, which a scoped stylesheet cannot reach. */

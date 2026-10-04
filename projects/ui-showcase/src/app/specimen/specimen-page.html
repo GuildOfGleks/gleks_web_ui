@@ -148,6 +148,15 @@
                 [disabled]="disabled()"
                 [(value)]="bio"
               />
+              <gog-file-upload
+                class="specimen__wide"
+                label="Photo"
+                hint="An image, up to 2 MB"
+                accept="image/*"
+                [maxSize]="2097152"
+                [size]="size()"
+                [disabled]="disabled()"
+              />
               <gog-radio-group
                 label="Plan"
                 orientation="horizontal"
@@ -623,6 +632,14 @@
               [size]="size()"
               [disabled]="disabled()"
               [(value)]="note"
+            />
+            <gog-file-upload
+              label="Import orders"
+              hint="CSV files"
+              accept=".csv"
+              multiple
+              [size]="size()"
+              [disabled]="disabled()"
             />
           </div>
         </gog-collapsible>

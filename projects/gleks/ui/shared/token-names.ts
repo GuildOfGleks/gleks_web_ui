@@ -822,6 +822,52 @@ export type GogTokenName =
   | '--gog-field-xsm-icon-offset'
   | '--gog-field-xsm-padding-x'
   | '--gog-field-xsm-padding-y'
+  | '--gog-file-upload-browse-color'
+  | '--gog-file-upload-browse-font-weight'
+  | '--gog-file-upload-disabled-opacity'
+  | '--gog-file-upload-error-color'
+  | '--gog-file-upload-file-gap'
+  | '--gog-file-upload-focus-ring-color'
+  | '--gog-file-upload-focus-ring-offset'
+  | '--gog-file-upload-focus-ring-width'
+  | '--gog-file-upload-font-family'
+  | '--gog-file-upload-gap'
+  | '--gog-file-upload-hint-color'
+  | '--gog-file-upload-hint-font-size'
+  | '--gog-file-upload-hint-line-height'
+  | '--gog-file-upload-icon-color'
+  | '--gog-file-upload-icon-font-size'
+  | '--gog-file-upload-icon-line-height'
+  | '--gog-file-upload-label-color'
+  | '--gog-file-upload-label-font-family'
+  | '--gog-file-upload-label-font-size'
+  | '--gog-file-upload-label-font-weight'
+  | '--gog-file-upload-label-letter-spacing'
+  | '--gog-file-upload-label-line-height'
+  | '--gog-file-upload-label-text-transform'
+  | '--gog-file-upload-lg-font-size'
+  | '--gog-file-upload-lg-zone-padding'
+  | '--gog-file-upload-line-height'
+  | '--gog-file-upload-list-gap'
+  | '--gog-file-upload-md-font-size'
+  | '--gog-file-upload-md-zone-padding'
+  | '--gog-file-upload-name-color'
+  | '--gog-file-upload-prompt-color'
+  | '--gog-file-upload-remove-radius'
+  | '--gog-file-upload-slg-font-size'
+  | '--gog-file-upload-slg-zone-padding'
+  | '--gog-file-upload-sm-font-size'
+  | '--gog-file-upload-sm-zone-padding'
+  | '--gog-file-upload-transition-duration'
+  | '--gog-file-upload-xsm-font-size'
+  | '--gog-file-upload-xsm-zone-padding'
+  | '--gog-file-upload-zone-active-bg'
+  | '--gog-file-upload-zone-active-border-color'
+  | '--gog-file-upload-zone-bg'
+  | '--gog-file-upload-zone-border-color'
+  | '--gog-file-upload-zone-border-width'
+  | '--gog-file-upload-zone-gap'
+  | '--gog-file-upload-zone-radius'
   | '--gog-focus-ring-offset'
   | '--gog-focus-ring-width'
   | '--gog-font-body'
@@ -2197,6 +2243,58 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-stepper-trigger-radius',
       '--gog-stepper-unreachable-color',
       '--gog-stepper-xsm-font-size',
+    ],
+  },
+  {
+    section: 'File upload',
+    layer: 'component',
+    tokens: [
+      '--gog-file-upload-browse-color',
+      '--gog-file-upload-browse-font-weight',
+      '--gog-file-upload-disabled-opacity',
+      '--gog-file-upload-error-color',
+      '--gog-file-upload-file-gap',
+      '--gog-file-upload-focus-ring-color',
+      '--gog-file-upload-focus-ring-offset',
+      '--gog-file-upload-focus-ring-width',
+      '--gog-file-upload-font-family',
+      '--gog-file-upload-gap',
+      '--gog-file-upload-hint-color',
+      '--gog-file-upload-hint-font-size',
+      '--gog-file-upload-hint-line-height',
+      '--gog-file-upload-icon-color',
+      '--gog-file-upload-icon-font-size',
+      '--gog-file-upload-icon-line-height',
+      '--gog-file-upload-label-color',
+      '--gog-file-upload-label-font-family',
+      '--gog-file-upload-label-font-size',
+      '--gog-file-upload-label-font-weight',
+      '--gog-file-upload-label-letter-spacing',
+      '--gog-file-upload-label-line-height',
+      '--gog-file-upload-label-text-transform',
+      '--gog-file-upload-lg-font-size',
+      '--gog-file-upload-lg-zone-padding',
+      '--gog-file-upload-line-height',
+      '--gog-file-upload-list-gap',
+      '--gog-file-upload-md-font-size',
+      '--gog-file-upload-md-zone-padding',
+      '--gog-file-upload-name-color',
+      '--gog-file-upload-prompt-color',
+      '--gog-file-upload-remove-radius',
+      '--gog-file-upload-slg-font-size',
+      '--gog-file-upload-slg-zone-padding',
+      '--gog-file-upload-sm-font-size',
+      '--gog-file-upload-sm-zone-padding',
+      '--gog-file-upload-transition-duration',
+      '--gog-file-upload-xsm-font-size',
+      '--gog-file-upload-xsm-zone-padding',
+      '--gog-file-upload-zone-active-bg',
+      '--gog-file-upload-zone-active-border-color',
+      '--gog-file-upload-zone-bg',
+      '--gog-file-upload-zone-border-color',
+      '--gog-file-upload-zone-border-width',
+      '--gog-file-upload-zone-gap',
+      '--gog-file-upload-zone-radius',
     ],
   },
   {

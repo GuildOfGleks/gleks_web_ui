@@ -1,0 +1,71 @@
+<div class="gog-file-upload" [class.gog-file-upload--disabled]="isDisabled()">
+  @if (label()) {
+    <label class="gog-file-upload__label" [attr.for]="inputId">{{ label() }}</label>
+  }
+
+  <!--
+    The real file input is the control: focusable, named by the label, opened with Enter or Space.
+    It is laid over the whole zone, so a click anywhere opens the picker; the zone draws around it
+    and takes the drop, which is the one thing the input cannot be trusted with — a dropped file
+    is never checked against `accept`.
+  -->
+  <div
+    class="gog-file-upload__zone"
+    [class.gog-file-upload__zone--dragging]="dragging()"
+    [class.gog-file-upload__zone--error]="hasError()"
+    (dragenter)="onDragEnter($event)"
+    (dragover)="onDragOver($event)"
+    (dragleave)="onDragLeave()"
+    (drop)="onDrop($event)"
+  >
+    <gog-icon class="gog-file-upload__icon" name="upload" />
+    <span class="gog-file-upload__prompt">
+      {{ resolvedLabels().drop }}
+      <span class="gog-file-upload__browse">{{ resolvedLabels().browse }}</span>
+    </span>
+    @if (hint()) {
+      <span class="gog-file-upload__hint" [id]="hintId">{{ hint() }}</span>
+    }
+    <input
+      #input
+      class="gog-file-upload__input"
+      type="file"
+      [id]="inputId"
+      [multiple]="multiple()"
+      [accept]="accept()"
+      [disabled]="isDisabled()"
+      [attr.aria-label]="label() ? null : ariaLabel() || null"
+      [attr.aria-describedby]="describedBy()"
+      [attr.aria-invalid]="hasError() || null"
+      (change)="onPick($event)"
+      (blur)="onTouched()"
+    />
+  </div>
+
+  @if (value().length) {
+    <ul class="gog-file-upload__list">
+      @for (file of value(); track file; let i = $index) {
+        <li class="gog-file-upload__file">
+          <span class="gog-file-upload__name">{{ file.name }}</span>
+          <span class="gog-file-upload__size">{{ formatSize(file.size) }}</span>
+          <button
+            type="button"
+            class="gog-file-upload__remove"
+            [attr.aria-label]="resolvedLabels().remove(file.name)"
+            [disabled]="isDisabled()"
+            (click)="remove(i)"
+          >
+            <gog-icon name="close" />
+          </button>
+        </li>
+      }
+    </ul>
+  }
+
+  @if (hasError()) {
+    <span class="gog-file-upload__error" [id]="errorId" role="alert">{{ visibleError() }}</span>
+  }
+
+  <!-- Mounted from the start: a live region has to exist before the text it announces. -->
+  <div class="gog-visually-hidden" aria-live="polite">{{ announcement() }}</div>
+</div>

@@ -1,0 +1,26 @@
+// A matrix cell has no width of its own, and the zone fills whatever it is given.
+.file-upload-page__cell {
+  width: 24rem;
+  max-width: 100%;
+}
+
+.file-upload-page__stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gog-space-12);
+  max-width: 32rem;
+  margin-block-end: var(--gog-space-16);
+}
+
+.file-upload-page__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gog-space-8);
+}
+
+.file-upload-page__note {
+  margin-block: 0 var(--gog-space-8);
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-xs);
+  max-width: 60rem;
+}

@@ -504,6 +504,64 @@ const WASH_PAIRS = [
     ['--gog-background-color', '--gog-surface-color'],
     4.5,
   ],
+  // A file upload's prompt, its "browse", hint and file names, on the page and a surface; its dashed
+  // border is what shows the zone at all, so it is held to 3:1.
+  [
+    'file upload prompt',
+    '--gog-file-upload-prompt-color',
+    '--gog-background-color',
+    ['--gog-background-color'],
+    4.5,
+  ],
+  [
+    'file upload browse',
+    '--gog-file-upload-browse-color',
+    '--gog-background-color',
+    ['--gog-background-color'],
+    4.5,
+  ],
+  [
+    'file upload browse on surface',
+    '--gog-file-upload-browse-color',
+    '--gog-surface-color',
+    ['--gog-surface-color'],
+    4.5,
+  ],
+  [
+    'file upload browse on hover',
+    '--gog-file-upload-browse-color',
+    '--gog-file-upload-zone-active-bg',
+    ['--gog-background-color', '--gog-surface-color'],
+    4.5,
+  ],
+  [
+    'file upload hint',
+    '--gog-file-upload-hint-color',
+    '--gog-background-color',
+    ['--gog-background-color'],
+    4.5,
+  ],
+  [
+    'file upload hint on surface',
+    '--gog-file-upload-hint-color',
+    '--gog-surface-color',
+    ['--gog-surface-color'],
+    4.5,
+  ],
+  [
+    'file upload zone border',
+    '--gog-file-upload-zone-border-color',
+    '--gog-background-color',
+    ['--gog-background-color'],
+    3,
+  ],
+  [
+    'file upload zone border on surface',
+    '--gog-file-upload-zone-border-color',
+    '--gog-surface-color',
+    ['--gog-surface-color'],
+    3,
+  ],
   // A stepper's labels and indicators. The current step's number is accent ink on the page, and its
   // ring is what marks it for a reader who cannot tell the colours apart, so it is held to 3:1 too.
   [
