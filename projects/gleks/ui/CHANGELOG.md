@@ -22,6 +22,15 @@ _Versioning_ section. Before 21.16.0 a minor could carry a breaking change, and 
 
 ### Added
 
+- **95 more built-in icons, 136 in all**, from the same Lucide set: navigation and layout (`home`,
+  `log-in`, `grid`, `dashboard`, `drag`, `zoom-in`…), actions (`save`, `share`, `link`, `send`,
+  `undo`, `redo`…), files and media (`file`, `folder`, `image`, `play`, `volume`…), communication
+  (`bell`, `message`, `phone`, `globe`…), people and status (`users`, `heart`, `help`, `shield`,
+  `key`…), commerce and data (`shopping-cart`, `credit-card`, `tag`, `chart-bar`, `trending-up`…)
+  and appearance (`sun`, `moon`, `monitor`…). Every name works in `<gog-icon name="…">` with no
+  setup; `AGENTS.md` lists them all. The whole set adds 4.5 KB gzipped to an app (1.8 KB to 6.3 KB),
+  since the registry ships whole. Each glyph passes `check:geometry`'s centring law — `play` was
+  moved one unit left and `tag`'s hole is stroked rather than filled to get there.
 - **`gog-table` takes a `gogTableEmpty` template**, shown in place of `emptyMessage` when there are
   no rows. With a `gog-empty-state` in it, a table emptied by a filter is announced — the text cell
   never was. New export from `@guildofgleks/ui/table`: `GogTableEmptyDirective`.

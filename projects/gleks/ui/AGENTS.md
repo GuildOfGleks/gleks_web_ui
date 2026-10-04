@@ -1249,18 +1249,32 @@ Decorative by default. `[ariaHidden]="false"` makes it a named image — `role="
 `aria-label` from `title`, else from `name` — for an icon that carries meaning no text beside it
 repeats. Inside a button with no text, name the button instead (`ariaLabel` on `gog-button`).
 
-The package ships **41** glyphs (`GogBuiltinIconName`), all from [Lucide](https://lucide.dev)
+The package ships **136** glyphs (`GogBuiltinIconName`), all from [Lucide](https://lucide.dev)
 and inlined so the package keeps zero runtime dependencies:
 
-| Group             | Names                                                                                                  |
-| ----------------- | ------------------------------------------------------------------------------------------------------ |
-| Chevrons & arrows | `chevron-up`, `chevron-down`, `chevron-left`, `chevron-right`, `arrow-left`, `arrow-right`             |
-| Confirm & dismiss | `check`, `close`, `checkbox`, `checkbox-checked`                                                       |
-| Status            | `success`, `error`, `warning`, `info`                                                                  |
-| Sorting           | `sort`, `sort-up`, `sort-down`, `filter`                                                               |
-| Actions           | `search`, `plus`, `minus`, `trash`, `pencil`, `copy`, `download`, `upload`, `refresh`, `external-link` |
-| Chrome            | `menu`, `more-horizontal`, `more-vertical`, `settings`                                                 |
-| Objects & state   | `user`, `lock`, `mail`, `calendar`, `clock`, `eye`, `eye-off`, `star`, `star-filled`                   |
+| Group                | Names                                                                                                                                                                                                                                   |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Chevrons & arrows    | `chevron-up`, `chevron-down`, `chevron-left`, `chevron-right`, `arrow-left`, `arrow-right`                                                                                                                                              |
+| Confirm & dismiss    | `check`, `close`, `checkbox`, `checkbox-checked`                                                                                                                                                                                        |
+| Status               | `success`, `error`, `warning`, `info`                                                                                                                                                                                                   |
+| Sorting              | `sort`, `sort-up`, `sort-down`, `filter`                                                                                                                                                                                                |
+| Actions              | `search`, `plus`, `minus`, `trash`, `pencil`, `copy`, `download`, `upload`, `refresh`, `external-link`                                                                                                                                  |
+| Chrome               | `menu`, `more-horizontal`, `more-vertical`, `settings`                                                                                                                                                                                  |
+| Objects & state      | `user`, `lock`, `mail`, `calendar`, `clock`, `eye`, `eye-off`, `star`, `star-filled`                                                                                                                                                    |
+| Navigation & layout  | `home`, `arrow-up`, `arrow-down`, `arrow-up-right`, `chevrons-left`, `chevrons-right`, `chevrons-up-down`, `log-in`, `log-out`, `grid`, `list`, `dashboard`, `layers`, `sliders`, `drag`, `maximize`, `minimize`, `zoom-in`, `zoom-out` |
+| More actions         | `save`, `share`, `link`, `send`, `printer`, `archive`, `bookmark`, `flag`, `pin`, `undo`, `redo`, `clipboard`, `power`                                                                                                                  |
+| Files & media        | `file`, `file-text`, `folder`, `folder-open`, `paperclip`, `image`, `camera`, `video`, `mic`, `play`, `pause`, `volume`, `volume-off`, `cloud`, `database`, `code`, `terminal`                                                          |
+| Communication        | `bell`, `bell-off`, `message`, `inbox`, `phone`, `at-sign`, `globe`, `map-pin`                                                                                                                                                          |
+| People & status      | `users`, `user-plus`, `heart`, `thumbs-up`, `thumbs-down`, `help`, `ban`, `shield`, `shield-check`, `key`, `unlock`, `history`, `hourglass`, `zap`, `sparkles`, `lightbulb`                                                             |
+| Commerce & data      | `shopping-cart`, `credit-card`, `wallet`, `tag`, `gift`, `package`, `truck`, `building`, `briefcase`, `percent`, `chart-bar`, `chart-pie`, `trending-up`, `trending-down`, `activity`                                                   |
+| Appearance & devices | `sun`, `moon`, `monitor`, `smartphone`, `wifi`, `wifi-off`, `book-open`                                                                                                                                                                 |
+
+A few names are shorter than Lucide's own, for the word an app reaches for: `home` (Lucide's
+`house`), `grid` (`layout-grid`), `dashboard` (`layout-dashboard`), `sliders`
+(`sliders-horizontal`), `drag` (`grip-vertical`), `share` (`share-2`), `undo`/`redo` (`undo-2`/
+`redo-2`), `maximize`/`minimize` (`maximize-2`/`minimize-2`), `volume`/`volume-off` (`volume-2`/
+`volume-x`), `message` (`message-square`), `help` (`circle-help`), `unlock` (`lock-open`),
+`building` (`building-2`), `chart-bar` (`chart-column`).
 
 `star` / `star-filled` is the one outline/filled pair, for a rating or favourite **toggle** —
 the same reason `checkbox` / `checkbox-checked` exists. The set is otherwise outline-only on

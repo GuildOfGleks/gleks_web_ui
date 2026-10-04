@@ -241,7 +241,7 @@ acceptable is a length with no derivation at all.
 centres its ink inside its own viewBox, so that centring the box centres the mark — and where the
 mark is _filled_, it is the area that centres, not the outline, because a solid triangle's
 centroid sits `W/6` from the middle of its bounding box. `check:geometry`'s second half measures
-all 41 built-in glyphs and gates it. The law is deliberately **not** written against the ink's
+every built-in glyph (136 since 21.19.0) and gates it. The law is deliberately **not** written against the ink's
 centre of mass: a monoline set reads by extent, so a directional glyph such as `arrow-right`
 carries its mass 2 units off centre and is correct exactly as drawn.
 

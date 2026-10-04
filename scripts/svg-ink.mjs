@@ -129,6 +129,18 @@ export function pathRuns(d) {
     if (Number.isNaN(value)) throw new Error(`expected a number in path "${d}"`);
     return value;
   };
+  // An arc flag is one character, `0` or `1`, and the grammar lets the next number follow it with no
+  // separator: minified paths write `a1.5 1.5 0 00-2.474-1.561`, where the tokenizer above reads
+  // `00` as one number. Take the first character and leave the rest as the next token.
+  const flag = () => {
+    const token = tokens[i];
+    if (token === undefined || (token[0] !== '0' && token[0] !== '1')) {
+      throw new Error(`expected an arc flag in path "${d}"`);
+    }
+    if (token.length === 1) i++;
+    else tokens[i] = token.slice(1);
+    return Number(token[0]);
+  };
 
   while (i < tokens.length) {
     if (/[a-zA-Z]/.test(tokens[i])) command = tokens[i++];
@@ -195,8 +207,8 @@ export function pathRuns(d) {
       const rx = num();
       const ry = num();
       const rotation = num();
-      const largeArc = num();
-      const sweep = num();
+      const largeArc = flag();
+      const sweep = flag();
       const end = at(num(), num());
       sampleArc([x, y], rx, ry, rotation, largeArc, sweep, end, out);
       [x, y] = end;
@@ -225,7 +237,7 @@ export function pathRuns(d) {
  * disagree exactly where L7 bites — a solid triangle's area centroid sits a sixth of the way off
  * the centre its outline would report.
  *
- * Throws on an element it does not know. The registry is 41 glyphs of one authored set; a shape
+ * Throws on an element it does not know. The registry is one authored set (Lucide); a shape
  * this cannot read is a shape nobody measured, and it should stop the build rather than shrink
  * the sample silently.
  */

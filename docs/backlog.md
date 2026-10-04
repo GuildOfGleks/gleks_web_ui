@@ -1108,9 +1108,12 @@ primitive at all: its rows genuinely vary in height, so it needed a second one.
    native-`Date`-only with no adapter, and `Date` has no time zone — so this is a design decision
    about what a zone even means here (formatting only? parsing too? `Intl.DateTimeFormat`'s
    `timeZone` option?), not a config key to add. Write the decision down before the code.
-6. **More icons.** Cheap per icon, but it is the registry's size and the tree-shaking story that
-   matter — check what `provideGogIcons` costs a consumer who wants three of them before growing
-   the built-in set.
+6. ~~**More icons.**~~ **Shipped 2026-10-04 in 21.19.0**: 95 more, 136 built-in, chosen by the
+   owner over an opt-in, tree-shaken export per glyph. The registry ships whole, and measuring it
+   is what made built-in the right call: 41 glyphs gzipped to 1.8 KB and 136 to 6.3 KB — about 45
+   bytes a glyph, because the markup repeats — against 142 KB for the library. Adding them taught
+   `check:geometry`'s path parser the compact arc flag (`a1.5 1.5 0 00-2.474`), which it had read as
+   one number.
 7. **More `gog-progressbar` variants (animations).** Smallest of the features; a good warm-up.
 8. **If the library ever gets a full-page event calendar, it is `gog-scheduler`.** Decided by
    the owner on 2026-10-03, when the overlap with FullCalendar's name came up. The industry calls

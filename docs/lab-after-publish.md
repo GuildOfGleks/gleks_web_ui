@@ -49,3 +49,6 @@ build.
   in the import snippet and the slots table, and a link from the Empty State page's answers section.
 - **Chip page**: the avatar falls back like `gog-avatar` does — worth one example with a broken
   `avatarUrl` and an `avatarAlt`, showing initials.
+- **Icon page**: 136 glyphs now — the gallery reads the installed set, but its prose, the
+  page's SEO description ("41 built-in outline icons") and the comparison page's icon count need
+  the number.

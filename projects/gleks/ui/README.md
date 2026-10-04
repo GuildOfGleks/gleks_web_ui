@@ -413,7 +413,7 @@ so losing it costs a user nothing. Everywhere else the rule is the opposite — 
 drops the animation, never the information.** A chevron still turns to show a panel is open, a
 toggle still moves; only the tween between the two states goes away.
 
-Icons work the same way — 41 Lucide glyphs ship with the package, and your own register by name:
+Icons work the same way — 136 Lucide glyphs ship with the package, and your own register by name:
 
 ```ts
 provideGogIcons({ cart: '<svg viewBox="0 0 24 24">…</svg>' });
