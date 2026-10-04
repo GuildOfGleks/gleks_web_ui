@@ -1,0 +1,6 @@
+<!-- With nothing projected the label collapses and the two halves meet as one line. -->
+@for (variant of variants; track variant) {
+  <p>variant="{{ variant }}"</p>
+  <gog-divider [variant]="variant" />
+  <gog-divider [variant]="variant">OR</gog-divider>
+}

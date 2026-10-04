@@ -148,7 +148,7 @@ template.
 | collapsible   | legacy   | 6     | 6   | ✅       |
 | datepicker    | legacy   | 6     | 6   | ✅       |
 | dialog        | legacy   | 6     | 4   |          |
-| divider       | legacy   | 5     | 5   |          |
+| divider       | legacy   | 5     | 5   | ✅       |
 | icon          | legacy   | 5     | 5   |          |
 | inputfield    | legacy   | 13    | 13  | ✅       |
 | multiselect   | legacy   | 13    | 13  | ✅       |

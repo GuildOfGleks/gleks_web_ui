@@ -14,14 +14,9 @@
     <p class="doc-section__intro">Import the component and drop it into a template.</p>
     <app-markdown [markdown]="importSnippet" />
 
-    <p class="doc-section__intro">Basic usage:</p>
+    <p class="doc-section__intro">Basic usage — a horizontal rule between two blocks:</p>
     <div class="demo-card">
-      <div class="demo-card__preview">
-        <p class="divider-demo__text">Above the rule.</p>
-        <gog-divider />
-        <p class="divider-demo__text">Below it.</p>
-      </div>
-      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
+      <app-demo [component]="examples.overview" [source]="sources.dividerOverview" layout="wide" />
     </div>
   </section>
 
@@ -32,121 +27,87 @@
       <h3 class="demo-card__title">Variants</h3>
       <p class="demo-card__meta">
         <code>solid</code> is the default; <code>dashed</code> and <code>dotted</code> read as
-        weaker separations.
+        weaker separations. Each is shown plain and with a label: with nothing projected the label
+        collapses and the two halves of the rule meet as one line — the spacing around a label is
+        its own padding for exactly that reason, so a plain divider has no notch in the middle.
       </p>
-      <div class="demo-card__preview">
-        @for (variantOption of variants; track variantOption) {
-          <p class="divider-demo__text">{{ variantOption }}</p>
-          <gog-divider [variant]="variantOption" />
-        }
-      </div>
-      <app-code-tabs [html]="variantsHtml" [ts]="variantsTs" />
+      <app-demo [component]="examples.variants" [source]="sources.dividerVariants" layout="wide" />
     </article>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">With a label</h3>
+      <h3 class="demo-card__title">Labels</h3>
       <p class="demo-card__meta">
         Anything projected into the divider becomes its label and the rule splits around it. Because
-        it is content rather than a <code>label</code> input, it takes markup — an icon, a
-        <code>&lt;gog-tag&gt;</code>, whatever the case needs.
+        it is content rather than a <code>label</code> input, it takes markup — a word, an icon, a
+        <a routerLink="/components/tag">gog-tag</a>.
       </p>
-      <div class="demo-card__preview">
-        <gog-divider>OR</gog-divider>
-        <gog-divider>
-          <gog-icon name="info" />
-          Shipping details
-        </gog-divider>
-        <gog-divider><gog-tag variant="warning">Draft</gog-tag></gog-divider>
-      </div>
-      <app-code-tabs [html]="labelHtml" [ts]="labelTs" />
+      <app-demo [component]="examples.labels" [source]="sources.dividerLabels" layout="wide" />
     </article>
 
     <article class="demo-card">
       <h3 class="demo-card__title">Vertical</h3>
       <p class="demo-card__meta">
-        Separates items along a row instead of stacking regions. It stretches to a row that has a
-        height of its own and otherwise falls back to
-        <code>--gog-divider-vertical-length</code>.
+        <code>orientation="vertical"</code> separates items along a row instead of stacking regions.
+        It stretches to the height of a flex or grid parent that has one;
+        <code>--gog-divider-vertical-length</code> is the floor when there is nothing to stretch to.
       </p>
-      <div class="demo-card__preview divider-demo__toolbar">
-        <span>Cut</span>
-        <gog-divider orientation="vertical" />
-        <span>Copy</span>
-        <gog-divider orientation="vertical" />
-        <span>Paste</span>
-      </div>
-      <app-code-tabs [html]="verticalHtml" [ts]="verticalTs" [css]="verticalCss" />
+      <app-demo [component]="examples.vertical" [source]="sources.dividerVertical" layout="wide" />
     </article>
 
     <article class="demo-card">
       <h3 class="demo-card__title">Inset</h3>
       <p class="demo-card__meta">
-        Indents the rule from the leading edge so it starts under the text of a list whose rows
-        begin with an icon, rather than cutting across the whole row.
+        Indents the rule from the leading edge by <code>--gog-divider-inset-size</code>, so it lines
+        up with the text of a list whose rows start with an icon instead of cutting across the whole
+        row. Between the items of a real <code>&lt;ul&gt;</code>, use a border on the item instead —
+        see Accessibility.
       </p>
-      <div class="demo-card__preview">
-        <ul class="divider-demo__list">
-          <li><gog-icon name="success" /> Order placed</li>
-          <gog-divider [inset]="true" />
-          <li><gog-icon name="clock" /> Awaiting payment</li>
-          <gog-divider [inset]="true" />
-          <li><gog-icon name="info" /> Preparing shipment</li>
-        </ul>
-      </div>
-      <app-code-tabs [html]="insetHtml" [ts]="insetTs" [css]="insetCss" />
+      <app-demo [component]="examples.inset" [source]="sources.dividerInset" layout="frame" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Per-instance tokens</h3>
+      <p class="demo-card__meta">
+        <code>--gog-divider-color</code>, <code>--gog-divider-thickness</code> and
+        <code>--gog-divider-spacing</code> are read only if set, so one divider can be heavier,
+        coloured or roomier without touching the theme.
+      </p>
+      <app-demo [component]="examples.tokens" [source]="sources.dividerTokens" layout="wide" />
     </article>
   </section>
 
   <section class="doc-section">
     <h2 id="accessibility" class="doc-section__title font-heading">Accessibility</h2>
     <p class="doc-section__intro">
-      The host carries <code>role="separator"</code> and an <code>aria-orientation</code> matching
-      the <code>orientation</code> input, so a screen reader announces the break rather than
-      skipping it. The two rule segments are <code>aria-hidden</code>. A projected label is the
-      separator's accessible name, through <code>aria-labelledby</code> on the host (since 21.15.0)
-      — before, it was ordinary content inside a role whose children ARIA treats as presentational,
-      so whether it was read at all was up to the browser. Keep labels short: every one is announced
-      as a name now. A divider with nothing projected stays unnamed.
+      <code>role="separator"</code> on the host, with its orientation stated and named by its label.
+      The rule itself is <code>aria-hidden</code>.
     </p>
+    <ul class="doc-section__intro">
+      <li>
+        <strong>Role</strong> — <code>role="separator"</code> and an
+        <code>aria-orientation</code> matching <code>orientation</code>, so a screen reader
+        announces the break rather than skipping it.
+      </li>
+      <li>
+        <strong>Name</strong> — a projected label is the separator's accessible name, through
+        <code>aria-labelledby</code> on the host <app-since version="21.15.0" />, rather than
+        content inside a role whose children ARIA treats as presentational. Keep labels short: every
+        one is announced as a name. A divider with nothing projected stays unnamed.
+      </li>
+      <li><strong>Keyboard</strong> — none. A separator is not focusable.</li>
+      <li>
+        <strong>Where it belongs</strong> — between groups of controls, or sections a reader moves
+        between. Between the rows of a real <code>&lt;ul&gt;</code> the list already says where each
+        item ends; draw the line with a border on the item there.
+      </li>
+    </ul>
   </section>
 
   <section class="doc-section">
     <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
 
     <h3 class="doc-section__subtitle">Inputs</h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Default</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of apiInputs; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-              </td>
-              <td>
-                <code>{{ row.type }}</code>
-              </td>
-              <td>
-                <code>{{ row.default }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-
-    <h3 class="doc-section__subtitle">Content</h3>
-    <p class="doc-section__intro">
-      Default slot — the divider's label. Leave it empty for a plain rule.
-    </p>
+    <app-api-table [rows]="apiInputs" kind="inputs" />
   </section>
 
   <app-global-config-note component="divider" />
@@ -159,25 +120,6 @@
       <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
       <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
     </p>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Token</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of styleTokens; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="styleTokens" kind="tokens" />
   </section>
 </div>
