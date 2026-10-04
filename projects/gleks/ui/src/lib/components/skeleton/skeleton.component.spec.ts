@@ -105,18 +105,19 @@ describe('SkeletonComponent', () => {
     expect(fixture.nativeElement.style.height).toBe('');
   });
 
-  it('should be aria-hidden and have no status role by default', () => {
+  it('should be aria-hidden and have no role by default', () => {
     fixture.detectChanges();
 
     expect(fixture.nativeElement.getAttribute('aria-hidden')).toBe('true');
     expect(fixture.nativeElement.getAttribute('role')).toBeNull();
   });
 
-  it('should expose a status role and aria-label when ariaLabel is provided', () => {
+  it('is an indeterminate progressbar, like gog-spinner, when ariaLabel is provided', () => {
     fixture.componentRef.setInput('ariaLabel', 'Loading profile');
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.getAttribute('role')).toBe('status');
+    expect(fixture.nativeElement.getAttribute('role')).toBe('progressbar');
+    expect(fixture.nativeElement.hasAttribute('aria-valuenow')).toBe(false);
     expect(fixture.nativeElement.getAttribute('aria-label')).toBe('Loading profile');
     expect(fixture.nativeElement.getAttribute('aria-hidden')).toBeNull();
   });

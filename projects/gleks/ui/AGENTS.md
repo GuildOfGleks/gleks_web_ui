@@ -1662,7 +1662,7 @@ on `<body>`. You do not need to disable the controls inside yourself.
 | `width`, `height` | `string \| null`                                   | `null`                                               |
 | `lines`           | `number`                                           | `1` — `shape="text"` only, last line renders shorter |
 | `rounded`         | `boolean`                                          | `true`                                               |
-| `ariaLabel`       | `string \| null`                                   | `null` — decorative (no `role`) unless set           |
+| `ariaLabel`       | `string \| null`                                   | `null` — hidden; set, a `progressbar` (as spinner)   |
 
 ```html
 <gog-skeleton shape="text" [lines]="3" /> <gog-skeleton shape="circle" width="48px" />

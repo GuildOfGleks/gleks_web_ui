@@ -116,11 +116,12 @@
     <h3>host attributes</h3>
     <p class="skeleton-page__note">
       Read from the live DOM. A bone is <code>aria-hidden</code>; give <code>ariaLabel</code> to the
-      one that stands for the whole loading area, and it becomes <code>role="status"</code> with
-      that name. That makes the loading area findable while reading — it does not announce anything
-      when it appears, because a live region speaks its text and a bone has none. What tells a
-      screen reader the area is changing is <code>aria-busy</code> on the container, as the card
-      above sets, and what tells it the content has arrived is the content.
+      one that stands for the whole loading area, and it becomes an indeterminate
+      <code>role="progressbar"</code> with that name — the role <code>gog-spinner</code> takes, so
+      the area reads the same whichever draws it. That makes it findable while reading; it does not
+      announce anything when it appears. What tells a screen reader the area is changing is
+      <code>aria-busy</code> on the container, as the card above sets, and what tells it the content
+      has arrived is the content.
     </p>
     <app-doc-matrix rowAxis="skeleton" colAxis="">
       <ng-template appDocCell [rows]="a11yStates" [cols]="controlColumn" let-state>

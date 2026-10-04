@@ -17,10 +17,10 @@ import { GogSize, GogSkeletonAnimation, GogSkeletonShape } from '@guildofgleks/u
     '[class]': 'hostClasses()',
     '[style.width]': 'width()',
     '[style.height]': 'resolvedHeight()',
-    // Decorative by default — a page can carry dozens of these while loading, and a
-    // role="status" on every single bone would flood assistive tech with announcements.
-    // Pass `ariaLabel` on the one instance that should actually speak for the loading state.
-    '[attr.role]': 'ariaLabel() ? "status" : null',
+    // Decorative by default — a page can carry dozens of these while loading. Pass `ariaLabel` on
+    // the one instance that speaks for the loading state: it becomes an indeterminate progressbar,
+    // the role `gog-spinner` takes, so a loading area reads the same whatever draws it.
+    '[attr.role]': 'ariaLabel() ? "progressbar" : null',
     '[attr.aria-label]': 'ariaLabel()',
     '[attr.aria-hidden]': 'ariaLabel() ? null : "true"',
   },

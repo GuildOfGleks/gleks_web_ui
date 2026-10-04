@@ -39,3 +39,5 @@ build.
 - **Progressbar, Tabs and Scroll pages**: their accessibility sections say a missing name now warns
   in dev mode (one `console.warn` per component per page), and the lab's own examples of those
   three pass a name, so the site's console stays clean.
+- **Skeleton page**: a labelled skeleton is now `role="progressbar"`, like the spinner — its
+  accessibility section and any "status" wording change with it.

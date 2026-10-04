@@ -7,6 +7,14 @@ _Versioning_ section. Before 21.16.0 a minor could carry a breaking change, and 
 
 ## [21.19.0] - planned
 
+### Changed
+
+- **A labelled `gog-skeleton` is an indeterminate `role="progressbar"`, not `role="status"`** — the
+  role `gog-spinner` has taken since 21.15.0, so a loading area reads "progress bar, Loading
+  profile" whichever of the two draws it. `status` was a live region that never spoke (a skeleton
+  has no text to announce), so nothing a screen reader used to say is lost. An unlabelled skeleton
+  is unchanged: hidden.
+
 ### Added
 
 - **`gog-table` takes `ariaLabel`**, which names the table and, whenever its columns overflow, the
