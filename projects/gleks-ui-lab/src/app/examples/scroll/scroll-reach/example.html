@@ -1,5 +1,5 @@
 <gog-scroll
-  class="scroll-box"
+  style="height: 200px"
   ariaLabel="Example list"
   [reachThreshold]="8"
   (gogReachStart)="reachState.set('At the top')"
@@ -7,11 +7,11 @@
   (gogScroll)="onScroll($event)"
 >
   @for (item of items; track item) {
-    <p class="scroll-row">{{ item }}</p>
+    <p>{{ item }}</p>
   }
 </gog-scroll>
 
-<p class="status">
+<p>
   {{ reachState() }}
   @if (lastMetrics(); as metrics) {
     — scrollTop: {{ metrics.scrollTop | number: '1.0-0' }}

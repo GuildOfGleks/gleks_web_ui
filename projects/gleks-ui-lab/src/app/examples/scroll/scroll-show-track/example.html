@@ -1,0 +1,6 @@
+<!-- No thumb and no track; wheel, touch, keyboard and script still scroll it. -->
+<gog-scroll style="height: 160px" [showTrack]="false" ariaLabel="Example list">
+  @for (item of items; track item) {
+    <p>{{ item }}</p>
+  }
+</gog-scroll>

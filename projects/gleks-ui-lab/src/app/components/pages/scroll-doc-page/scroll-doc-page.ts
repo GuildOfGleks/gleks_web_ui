@@ -1,26 +1,19 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { ApiTableComponent, type ApiRow } from '../../shared/api-table/api-table';
 import { DemoComponent } from '../../shared/demo/demo';
 import { GlobalConfigNote } from '../../shared/global-config-note/global-config-note';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
-import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
-
 import { SCROLL_EXAMPLES } from '../../../examples/scroll/sources.generated';
 import { ScrollAxisExample } from '../../../examples/scroll/scroll-axis/example';
 import { ScrollHorizontalWheelExample } from '../../../examples/scroll/scroll-horizontal-wheel/example';
 import { ScrollMethodsExample } from '../../../examples/scroll/scroll-methods/example';
+import { ScrollOverscrollExample } from '../../../examples/scroll/scroll-overscroll/example';
 import { ScrollOverviewExample } from '../../../examples/scroll/scroll-overview/example';
 import { ScrollReachExample } from '../../../examples/scroll/scroll-reach/example';
-import { ScrollSizeAutoHideExample } from '../../../examples/scroll/scroll-size-auto-hide/example';
-
-interface ApiRow {
-  readonly name: string;
-  readonly type: string;
-  readonly default: string;
-  readonly description: string;
-  readonly since?: string;
-}
+import { ScrollShowTrackExample } from '../../../examples/scroll/scroll-show-track/example';
+import { ScrollStatesExample } from '../../../examples/scroll/scroll-states/example';
 
 const API_INPUTS: readonly ApiRow[] = [
   {
@@ -95,27 +88,27 @@ const API_INPUTS: readonly ApiRow[] = [
   },
 ];
 
-const API_OUTPUTS: readonly { name: string; payload: string; description: string }[] = [
+const API_OUTPUTS: readonly ApiRow[] = [
   {
     name: 'gogScroll',
-    payload: 'GogScrollMetrics',
+    type: 'GogScrollMetrics',
     description:
       'Emits scrollTop/scrollLeft/scrollHeight/scrollWidth/clientHeight/clientWidth on every scroll/resize.',
   },
   {
     name: 'gogReachStart',
-    payload: 'GogScrollDirection',
+    type: 'GogScrollDirection',
     description: 'Fires once when that axis crosses back within reachThreshold of its start edge.',
   },
   {
     name: 'gogReachEnd',
-    payload: 'GogScrollDirection',
+    type: 'GogScrollDirection',
     description:
       "Fires once when that axis crosses within reachThreshold of its end edge. GogScrollDirection is 'vertical' | 'horizontal', exported since 21.15.0.",
   },
 ];
 
-const API_METHODS: readonly { name: string; description: string }[] = [
+const API_METHODS: readonly ApiRow[] = [
   {
     name: 'scrollTo(options: ScrollToOptions)',
     description: "Forwards to the viewport's native Element.scrollTo.",
@@ -128,7 +121,7 @@ const API_METHODS: readonly { name: string; description: string }[] = [
 
 @Component({
   selector: 'app-scroll-doc-page',
-  imports: [DemoComponent, GlobalConfigNote, MarkdownComponent, RouterLink, SinceBadgeComponent],
+  imports: [ApiTableComponent, DemoComponent, GlobalConfigNote, MarkdownComponent, RouterLink],
   templateUrl: './scroll-doc-page.html',
   styleUrl: './scroll-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -140,6 +133,18 @@ export class ScrollDocPage {
   protected readonly styleTokens =
     TOKEN_SECTIONS.find((section) => section.id === 'scroll')?.tokens ?? [];
 
+  protected readonly sources = SCROLL_EXAMPLES;
+  protected readonly examples = {
+    overview: ScrollOverviewExample,
+    states: ScrollStatesExample,
+    axis: ScrollAxisExample,
+    showTrack: ScrollShowTrackExample,
+    horizontalWheel: ScrollHorizontalWheelExample,
+    overscroll: ScrollOverscrollExample,
+    reach: ScrollReachExample,
+    methods: ScrollMethodsExample,
+  };
+
   protected readonly importSnippet = [
     '```typescript',
     "import { ScrollComponent } from '@guildofgleks/ui';",
@@ -150,22 +155,4 @@ export class ScrollDocPage {
     '})',
     '```',
   ].join('\n');
-
-  /**
-   * The example components, and the text of the files they are built from.
-   *
-   * Nothing about an example lives on this page any more — no demo markup, no state driving it,
-   * no hand-written copy of its source. It is `src/app/examples/scroll/<name>/`, and
-   * `sources.generated.ts` is that folder read back by the generator, so the card cannot show
-   * something the demo above it does not do.
-   */
-  protected readonly sources = SCROLL_EXAMPLES;
-  protected readonly examples = {
-    overview: ScrollOverviewExample,
-    axis: ScrollAxisExample,
-    horizontalWheel: ScrollHorizontalWheelExample,
-    sizeAutoHide: ScrollSizeAutoHideExample,
-    reach: ScrollReachExample,
-    methods: ScrollMethodsExample,
-  };
 }

@@ -1,0 +1,17 @@
+@for (size of sizes; track size) {
+  @for (autoHide of [true, false]; track autoHide) {
+    <div>
+      <gog-scroll
+        style="height: 160px"
+        [size]="size"
+        [autoHide]="autoHide"
+        ariaLabel="Example list"
+      >
+        @for (item of items; track item) {
+          <p>{{ item }}</p>
+        }
+      </gog-scroll>
+      <p>size="{{ size }}", autoHide {{ autoHide ? 'on' : 'off' }}</p>
+    </div>
+  }
+}

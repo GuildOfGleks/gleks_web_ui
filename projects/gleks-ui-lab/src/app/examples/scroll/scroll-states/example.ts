@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { ScrollComponent } from '@guildofgleks/ui';
+import { GogScrollSize, ScrollComponent } from '@guildofgleks/ui';
 
 @Component({
   selector: 'app-example',
@@ -7,6 +7,7 @@ import { ScrollComponent } from '@guildofgleks/ui';
   templateUrl: './example.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ScrollOverviewExample {
+export class ScrollStatesExample {
+  protected readonly sizes: GogScrollSize[] = ['normal', 'thin'];
   protected readonly items = Array.from({ length: 30 }, (_, i) => `Row ${i + 1}`);
 }

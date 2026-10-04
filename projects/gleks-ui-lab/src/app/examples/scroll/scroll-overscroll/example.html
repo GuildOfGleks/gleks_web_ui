@@ -1,0 +1,10 @@
+@for (behavior of behaviors; track behavior) {
+  <div>
+    <gog-scroll style="height: 160px" [overscrollBehavior]="behavior" ariaLabel="Example list">
+      @for (item of items; track item) {
+        <p>{{ item }}</p>
+      }
+    </gog-scroll>
+    <p>overscrollBehavior="{{ behavior }}"</p>
+  </div>
+}

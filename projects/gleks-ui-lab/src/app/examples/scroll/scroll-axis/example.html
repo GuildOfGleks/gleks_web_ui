@@ -1,7 +1,33 @@
-<gog-scroll axis="horizontal" class="scroll-box" ariaLabel="Example columns">
-  <div class="scroll-row-flex">
+<div>
+  <gog-scroll style="height: 160px" axis="vertical" [autoHide]="false" ariaLabel="Vertical">
     @for (item of items; track item) {
-      <span class="scroll-chip">{{ item }}</span>
+      <p>{{ item }}</p>
     }
-  </div>
-</gog-scroll>
+  </gog-scroll>
+  <p>axis="vertical" (default)</p>
+</div>
+<div>
+  <!-- No height: on the horizontal axis the row sizes itself. -->
+  <gog-scroll axis="horizontal" [autoHide]="false" ariaLabel="Horizontal">
+    <div style="display: flex; gap: 8px; padding: 8px">
+      @for (item of items; track item) {
+        <gog-chip [clickable]="false">{{ item }}</gog-chip>
+      }
+    </div>
+  </gog-scroll>
+  <p>axis="horizontal"</p>
+</div>
+<div>
+  <gog-scroll style="height: 160px" axis="both" [autoHide]="false" ariaLabel="Both">
+    <table>
+      @for (row of items; track row) {
+        <tr>
+          @for (column of items.slice(0, 8); track column) {
+            <td style="white-space: nowrap">{{ row }} · {{ column }}</td>
+          }
+        </tr>
+      }
+    </table>
+  </gog-scroll>
+  <p>axis="both"</p>
+</div>

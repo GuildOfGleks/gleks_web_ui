@@ -6,7 +6,6 @@ import { GogScrollMetrics, ScrollComponent } from '@guildofgleks/ui';
   selector: 'app-example',
   imports: [ScrollComponent, DecimalPipe],
   templateUrl: './example.html',
-  styleUrl: './example.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ScrollReachExample {

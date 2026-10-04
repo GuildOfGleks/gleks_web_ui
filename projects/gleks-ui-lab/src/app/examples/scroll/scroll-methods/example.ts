@@ -5,7 +5,6 @@ import { ButtonComponent, ScrollComponent } from '@guildofgleks/ui';
   selector: 'app-example',
   imports: [ButtonComponent, ScrollComponent],
   templateUrl: './example.html',
-  styleUrl: './example.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ScrollMethodsExample {

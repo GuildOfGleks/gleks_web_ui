@@ -1,5 +1,6 @@
-<gog-scroll class="scroll-box" ariaLabel="Example list">
+<!-- The region scrolls whatever does not fit the box its host is given: set a height on it. -->
+<gog-scroll style="height: 200px" ariaLabel="Example list">
   @for (item of items; track item) {
-    <p class="scroll-row">{{ item }}</p>
+    <p>{{ item }}</p>
   }
 </gog-scroll>

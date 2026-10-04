@@ -1,13 +1,12 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { ScrollComponent } from '@guildofgleks/ui';
+import { ChipComponent, ScrollComponent } from '@guildofgleks/ui';
 
 @Component({
   selector: 'app-example',
-  imports: [ScrollComponent],
+  imports: [ChipComponent, ScrollComponent],
   templateUrl: './example.html',
-  styleUrl: './example.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ScrollAxisExample {
-  protected readonly items = Array.from({ length: 20 }, (_, i) => `Column ${i + 1}`);
+  protected readonly items = Array.from({ length: 20 }, (_, i) => `Item ${i + 1}`);
 }

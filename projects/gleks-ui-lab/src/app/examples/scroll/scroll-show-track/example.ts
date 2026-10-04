@@ -7,6 +7,6 @@ import { ScrollComponent } from '@guildofgleks/ui';
   templateUrl: './example.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ScrollOverviewExample {
+export class ScrollShowTrackExample {
   protected readonly items = Array.from({ length: 30 }, (_, i) => `Row ${i + 1}`);
 }
