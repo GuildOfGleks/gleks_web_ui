@@ -1,17 +1,16 @@
-<div class="variants">
+<!-- Collapsible throughout: closed and disabled are states of its toggle. -->
+@for (state of states; track state.name) {
   @for (variant of variants; track variant) {
-    <gog-panel [variant]="variant" size="md">
-      <h4 gogPanelHeader>{{ variant }}</h4>
-      <p>Padding and the gap between rows follow <code>size</code>.</p>
+    <gog-panel
+      [variant]="variant"
+      size="md"
+      collapsible
+      [open]="state.open"
+      [disabled]="state.disabled"
+      [loading]="state.loading"
+    >
+      <h4 gogPanelHeader>{{ variant }}, {{ state.name }}</h4>
+      <p>Sixteen events since Tuesday.</p>
     </gog-panel>
   }
-</div>
-
-<div class="sizes">
-  @for (size of sizes; track size) {
-    <gog-panel [size]="size" variant="outlined">
-      <h4 gogPanelHeader>{{ size }}</h4>
-      <p>Same copy, every tier.</p>
-    </gog-panel>
-  }
-</div>
+}

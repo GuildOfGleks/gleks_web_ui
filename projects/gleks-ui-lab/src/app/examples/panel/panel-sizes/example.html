@@ -1,0 +1,7 @@
+<!-- Each panel hugs its content, so the padding size drives is what sets the box. -->
+@for (size of sizes; track size) {
+  <gog-panel [size]="size" variant="outlined">
+    <h4 gogPanelHeader>{{ size }}</h4>
+    <p>Same copy, every tier.</p>
+  </gog-panel>
+}

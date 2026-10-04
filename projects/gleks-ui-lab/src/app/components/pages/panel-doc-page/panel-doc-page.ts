@@ -1,32 +1,19 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { ApiTableComponent, type ApiRow } from '../../shared/api-table/api-table';
 import { DemoComponent } from '../../shared/demo/demo';
 import { GlobalConfigNote } from '../../shared/global-config-note/global-config-note';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
-
 import { PANEL_EXAMPLES } from '../../../examples/panel/sources.generated';
 import { PanelCollapsibleExample } from '../../../examples/panel/panel-collapsible/example';
 import { PanelLoadingExample } from '../../../examples/panel/panel-loading/example';
 import { PanelOverlayExample } from '../../../examples/panel/panel-overlay/example';
 import { PanelOverviewExample } from '../../../examples/panel/panel-overview/example';
+import { PanelSizesExample } from '../../../examples/panel/panel-sizes/example';
 import { PanelThemingExample } from '../../../examples/panel/panel-theming/example';
 import { PanelVariantsExample } from '../../../examples/panel/panel-variants/example';
-
-interface ApiRow {
-  readonly name: string;
-  readonly type: string;
-  readonly default: string;
-  readonly description: string;
-  readonly since?: string;
-}
-
-interface SlotRow {
-  readonly name: string;
-  readonly description: string;
-  readonly since?: string;
-}
 
 const API_INPUTS: readonly ApiRow[] = [
   {
@@ -87,15 +74,17 @@ const API_MODELS: readonly ApiRow[] = [
   },
 ];
 
-const API_SLOTS: readonly SlotRow[] = [
+const API_SLOTS: readonly ApiRow[] = [
   {
     name: 'gogPanelHeader',
+    type: 'an element of yours',
     description:
       'Attribute directive on your own heading. Becomes the region’s accessible name and the toggle’s label.',
     since: '21.6.1',
   },
   {
     name: 'gogPanelFooter',
+    type: 'an element of yours',
     description:
       'Attribute directive on your own element. Sits below the body, above the panel’s edge, and survives loading.',
     since: '21.6.1',
@@ -104,7 +93,14 @@ const API_SLOTS: readonly SlotRow[] = [
 
 @Component({
   selector: 'app-panel-doc-page',
-  imports: [DemoComponent, GlobalConfigNote, MarkdownComponent, RouterLink, SinceBadgeComponent],
+  imports: [
+    ApiTableComponent,
+    DemoComponent,
+    GlobalConfigNote,
+    MarkdownComponent,
+    RouterLink,
+    SinceBadgeComponent,
+  ],
   templateUrl: './panel-doc-page.html',
   styleUrl: './panel-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -115,6 +111,17 @@ export class PanelDocPage {
   protected readonly apiSlots = API_SLOTS;
   protected readonly styleTokens =
     TOKEN_SECTIONS.find((section) => section.id === 'panel')?.tokens ?? [];
+
+  protected readonly sources = PANEL_EXAMPLES;
+  protected readonly examples = {
+    overview: PanelOverviewExample,
+    variants: PanelVariantsExample,
+    sizes: PanelSizesExample,
+    collapsible: PanelCollapsibleExample,
+    overlay: PanelOverlayExample,
+    loading: PanelLoadingExample,
+    theming: PanelThemingExample,
+  };
 
   protected readonly importSnippet = [
     '```typescript',
@@ -130,14 +137,4 @@ export class PanelDocPage {
     '})',
     '```',
   ].join('\n');
-
-  protected readonly sources = PANEL_EXAMPLES;
-  protected readonly examples = {
-    overview: PanelOverviewExample,
-    variants: PanelVariantsExample,
-    collapsible: PanelCollapsibleExample,
-    overlay: PanelOverlayExample,
-    loading: PanelLoadingExample,
-    theming: PanelThemingExample,
-  };
 }

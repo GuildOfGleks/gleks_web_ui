@@ -175,7 +175,7 @@ template.
 | alert         | examples | 5     | 0   | ✅       |
 | card          | examples | 6     | 0   | ✅       |
 | menu          | examples | 5     | 0   | ✅       |
-| panel         | examples | 6     | 0   |          |
+| panel         | examples | 6     | 0   | ✅       |
 | ripple        | examples | 6     | 0   |          |
 | scroll        | examples | 7     | 0   |          |
 

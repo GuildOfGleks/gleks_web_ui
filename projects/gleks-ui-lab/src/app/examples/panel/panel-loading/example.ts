@@ -10,7 +10,6 @@ import {
   selector: 'app-example',
   imports: [ButtonComponent, GogPanelFooterDirective, GogPanelHeaderDirective, PanelComponent],
   templateUrl: './example.html',
-  styleUrl: './example.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PanelLoadingExample {

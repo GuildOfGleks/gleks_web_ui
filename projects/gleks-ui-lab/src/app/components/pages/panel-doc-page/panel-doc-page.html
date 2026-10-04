@@ -1,7 +1,7 @@
 <div class="panel-doc">
   <header class="panel-doc__hero">
     <p class="panel-doc__eyebrow">gog-panel</p>
-    <h1 class="panel-doc__title font-heading">Panel <app-since version="21.6.1" /></h1>
+    <h1 class="panel-doc__title font-heading">Panel</h1>
     <p class="panel-doc__lead">
       A titled region of a page — a settings section, a dashboard area, a form group. Unlike
       <a routerLink="/components/card">gog-card</a> it is a real landmark (<code
@@ -22,9 +22,96 @@
     </p>
     <app-markdown [markdown]="importSnippet" />
 
+    <p class="doc-section__intro">Basic usage — a titled region of the page:</p>
     <div class="demo-card">
-      <app-demo [component]="examples.overview" [source]="sources.panelOverview" />
+      <app-demo [component]="examples.overview" [source]="sources.panelOverview" layout="wide" />
     </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Variants and states</h3>
+      <p class="demo-card__meta">
+        The same three variants as <a routerLink="/components/card">gog-card</a>, from the shared
+        <code>GogSurfaceVariant</code> type — <code>elevated</code> is the default here, since a
+        page region is usually the raised thing on the page. Each is shown open, closed, disabled
+        and loading; loading keeps the heading and replaces only the body. Hover and focus on the
+        header row are live.
+      </p>
+      <app-demo [component]="examples.variants" [source]="sources.panelVariants" layout="fields" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Sizes</h3>
+      <p class="demo-card__meta">
+        <code>size</code> drives padding and the gap between rows on the same five-step scale as
+        every control. Each panel here hugs its content, so the padding is what sets the box.
+      </p>
+      <app-demo [component]="examples.sizes" [source]="sources.panelSizes" layout="row" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Collapsible</h3>
+      <p class="demo-card__meta">
+        <code>collapsible</code> adds the toggle and composes
+        <a routerLink="/components/collapsible">gog-collapsible</a> underneath, so the open/close
+        state, the id wiring and the animation are the library's existing ones. The heading stays a
+        heading: the toggle is a separate <code>&lt;button&gt;</code> named by it through
+        <code>aria-labelledby</code>, with its hit area stretched across the header row — so the
+        pointer still gets "click the title to collapse", while a screen reader gets a heading
+        <em>and</em> a named expandable button rather than a heading swallowed by
+        <code>role="button"</code>. Without a header the toggle falls back to
+        <code>GOG_CONFIG.labels.togglePanel</code>.
+      </p>
+      <app-demo
+        [component]="examples.collapsible"
+        [source]="sources.panelCollapsible"
+        layout="wide"
+      />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">A panel that holds an overlay</h3>
+      <p class="demo-card__meta">
+        A <strong>non-collapsible</strong> panel undoes the collapse geometry it inherits,
+        <code>overflow</code> included, so a dropdown or menu opened inside one escapes the panel's
+        box with nothing extra asked of you — the first select below.
+      </p>
+      <p class="demo-card__meta">
+        A <strong>collapsible</strong> one clips only while it opens and closes, exactly like
+        <code>gog-collapsible</code>, and stops once it is open and settled
+        <app-since version="21.15.0" /> — so the second select escapes as well. Before 21.15.0 an
+        open collapsible panel kept clipping, and an overlay inside needed
+        <code>[appendToBody]</code>. It still does in one case: content capped with
+        <code>--gog-collapsible-max-height</code> never settles, and keeps clipping.
+      </p>
+      <app-demo [component]="examples.overlay" [source]="sources.panelOverlay" layout="wide" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Loading</h3>
+      <p class="demo-card__meta">
+        The heading stays — a page section is titled before its content arrives, and blanking the
+        title would move the layout twice — and only the body is replaced with
+        <code>skeletonLines</code> placeholder lines. The footer stays too, so its actions remain
+        usable. The host is marked <code>aria-busy</code> while it lasts.
+      </p>
+      <app-demo [component]="examples.loading" [source]="sources.panelLoading" layout="wide" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Theming</h3>
+      <p class="demo-card__meta">
+        Every value comes from a <code>--gog-panel-*</code> token, and the instance tier is
+        undeclared on purpose — setting one on an element beats the variant and size classes without
+        a specificity fight, and without <code>::ng-deep</code>. See
+        <a routerLink="/theming">Theming</a> for the full list, and the note there about this prefix
+        naming two different things.
+      </p>
+      <app-demo [component]="examples.theming" [source]="sources.panelTheming" layout="wide" />
+    </article>
   </section>
 
   <section class="doc-section">
@@ -50,176 +137,46 @@
   </section>
 
   <section class="doc-section">
-    <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
-
-    <article class="demo-card">
-      <h3 class="demo-card__title">Variants and sizes</h3>
-      <p class="demo-card__meta">
-        The same three variants as <code>gog-card</code>, from the shared
-        <code>GogSurfaceVariant</code> type — but <code>elevated</code> is the default here, because
-        a page region is usually the raised thing on the page. <code>size</code> drives padding and
-        the gap between rows on the same five-tier scale as every control.
-      </p>
-      <app-demo [component]="examples.variants" [source]="sources.panelVariants" />
-    </article>
-
-    <article class="demo-card">
-      <h3 class="demo-card__title">Collapsible</h3>
-      <p class="demo-card__meta">
-        <code>collapsible</code> adds the toggle and composes
-        <a routerLink="/components/collapsible">gog-collapsible</a> underneath, so the open/close
-        state, the id wiring and the animation are the library's existing ones. The heading stays a
-        heading: the toggle is a separate <code>&lt;button&gt;</code> named by it through
-        <code>aria-labelledby</code>, with its hit area stretched across the header row — so the
-        pointer still gets "click the title to collapse", while a screen reader gets a heading
-        <em>and</em> a named expandable button rather than a heading swallowed by
-        <code>role="button"</code>. Without a header the toggle falls back to
-        <code>GOG_CONFIG.labels.togglePanel</code>.
-      </p>
-      <app-demo [component]="examples.collapsible" [source]="sources.panelCollapsible" />
-    </article>
-
-    <article class="demo-card">
-      <h3 class="demo-card__title">A panel that holds an overlay</h3>
-      <p class="demo-card__meta">
-        A <strong>non-collapsible</strong> panel undoes the collapse geometry it inherits,
-        <code>overflow</code> included, so a dropdown or menu opened inside one escapes the panel's
-        box with nothing extra asked of you — the first select below.
-      </p>
-      <p class="demo-card__meta">
-        A <strong>collapsible</strong> one clips only while it opens and closes, exactly like
-        <code>gog-collapsible</code>, and stops once it is open and settled
-        <app-since version="21.15.0" /> — so the second select escapes as well. Before 21.15.0 an
-        open collapsible panel kept clipping, and an overlay inside needed
-        <code>[appendToBody]</code>. It still does in one case: content capped with
-        <code>--gog-collapsible-max-height</code> never settles, and keeps clipping.
-      </p>
-      <app-demo [component]="examples.overlay" [source]="sources.panelOverlay" />
-    </article>
-
-    <article class="demo-card">
-      <h3 class="demo-card__title">Loading</h3>
-      <p class="demo-card__meta">
-        The heading stays — a page section is titled before its content arrives, and blanking the
-        title would move the layout twice — and only the body is replaced with
-        <code>skeletonLines</code> placeholder lines. The footer stays too, so its actions remain
-        usable. The host is marked <code>aria-busy</code> while it lasts.
-      </p>
-      <app-demo [component]="examples.loading" [source]="sources.panelLoading" />
-    </article>
-
-    <article class="demo-card">
-      <h3 class="demo-card__title">Theming</h3>
-      <p class="demo-card__meta">
-        Every value comes from a <code>--gog-panel-*</code> token, and the instance tier is
-        undeclared on purpose — setting one on an element beats the variant and size classes without
-        a specificity fight, and without <code>::ng-deep</code>. See
-        <a routerLink="/theming">Theming</a> for the full list, and the note there about this prefix
-        naming two different things.
-      </p>
-      <app-demo [component]="examples.theming" [source]="sources.panelTheming" />
-    </article>
+    <h2 id="accessibility" class="doc-section__title font-heading">Accessibility</h2>
+    <p class="doc-section__intro">
+      A panel with a heading is a named landmark region; a collapsible one adds a real toggle
+      button.
+    </p>
+    <ul class="doc-section__intro">
+      <li>
+        <strong>Name</strong> — <code>gogPanelHeader</code> on your own heading names the region, so
+        a screen reader lists the section by name. Keep panels to a handful per page: each one is a
+        landmark.
+      </li>
+      <li>
+        <strong>Collapsing</strong> — the header row holds a button with
+        <code>aria-expanded</code> and <code>aria-controls</code>; <kbd>Enter</kbd> or
+        <kbd>Space</kbd> toggles it. Closed content is <code>inert</code>. A disabled panel's toggle
+        is <code>aria-disabled</code> and its content stays readable.
+      </li>
+      <li>
+        <strong>Loading</strong> marks the panel <code>aria-busy</code> and keeps the heading.
+      </li>
+    </ul>
   </section>
 
   <section class="doc-section">
     <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
 
     <h3 class="doc-section__subtitle">Inputs</h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Default</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of apiInputs; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-                @if (row.since) {
-                  <app-since [version]="row.since" />
-                }
-              </td>
-              <td>
-                <code>{{ row.type }}</code>
-              </td>
-              <td>
-                <code>{{ row.default }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="apiInputs" kind="inputs" />
 
     <h3 class="doc-section__subtitle">Models</h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Default</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of apiModels; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-                @if (row.since) {
-                  <app-since [version]="row.since" />
-                }
-              </td>
-              <td>
-                <code>{{ row.type }}</code>
-              </td>
-              <td>
-                <code>{{ row.default }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="apiModels" kind="inputs" />
 
-    <h3 class="doc-section__subtitle">Slots</h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of apiSlots; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-                @if (row.since) {
-                  <app-since [version]="row.since" />
-                }
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <h3 class="doc-section__subtitle">Slots — attribute directives on your own elements</h3>
+    <app-api-table [rows]="apiSlots" kind="directives" />
   </section>
 
   <app-global-config-note component="panel" />
 
   <section class="doc-section">
-    <h2 id="tokens" class="doc-section__title font-heading">Style tokens</h2>
+    <h2 id="styling" class="doc-section__title font-heading">Styling Tokens</h2>
     <p class="doc-section__intro">
       <code>gog-panel</code> shares its token prefix with the foundation surface tier on purpose:
       <code>--gog-panel-radius</code>, <code>--gog-panel-shadow</code> and the border pair are the
@@ -235,25 +192,6 @@
       edit a theme actually wants, and what eleven themes hand-writing twenty-two shadow values
       could not do.
     </p>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Token</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (token of styleTokens; track token.name) {
-            <tr>
-              <td>
-                <code>{{ token.name }}</code>
-              </td>
-              <td>{{ token.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="styleTokens" kind="tokens" />
   </section>
 </div>

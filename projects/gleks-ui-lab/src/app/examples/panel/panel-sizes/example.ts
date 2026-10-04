@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { GogPanelHeaderDirective, PanelComponent } from '@guildofgleks/ui';
+import { GogPanelHeaderDirective, GogSize, PanelComponent } from '@guildofgleks/ui';
 
 @Component({
   selector: 'app-example',
@@ -7,4 +7,6 @@ import { GogPanelHeaderDirective, PanelComponent } from '@guildofgleks/ui';
   templateUrl: './example.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PanelThemingExample {}
+export class PanelSizesExample {
+  protected readonly sizes: readonly GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];
+}

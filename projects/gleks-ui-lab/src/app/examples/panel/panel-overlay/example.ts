@@ -10,7 +10,6 @@ import {
   selector: 'app-example',
   imports: [GogPanelHeaderDirective, PanelComponent, SelectComponent],
   templateUrl: './example.html',
-  styleUrl: './example.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PanelOverlayExample {
