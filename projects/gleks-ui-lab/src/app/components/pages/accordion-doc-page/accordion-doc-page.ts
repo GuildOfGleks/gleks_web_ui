@@ -11,6 +11,7 @@ import { AccordionControlledExample } from '../../../examples/accordion/accordio
 import { AccordionHeadingLevelExample } from '../../../examples/accordion/accordion-heading-level/example';
 import { AccordionLoadingExample } from '../../../examples/accordion/accordion-loading/example';
 import { AccordionMultiExample } from '../../../examples/accordion/accordion-multi/example';
+import { AccordionOverlayExample } from '../../../examples/accordion/accordion-overlay/example';
 import { AccordionOverviewExample } from '../../../examples/accordion/accordion-overview/example';
 import { AccordionSizesExample } from '../../../examples/accordion/accordion-sizes/example';
 import { AccordionTemplatesExample } from '../../../examples/accordion/accordion-templates/example';
@@ -148,6 +149,7 @@ export class AccordionDocPage {
     multi: AccordionMultiExample,
     controlled: AccordionControlledExample,
     templates: AccordionTemplatesExample,
+    overlay: AccordionOverlayExample,
     headingLevel: AccordionHeadingLevelExample,
   };
 

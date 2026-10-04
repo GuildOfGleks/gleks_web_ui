@@ -38,7 +38,7 @@ const ROWS: Row[] = [
 })
 export class TableCustomCellsExample {
   protected readonly rows = ROWS;
-  protected readonly variants: Record<string, GogTagVariant> = {
+  protected readonly variants: Partial<Record<string, GogTagVariant>> = {
     Ready: 'success',
     'In review': 'warning',
     Planned: 'info',

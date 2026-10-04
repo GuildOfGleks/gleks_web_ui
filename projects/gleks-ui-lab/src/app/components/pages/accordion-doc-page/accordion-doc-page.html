@@ -97,6 +97,17 @@
     </article>
 
     <article class="demo-card">
+      <h3 class="demo-card__title">An overlay inside the body</h3>
+      <p class="demo-card__meta">
+        A body can hold a control whose panel runs past it — here a select of time zones in the last
+        item. The body clips only while it animates; once it is open and settled it does not, so the
+        list overlaps the end of the accordion and whatever follows it, the code block below
+        included. Open the select to see it.
+      </p>
+      <app-demo [component]="examples.overlay" [source]="sources.accordionOverlay" layout="wide" />
+    </article>
+
+    <article class="demo-card">
       <h3 class="demo-card__title">Heading level</h3>
       <p class="demo-card__meta">
         <code>headingLevel</code> wraps each header in <code>role="heading"</code> at that

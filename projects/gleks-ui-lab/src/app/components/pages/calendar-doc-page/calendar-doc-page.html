@@ -46,7 +46,12 @@
 
     <article class="demo-card">
       <h3 class="demo-card__title">Sizes</h3>
-      <p class="demo-card__meta">Five steps of day cell and type.</p>
+      <p class="demo-card__meta">
+        Five steps of day cell and type. A weekday column is as wide as a day, so at
+        <code>xsm</code> and <code>sm</code> — 24 and 28px — the weekday row draws the locale's
+        narrow form (<code>S M T …</code>) <app-since version="21.15.1" />, where a three-letter
+        name would outgrow its column.
+      </p>
       <app-demo [component]="examples.sizes" [source]="sources.calendarSizes" layout="row" />
     </article>
 
@@ -162,6 +167,11 @@
         <strong>Focus follows the highlight</strong> <app-since version="21.15.0" /> — the arrows
         move the focus ring and not only the roving <code>tabindex</code>, so a screen reader
         announces each day as it is reached.
+      </li>
+      <li>
+        <strong>Weekday columns</strong> <app-since version="21.15.1" /> — each column header is
+        named by the whole day (<code>aria-label="Monday"</code>) at every size, so the narrow
+        letters of the small sizes, where two columns read <code>S</code>, are never what is heard.
       </li>
       <li>
         <strong>Disabled days</strong> — outside <code>min</code>/<code>max</code> or matched by

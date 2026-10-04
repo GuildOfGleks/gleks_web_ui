@@ -26,7 +26,7 @@ const API_INPUTS: readonly ApiRow[] = [
     type: 'number (model)',
     default: '0',
     description:
-      'Two-way bindable value via [(value)]. Also driven by Angular Forms through writeValue/registerOnChange when used with formControlName/[formControl]/ngModel. Ignored while range is true.',
+      'Two-way bindable value via [(value)]. Also driven by Angular Forms through writeValue/registerOnChange when used with formControlName/[formControl]/ngModel. This model is ignored while range is true; a form control is not, and carries the { start, end } pair instead.',
   },
   {
     name: 'range',

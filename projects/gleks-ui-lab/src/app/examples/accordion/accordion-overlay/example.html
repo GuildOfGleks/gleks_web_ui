@@ -1,0 +1,9 @@
+<gog-accordion [items]="items" [(openIds)]="openIds">
+  <ng-template gogAccordionContent let-item>
+    @if (item.id === 'region') {
+      <gog-select label="Time zone" [options]="timezones" [(value)]="timezone" />
+    } @else {
+      <p>{{ item['body'] }}</p>
+    }
+  </ng-template>
+</gog-accordion>

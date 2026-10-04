@@ -193,8 +193,10 @@
       </li>
       <li>
         <strong>Pointer targets</strong> — in single mode the whole track is the target. In range
-        mode only the thumbs are, at about 16px, under the 24px WCAG 2.5.8 asks for; the keyboard
-        reaches both fully.
+        mode only the thumbs are, and each takes the pointer across 24x24
+        (<code>--gog-slider-range-target-size</code>, WCAG 2.5.8) centred on the drawn thumb,
+        horizontal or vertical <app-since version="21.15.1" />. The keyboard reaches both thumbs
+        fully either way.
       </li>
     </ul>
   </section>
