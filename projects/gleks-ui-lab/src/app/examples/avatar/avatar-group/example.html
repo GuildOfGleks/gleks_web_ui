@@ -1,0 +1,10 @@
+@for (max of maxes; track $index) {
+  <div>
+    <span>max={{ max ?? 'unset' }}</span>
+    <gog-avatar-group [max]="max" ariaLabel="Team">
+      @for (person of team; track person.name) {
+        <gog-avatar [name]="person.name" [src]="person.src" />
+      }
+    </gog-avatar-group>
+  </div>
+}

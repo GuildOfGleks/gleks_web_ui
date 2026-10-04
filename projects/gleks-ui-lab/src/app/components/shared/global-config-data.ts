@@ -37,6 +37,7 @@ export interface GlobalConfigEntry {
 export const GLOBAL_CONFIG_BY_COMPONENT: Readonly<Record<string, readonly GlobalConfigEntry[]>> = {
   accordion: [{ key: 'ripple.enabled' }],
   alert: [{ key: 'labels.closeAlert', note: 'the close button, when dismissible' }],
+  avatar: [{ key: 'labels.moreAvatars', note: "gog-avatar-group's +N avatar" }],
   autocomplete: [
     { key: 'control.size' },
     { key: 'control.errorDisplay' },

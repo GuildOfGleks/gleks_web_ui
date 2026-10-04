@@ -70,8 +70,12 @@
         A directive, so it decorates what is already there rather than wrapping it: a
         <code>gog-button</code>, a native button, a link styled with <code>gogButton</code>, or any
         element — the host only gains <code>position: relative</code> to hold the badge. An inline
-        element has to be made a box (<code>inline-flex</code> on the avatar) so the corner is its
-        corner.
+        element has to be made a box (<code>inline-flex</code> on the span) so the corner is its
+        corner. A round <a routerLink="/components/avatar">gog-avatar</a> moves the anchor onto its
+        circle <app-since version="21.17.0" />, so the dot sits on the edge rather than in the empty
+        corner of the avatar's box — it sets <code>--gog-badge-host-inset</code> and
+        <code>--gog-badge-dot-offset</code> on itself, and any round host of your own can do the
+        same.
       </p>
       <app-demo [component]="examples.hosts" [source]="sources.badgeHosts" layout="overhang" />
     </article>
@@ -114,6 +118,12 @@
         gets it as a <em>description</em> of that element, through <code>aria-describedby</code>:
         "Inbox, button, 12 unread" <app-since version="21.15.0" />. Before 21.15.0 the badge landed
         beside the inner button rather than on it, and Tab said only "Inbox, button".
+      </li>
+      <li>
+        <strong>A host whose children are not read</strong> — <code>role="img"</code>, which a named
+        <a routerLink="/components/avatar">gog-avatar</a> is — gets it as its own description the
+        same way: "Ada Lovelace, image, 3" <app-since version="21.17.0" />. Before 21.17.0 the count
+        was drawn but never heard.
       </li>
       <li>
         <strong>A host with nothing focusable</strong> gets plain text after its own — and inside a

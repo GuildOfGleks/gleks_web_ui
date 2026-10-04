@@ -1,9 +1,14 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { ButtonComponent, GogBadgeDirective, GogButtonDirective } from '@guildofgleks/ui';
+import {
+  AvatarComponent,
+  ButtonComponent,
+  GogBadgeDirective,
+  GogButtonDirective,
+} from '@guildofgleks/ui';
 
 @Component({
   selector: 'app-example',
-  imports: [ButtonComponent, GogBadgeDirective, GogButtonDirective],
+  imports: [AvatarComponent, ButtonComponent, GogBadgeDirective, GogButtonDirective],
   templateUrl: './example.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

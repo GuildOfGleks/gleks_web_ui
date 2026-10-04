@@ -617,6 +617,46 @@
   --gog-alert-warning-color: var(--gog-warning-color);
   --gog-alert-info-color: var(--gog-info-color);
 
+  /* ── Avatar ────────────────────────────────────────────────────────────────
+     The five sizes are the skeleton circle's, by reference, so a `gog-skeleton shape="circle"`
+     standing in for an avatar at the same size is replaced without the layout moving. The fallback
+     (initials, then the icon) is drawn at a ratio of the box, so it scales with whichever size
+     resolves. */
+  --gog-avatar-xsm-size: var(--gog-skeleton-circle-size-xsm);
+  --gog-avatar-sm-size: var(--gog-skeleton-circle-size-sm);
+  --gog-avatar-md-size: var(--gog-skeleton-circle-size-md);
+  --gog-avatar-lg-size: var(--gog-skeleton-circle-size-lg);
+  --gog-avatar-slg-size: var(--gog-skeleton-circle-size-slg);
+  /* The fallback for an engine without color-mix(); the supported value is in the block below. */
+  --gog-avatar-bg: var(--gog-hover-color);
+  --gog-avatar-color: var(--gog-text-color);
+  --gog-avatar-font-family: var(--gog-font-body);
+  --gog-avatar-font-weight: var(--gog-font-weight-semibold);
+  /* The letters' box stays inside the circle. Measured across the eleven themes, the widest pair is
+     "WW" in `parchment`, 0.80d wide at this ratio and 0.28d tall: its corners sit 0.42d from the
+     centre, inside the 0.5d radius. "AL" is 0.49d, "GH" 0.6d. */
+  --gog-avatar-initials-ratio: 0.4;
+  /* Of the box, as the basis the glyph is drawn from: the icon is --gog-icon-size (1.2em) of it,
+     so 0.5 draws the user glyph at 0.6 of the diameter. */
+  --gog-avatar-icon-ratio: 0.5;
+  /* A glyph or two letters in their own box: leading would push them off centre. */
+  --gog-avatar-line-height: var(--gog-line-height-none);
+  --gog-avatar-rounded-radius: var(--gog-radius);
+  /* How far in from its box corner a circle crosses the diagonal: (1 - 1/sqrt(2)) / 2 of the
+     diameter. A `gogBadge` on a round avatar anchors there instead of at the empty box corner. */
+  --gog-avatar-badge-inset-ratio: 0.1464;
+  /* How far each avatar in a gog-avatar-group steps back over the one before, of the diameter. The
+     next avatar and its ring cover the trailing (ratio * d + ring) of this one, and a typical pair
+     of initials ("GH", 0.6d) ends 0.2d from the edge: an eighth plus a 2px ring leaves it uncovered
+     at every size. The widest pairs ("WW", 0.75-0.8d) lose a few pixels of their outer stroke. */
+  --gog-avatar-group-overlap-ratio: 0.125;
+  /* Separates two overlapping edges; set the colour to whatever the group sits on. */
+  --gog-avatar-group-ring-width: var(--gog-control-border-width);
+  --gog-avatar-group-ring-color: var(--gog-background-color);
+  /* Three characters where an avatar draws two: "99+" is 0.51d at this ratio (0.69d at 0.4), so it
+     stays narrower than a typical pair of initials. */
+  --gog-avatar-group-more-initials-ratio: 0.3;
+
   /* ── Collapsible ───────────────────────────────────────────────────────────
      No owned markup: the `.gog-collapsible__*` rules live in utilities.css, because they style content
      the consumer projects, which a scoped stylesheet cannot reach. */
@@ -1204,6 +1244,10 @@
   --gog-badge-radius: 999px;
   /* How far the badge hangs outside the host corner; enough to clear the default corner radius. */
   --gog-badge-offset: var(--gog-space-8);
+  /* How far in from the host's box corner the badge anchors. 0 for a box; a round `gog-avatar`
+     sets it on itself to where its circle crosses the diagonal. */
+  --gog-badge-host-inset: 0px;
+  --gog-badge-dot-offset: var(--gog-badge-offset);
   --gog-badge-border-width: 0;
   --gog-badge-border-style: var(--gog-border-style);
   --gog-badge-border-color: transparent;

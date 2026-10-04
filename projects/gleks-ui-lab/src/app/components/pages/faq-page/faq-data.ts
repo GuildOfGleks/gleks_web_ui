@@ -89,7 +89,7 @@ weight.
       `
 Just what you import. Every component is standalone and the package sets \`"sideEffects":
 false\`, so a production bundler tree-shakes out anything you don't reference — importing
-\`ButtonComponent\` alone doesn't pull in the other 31 components.
+\`ButtonComponent\` alone doesn't pull in the other 32 components.
 
 Tree-shaking is not code-splitting, though. The root package is **one module**: once anything in
 your initial bundle imports from it, every component you use from it lands there too — including
@@ -274,12 +274,12 @@ own custom CSS can use to follow the same rule.
     item(
       'How much does it add to my bundle?',
       `
-The whole library — 32 components plus the \`gogBadge\`, \`gogTooltip\` and \`gogRipple\`
-directives — is **129.8 KB gzipped** of JavaScript, plus a 29.4 KB gzipped stylesheet that
+The whole library — 33 components plus the \`gogBadge\`, \`gogTooltip\` and \`gogRipple\`
+directives — is **131.9 KB gzipped** of JavaScript, plus a 31.0 KB gzipped stylesheet that
 carries every theming token. An app using a handful
 of components pays a fraction of the first number, since the rest is tree-shaken; the stylesheet
 is loaded whole either way. For context, four Angular Material components gzip to 153.6 KB and
-the same four from PrimeNG to 332.7 KB — measured on 21.15.0 (2026-10-03) against Material's and
+the same four from PrimeNG to 332.7 KB — measured on 21.17.0 (2026-10-04) against Material's and
 PrimeNG's figures from 2026-09-13, with the commands to re-measure
 all of it on the [full technical comparison](/general/compare-full).
 `,

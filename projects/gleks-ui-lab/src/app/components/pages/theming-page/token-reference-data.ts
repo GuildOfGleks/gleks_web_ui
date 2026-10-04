@@ -369,6 +369,59 @@ export const TOKEN_SECTIONS: TokenSection[] = [
     ],
   },
   {
+    id: 'avatar',
+    title: 'Avatar',
+    tokens: [
+      {
+        name: '--gog-avatar-xsm-size / -sm-size / -md-size / -lg-size / -slg-size',
+        description:
+          'The diameter at each size: the skeleton circle’s sizes by reference (24/32/48/64/96px), so a circle skeleton swaps for an avatar without moving anything.',
+      },
+      {
+        name: '--gog-avatar-size',
+        description:
+          'Undeclared instance override of the diameter. gog-avatar-group sets it on itself, which is how one size reaches the whole row.',
+      },
+      {
+        name: '--gog-avatar-bg / -color',
+        description:
+          'The fill behind the initials or the icon, and their colour. The fill is the skeleton’s step made opaque, so it stands off any ground and matches its own placeholder.',
+      },
+      {
+        name: '--gog-avatar-font-family / -font-weight / -line-height',
+        description: 'How the initials are set.',
+      },
+      {
+        name: '--gog-avatar-initials-ratio / -icon-ratio',
+        description:
+          'The initials and the icon, as a fraction of the diameter, so they scale with whichever size resolves.',
+      },
+      {
+        name: '--gog-avatar-rounded-radius',
+        description: 'The corner of shape="rounded". A circle needs none.',
+      },
+      {
+        name: '--gog-avatar-badge-inset-ratio',
+        description:
+          'Where a circle crosses its box’s diagonal, as a fraction of the diameter: where a gogBadge on a round avatar anchors.',
+      },
+      {
+        name: '--gog-avatar-group-overlap-ratio',
+        description:
+          'How far each avatar in a group steps back over the one before, of the diameter — an eighth, which leaves a typical pair of initials uncovered.',
+      },
+      {
+        name: '--gog-avatar-group-ring-width / -ring-color',
+        description:
+          'The ring between overlapping avatars. The colour is the page’s; set it to the surface the group sits on, a card or a panel.',
+      },
+      {
+        name: '--gog-avatar-group-more-initials-ratio',
+        description: 'The +N avatar’s text, smaller because it can be three characters (99+).',
+      },
+    ],
+  },
+  {
     id: 'autocomplete',
     title: 'Autocomplete',
     tokens: [
@@ -439,6 +492,11 @@ export const TOKEN_SECTIONS: TokenSection[] = [
       {
         name: '--gog-badge-offset / -z',
         description: 'How far the badge overhangs its host corner, and its stacking order.',
+      },
+      {
+        name: '--gog-badge-host-inset / -dot-offset',
+        description:
+          'Where the badge anchors, in from the host’s box corner (0 for a box), and the dot’s own overhang (the shared offset by default). A round gog-avatar sets both on itself, so a count sits on the edge of its circle and a dot is centred on it.',
       },
     ],
   },

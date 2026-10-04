@@ -19,7 +19,7 @@ export const GENERAL_NAV_ITEMS: readonly NavItem[] = [
   { label: 'AGENTS.md', path: 'general/agents' },
 ];
 
-// 35 entries — 32 components and the three directives (gogBadge, gogTooltip, gogRipple) — grouped by what they're for rather
+// 36 entries — 33 components and the three directives (gogBadge, gogTooltip, gogRipple) — grouped by what they're for rather
 // than one long alphabetical run —
 // alphabetical within each group.
 const COMPONENT_NAV_GROUPS: readonly NavGroup[] = [
@@ -50,6 +50,7 @@ const COMPONENT_NAV_GROUPS: readonly NavGroup[] = [
   {
     title: 'Data Display',
     items: [
+      { label: 'Avatar', path: 'components/avatar' },
       { label: 'Badge', path: 'components/badge' },
       { label: 'Chip', path: 'components/chip' },
       { label: 'Divider', path: 'components/divider' },

@@ -1,0 +1,19 @@
+<gog-card>
+  <h3 gogCardHeader>Default ring</h3>
+  <gog-avatar-group ariaLabel="Shared with">
+    @for (person of people; track person) {
+      <gog-avatar [name]="person" />
+    }
+  </gog-avatar-group>
+</gog-card>
+<gog-card>
+  <h3 gogCardHeader>Ring set to the card</h3>
+  <gog-avatar-group
+    ariaLabel="Shared with"
+    style="--gog-avatar-group-ring-color: var(--gog-surface-color)"
+  >
+    @for (person of people; track person) {
+      <gog-avatar [name]="person" />
+    }
+  </gog-avatar-group>
+</gog-card>

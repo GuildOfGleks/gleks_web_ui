@@ -1,0 +1,12 @@
+<!-- The name is written beside it, so the avatar would only say it twice. -->
+<span><gog-avatar name="Ada Lovelace" size="sm" decorative /> Ada Lovelace</span>
+
+<!-- A pressable avatar is a button that contains one: the button carries the name. -->
+<gog-button variant="ghost" [gogMenuTrigger]="account" ariaLabel="Account menu for Ada Lovelace">
+  <gog-avatar name="Ada Lovelace" size="xsm" decorative />
+  <gog-icon name="chevron-down" />
+</gog-button>
+<gog-menu #account ariaLabel="Account">
+  <button gogMenuItem type="button">Profile</button>
+  <button gogMenuItem type="button">Sign out</button>
+</gog-menu>

@@ -1,0 +1,10 @@
+@for (size of sizes; track size) {
+  <div>
+    <span>{{ size }}</span>
+    <gog-avatar-group [size]="size" [max]="4" ariaLabel="Members">
+      @for (person of members; track person) {
+        <gog-avatar [name]="person" />
+      }
+    </gog-avatar-group>
+  </div>
+}

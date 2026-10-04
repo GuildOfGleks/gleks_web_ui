@@ -10,6 +10,7 @@ export const GENERATOR_COMPONENTS: readonly GeneratorComponentDef[] = [
   { id: 'accordion', label: 'Accordion', prefixes: ['--gog-accordion-'] },
   { id: 'alert', label: 'Alert', prefixes: ['--gog-alert-'] },
   { id: 'autocomplete', label: 'Autocomplete', prefixes: ['--gog-autocomplete-'] },
+  { id: 'avatar', label: 'Avatar', prefixes: ['--gog-avatar-'] },
   { id: 'badge', label: 'Badge', prefixes: ['--gog-badge-'] },
   { id: 'button', label: 'Button', prefixes: ['--gog-button-'] },
   { id: 'button-toggle', label: 'Button Toggle', prefixes: ['--gog-button-toggle-'] },

@@ -31,24 +31,3 @@ it found the lab's sidebar hover label and two `code` chips under AA.
 `running-commands.instructions.md`). After a publish, `npm install` at the repo root first, so
 `node_modules/@guildofgleks/ui` is the new version rather than a stale one or a leftover local
 build.
-
-## 21.17.0
-
-- **A new Avatar page**, in the D6 shape (`gleks-ui-lab.instructions.md`): the fallback chain
-  (picture, initials, a `src` that fails, icon), the five sizes beside the skeleton circle they
-  share, `shape`, initials from names (including an emoji and a name of one word), `initials`,
-  `decorative`, and an avatar with a `gogBadge` count and a status dot. Accessibility: named once
-  as an image, `decorative`, nameless, and a pressable avatar is a button that contains one. Add
-  it to the navigation, the sitemap and the Global Config note (it reads no config). Look at it in
-  a browser — the failing-`src` example must show initials, not a broken image, on the
-  server-rendered page.
-- **The Avatar page also documents `gog-avatar-group`**: `max` (counting the `+N`), the `+N`'s
-  name and `GOG_CONFIG.labels.moreAvatars` (add the key to the Global Config page's labels list),
-  the group's `size` winning over each avatar's, `ariaLabel`, and the ring colour to set on a
-  surface (`--gog-avatar-group-ring-color`). An example on a `gog-card` shows why.
-- **Badge page:** a badge on a `role="img"` host (a named avatar) is now the host's description,
-  and a round avatar anchors the badge on its circle — `--gog-badge-host-inset` and
-  `--gog-badge-dot-offset` are new tokens for the token reference.
-- **Token reference and theme starter:** the `--gog-avatar-*` family and the two badge tokens;
-  regenerate `theme-starter.css`.
-- **The component count** (31 in the README) and the comparison page's per-library counts.

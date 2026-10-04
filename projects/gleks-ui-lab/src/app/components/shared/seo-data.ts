@@ -129,6 +129,11 @@ export const PAGE_SEO: Readonly<Record<string, PageSeo>> = {
     'A persistent, in-flow Angular alert: five severities, an optional heading and close button, ' +
       'and a screen-reader announcement you can switch off for messages already on the page.',
   ),
+  'components/avatar': component(
+    'Avatar',
+    'An Angular avatar that falls back from the picture to initials to an icon, even for an image ' +
+      'that failed before hydration, plus an overlapping avatar group with a named +N.',
+  ),
   'components/autocomplete': component(
     'Autocomplete',
     'Angular autocomplete input with async options, load-more paging, custom option templates and ' +

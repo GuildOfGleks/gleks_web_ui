@@ -104,6 +104,7 @@ provideGogConfig({
     closeDialog: 'Schließen',
     closeToast: 'Schließen',
     closeAlert: 'Meldung schließen', // gog-alert's dismiss button
+    moreAvatars: (count) => `${count} weitere`, // gog-avatar-group's +N avatar
     pagination: 'Seitennavigation',
     previousPage: 'Vorherige Seite',
     nextPage: 'Nächste Seite',

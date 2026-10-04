@@ -1,0 +1,10 @@
+@for (person of names; track person) {
+  <div>
+    <gog-avatar [name]="person" />
+    <span>{{ person }}</span>
+  </div>
+}
+<div>
+  <gog-avatar name="Acme Incorporated" initials="AC" shape="rounded" />
+  <span>initials="AC"</span>
+</div>

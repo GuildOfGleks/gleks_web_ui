@@ -1,0 +1,208 @@
+<div class="avatar-doc">
+  <header class="avatar-doc__hero">
+    <p class="avatar-doc__eyebrow">gog-avatar</p>
+    <h1 class="avatar-doc__title font-heading">Avatar <app-since version="21.17.0" /></h1>
+    <p class="avatar-doc__lead">
+      A person or an organisation as a picture — with a fallback, which is the point. A picture of a
+      person is the image on a page most likely to be missing, and a bare
+      <code>&lt;img&gt;</code> shows the browser's broken-image glyph every time it is.
+      <code>gog-avatar</code> falls back to the initials, then to an icon, and names itself once for
+      a screen reader. <code>gog-avatar-group</code> stacks several, with a <code>+N</code> for the
+      rest.
+    </p>
+  </header>
+
+  <section class="doc-section">
+    <h2 id="overview" class="doc-section__title font-heading">Overview</h2>
+    <p class="doc-section__intro">
+      Import the component and give it a <code>name</code>; a <code>src</code> is optional.
+    </p>
+    <app-markdown [markdown]="importSnippet" />
+
+    <p class="doc-section__intro">
+      Basic usage — a picture, the initials when there is none, and the icon when there is no name
+      either:
+    </p>
+    <div class="demo-card">
+      <app-demo [component]="examples.overview" [source]="sources.avatarOverview" layout="row" />
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">The fallback chain</h3>
+      <p class="demo-card__meta">
+        Picture → initials → icon. The third <code>src</code> is a URL that does not exist, and this
+        page is server-rendered, so that picture fails before the app hydrates — its
+        <code>error</code> event fires before any listener exists. The avatar reads the image's own
+        state on its first render in the browser instead, which is why it shows initials and not a
+        broken image. While a slow picture loads, the initials show under it, so nothing moves when
+        it arrives.
+      </p>
+      <app-demo [component]="examples.fallback" [source]="sources.avatarFallback" layout="row" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Sizes, and the skeleton that stands in for them</h3>
+      <p class="demo-card__meta">
+        Five sizes, 24 to 96px — the skeleton circle's sizes by reference, so a
+        <a routerLink="/components/skeleton">gog-skeleton</a> with <code>shape="circle"</code> at
+        the same <code>size</code> is the avatar's loading placeholder and swaps for it without
+        moving anything. <code>--gog-avatar-size</code> overrides the diameter on one instance.
+      </p>
+      <app-demo [component]="examples.sizes" [source]="sources.avatarSizes" layout="rows" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Shape</h3>
+      <p class="demo-card__meta">
+        <code>circle</code> for a person, <code>rounded</code> for an organisation or a product. The
+        picture takes the avatar's own corner, so the two can never disagree.
+      </p>
+      <app-demo [component]="examples.shapes" [source]="sources.avatarShapes" layout="row" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Initials</h3>
+      <p class="demo-card__meta">
+        The first letter of the first and the last word of <code>name</code>, upper-cased — per
+        grapheme, so a name that starts with an emoji or an accented letter is not cut in half.
+        <code>initials</code> overrides them, for an organisation's own short form.
+        <code>gogAvatarInitials(name)</code> is exported if you need the same rule elsewhere.
+      </p>
+      <app-demo [component]="examples.initials" [source]="sources.avatarInitials" layout="row" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">With a badge</h3>
+      <p class="demo-card__meta">
+        Status is <a routerLink="/components/badge">gogBadge</a> on the avatar — there is no
+        <code>status</code> input. On a circle the badge anchors where the circle crosses its box's
+        diagonal rather than in the empty corner, so a count sits on the edge and a dot is centred
+        on the circle; on a rounded avatar it keeps the box corner.
+      </p>
+      <app-demo [component]="examples.badge" [source]="sources.avatarBadge" layout="overhang" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Decorative, and inside a button</h3>
+      <p class="demo-card__meta">
+        Beside a name that is already written out, set <code>decorative</code>, or a screen reader
+        hears the name twice. An avatar that opens something is not itself a button: put it in a
+        <code>gog-button</code>, name the button, and make the avatar decorative.
+      </p>
+      <app-demo
+        [component]="examples.decorative"
+        [source]="sources.avatarDecorative"
+        layout="row"
+      />
+    </article>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="group" class="doc-section__title font-heading">Groups</h2>
+    <p class="doc-section__intro">
+      <code>gog-avatar-group</code> overlaps the avatars written inside it by an eighth of their
+      diameter, rings each one in the page colour, and turns the ones past <code>max</code> into a
+      <code>+N</code>.
+    </p>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">max</h3>
+      <p class="demo-card__meta">
+        <code>max</code> counts the <code>+N</code> avatar, so the row's width is known from
+        <code>max</code> alone: seven people at <code>max="5"</code> draw four and <code>+3</code>.
+        The ones not drawn leave the accessibility tree, and the <code>+N</code> is named for them —
+        "3 more", from <code>GOG_CONFIG.labels.moreAvatars</code>.
+      </p>
+      <app-demo [component]="examples.group" [source]="sources.avatarGroup" layout="rows" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">One size for the row, and a long tail</h3>
+      <p class="demo-card__meta">
+        The group's <code>size</code> reaches every avatar through <code>--gog-avatar-size</code>,
+        so the row is one size whatever each avatar's own <code>size</code> says. Past 99 the
+        <code>+N</code> draws <code>99+</code>, the way <code>gogBadge</code> caps a count; its name
+        keeps the exact number.
+      </p>
+      <app-demo
+        [component]="examples.groupSizes"
+        [source]="sources.avatarGroupSizes"
+        layout="rows"
+      />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">On a card</h3>
+      <p class="demo-card__meta">
+        The ring is the page colour (<code>--gog-avatar-group-ring-color</code>), which is right on
+        the page and visibly wrong on anything raised above it. Set it to the surface the group sits
+        on.
+      </p>
+      <app-demo
+        [component]="examples.groupSurface"
+        [source]="sources.avatarGroupSurface"
+        layout="fields"
+      />
+    </article>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="accessibility" class="doc-section__title font-heading">Accessibility</h2>
+    <p class="doc-section__intro">
+      An avatar is an image of someone, and a screen reader should hear who — once.
+    </p>
+    <ul class="doc-section__intro">
+      <li>
+        <strong>Named</strong> — with a <code>name</code> it is <code>role="img"</code> named by it.
+        The picture inside is <code>alt=""</code> and the initials are <code>aria-hidden</code>, so
+        it is "Ada Lovelace, image", not "Ada Lovelace, A L".
+      </li>
+      <li>
+        <strong>Decorative</strong> — <code>decorative</code> sets <code>aria-hidden="true"</code>,
+        for an avatar beside a name already written out. An avatar with no <code>name</code> is
+        decorative on its own: there is nothing true to say.
+      </li>
+      <li>
+        <strong>Badges</strong> — an image's children are not read, so a <code>gogBadge</code> on a
+        named avatar becomes its description (<code>aria-describedby</code>): "Ada Lovelace, image,
+        3 unread".
+      </li>
+      <li>
+        <strong>Pressable</strong> — never on the avatar. A button that contains a decorative avatar
+        carries the name and the keyboard behaviour.
+      </li>
+      <li>
+        <strong>Groups</strong> — <code>role="group"</code>, named by
+        <code>ariaLabel</code> ("Assignees", "Shared with"). The avatars past <code>max</code> are
+        <code>display: none</code>; the <code>+N</code> says how many.
+      </li>
+    </ul>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
+
+    <h3 class="doc-section__subtitle">gog-avatar inputs</h3>
+    <app-api-table [rows]="avatarInputs" kind="inputs" />
+
+    <h3 class="doc-section__subtitle">gog-avatar-group inputs</h3>
+    <app-api-table [rows]="groupInputs" kind="inputs" />
+  </section>
+
+  <app-global-config-note component="avatar" />
+
+  <section class="doc-section">
+    <h2 id="styling" class="doc-section__title font-heading">Styling Tokens</h2>
+    <p class="doc-section__intro">
+      Every CSS custom property the avatar and the group paint with. Override any of them — on a
+      single instance, a subtree, or a theme — to restyle it. See the
+      <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
+      <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
+    </p>
+    <app-api-table [rows]="styleTokens" kind="tokens" />
+  </section>
+</div>
