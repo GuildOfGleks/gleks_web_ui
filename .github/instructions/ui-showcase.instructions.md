@@ -84,7 +84,10 @@ The showcase was rebuilt page by page between 2026-09-16 and 2026-09-27; the old
 `/legacy/*` routes that served it, are gone. Every unit is a page of the shape below.
 
 - **`registry/units.ts`** lists every public unit. `registry.spec.ts` fails when an entry point
-  exports a component, directive or service no unit owns.
+  exports a component, directive or service no unit owns. The exceptions are listed in that spec's
+  `NOT_DOCUMENTED`, each with its reason — **`ThemeService` among them, by the owner's decision
+  (2026-10-04): it has no page, because the header's theme switch is its demonstration.** Do not
+  add one back.
 - **A page is a unit id in `pages/pages.ts`** — that entry routes it at `/<id>` and carries its
   API rows and token sections. `pages.spec.ts` checks the API names against the compiled class;
   types and defaults are hand-written, so read them against the source when you write them.

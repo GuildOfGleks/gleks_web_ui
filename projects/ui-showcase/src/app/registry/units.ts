@@ -60,7 +60,6 @@ import {
   TabsComponent,
   TagComponent,
   TextareaComponent,
-  ThemeService,
   ToastComponent,
   ToastContainerComponent,
   ToastService,
@@ -79,7 +78,7 @@ import {
   TableComponent,
 } from '@guildofgleks/ui/table';
 
-export type GogUnitGroup = 'actions' | 'form' | 'display' | 'layout' | 'overlay' | 'foundation';
+export type GogUnitGroup = 'actions' | 'form' | 'display' | 'layout' | 'overlay';
 export type GogEntryPoint = 'root' | 'table' | 'datepicker' | 'dialog';
 
 export type GogPart =
@@ -104,7 +103,6 @@ export const GROUP_LABELS: Readonly<Record<GogUnitGroup, string>> = {
   display: 'Display & feedback',
   layout: 'Layout & navigation',
   overlay: 'Overlays',
-  foundation: 'Foundation',
 };
 
 const cmp = (type: Type<unknown>): GogPart => ({ kind: 'component', type });
@@ -429,14 +427,5 @@ export const UNITS: readonly GogUnit[] = [
     group: 'overlay',
     entry: 'root',
     parts: [svc(ToastService), cmp(ToastComponent), cmp(ToastContainerComponent)],
-  },
-
-  // Foundation
-  {
-    id: 'theme',
-    name: 'Theme',
-    group: 'foundation',
-    entry: 'root',
-    parts: [svc(ThemeService)],
   },
 ];

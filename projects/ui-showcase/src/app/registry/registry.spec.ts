@@ -9,6 +9,8 @@ const NOT_DOCUMENTED: Readonly<Record<string, string>> = {
   GogDropdownBase: 'abstract base the three dropdowns extend; not used in a template',
   GogFilterableDropdownBase:
     'abstract base select and multiselect extend for the panel search box; not used in a template',
+  ThemeService:
+    'no page by decision (2026-10-04): the header’s theme switch is its live demonstration, and the specimen uses it',
 };
 
 type Compiled = Partial<Record<'ɵcmp' | 'ɵdir' | 'ɵprov', { selectors?: unknown[][] }>>;
