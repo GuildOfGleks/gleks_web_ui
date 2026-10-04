@@ -26,6 +26,10 @@ not worth carrying here.
   each need trying before choosing between nothing more and a polite live region, which carries
   the same "copy outlives the announcement" question as `gog-alert` below.
 
+  **Orca, checked by the owner on 2026-10-04** (Orca 50.2, Chrome 154, Fedora 44): Space on a focused
+  row of a table with no checkbox column announces the change. Orca honours `aria-selected` on the
+  row, so no live region is needed there; NVDA, JAWS and VoiceOver are still unchecked.
+
 - **`gog-alert`'s announcement copy outlives the announcement, and is taken only once.** The
   alert copies its heading and body into a visually hidden live region one render after it mounts
   (`docs/alert.md` §2 — the mechanism is right and stays). Two things follow that the plan did not
