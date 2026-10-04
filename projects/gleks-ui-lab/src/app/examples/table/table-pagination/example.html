@@ -1,0 +1,16 @@
+<gog-table [value]="rows" [pageSize]="3" showTotal size="sm">
+  <gog-column field="component" header="Component" sortable />
+  <gog-column field="owner" header="Owner" />
+</gog-table>
+
+<gog-table
+  [value]="rows"
+  [pageSize]="3"
+  showTotal
+  totalPosition="left"
+  paginatorPosition="right"
+  size="sm"
+>
+  <gog-column field="component" header="Component" sortable />
+  <gog-column field="owner" header="Owner" />
+</gog-table>

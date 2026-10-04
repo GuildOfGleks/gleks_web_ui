@@ -1,0 +1,14 @@
+<!-- The total's word, the empty message and the checkbox names all come from the config. -->
+<gog-table
+  [value]="rows"
+  size="sm"
+  selectionMode="multiple"
+  [pageSize]="3"
+  showTotal
+  [showRowNumbers]="false"
+>
+  <gog-column field="component" header="Komponente" />
+</gog-table>
+<gog-table [value]="[]" size="sm" [showRowNumbers]="false">
+  <gog-column field="component" header="Komponente" />
+</gog-table>

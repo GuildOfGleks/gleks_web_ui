@@ -132,7 +132,7 @@ are the same everywhere and a fix lands once.
 | #   | What                                                                                                                                                                                                                                                                                             | Status                                        |
 | --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------- |
 | 1   | **Pilot: `button`, plus the machinery it needs** — `<app-demo [layout]>`, `<app-code-tabs>` with HTML and TS only (CSS shown only while a legacy page still passes it), the D2 rule in the generator for new examples, `<app-api-table>`. The owner reviews the page before anything else moves. | built 2026-10-03, awaiting the owner's review |
-| 2   | The 28 other legacy pages, one per commit — simple ones first, then the layout-heavy ones (`table`, `spinner`, `dialog`, `toast`) last.                                                                                                                                                          | planned                                       |
+| 2   | The 28 other legacy pages, one per commit — simple ones first, then the layout-heavy ones (`table`, `spinner`, `dialog`, `toast`) last.                                                                                                                                                          | done 2026-10-04                               |
 | 3   | The 6 already-extracted pages: drop each `example.css` per D3/D4, align the outline.                                                                                                                                                                                                             | planned                                       |
 | 4   | Close-out: the generator fails on any `example.css` and any `template:`; `<app-code-tabs>` loses its `css` input; `<app-demo>` is the only way a page renders an example; this file's table is all ✅ and the file becomes a record.                                                             | planned                                       |
 
@@ -165,7 +165,7 @@ template.
 | skeleton      | legacy   | 9     | 9   | ✅       |
 | slider        | legacy   | 9     | 9   | ✅       |
 | spinner       | legacy   | 9     | 9   | ✅       |
-| table         | legacy   | 14    | 14  |          |
+| table         | legacy   | 14    | 14  | ✅       |
 | tabs          | legacy   | 4     | 4   | ✅       |
 | tag           | legacy   | 6     | 6   | ✅       |
 | textarea      | legacy   | 10    | 10  | ✅       |

@@ -1,0 +1,23 @@
+<!-- lazy: value IS the current page, already sorted — the table does neither. -->
+<gog-table
+  [value]="rows()"
+  lazy
+  [sort]="sort()"
+  [totalRecords]="total()"
+  [pageSize]="pageSize()"
+  [loading]="loading()"
+  showTotal
+  showPageSizeSelect
+  [pageSizeOptions]="[10, 20, 50]"
+  dataKey="id"
+  size="sm"
+  (gogSortChange)="onSort($event)"
+  (gogPageChange)="onPage($event)"
+  (pageSizeChange)="onPageSize($event)"
+>
+  <gog-column field="name" header="Name" sortable />
+  <gog-column field="team" header="Team" sortable />
+  <gog-column field="score" header="Score" sortable />
+</gog-table>
+
+<p>last request: {{ lastRequest() }}</p>

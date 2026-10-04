@@ -1,0 +1,17 @@
+<gog-table
+  [value]="rows"
+  [pageSize]="3"
+  interactiveRows
+  (gogSortChange)="onSort($event)"
+  (gogPageChange)="log('gogPageChange → ' + $event)"
+  (gogRowClick)="log('gogRowClick → ' + $event.row.component + ' (row ' + ($event.index + 1) + ')')"
+>
+  <gog-column field="component" header="Component" sortable />
+  <gog-column field="status" header="Status" sortable />
+</gog-table>
+
+@for (entry of events(); track $index) {
+  <p>{{ entry }}</p>
+} @empty {
+  <p>Sort a column, page through, click a row — newest event first.</p>
+}
