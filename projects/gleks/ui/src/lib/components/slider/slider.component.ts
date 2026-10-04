@@ -96,8 +96,10 @@ export class SliderComponent implements ControlValueAccessor, DoCheck {
 
   /**
    * Switches the slider to two-thumb mode for picking a *range* of values instead of a
-   * single one. When on, use `[(rangeValue)]` instead of `[(value)]` — the two are mutually
-   * exclusive; `value`/`writeValue` are ignored while this is `true`, and vice versa.
+   * single one. When on, use `[(rangeValue)]` instead of `[(value)]` — the two models are
+   * mutually exclusive: `value` is ignored while this is `true`, `rangeValue` while it is
+   * `false`. A form control works in both modes and carries whichever is live — a `number`,
+   * or a `GogSliderRange` (`{ start, end }`) in range mode.
    */
   readonly range = input(false, { transform: booleanAttribute });
   /**

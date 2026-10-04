@@ -29,6 +29,12 @@ reached 1.0, so breaking changes may land in minor versions.
   hears where it used to hear "Mon". The showcase's Datepicker page shows the five sizes side by
   side.
 
+- **`gog-slider`'s range documentation no longer says a form control is ignored in range mode.**
+  The `range` JSDoc and AGENTS.md both read as if `[formControl]` stopped working on a range
+  slider; it never did — `writeValue` fills `rangeValue`, and either thumb reports `{ start, end }`
+  back. What is ignored is the other _model_: `value` in range mode, `rangeValue` outside it.
+  Documentation only, plus a test that pins the form control's round trip in range mode.
+
 ## [21.15.0] - 03.10.2026
 
 ### Added

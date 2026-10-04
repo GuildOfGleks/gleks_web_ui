@@ -44,3 +44,7 @@ build.
   narrow form (`S M T …`) and every column header is named by the whole day. Add a sentence to the
   sizes card (and the Accessibility section: the column's name is the full day, at every size),
   then look at the five calendars side by side in a browser before ticking.
+- **Slider page: the `value` row's last sentence.** It reads "Also driven by Angular Forms … Ignored
+  while range is true", which says the form control is ignored in range mode — the claim 21.15.1
+  corrected in the library's JSDoc and AGENTS.md. Only the `value` model is ignored; the form
+  control carries the `{ start, end }` pair (the `range` row already says so). Reword it to match.

@@ -1031,11 +1031,14 @@ dragging/touch/keyboard all come from the platform.
 ```
 
 **Range mode.** `[range]="true"` puts a second thumb on the track and switches which model is
-live: bind `[(rangeValue)]` instead of `[(value)]`. The two are **mutually exclusive** — `value`
-(and a form control's `writeValue`) is ignored while `range` is on, and vice versa.
+live: bind `[(rangeValue)]` instead of `[(value)]`. The two models are **mutually exclusive** —
+`value` is ignored while `range` is on, `rangeValue` while it is off. A form control works in both
+modes and carries whichever is live: a `number`, or a `GogSliderRange` (`{ start, end }`) in range
+mode.
 
 ```html
 <gog-slider label="Price" [range]="true" [(rangeValue)]="price" startAriaLabel="Lowest" />
+<gog-slider label="Price" [range]="true" [formControl]="priceRange" />
 ```
 
 Each thumb needs its own accessible name, because one `<label>` cannot be associated with two

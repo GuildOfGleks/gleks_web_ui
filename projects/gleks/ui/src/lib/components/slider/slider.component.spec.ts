@@ -455,6 +455,37 @@ describe('SliderComponent', () => {
       expect(host.control.value).toBe(5);
     });
 
+    it('carries a { start, end } pair both ways in range mode', async () => {
+      // The range JSDoc and AGENTS.md once said a form control was ignored in range mode. It
+      // never was: writeValue fills rangeValue, and either thumb reports the pair back.
+      @Component({
+        imports: [SliderComponent, ReactiveFormsModule],
+        template: `<gog-slider [formControl]="control" [range]="true" [min]="0" [max]="100" />`,
+        changeDetection: ChangeDetectionStrategy.OnPush,
+      })
+      class RangeFormHostComponent {
+        readonly control = new FormControl({ start: 20, end: 80 }, { nonNullable: true });
+      }
+
+      const hostFixture = TestBed.createComponent(RangeFormHostComponent);
+      const host = hostFixture.componentInstance;
+      await hostFixture.whenStable();
+
+      const [start, end] = Array.from(
+        hostFixture.nativeElement.querySelectorAll('input[type="range"]'),
+      ) as HTMLInputElement[];
+      expect([start.value, end.value]).toEqual(['20', '80']);
+
+      host.control.setValue({ start: 30, end: 70 });
+      await hostFixture.whenStable();
+      expect([start.value, end.value]).toEqual(['30', '70']);
+
+      end.value = '90';
+      end.dispatchEvent(new Event('input'));
+      await hostFixture.whenStable();
+      expect(host.control.value).toEqual({ start: 30, end: 90 });
+    });
+
     it('defaults to manual, showing the error immediately despite an untouched FormControl', async () => {
       const hostFixture = TestBed.createComponent(SliderFormHostComponent);
       await hostFixture.whenStable();
