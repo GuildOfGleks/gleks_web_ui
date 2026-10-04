@@ -781,6 +781,39 @@ export type GogTokenName =
   | '--gog-elevation-key-y'
   | '--gog-elevation-ring'
   | '--gog-elevation-ring-width'
+  | '--gog-empty-state-actions-gap'
+  | '--gog-empty-state-actions-offset'
+  | '--gog-empty-state-description-color'
+  | '--gog-empty-state-description-line-height'
+  | '--gog-empty-state-font-family'
+  | '--gog-empty-state-gap'
+  | '--gog-empty-state-heading-color'
+  | '--gog-empty-state-heading-font-weight'
+  | '--gog-empty-state-heading-line-height'
+  | '--gog-empty-state-icon-color'
+  | '--gog-empty-state-icon-line-height'
+  | '--gog-empty-state-lg-description-font-size'
+  | '--gog-empty-state-lg-heading-font-size'
+  | '--gog-empty-state-lg-icon-size'
+  | '--gog-empty-state-lg-padding'
+  | '--gog-empty-state-md-description-font-size'
+  | '--gog-empty-state-md-heading-font-size'
+  | '--gog-empty-state-md-icon-size'
+  | '--gog-empty-state-md-padding'
+  | '--gog-empty-state-measure'
+  | '--gog-empty-state-message-gap'
+  | '--gog-empty-state-slg-description-font-size'
+  | '--gog-empty-state-slg-heading-font-size'
+  | '--gog-empty-state-slg-icon-size'
+  | '--gog-empty-state-slg-padding'
+  | '--gog-empty-state-sm-description-font-size'
+  | '--gog-empty-state-sm-heading-font-size'
+  | '--gog-empty-state-sm-icon-size'
+  | '--gog-empty-state-sm-padding'
+  | '--gog-empty-state-xsm-description-font-size'
+  | '--gog-empty-state-xsm-heading-font-size'
+  | '--gog-empty-state-xsm-icon-size'
+  | '--gog-empty-state-xsm-padding'
   | '--gog-field-error-line-height'
   | '--gog-field-float-label-in-top'
   | '--gog-field-float-label-over-gap'
@@ -2354,6 +2387,45 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-rating-star-padding',
       '--gog-rating-star-radius',
       '--gog-rating-xsm-star-size',
+    ],
+  },
+  {
+    section: 'Empty state',
+    layer: 'component',
+    tokens: [
+      '--gog-empty-state-actions-gap',
+      '--gog-empty-state-actions-offset',
+      '--gog-empty-state-description-color',
+      '--gog-empty-state-description-line-height',
+      '--gog-empty-state-font-family',
+      '--gog-empty-state-gap',
+      '--gog-empty-state-heading-color',
+      '--gog-empty-state-heading-font-weight',
+      '--gog-empty-state-heading-line-height',
+      '--gog-empty-state-icon-color',
+      '--gog-empty-state-icon-line-height',
+      '--gog-empty-state-lg-description-font-size',
+      '--gog-empty-state-lg-heading-font-size',
+      '--gog-empty-state-lg-icon-size',
+      '--gog-empty-state-lg-padding',
+      '--gog-empty-state-md-description-font-size',
+      '--gog-empty-state-md-heading-font-size',
+      '--gog-empty-state-md-icon-size',
+      '--gog-empty-state-md-padding',
+      '--gog-empty-state-measure',
+      '--gog-empty-state-message-gap',
+      '--gog-empty-state-slg-description-font-size',
+      '--gog-empty-state-slg-heading-font-size',
+      '--gog-empty-state-slg-icon-size',
+      '--gog-empty-state-slg-padding',
+      '--gog-empty-state-sm-description-font-size',
+      '--gog-empty-state-sm-heading-font-size',
+      '--gog-empty-state-sm-icon-size',
+      '--gog-empty-state-sm-padding',
+      '--gog-empty-state-xsm-description-font-size',
+      '--gog-empty-state-xsm-heading-font-size',
+      '--gog-empty-state-xsm-icon-size',
+      '--gog-empty-state-xsm-padding',
     ],
   },
   {

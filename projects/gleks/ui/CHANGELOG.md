@@ -45,6 +45,16 @@ _Versioning_ section. Before 21.16.0 a minor could carry a breaking change, and 
   with the library's error state. `readonly` renders one `role="img"` named "Rated 4.7 out of 5",
   its stars drawn to the nearest half and mirrored under RTL. New export: `RatingComponent`. New
   labels: `ratingStar`, `ratingValue`. New tokens: `--gog-rating-*`. Plan in `docs/rating.md`.
+- **`gog-empty-state`** — what a region says when it has nothing to show: an icon or an
+  illustration (`gogEmptyStateMedia`), a title, a description and an actions row
+  (`gogEmptyStateActions`). The empty states that matter are answers — a search that matched
+  nothing, the last item removed — and a screen reader hears none of them, so its title and
+  description are copied into a polite live region that is mounted empty and filled after the
+  first render, and again whenever the message changes while it stays on screen; the actions are
+  never read out. `live="off"` for one the page loads with. `headingLevel` makes the title a real
+  heading at the level the page needs; unset, it is styled text. New exports:
+  `EmptyStateComponent`, `GogEmptyStateMediaDirective`, `GogEmptyStateActionsDirective`,
+  `GogEmptyStateHeadingLevel`. New tokens: `--gog-empty-state-*`. Plan in `docs/empty-state.md`.
 
 ## [21.17.0] - 04.10.2026
 

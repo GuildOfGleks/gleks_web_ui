@@ -9,6 +9,9 @@ import {
   StepperComponent,
   FileUploadComponent,
   RatingComponent,
+  EmptyStateComponent,
+  GogEmptyStateActionsDirective,
+  GogEmptyStateMediaDirective,
   ButtonComponent,
   ButtonToggleGroupComponent,
   CardComponent,
@@ -281,6 +284,17 @@ export const UNITS: readonly GogUnit[] = [
     group: 'display',
     entry: 'root',
     parts: [cmp(AlertComponent), dir(GogAlertIconDirective, '[gogAlertIcon]')],
+  },
+  {
+    id: 'empty-state',
+    name: 'Empty state',
+    group: 'display',
+    entry: 'root',
+    parts: [
+      cmp(EmptyStateComponent),
+      dir(GogEmptyStateMediaDirective, '[gogEmptyStateMedia]'),
+      dir(GogEmptyStateActionsDirective, '[gogEmptyStateActions]'),
+    ],
   },
   {
     id: 'spinner',

@@ -662,7 +662,7 @@ Each is additive: nothing here breaks an existing consumer, and none blocks anot
   in 21.17.0 (`docs/avatar.md`). `breadcrumbs` **came off on
   2026-10-04 as well**, into the in-progress 21.18.0 (`docs/breadcrumbs.md`). `stepper` came off
   the same day, into the same 21.18.0 (`docs/stepper.md`). `file upload` too
-  (`docs/file-upload.md`), and `rating` (`docs/rating.md`). What is left: `empty state`. Each is additive and
+  (`docs/file-upload.md`), `rating` (`docs/rating.md`) and `empty state` (`docs/empty-state.md`). **The list is empty.** Each is additive and
   independent; none blocks anything else.
 
   **What building the first one taught, and it is not about alerts.** The plan's required question
@@ -686,6 +686,14 @@ Each is additive: nothing here breaks an existing consumer, and none blocks anot
   the card/panel split earned itself when the one showcase block in 250 that refused to become a
   `gog-panel` turned out to be exactly what `gog-card` was for. An `empty state` that cannot
   survive the same question — what does it own that a `<div>` and a class do not — is not ready.
+
+- **`gog-table`'s empty row is plain text, and is not announced.** It renders `emptyMessage` in one
+  cell, so a filter that empties a table changes the screen and says nothing — the problem
+  `gog-empty-state` was built to solve (`docs/empty-state.md` §1–2), one component over. A
+  `gogTableEmpty` template that the row renders, into which an app puts a `gog-empty-state`, would
+  close it; it is new table API, so a minor, and the table lives in `@guildofgleks/ui/table`, which
+  may import the root's empty state by package name. Until then an app can render the empty state
+  in place of the table, as the showcase specimen does. Found while building `gog-empty-state`.
 
 - **`gog-chip`'s `avatarUrl` is a bare `<img>`, with none of `gog-avatar`'s fallback.** A broken
   URL in a chip still shows the broken-image glyph. Rendering a `gog-avatar` inside the chip would

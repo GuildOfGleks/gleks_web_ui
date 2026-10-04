@@ -1,0 +1,102 @@
+/*
+ * Token layering (see styles/theme.css):
+ *   --gog-empty-state-size-<prop>   internal, set by the size classes below.
+ *   --gog-empty-state-<name>        the actual values, all in styles/theme.css.
+ *
+ * A surface, not a control: it frames a message, so law 3's 2:1 padding ratio does not apply
+ * (styling.instructions.md, "Geometry and typography"). It draws no border or fill — it sits in
+ * a card, a panel or a table that already does.
+ */
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gog-empty-state-gap);
+  padding: var(--gog-empty-state-size-padding, var(--gog-empty-state-md-padding));
+  font-family: var(--gog-empty-state-font-family);
+  text-align: center;
+}
+
+.gog-empty-state__icon {
+  color: var(--gog-empty-state-icon-color);
+  line-height: var(--gog-empty-state-icon-line-height);
+  --gog-icon-size: var(--gog-empty-state-size-icon-size, var(--gog-empty-state-md-icon-size));
+}
+
+/* An illustration drawn in `currentColor` takes the icon's muted colour; a picture is unaffected. */
+:host ::ng-deep .gog-empty-state__media {
+  display: block;
+  max-inline-size: 100%;
+  color: var(--gog-empty-state-icon-color);
+}
+
+.gog-empty-state__message {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gog-empty-state-message-gap);
+  max-inline-size: var(--gog-empty-state-measure);
+}
+
+.gog-empty-state__heading {
+  margin: 0;
+  color: var(--gog-empty-state-heading-color);
+  font-size: var(
+    --gog-empty-state-size-heading-font-size,
+    var(--gog-empty-state-md-heading-font-size)
+  );
+  font-weight: var(--gog-empty-state-heading-font-weight);
+  line-height: var(--gog-empty-state-heading-line-height);
+}
+
+.gog-empty-state__description {
+  color: var(--gog-empty-state-description-color);
+  font-size: var(
+    --gog-empty-state-size-description-font-size,
+    var(--gog-empty-state-md-description-font-size)
+  );
+  line-height: var(--gog-empty-state-description-line-height);
+}
+
+/* An empty description slot takes no room, so a title alone is not followed by a gap. */
+.gog-empty-state__description:empty {
+  display: none;
+}
+
+:host ::ng-deep .gog-empty-state__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--gog-empty-state-actions-gap);
+  margin-block-start: var(--gog-empty-state-actions-offset);
+}
+
+/* === Sizes ===
+   `md` needs no block: it is what the chains above fall back to. */
+
+:host(.gog-empty-state--xsm) {
+  --gog-empty-state-size-padding: var(--gog-empty-state-xsm-padding);
+  --gog-empty-state-size-icon-size: var(--gog-empty-state-xsm-icon-size);
+  --gog-empty-state-size-heading-font-size: var(--gog-empty-state-xsm-heading-font-size);
+  --gog-empty-state-size-description-font-size: var(--gog-empty-state-xsm-description-font-size);
+}
+
+:host(.gog-empty-state--sm) {
+  --gog-empty-state-size-padding: var(--gog-empty-state-sm-padding);
+  --gog-empty-state-size-icon-size: var(--gog-empty-state-sm-icon-size);
+  --gog-empty-state-size-heading-font-size: var(--gog-empty-state-sm-heading-font-size);
+  --gog-empty-state-size-description-font-size: var(--gog-empty-state-sm-description-font-size);
+}
+
+:host(.gog-empty-state--lg) {
+  --gog-empty-state-size-padding: var(--gog-empty-state-lg-padding);
+  --gog-empty-state-size-icon-size: var(--gog-empty-state-lg-icon-size);
+  --gog-empty-state-size-heading-font-size: var(--gog-empty-state-lg-heading-font-size);
+  --gog-empty-state-size-description-font-size: var(--gog-empty-state-lg-description-font-size);
+}
+
+:host(.gog-empty-state--slg) {
+  --gog-empty-state-size-padding: var(--gog-empty-state-slg-padding);
+  --gog-empty-state-size-icon-size: var(--gog-empty-state-slg-icon-size);
+  --gog-empty-state-size-heading-font-size: var(--gog-empty-state-slg-heading-font-size);
+  --gog-empty-state-size-description-font-size: var(--gog-empty-state-slg-description-font-size);
+}

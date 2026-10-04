@@ -9,6 +9,7 @@ import { BREADCRUMBS_API } from './breadcrumbs/breadcrumbs.api';
 import { STEPPER_API } from './stepper/stepper.api';
 import { FILE_UPLOAD_API } from './file-upload/file-upload.api';
 import { RATING_API } from './rating/rating.api';
+import { EMPTY_STATE_API } from './empty-state/empty-state.api';
 import { BADGE_API } from './badge/badge.api';
 import { BUTTON_API } from './button/button.api';
 import { BUTTON_TOGGLE_API } from './button-toggle/button-toggle.api';
@@ -139,6 +140,11 @@ export const PAGES: Readonly<Record<string, DocPageEntry>> = {
     load: () => import('./rating/rating-page').then((m) => m.RatingPage),
     api: RATING_API,
     tokens: ['Rating', 'Field label'],
+  },
+  'empty-state': {
+    load: () => import('./empty-state/empty-state-page').then((m) => m.EmptyStatePage),
+    api: EMPTY_STATE_API,
+    tokens: ['Empty state'],
   },
   stepper: {
     load: () => import('./stepper/stepper-page').then((m) => m.StepperPage),

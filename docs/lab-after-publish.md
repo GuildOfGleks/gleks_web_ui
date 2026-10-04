@@ -62,7 +62,13 @@ build.
   Route, navigation (Forms & Inputs), SEO, sitemap, Global Config note and labels list (two keys,
   `ratingStar` and `ratingValue`), generator catalogue and gallery, token reference;
   `theme-starter.css` regenerated.
+- **A new Empty state page**, in the D6 shape: anatomy and sizes, the media and actions slots,
+  the empty state as an answer (a live search that matches nothing, the last item removed), and
+  accessibility (the polite region mounted empty and re-filled on every change, `live="off"` for
+  one the page loads with, `headingLevel`). Route, navigation (Display & Feedback), SEO, sitemap,
+  generator catalogue and gallery, token reference; `theme-starter.css` regenerated. No labels:
+  every word in it is the app's.
 - **Consider using it in the lab itself**: a doc page under `/components/` is two levels deep and
   has no trail. Not required — decide by looking.
-- **Counts**: 33 components becomes 37 on the comparison page, the FAQ and `nav-data.ts`; the
+- **Counts**: 33 components becomes 38 on the comparison page, the FAQ and `nav-data.ts`; the
   whole-library bundle row is a re-measurement, not an edit.

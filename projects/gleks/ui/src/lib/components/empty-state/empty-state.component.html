@@ -1,0 +1,40 @@
+<ng-content select="[gogEmptyStateMedia]">
+  @if (iconName(); as name) {
+    <gog-icon class="gog-empty-state__icon" [name]="name" />
+  }
+</ng-content>
+
+<!-- The heading and the description: what is copied into the live region, and nothing else. -->
+<div #message class="gog-empty-state__message">
+  @if (heading()) {
+    @switch (headingLevel()) {
+      @case (2) {
+        <h2 class="gog-empty-state__heading">{{ heading() }}</h2>
+      }
+      @case (3) {
+        <h3 class="gog-empty-state__heading">{{ heading() }}</h3>
+      }
+      @case (4) {
+        <h4 class="gog-empty-state__heading">{{ heading() }}</h4>
+      }
+      @case (5) {
+        <h5 class="gog-empty-state__heading">{{ heading() }}</h5>
+      }
+      @case (6) {
+        <h6 class="gog-empty-state__heading">{{ heading() }}</h6>
+      }
+      @default {
+        <p class="gog-empty-state__heading">{{ heading() }}</p>
+      }
+    }
+  }
+  <div class="gog-empty-state__description"><ng-content /></div>
+</div>
+
+<ng-content select="[gogEmptyStateActions]" />
+
+<!--
+  Mounted empty, filled one render later and on every change to the message: a region created
+  together with its own text announces nothing. `live="off"` leaves it empty.
+-->
+<div class="gog-visually-hidden" role="status" aria-live="polite">{{ announcement() }}</div>

@@ -14,6 +14,9 @@ import {
   StepperComponent,
   FileUploadComponent,
   RatingComponent,
+  EmptyStateComponent,
+  GogEmptyStateActionsDirective,
+  GogEmptyStateMediaDirective,
   GogBreadcrumbDirective,
   ChipComponent,
   CollapsibleComponent,
@@ -129,6 +132,9 @@ import {
     StepperComponent,
     FileUploadComponent,
     RatingComponent,
+    EmptyStateComponent,
+    GogEmptyStateActionsDirective,
+    GogEmptyStateMediaDirective,
     GogBreadcrumbDirective,
     ChipComponent,
     CollapsibleComponent,
@@ -265,6 +271,10 @@ export class SpecimenPage {
 
   protected readonly search = signal('');
   protected readonly status = signal<string | number | null>(null);
+  protected clearFilters(): void {
+    this.search.set('');
+    this.status.set(null);
+  }
   protected readonly tags = signal<(string | number)[]>(['priority']);
   protected readonly customer = signal<string | number | null>(null);
   protected readonly range = signal<Date | GogDateRange | null>(null);

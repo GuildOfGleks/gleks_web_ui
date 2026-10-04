@@ -507,6 +507,18 @@
       <h3 gogCardHeader>Refunds</h3>
     </gog-card>
 
+    <gog-card [size]="size()">
+      <h3 gogCardHeader>Disputes</h3>
+      <gog-empty-state heading="No open disputes" live="off" size="xsm">
+        <svg gogEmptyStateMedia width="48" height="32" viewBox="0 0 48 32" fill="none">
+          <path d="M4 16 L16 28 L44 4" stroke="currentColor" stroke-width="2" />
+        </svg>
+        <div gogEmptyStateActions>
+          <gog-button variant="ghost" size="xsm" [disabled]="disabled()">History</gog-button>
+        </div>
+      </gog-empty-state>
+    </gog-card>
+
     <gog-card variant="outlined" [size]="size()">
       <div gogCardMedia class="specimen__media specimen__media--report">
         <gog-icon name="download" />
@@ -734,61 +746,89 @@
         </ng-template>
 
         <gog-tab label="Table">
-          <gog-table
-            dataKey="id"
-            selectionMode="multiple"
-            [value]="orders()"
-            [pageSize]="8"
-            [showPageSizeSelect]="true"
-            [pageSizeOptions]="[5, 8, 20]"
-            [showTotal]="true"
-            [loading]="busy()"
-            [size]="size()"
-            [(selection)]="selected"
-          >
-            <gog-column field="id" header="Order" [sortable]="true" />
-            <gog-column field="customer" header="Customer" [sortable]="true">
-              <ng-template gogColumnHeader let-header>
-                <span class="specimen__inline"><gog-icon name="user" /> {{ header }}</span>
-              </ng-template>
-            </gog-column>
-            <gog-column field="total" header="Total" [sortable]="true">
-              <ng-template gogColumnBody [gogColumnBodyTypeOf]="orders()" let-row
-                >€{{ row.total | number: '1.2-2' }}</ng-template
-              >
-            </gog-column>
-            <gog-column field="status" header="Status">
-              <ng-template gogColumnBody [gogColumnBodyTypeOf]="orders()" let-row>
-                <gog-tag [variant]="statusVariant[row.status]" [size]="size()">{{
-                  row.status
-                }}</gog-tag>
-              </ng-template>
-            </gog-column>
-            <gog-column field="tags" header="Tags">
-              <ng-template gogColumnBody [gogColumnBodyTypeOf]="orders()" let-row>
-                <span class="specimen__inline specimen__wrap">
-                  @for (tag of row.tags; track tag) {
-                    <gog-chip size="xsm" [clickable]="false">{{ tag }}</gog-chip>
-                  }
-                </span>
-              </ng-template>
-            </gog-column>
-            <gog-column field="actions" header="">
-              <ng-template gogColumnBody [gogColumnBodyTypeOf]="orders()" let-row>
-                <button
-                  type="button"
-                  gogButton
-                  variant="ghost"
-                  size="xsm"
-                  [attr.aria-label]="'Actions for ' + row.id"
-                  [gogMenuTrigger]="rowMenu"
-                  (click)="menuOrder.set(row)"
+          @if (orders().length === 0 && !busy()) {
+            <gog-empty-state heading="No matching orders" [size]="size()">
+              <svg gogEmptyStateMedia width="64" height="48" viewBox="0 0 64 48" fill="none">
+                <rect
+                  x="4"
+                  y="6"
+                  width="40"
+                  height="36"
+                  rx="4"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+                <circle cx="44" cy="30" r="10" stroke="currentColor" stroke-width="2" />
+                <line x1="51" y1="37" x2="60" y2="46" stroke="currentColor" stroke-width="2" />
+              </svg>
+              No order matches these filters.
+              <div gogEmptyStateActions>
+                <gog-button
+                  variant="secondary"
+                  [size]="size()"
+                  [disabled]="disabled()"
+                  (gogClick)="clearFilters()"
+                  >Clear filters</gog-button
                 >
-                  <gog-icon name="more-horizontal" />
-                </button>
-              </ng-template>
-            </gog-column>
-          </gog-table>
+              </div>
+            </gog-empty-state>
+          } @else {
+            <gog-table
+              dataKey="id"
+              selectionMode="multiple"
+              [value]="orders()"
+              [pageSize]="8"
+              [showPageSizeSelect]="true"
+              [pageSizeOptions]="[5, 8, 20]"
+              [showTotal]="true"
+              [loading]="busy()"
+              [size]="size()"
+              [(selection)]="selected"
+            >
+              <gog-column field="id" header="Order" [sortable]="true" />
+              <gog-column field="customer" header="Customer" [sortable]="true">
+                <ng-template gogColumnHeader let-header>
+                  <span class="specimen__inline"><gog-icon name="user" /> {{ header }}</span>
+                </ng-template>
+              </gog-column>
+              <gog-column field="total" header="Total" [sortable]="true">
+                <ng-template gogColumnBody [gogColumnBodyTypeOf]="orders()" let-row
+                  >€{{ row.total | number: '1.2-2' }}</ng-template
+                >
+              </gog-column>
+              <gog-column field="status" header="Status">
+                <ng-template gogColumnBody [gogColumnBodyTypeOf]="orders()" let-row>
+                  <gog-tag [variant]="statusVariant[row.status]" [size]="size()">{{
+                    row.status
+                  }}</gog-tag>
+                </ng-template>
+              </gog-column>
+              <gog-column field="tags" header="Tags">
+                <ng-template gogColumnBody [gogColumnBodyTypeOf]="orders()" let-row>
+                  <span class="specimen__inline specimen__wrap">
+                    @for (tag of row.tags; track tag) {
+                      <gog-chip size="xsm" [clickable]="false">{{ tag }}</gog-chip>
+                    }
+                  </span>
+                </ng-template>
+              </gog-column>
+              <gog-column field="actions" header="">
+                <ng-template gogColumnBody [gogColumnBodyTypeOf]="orders()" let-row>
+                  <button
+                    type="button"
+                    gogButton
+                    variant="ghost"
+                    size="xsm"
+                    [attr.aria-label]="'Actions for ' + row.id"
+                    [gogMenuTrigger]="rowMenu"
+                    (click)="menuOrder.set(row)"
+                  >
+                    <gog-icon name="more-horizontal" />
+                  </button>
+                </ng-template>
+              </gog-column>
+            </gog-table>
+          }
           <gog-menu #rowMenu ariaLabel="Order actions">
             <button gogMenuItem type="button"><gog-icon name="external-link" /> Open</button>
             <button gogMenuItem type="button"><gog-icon name="pencil" /> Edit</button>

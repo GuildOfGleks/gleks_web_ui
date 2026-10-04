@@ -12,6 +12,7 @@ export * from './lib/components/breadcrumbs/breadcrumbs.component';
 export * from './lib/components/stepper/stepper.component';
 export * from './lib/components/file-upload/file-upload.component';
 export * from './lib/components/rating/rating.component';
+export * from './lib/components/empty-state/empty-state.component';
 export * from './lib/components/collapsible/collapsible.component';
 export * from './lib/components/collapsible/collapsible-trigger.directive';
 export * from './lib/components/collapsible/collapsible-content.directive';

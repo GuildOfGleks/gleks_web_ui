@@ -826,6 +826,47 @@
   --gog-rating-lg-star-size: var(--gog-space-28);
   --gog-rating-slg-star-size: var(--gog-space-32);
 
+  /* ── Empty state ───────────────────────────────────────────────────────────
+     What a region says when it has nothing to show: a muted icon, a title, a description at a
+     readable measure, and actions. No border or fill — it sits in a surface that has one. */
+  --gog-empty-state-font-family: var(--gog-font-body);
+  --gog-empty-state-gap: var(--gog-space-12);
+  --gog-empty-state-message-gap: var(--gog-space-4);
+  /* A description reads as a paragraph, not one line across a wide table. */
+  --gog-empty-state-measure: 48ch;
+  --gog-empty-state-icon-color: var(--gog-muted-text-color);
+  /* A glyph in its own box: leading would push it off centre. */
+  --gog-empty-state-icon-line-height: var(--gog-line-height-none);
+  --gog-empty-state-heading-color: var(--gog-text-color);
+  --gog-empty-state-heading-font-weight: var(--gog-font-weight-semibold);
+  /* A title of a few words: the tight end of the leading scale. */
+  --gog-empty-state-heading-line-height: var(--gog-line-height-snug);
+  --gog-empty-state-description-color: var(--gog-muted-text-color);
+  --gog-empty-state-description-line-height: var(--gog-line-height-relaxed);
+  --gog-empty-state-actions-gap: var(--gog-space-8);
+  /* The actions sit a step further from the text than the text's own gap. */
+  --gog-empty-state-actions-offset: var(--gog-space-4);
+  --gog-empty-state-xsm-padding: var(--gog-space-12);
+  --gog-empty-state-sm-padding: var(--gog-space-16);
+  --gog-empty-state-md-padding: var(--gog-space-24);
+  --gog-empty-state-lg-padding: var(--gog-space-32);
+  --gog-empty-state-slg-padding: var(--gog-space-40);
+  --gog-empty-state-xsm-icon-size: var(--gog-space-24);
+  --gog-empty-state-sm-icon-size: var(--gog-space-32);
+  --gog-empty-state-md-icon-size: var(--gog-space-40);
+  --gog-empty-state-lg-icon-size: var(--gog-space-48);
+  --gog-empty-state-slg-icon-size: calc(var(--gog-space-32) * 2);
+  --gog-empty-state-xsm-heading-font-size: var(--gog-text-sm);
+  --gog-empty-state-sm-heading-font-size: var(--gog-text-md);
+  --gog-empty-state-md-heading-font-size: var(--gog-text-lg);
+  --gog-empty-state-lg-heading-font-size: var(--gog-text-xl);
+  --gog-empty-state-slg-heading-font-size: var(--gog-text-2xl);
+  --gog-empty-state-xsm-description-font-size: var(--gog-text-xs);
+  --gog-empty-state-sm-description-font-size: var(--gog-text-sm);
+  --gog-empty-state-md-description-font-size: var(--gog-text-sm);
+  --gog-empty-state-lg-description-font-size: var(--gog-text-md);
+  --gog-empty-state-slg-description-font-size: var(--gog-text-lg);
+
   /* ── Collapsible ───────────────────────────────────────────────────────────
      No owned markup: the `.gog-collapsible__*` rules live in utilities.css, because they style content
      the consumer projects, which a scoped stylesheet cannot reach. */

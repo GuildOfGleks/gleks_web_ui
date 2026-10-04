@@ -1,0 +1,31 @@
+.empty-state-page__cell {
+  width: 28rem;
+  max-width: 100%;
+}
+
+.empty-state-page__stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gog-space-12);
+  max-width: 36rem;
+  margin-block-end: var(--gog-space-16);
+}
+
+.empty-state-page__list {
+  margin: 0;
+  padding-inline-start: var(--gog-space-16);
+}
+
+.empty-state-page__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gog-space-8);
+}
+
+.empty-state-page__note {
+  margin-block: 0 var(--gog-space-8);
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-xs);
+  max-width: 60rem;
+}

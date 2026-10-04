@@ -641,6 +641,50 @@ const WASH_PAIRS = [
     ['--gog-background-color'],
     4.5,
   ],
+  // An empty state's title and description, on the page or the surface it usually sits in; its
+  // icon is decorative but the largest mark in the block, so it is held to 3:1.
+  [
+    'empty state heading',
+    '--gog-empty-state-heading-color',
+    '--gog-background-color',
+    ['--gog-background-color'],
+    4.5,
+  ],
+  [
+    'empty state heading on surface',
+    '--gog-empty-state-heading-color',
+    '--gog-surface-color',
+    ['--gog-surface-color'],
+    4.5,
+  ],
+  [
+    'empty state description',
+    '--gog-empty-state-description-color',
+    '--gog-background-color',
+    ['--gog-background-color'],
+    4.5,
+  ],
+  [
+    'empty state description on surface',
+    '--gog-empty-state-description-color',
+    '--gog-surface-color',
+    ['--gog-surface-color'],
+    4.5,
+  ],
+  [
+    'empty state icon',
+    '--gog-empty-state-icon-color',
+    '--gog-background-color',
+    ['--gog-background-color'],
+    3,
+  ],
+  [
+    'empty state icon on surface',
+    '--gog-empty-state-icon-color',
+    '--gog-surface-color',
+    ['--gog-surface-color'],
+    3,
+  ],
   // A rating's stars are graphics: the empty outline is what shows there is a star to press, and
   // the fill is what says which are chosen, so both are held to 3:1.
   [

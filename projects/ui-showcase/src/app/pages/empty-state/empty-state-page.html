@@ -1,0 +1,133 @@
+<app-doc-page unit="empty-state">
+  <app-doc-section
+    id="anatomy"
+    title="Anatomy"
+    lead="A muted icon, a title, a description at a readable measure and an actions row. No border or fill of its own: it sits in a card, a panel or a table that has one."
+  >
+    <h3>size</h3>
+    <app-doc-matrix rowAxis="size" colAxis="">
+      <ng-template appDocCell [rows]="sizes" [cols]="column" let-size>
+        <div class="empty-state-page__cell">
+          <gog-empty-state iconName="mail" heading="No messages" live="off" [size]="size">
+            Messages your team sends you land here.
+            <div gogEmptyStateActions>
+              <button type="button" gogButton variant="secondary" [size]="size">Write one</button>
+            </div>
+          </gog-empty-state>
+        </div>
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>gogEmptyStateMedia, in place of the icon</h3>
+    <div class="empty-state-page__stack">
+      <gog-card>
+        <gog-empty-state heading="Your board is empty" live="off">
+          <svg gogEmptyStateMedia width="96" height="64" viewBox="0 0 96 64" fill="none">
+            <rect
+              x="4"
+              y="8"
+              width="24"
+              height="48"
+              rx="4"
+              stroke="currentColor"
+              stroke-width="2"
+            />
+            <rect
+              x="36"
+              y="8"
+              width="24"
+              height="32"
+              rx="4"
+              stroke="currentColor"
+              stroke-width="2"
+            />
+            <rect
+              x="68"
+              y="8"
+              width="24"
+              height="40"
+              rx="4"
+              stroke="currentColor"
+              stroke-width="2"
+            />
+          </svg>
+          Add a column to start planning.
+        </gog-empty-state>
+      </gog-card>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="answers"
+    title="An empty state as an answer"
+    lead="The empty states that matter are results. It announces itself when it appears, and again whenever its message changes while it stays on screen."
+  >
+    <h3>a search that matches nothing</h3>
+    <p class="empty-state-page__note">
+      Type "zz", then "zzz". With a screen reader on, the first says "No invoices found, nothing
+      matches zz", and the second says the new query — the empty state never left the page, so only
+      its own region could say it. "Clear search" is not read out: actions are found, not heard.
+    </p>
+    <div class="empty-state-page__stack">
+      <gog-inputfield label="Search invoices" [(value)]="query" />
+      <gog-card>
+        @if (matches().length) {
+          <ul class="empty-state-page__list">
+            @for (invoice of matches(); track invoice) {
+              <li>{{ invoice }}</li>
+            }
+          </ul>
+        } @else {
+          <gog-empty-state iconName="search" heading="No invoices found" size="sm">
+            Nothing matches "{{ query() }}".
+            <div gogEmptyStateActions>
+              <button type="button" gogButton variant="secondary" size="sm" (click)="query.set('')">
+                Clear search
+              </button>
+            </div>
+          </gog-empty-state>
+        }
+      </gog-card>
+    </div>
+
+    <h3>the last item removed</h3>
+    <div class="empty-state-page__stack">
+      <gog-card>
+        <h3 gogCardHeader>Projects</h3>
+        @for (project of projects(); track project; let i = $index) {
+          <div class="empty-state-page__row">
+            <span>{{ project }}</span>
+            <button type="button" gogButton variant="ghost" size="sm" (click)="removeProject(i)">
+              Remove
+            </button>
+          </div>
+        } @empty {
+          <gog-empty-state iconName="plus" heading="No projects" [headingLevel]="4" size="sm">
+            Projects group the work your team tracks.
+            <div gogEmptyStateActions>
+              <button type="button" gogButton size="sm" (click)="addProject()">New project</button>
+            </div>
+          </gog-empty-state>
+        }
+      </gog-card>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="A polite region, mounted empty and filled one render later, carries the title and description. live='off' is for an empty state the page loads with. The title is a heading only when headingLevel says which."
+  >
+    <h3>what assistive tech gets</h3>
+    <div class="empty-state-page__stack">
+      <app-doc-attrs target="[role=status]">
+        <gog-empty-state heading="No results" iconName="search">Try fewer words.</gog-empty-state>
+      </app-doc-attrs>
+      <app-doc-attrs target="h2">
+        <gog-empty-state heading="No projects yet" [headingLevel]="2" live="off">
+          Your first project appears here.
+        </gog-empty-state>
+      </app-doc-attrs>
+    </div>
+  </app-doc-section>
+</app-doc-page>

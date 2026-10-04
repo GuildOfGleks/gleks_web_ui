@@ -114,8 +114,9 @@ root component (`docs/backlog.md`, Structural) — **and the split stops there, 
 (2026-10-03/04); 21.16.0 removed `gog-autocomplete`'s four panel-filter inputs (the search box
 lives in `GogFilterableDropdownBase` now) and left `GOG_DEPRECATIONS` empty. **21.17.0 is released**
 (2026-10-04) — `gog-avatar` and `gog-avatar-group` (`docs/avatar.md`), the first minor under the
-semver rule. **21.18.0 is open, heading `planned`** — `gog-breadcrumbs`, `gog-stepper`, `gog-file-upload` and
-`gog-rating` (`docs/breadcrumbs.md`, `docs/stepper.md`, `docs/file-upload.md`, `docs/rating.md`);
+semver rule. **21.18.0 is open, heading `planned`** — `gog-breadcrumbs`, `gog-stepper`, `gog-file-upload`,
+`gog-rating` and `gog-empty-state` (`docs/breadcrumbs.md`, `docs/stepper.md`, `docs/file-upload.md`,
+`docs/rating.md`, `docs/empty-state.md`) — the whole unbuilt-component list of Gaps;
 so `npm run check:release` fails again, correctly.
 
 ### The release sequence

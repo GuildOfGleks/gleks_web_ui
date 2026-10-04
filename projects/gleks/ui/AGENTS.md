@@ -1549,6 +1549,46 @@ Slot: `<ng-template gogTagIcon>` for custom icon markup.
 <gog-tag variant="success">Active</gog-tag>
 ```
 
+#### `gog-empty-state`
+
+What a region says when it has nothing to show — a search that matched nothing, a list with no items.
+
+```html
+@if (results().length === 0) {
+<gog-empty-state iconName="search" heading="No results" [headingLevel]="2">
+  Nothing matches "{{ query() }}".
+  <div gogEmptyStateActions>
+    <button gogButton variant="secondary" (click)="clear()">Clear filters</button>
+  </div>
+</gog-empty-state>
+}
+```
+
+| Input          | Type                                | Default    |
+| -------------- | ----------------------------------- | ---------- |
+| `heading`      | `string`                            | `''`       |
+| `headingLevel` | `GogEmptyStateHeadingLevel \| null` | `null`     |
+| `iconName`     | `GogIconName \| null`               | `null`     |
+| `live`         | `'polite' \| 'off'`                 | `'polite'` |
+| `size`         | `GogSize`                           | `'md'`     |
+
+Slots: the default slot is the description; `[gogEmptyStateMedia]` (an `<img>` or `<svg>`, hidden
+from assistive tech) replaces the icon; `[gogEmptyStateActions]` holds the buttons. Import the two
+directives with the component.
+
+- **It announces itself.** The title and description are copied into a polite live region that is
+  mounted empty and filled after the first render — an element inserted with its own text is not
+  announced — and copied again whenever the message changes while it stays on screen, so each new
+  "No results for …" is said. Actions are never read out.
+- **`live="off"` for an empty state the page loads with** ("You have no projects yet"), where the
+  reader is reading the page anyway. There is no assertive mode.
+- **`headingLevel` makes the title a real `<h2>`…`<h6>`**; set it when the empty state is the
+  section's content, at the level around it. Unset, the title is styled text, not in the outline.
+- **Not a loading state**: render it only once the answer is known to be nothing — before that it is
+  `gog-skeleton`. Not an error either: a failed request is `gog-alert`. When the last item vanishes
+  by its own button, placing focus (usually on the empty state's action) is the app's.
+- No border or fill of its own: put it in a `gog-card`, `gog-panel`, or in place of a table.
+
 #### `gog-spinner` / `gog-spinner-overlay`
 
 | Input                            | Type                                              | Default                                     |
