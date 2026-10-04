@@ -1,19 +1,19 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import {
   CardComponent,
   GogCardHeaderDirective,
-  GogSize,
+  GogCardLinkDirective,
   GogSurfaceVariant,
 } from '@guildofgleks/ui';
 
 @Component({
   selector: 'app-example',
-  imports: [CardComponent, GogCardHeaderDirective],
+  imports: [CardComponent, GogCardHeaderDirective, GogCardLinkDirective, RouterLink],
   templateUrl: './example.html',
-  styleUrl: './example.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardVariantsExample {
   protected readonly variants: readonly GogSurfaceVariant[] = ['outlined', 'elevated', 'filled'];
-  protected readonly sizes: readonly GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];
+  protected readonly states = ['at rest', 'disabled', 'loading'] as const;
 }

@@ -1,4 +1,11 @@
-<gog-card class="themed">
+<!-- Instance tokens, inline: the library leaves them undeclared, so they win without a fight. -->
+<gog-card
+  style="
+    --gog-card-bg: color-mix(in srgb, var(--gog-accent-color) 10%, transparent);
+    --gog-card-border-color: var(--gog-accent-color);
+    --gog-card-heading-color: var(--gog-accent-color);
+  "
+>
   <h4 gogCardHeader>Overridden per instance</h4>
-  <p>Three instance tokens from one class on the element. No <code>::ng-deep</code>.</p>
+  <p>Three instance tokens on the element. No <code>::ng-deep</code>.</p>
 </gog-card>

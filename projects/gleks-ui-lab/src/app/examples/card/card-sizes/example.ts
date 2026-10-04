@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { CardComponent, GogCardHeaderDirective } from '@guildofgleks/ui';
+import { CardComponent, GogCardHeaderDirective, GogSize } from '@guildofgleks/ui';
 
 @Component({
   selector: 'app-example',
@@ -7,4 +7,6 @@ import { CardComponent, GogCardHeaderDirective } from '@guildofgleks/ui';
   templateUrl: './example.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CardOverviewExample {}
+export class CardSizesExample {
+  protected readonly sizes: readonly GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];
+}

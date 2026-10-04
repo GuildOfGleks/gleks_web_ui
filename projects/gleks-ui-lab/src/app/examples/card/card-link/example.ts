@@ -27,7 +27,6 @@ interface Person {
     TagComponent,
   ],
   templateUrl: './example.html',
-  styleUrl: './example.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardLinkExample {

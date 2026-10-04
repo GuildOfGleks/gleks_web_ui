@@ -5,7 +5,6 @@ import { CardComponent, GogCardHeaderDirective } from '@guildofgleks/ui';
   selector: 'app-example',
   imports: [CardComponent, GogCardHeaderDirective],
   templateUrl: './example.html',
-  styleUrl: './example.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardThemingExample {}

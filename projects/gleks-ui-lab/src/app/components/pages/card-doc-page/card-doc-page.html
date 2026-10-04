@@ -1,7 +1,7 @@
 <div class="card-doc">
   <header class="card-doc__hero">
     <p class="card-doc__eyebrow">gog-card</p>
-    <h1 class="card-doc__title font-heading">Card <app-since version="21.6.1" /></h1>
+    <h1 class="card-doc__title font-heading">Card</h1>
     <p class="card-doc__lead">
       A surface for one self-contained thing — a product tile, a summary, a search result. What it
       adds over a <code>.card</code> class of your own is what a class cannot do: it takes its
@@ -19,9 +19,109 @@
     </p>
     <app-markdown [markdown]="importSnippet" />
 
+    <p class="doc-section__intro">Basic usage — a heading and a body:</p>
     <div class="demo-card">
-      <app-demo [component]="examples.overview" [source]="sources.cardOverview" />
+      <app-demo [component]="examples.overview" [source]="sources.cardOverview" layout="fields" />
     </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Variants and states</h3>
+      <p class="demo-card__meta">
+        The same three variants as <a routerLink="/components/panel">gog-panel</a>, from the shared
+        <code>GogSurfaceVariant</code> type — but <code>outlined</code> is the default here, because
+        a grid of many cards wants a border rather than twenty shadows; <code>elevated</code> takes
+        the shared surface shadow, <code>filled</code> is a tint with neither. Each is shown at
+        rest, disabled and loading. Hover lifts the link's colour and focus rings the whole surface
+        — live, so point at one or Tab to it.
+      </p>
+      <app-demo [component]="examples.variants" [source]="sources.cardVariants" layout="fields" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Sizes</h3>
+      <p class="demo-card__meta">
+        <code>size</code> drives padding and the gap between the card's rows on the same five-step
+        scale as every control; loading placeholders take the card's size too.
+      </p>
+      <app-demo [component]="examples.sizes" [source]="sources.cardSizes" layout="row" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Interactive — the whole surface activates one real link</h3>
+      <p class="demo-card__meta">
+        There is no <code>interactive</code> input and no <code>gogClick</code> output. A card
+        becomes interactive by <em>containing</em> a <code>gogCardLink</code>, which stretches that
+        link's hit area over the whole surface. The link stays yours, so <code>routerLink</code>,
+        <code>href</code>, <code>target</code>, middle-click, "open in new tab" and
+        <kbd>Enter</kbd> all behave normally, and the focus ring is drawn around the card.
+      </p>
+      <p class="demo-card__meta">
+        Anything else focusable in the card still receives its own clicks — press the footer button
+        and watch the tally, then click anywhere else on the card and follow the link instead.
+      </p>
+      <app-demo [component]="examples.link" [source]="sources.cardLink" layout="fields" />
+      <p class="demo-card__meta">
+        <strong>Two costs, inherent to the pattern rather than to this implementation:</strong> text
+        in the card cannot be selected by dragging, and a second link is reachable by keyboard but
+        not by clicking the surface around it. If either matters, do not stretch the link — put an
+        ordinary link in the heading and leave the surface inert. <code>gogCardLink</code> applies
+        to <code>&lt;a&gt;</code> and <code>&lt;button&gt;</code> only. On a
+        <code>&lt;div&gt;</code> it does nothing, on purpose: a div with a click handler is the
+        thing this directive exists to stop you writing.
+      </p>
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Media</h3>
+      <p class="demo-card__meta">
+        <code>gogCardMedia</code> runs full-bleed to the card's edges and rounds into its top
+        corners. The rendered order of the slots is fixed by the component — media, heading, body,
+        footer — and does <em>not</em> follow the order you write them in: the two cards below are
+        authored in opposite orders and render identically, which is what keeps a grid aligned when
+        one card happens to be written differently from its neighbours.
+      </p>
+      <app-demo [component]="examples.media" [source]="sources.cardMedia" layout="fields" />
+      <p class="demo-card__meta">
+        The bleed is <code>inline-size: calc(100% + 2 * padding-x)</code> plus a negative inline
+        margin, so <strong>do not give the media a width of your own</strong> — a
+        <code>width: 100%</code> overrides that calculation and the picture ends one padding short
+        of the card's right edge while still starting flush at its left.
+      </p>
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Loading and disabled</h3>
+      <p class="demo-card__meta">
+        <code>loading</code> swaps the content for a title bar plus <code>skeletonLines</code> body
+        lines and marks the host <code>aria-busy</code>. <code>disabled</code> dims the card, sets
+        <code>aria-disabled</code>, and takes its link out of the tab order. Both make the card's
+        link non-clickable.
+      </p>
+      <p class="demo-card__meta">
+        <code>loading</code> is the <strong>first-paint</strong> treatment. For a
+        <em>refresh</em> of a card that already has content, project a
+        <a routerLink="/components/spinner">gog-spinner-overlay</a> instead — replacing real content
+        with placeholders is a worse answer once the reader has something to look at.
+      </p>
+      <app-demo [component]="examples.states" [source]="sources.cardStates" layout="fields" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Theming</h3>
+      <p class="demo-card__meta">
+        Every value comes from a <code>--gog-card-*</code> token, and the instance tier
+        (<code>--gog-card-bg</code>, <code>--gog-card-border-color</code>,
+        <code>--gog-card-shadow</code>, <code>--gog-card-padding-y</code>,
+        <code>--gog-card-padding-x</code>, <code>--gog-card-gap</code>) is left undeclared on
+        purpose, so setting one on an element beats the variant and size classes without a
+        specificity fight.
+      </p>
+      <app-demo [component]="examples.theming" [source]="sources.cardTheming" layout="fields" />
+    </article>
   </section>
 
   <section class="doc-section">
@@ -47,188 +147,50 @@
   </section>
 
   <section class="doc-section">
-    <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
-
-    <article class="demo-card">
-      <h3 class="demo-card__title">Variants and sizes</h3>
-      <p class="demo-card__meta">
-        The same three variants as <a routerLink="/components/panel">gog-panel</a>, from the shared
-        <code>GogSurfaceVariant</code> type — but <code>outlined</code> is the default here, because
-        a grid of many cards wants a border rather than twenty shadows. <code>size</code> drives
-        padding and the row gap on the same five-tier scale as every control.
-      </p>
-      <app-demo [component]="examples.variants" [source]="sources.cardVariants" />
-    </article>
-
-    <article class="demo-card">
-      <h3 class="demo-card__title">Interactive — the whole surface activates one real link</h3>
-      <p class="demo-card__meta">
-        There is no <code>interactive</code> input and no <code>gogClick</code> output. A card
-        becomes interactive by <em>containing</em> a <code>gogCardLink</code>, which stretches that
-        link's hit area over the whole surface. The link stays yours, so <code>routerLink</code>,
-        <code>href</code>, <code>target</code>, middle-click, "open in new tab" and
-        <kbd>Enter</kbd> all behave normally, and the focus ring is drawn around the card.
-      </p>
-      <p class="demo-card__meta">
-        Anything else focusable in the card still receives its own clicks — press the footer button
-        and watch the tally, then click anywhere else on the card and follow the link instead.
-      </p>
-      <app-demo [component]="examples.link" [source]="sources.cardLink" />
-      <p class="demo-card__meta">
-        <strong>Two costs, inherent to the pattern rather than to this implementation:</strong> text
-        in the card cannot be selected by dragging, and a second link is reachable by keyboard but
-        not by clicking the surface around it. If either matters, do not stretch the link — put an
-        ordinary link in the heading and leave the surface inert.
-      </p>
-      <p class="demo-card__meta">
-        <code>gogCardLink</code> applies to <code>&lt;a&gt;</code> and
-        <code>&lt;button&gt;</code> only. On a <code>&lt;div&gt;</code> it does nothing, on purpose:
-        a div with a click handler is the thing this directive exists to stop you writing.
-      </p>
-    </article>
-
-    <article class="demo-card">
-      <h3 class="demo-card__title">Media</h3>
-      <p class="demo-card__meta">
-        <code>gogCardMedia</code> runs full-bleed to the card's edges and rounds into its top
-        corners. The rendered order of the slots is fixed by the component — media, heading, body,
-        footer — and does <em>not</em> follow the order you write them in: the two cards below are
-        authored in opposite orders and render identically, which is what keeps a grid aligned when
-        one card happens to be written differently from its neighbours.
-      </p>
-      <app-demo [component]="examples.media" [source]="sources.cardMedia" />
-      <p class="demo-card__meta">
-        The bleed is <code>inline-size: calc(100% + 2 * padding-x)</code> plus a negative inline
-        margin, so <strong>do not give the media a width of your own</strong> — a
-        <code>width: 100%</code> overrides that calculation and the picture ends one padding short
-        of the card's right edge while still starting flush at its left.
-      </p>
-    </article>
-
-    <article class="demo-card">
-      <h3 class="demo-card__title">Loading and disabled</h3>
-      <p class="demo-card__meta">
-        <code>loading</code> swaps the content for a title bar plus <code>skeletonLines</code> body
-        lines and marks the host <code>aria-busy</code>. <code>disabled</code> dims the card, sets
-        <code>aria-disabled</code>, and takes its link out of the tab order. Both make the card's
-        link non-clickable.
-      </p>
-      <p class="demo-card__meta">
-        <code>loading</code> is the <strong>first-paint</strong> treatment. For a
-        <em>refresh</em> of a card that already has content, project a
-        <a routerLink="/components/spinner">gog-spinner-overlay</a> instead — replacing real content
-        with placeholders is a worse answer once the reader has something to look at.
-      </p>
-      <app-demo [component]="examples.states" [source]="sources.cardStates" />
-    </article>
-
-    <article class="demo-card">
-      <h3 class="demo-card__title">Theming</h3>
-      <p class="demo-card__meta">
-        Every value comes from a <code>--gog-card-*</code> token, and the instance tier
-        (<code>--gog-card-bg</code>, <code>--gog-card-border-color</code>,
-        <code>--gog-card-shadow</code>, <code>--gog-card-padding-y</code>,
-        <code>--gog-card-padding-x</code>, <code>--gog-card-gap</code>) is left undeclared on
-        purpose, so setting one on an element beats the variant and size classes without a
-        specificity fight.
-      </p>
-      <app-demo [component]="examples.theming" [source]="sources.cardTheming" />
-    </article>
+    <h2 id="accessibility" class="doc-section__title font-heading">Accessibility</h2>
+    <p class="doc-section__intro">
+      A card with a heading is a named group; without one it is a plain element.
+    </p>
+    <ul class="doc-section__intro">
+      <li>
+        <strong>Name</strong> — <code>gogCardHeader</code> on your own heading: the card takes its
+        id and points <code>aria-labelledby</code> at it, with <code>role="group"</code>. A card
+        without a heading gets neither, rather than an unnamed group.
+      </li>
+      <li>
+        <strong>Link</strong> — <code>gogCardLink</code> is your <code>&lt;a&gt;</code> or
+        <code>&lt;button&gt;</code>, so the card is one tab stop that <kbd>Enter</kbd> follows,
+        named by the link text; the focus ring is drawn around the card. Other controls in the card
+        keep their own tab stops and clicks.
+      </li>
+      <li>
+        <strong>State</strong> — <code>loading</code> marks the host <code>aria-busy</code>;
+        <code>disabled</code> sets <code>aria-disabled</code> and takes the link out of the tab
+        order.
+      </li>
+    </ul>
   </section>
 
   <section class="doc-section">
     <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
 
     <h3 class="doc-section__subtitle">Inputs</h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Default</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of apiInputs; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-                @if (row.since) {
-                  <app-since [version]="row.since" />
-                }
-              </td>
-              <td>
-                <code>{{ row.type }}</code>
-              </td>
-              <td>
-                <code>{{ row.default }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="apiInputs" kind="inputs" />
 
-    <h3 class="doc-section__subtitle">Slots</h3>
-    <p class="doc-section__meta">
-      All four are <strong>attribute</strong> directives on your own elements, not
-      <code>&lt;ng-template&gt;</code>s.
-    </p>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of apiSlots; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-                @if (row.since) {
-                  <app-since [version]="row.since" />
-                }
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-
-    <p class="doc-section__meta">
-      No outputs. A card that needs to report something reports it from the control inside it.
-    </p>
+    <h3 class="doc-section__subtitle">Slots — attribute directives on your own elements</h3>
+    <app-api-table [rows]="apiSlots" kind="directives" />
   </section>
 
   <app-global-config-note component="card" />
 
   <section class="doc-section">
-    <h2 id="tokens" class="doc-section__title font-heading">Style tokens</h2>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Token</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (token of styleTokens; track token.name) {
-            <tr>
-              <td>
-                <code>{{ token.name }}</code>
-              </td>
-              <td>{{ token.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <h2 id="styling" class="doc-section__title font-heading">Styling Tokens</h2>
+    <p class="doc-section__intro">
+      Every CSS custom property the card paints with. Override any of them — on a single instance, a
+      subtree, or a theme — to restyle it. See the
+      <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
+      <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
+    </p>
+    <app-api-table [rows]="styleTokens" kind="tokens" />
   </section>
 </div>

@@ -55,7 +55,9 @@ line up. In `wide`, each top-level element spans the card, a `<p>` is a centred 
 `<div>` is a centred row of the controls that drive the component. `overhang` is `row` with 24px
 gaps, for a decoration drawn outside its host (a badge); a `<div>` in it is a row with a `<span>`
 label. Form fields use `fields`: each top-level element is one cell (220–280px) in centred, wrapping rows,
-so a field does not stretch across the card; a `<div>` cell stacks a field with a line under it.
+so a field does not stretch across the card; a `<div>` cell stacks a field with a line under it,
+and a `<p>` takes a line of its own. `fields` also suits any block component shown as a grid —
+cards, alerts, progress bars.
 
 ## Component page outline
 

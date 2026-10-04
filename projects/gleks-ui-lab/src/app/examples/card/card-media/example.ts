@@ -5,7 +5,6 @@ import { CardComponent, GogCardHeaderDirective, GogCardMediaDirective } from '@g
   selector: 'app-example',
   imports: [CardComponent, GogCardHeaderDirective, GogCardMediaDirective],
   templateUrl: './example.html',
-  styleUrl: './example.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardMediaExample {

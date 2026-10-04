@@ -17,7 +17,6 @@ import {
     RouterLink,
   ],
   templateUrl: './example.html',
-  styleUrl: './example.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardStatesExample {

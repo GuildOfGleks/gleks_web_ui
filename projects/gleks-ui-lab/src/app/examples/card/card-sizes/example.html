@@ -1,0 +1,7 @@
+<!-- Each card hugs its content, so the padding size drives is what sets the box. -->
+@for (size of sizes; track size) {
+  <gog-card [size]="size">
+    <h4 gogCardHeader>{{ size }}</h4>
+    <p>Padding and row gap follow the size.</p>
+  </gog-card>
+}
