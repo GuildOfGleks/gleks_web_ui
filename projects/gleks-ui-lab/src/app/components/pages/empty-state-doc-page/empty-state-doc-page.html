@@ -1,0 +1,135 @@
+<div class="empty-state-doc">
+  <header class="empty-state-doc__hero">
+    <p class="empty-state-doc__eyebrow">gog-empty-state</p>
+    <h1 class="empty-state-doc__title font-heading">Empty State <app-since version="21.18.0" /></h1>
+    <p class="empty-state-doc__lead">
+      What a region says when it has nothing to show. The empty states that matter are answers — a
+      search that matched nothing, a filter that excluded everything, the last item removed — and on
+      screen they are obvious while a screen reader hears nothing at all. This one announces itself
+      when it appears, and again whenever its message changes while it stays on screen.
+    </p>
+  </header>
+
+  <section class="doc-section">
+    <h2 id="overview" class="doc-section__title font-heading">Overview</h2>
+    <app-markdown [markdown]="importSnippet" />
+
+    <p class="doc-section__intro">A title, a description, and what the reader can do about it:</p>
+    <div class="demo-card">
+      <app-demo
+        [component]="examples.overview"
+        [source]="sources.emptyStateOverview"
+        layout="block"
+      />
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Sizes</h3>
+      <p class="demo-card__meta">
+        Five steps of icon, title, description and padding. It draws no border or fill — put it in a
+        card, a panel, or in place of a table.
+      </p>
+      <app-demo [component]="examples.sizes" [source]="sources.emptyStateSizes" layout="fields" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">An illustration</h3>
+      <p class="demo-card__meta">
+        <code>gogEmptyStateMedia</code> replaces the icon with your own <code>&lt;svg&gt;</code> or
+        <code>&lt;img&gt;</code>, hidden from assistive tech. An illustration drawn in
+        <code>currentColor</code> takes the icon's muted colour.
+      </p>
+      <app-demo [component]="examples.media" [source]="sources.emptyStateMedia" layout="block" />
+    </article>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="answers" class="doc-section__title font-heading">An empty state as an answer</h2>
+    <p class="doc-section__intro">
+      The element and its text arrive in one insertion, and a live region created together with its
+      own text is routinely skipped. The component mounts its region empty and fills it one render
+      later — the mechanism gog-alert uses — and keeps it in step with the message.
+    </p>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">A search that matches nothing</h3>
+      <p class="demo-card__meta">
+        Type "zz", then "zzz". With a screen reader on, the first says "No invoices found, Nothing
+        matches zz", and the second says the new query — the empty state never left the page, so
+        only a region that watches its own message could say it. "Clear search" is not read out:
+        actions are found, not heard.
+      </p>
+      <app-demo [component]="examples.search" [source]="sources.emptyStateSearch" layout="wide" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">The last item removed</h3>
+      <p class="demo-card__meta">
+        Remove the project. The title here is a real <code>&lt;h4&gt;</code>, because the card's own
+        heading is an <code>&lt;h3&gt;</code>: <code>headingLevel</code> places it in the outline,
+        and unset the title is styled text. Where focus goes after the last item vanishes by its own
+        button is your app's call — usually the empty state's action.
+      </p>
+      <app-demo
+        [component]="examples.lastItem"
+        [source]="sources.emptyStateLastItem"
+        layout="block"
+      />
+    </article>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="accessibility" class="doc-section__title font-heading">Accessibility</h2>
+    <p class="doc-section__intro">
+      Announced when it answers something; quiet when it was always there.
+    </p>
+    <ul class="doc-section__intro">
+      <li>
+        <strong>A polite region</strong> — <code>role="status"</code>, mounted empty, filled with
+        the title and description after the first render and again on every change to them. Never
+        assertive: nothing being empty justifies an interruption.
+      </li>
+      <li>
+        <strong><code>live="off"</code></strong> — for an empty state the page loads with ("You have
+        no projects yet"), where the reader is reading the page anyway.
+      </li>
+      <li>
+        <strong>Heading level</strong> — <code>headingLevel</code> 2 to 6 makes the title a real
+        heading at the level the surrounding headings set; unset, it is not in the outline, which is
+        safer than a guessed level.
+      </li>
+      <li>
+        <strong>Not a loading state</strong> — render it once the answer is known to be nothing;
+        before that, a <a routerLink="/components/skeleton">skeleton</a>. A failed request is an
+        <a routerLink="/components/alert">alert</a>, not an empty state.
+      </li>
+    </ul>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
+
+    <h3 class="doc-section__subtitle">gog-empty-state inputs</h3>
+    <app-api-table [rows]="emptyStateInputs" kind="inputs" />
+
+    <h3 class="doc-section__subtitle">Slots</h3>
+    <app-api-table [rows]="emptyStateSlots" kind="slots" />
+  </section>
+
+  <app-global-config-note component="empty-state" />
+
+  <section class="doc-section">
+    <h2 id="styling" class="doc-section__title font-heading">Styling Tokens</h2>
+    <p class="doc-section__intro">
+      Every CSS custom property the empty state paints with. Override any of them — on a single
+      instance, a subtree, or a theme — to restyle it. See the
+      <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
+      <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
+    </p>
+    <app-api-table [rows]="styleTokens" kind="tokens" />
+  </section>
+</div>

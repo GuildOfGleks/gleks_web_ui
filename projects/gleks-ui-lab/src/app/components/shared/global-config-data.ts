@@ -37,6 +37,30 @@ export interface GlobalConfigEntry {
 export const GLOBAL_CONFIG_BY_COMPONENT: Readonly<Record<string, readonly GlobalConfigEntry[]>> = {
   accordion: [{ key: 'ripple.enabled' }],
   alert: [{ key: 'labels.closeAlert', note: 'the close button, when dismissible' }],
+  breadcrumbs: [
+    { key: 'labels.breadcrumbs', note: 'the landmark’s name, unless ariaLabel is set' },
+    { key: 'labels.showBreadcrumbs', note: 'the … button of a collapsed trail' },
+  ],
+  'file-upload': [
+    { key: 'control.errorDisplay' },
+    { key: 'labels.fileDrop', note: 'the prompt before "browse"' },
+    { key: 'labels.fileBrowse' },
+    { key: 'labels.fileRemove', note: 'a formatter: (name) => string' },
+    { key: 'labels.filesAdded', note: 'a formatter: (count) => string, announced' },
+    { key: 'labels.fileRejected', note: 'a formatter: (name, reason) => string, announced' },
+  ],
+  rating: [
+    { key: 'control.size' },
+    { key: 'control.errorDisplay' },
+    { key: 'labels.ratingStar', note: 'a formatter: (value, max) => string, each star’s name' },
+    { key: 'labels.ratingValue', note: 'a formatter: (value, max) => string, the read-only name' },
+  ],
+  stepper: [
+    { key: 'labels.stepper', note: 'the list’s name, unless ariaLabel is set' },
+    { key: 'labels.stepCompleted', note: 'the hidden words after a complete step’s label' },
+    { key: 'labels.stepError' },
+    { key: 'labels.stepOptional', note: 'shown under an optional step’s label' },
+  ],
   avatar: [{ key: 'labels.moreAvatars', note: "gog-avatar-group's +N avatar" }],
   autocomplete: [
     { key: 'control.size' },

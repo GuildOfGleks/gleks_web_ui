@@ -33,6 +33,11 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://ui.guildofgleks.com/components/breadcrumbs</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://ui.guildofgleks.com/components/button</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -83,6 +88,16 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://ui.guildofgleks.com/components/empty-state</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ui.guildofgleks.com/components/file-upload</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://ui.guildofgleks.com/components/icon</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -123,6 +138,11 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://ui.guildofgleks.com/components/rating</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://ui.guildofgleks.com/components/ripple</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -149,6 +169,11 @@
   </url>
   <url>
     <loc>https://ui.guildofgleks.com/components/spinner</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ui.guildofgleks.com/components/stepper</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>

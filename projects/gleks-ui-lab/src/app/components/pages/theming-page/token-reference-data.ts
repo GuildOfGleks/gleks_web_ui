@@ -2,7 +2,7 @@
 // doc page slices out of it by section id.
 //
 // **Hand-maintained, and deliberately not the package's full token list.** `TOKENS.md` and
-// `GOG_TOKEN_GROUPS` are exhaustive — 1497 custom properties as of 21.15.0, most of them one per size step —
+// `GOG_TOKEN_GROUPS` are exhaustive — 1681 custom properties as of 21.18.0, most of them one per size step —
 // and reprinting that is a search result, not a reference. The rows here compress a family into
 // one line (`{variant}`, `{status}`, "per size step") and say what it is *for*. The cost of that
 // choice is that a release adding tokens does not show up here on its own: check a new release's
@@ -365,6 +365,248 @@ export const TOKEN_SECTIONS: TokenSection[] = [
       {
         name: '--gog-alert-body-font-size / -body-line-height',
         description: 'The projected body.',
+      },
+    ],
+  },
+  {
+    id: 'breadcrumbs',
+    title: 'Breadcrumbs',
+    tokens: [
+      {
+        name: '--gog-breadcrumbs-font-family / -line-height / -gap',
+        description: 'The trail’s typeface, its leading, and the space either side of a separator.',
+      },
+      {
+        name: '--gog-breadcrumbs-xsm-font-size / -sm-font-size / -md-font-size / -lg-font-size / -slg-font-size',
+        description: 'The text at each size; the separator glyph is drawn from it.',
+      },
+      {
+        name: '--gog-breadcrumbs-link-color / -link-hover-color',
+        description: 'A parent link, at rest and under the pointer.',
+      },
+      {
+        name: '--gog-breadcrumbs-current-color / -current-font-weight',
+        description: 'The last item — the current page, which is not a link.',
+      },
+      {
+        name: '--gog-breadcrumbs-separator-color',
+        description: 'The separator icon between items. Decorative and hidden from assistive tech.',
+      },
+      {
+        name: '--gog-breadcrumbs-more-padding-y / -more-padding-x / -more-radius / -more-hover-bg',
+        description: 'The … button a collapsed trail draws in place of its middle.',
+      },
+      {
+        name: '--gog-breadcrumbs-focus-ring-width / -focus-ring-offset / -focus-ring-color',
+        description: 'The keyboard focus ring on a link and on the … button.',
+      },
+    ],
+  },
+  {
+    id: 'stepper',
+    title: 'Stepper',
+    tokens: [
+      {
+        name: '--gog-stepper-font-family / -line-height / -gap',
+        description:
+          'The step’s typeface, its leading, and the space between indicator, label and connector.',
+      },
+      {
+        name: '--gog-stepper-xsm-font-size / -sm-font-size / -md-font-size / -lg-font-size / -slg-font-size',
+        description:
+          'The label at each size; the indicator is a ratio of it, so the five sizes are five text steps.',
+      },
+      {
+        name: '--gog-stepper-trigger-padding-y / -trigger-padding-x / -trigger-radius / -trigger-hover-bg / -trigger-press-bg',
+        description: 'A reachable step is a button: its padding, corner, hover and press.',
+      },
+      {
+        name: '--gog-stepper-focus-ring-width / -focus-ring-offset / -focus-ring-color',
+        description: 'The keyboard focus ring on a reachable step.',
+      },
+      {
+        name: '--gog-stepper-indicator-ratio',
+        description:
+          'The indicator’s diameter as a multiple of the label’s font size (2: the number with half an em clear).',
+      },
+      {
+        name: '--gog-stepper-indicator-border-width / -indicator-border-color / -indicator-bg / -indicator-color / -indicator-font-weight',
+        description: 'A pending step’s indicator: the ring, its fill, and the number.',
+      },
+      {
+        name: '--gog-stepper-label-color / -description-color / -description-font-size / -description-line-height',
+        description:
+          'The label, and the description under it (a step down the type scale, as a ratio).',
+      },
+      {
+        name: '--gog-stepper-current-color / -current-label-color / -current-font-weight',
+        description: 'The current step: the accent ring and number, and its label.',
+      },
+      {
+        name: '--gog-stepper-complete-bg / -complete-color',
+        description: 'A complete step’s filled indicator and the check on it.',
+      },
+      {
+        name: '--gog-stepper-error-bg / -error-color / -error-label-color',
+        description: 'A step with an error: the filled indicator, its glyph, and the label.',
+      },
+      {
+        name: '--gog-stepper-unreachable-color',
+        description: 'The label of a step a linear stepper cannot reach yet.',
+      },
+      {
+        name: '--gog-stepper-connector-thickness / -connector-min-length / -connector-color / -connector-done-color',
+        description:
+          'The line between indicators: its weight, the shortest it gets before the row overflows, and its colour pending and after a complete step.',
+      },
+    ],
+  },
+  {
+    id: 'file-upload',
+    title: 'File Upload',
+    tokens: [
+      {
+        name: '--gog-file-upload-font-family / -line-height / -gap',
+        description:
+          'The component’s typeface, leading, and the space between label, zone, list and error.',
+      },
+      {
+        name: '--gog-file-upload-label-font-family / -label-font-size / -label-line-height / -label-font-weight / -label-color / -label-text-transform / -label-letter-spacing',
+        description:
+          'The label above the zone — the field label’s tokens by reference, so it matches every other field.',
+      },
+      {
+        name: '--gog-file-upload-xsm-font-size / -sm-font-size / -md-font-size / -lg-font-size / -slg-font-size',
+        description: 'The prompt at each size.',
+      },
+      {
+        name: '--gog-file-upload-xsm-zone-padding / -sm-zone-padding / -md-zone-padding / -lg-zone-padding / -slg-zone-padding',
+        description: 'The drop zone’s padding at each size. A surface, so one value on every side.',
+      },
+      {
+        name: '--gog-file-upload-zone-gap / -zone-border-width / -zone-border-color / -zone-radius / -zone-bg',
+        description:
+          'The dashed zone at rest. The dash is the control boundary colour, so the zone stays visible at 3:1.',
+      },
+      {
+        name: '--gog-file-upload-zone-active-border-color / -zone-active-bg / -transition-duration',
+        description: 'The zone under the pointer and while a file is dragged over it.',
+      },
+      {
+        name: '--gog-file-upload-prompt-color / -browse-color / -browse-font-weight',
+        description:
+          '"Drop files here or browse". "browse" is marked by its underline and weight, not a colour.',
+      },
+      {
+        name: '--gog-file-upload-icon-color / -icon-font-size / -icon-line-height',
+        description: 'The upload glyph above the prompt.',
+      },
+      {
+        name: '--gog-file-upload-hint-color / -hint-font-size / -hint-line-height',
+        description: 'The hint line in the zone; the error line uses the same size.',
+      },
+      {
+        name: '--gog-file-upload-list-gap / -file-gap / -name-color / -remove-radius',
+        description:
+          'The list of chosen files: rows, the space within a row, the file name, and the remove button’s corner.',
+      },
+      {
+        name: '--gog-file-upload-error-color',
+        description: 'The error line, and the zone’s border while there is one.',
+      },
+      {
+        name: '--gog-file-upload-focus-ring-width / -focus-ring-offset / -focus-ring-color',
+        description:
+          'The ring the zone draws while the input inside it has keyboard focus, and the remove button’s.',
+      },
+      {
+        name: '--gog-file-upload-disabled-opacity',
+        description: 'The whole component, disabled.',
+      },
+    ],
+  },
+  {
+    id: 'rating',
+    title: 'Rating',
+    tokens: [
+      {
+        name: '--gog-rating-font-family / -gap',
+        description: 'The typeface, and the space between label, stars and error.',
+      },
+      {
+        name: '--gog-rating-label-font-family / -label-font-size / -label-line-height / -label-font-weight / -label-color / -label-text-transform / -label-letter-spacing',
+        description: 'The label — the field label’s tokens by reference.',
+      },
+      {
+        name: '--gog-rating-xsm-star-size / -sm-star-size / -md-star-size / -lg-star-size / -slg-star-size',
+        description: 'The star at each size: 16, 20, 24, 28 and 32px.',
+      },
+      {
+        name: '--gog-rating-star-padding / -star-radius / -glyph-line-height',
+        description:
+          'The least room around a star (raised so the pressable box is never under 24x24), its focus corner, and the glyph’s own box.',
+      },
+      {
+        name: '--gog-rating-empty-color / -fill-color',
+        description:
+          'An empty star’s outline (the control boundary colour, 3:1) and a filled one (the accent).',
+      },
+      {
+        name: '--gog-rating-focus-ring-width / -focus-ring-offset / -focus-ring-color',
+        description: 'The ring round the focused star.',
+      },
+      {
+        name: '--gog-rating-error-color / -error-font-size / -error-line-height',
+        description: 'The error line.',
+      },
+      {
+        name: '--gog-rating-disabled-opacity',
+        description: 'The whole rating, disabled.',
+      },
+    ],
+  },
+  {
+    id: 'empty-state',
+    title: 'Empty State',
+    tokens: [
+      {
+        name: '--gog-empty-state-font-family / -gap / -message-gap',
+        description:
+          'The typeface; the space between media, message and actions; and between title and description.',
+      },
+      {
+        name: '--gog-empty-state-xsm-padding / -sm-padding / -md-padding / -lg-padding / -slg-padding',
+        description:
+          'The padding at each size. A surface, so one value on every side; it draws no border or fill.',
+      },
+      {
+        name: '--gog-empty-state-xsm-icon-size / -sm-icon-size / -md-icon-size / -lg-icon-size / -slg-icon-size',
+        description: 'The icon at each size, 24 to 64px.',
+      },
+      {
+        name: '--gog-empty-state-icon-color / -icon-line-height',
+        description:
+          'The icon’s muted colour, which an illustration drawn in currentColor takes too.',
+      },
+      {
+        name: '--gog-empty-state-xsm-heading-font-size / -sm-heading-font-size / -md-heading-font-size / -lg-heading-font-size / -slg-heading-font-size',
+        description: 'The title at each size.',
+      },
+      {
+        name: '--gog-empty-state-heading-color / -heading-font-weight / -heading-line-height',
+        description: 'The title.',
+      },
+      {
+        name: '--gog-empty-state-xsm-description-font-size / -sm-description-font-size / -md-description-font-size / -lg-description-font-size / -slg-description-font-size',
+        description: 'The description at each size.',
+      },
+      {
+        name: '--gog-empty-state-description-color / -description-line-height / -measure',
+        description: 'The description, and the widest it sets before wrapping (48ch).',
+      },
+      {
+        name: '--gog-empty-state-actions-gap / -actions-offset',
+        description: 'Between the buttons, and the extra step above the row.',
       },
     ],
   },

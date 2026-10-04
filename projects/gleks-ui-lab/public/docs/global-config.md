@@ -105,6 +105,19 @@ provideGogConfig({
     closeToast: 'Schließen',
     closeAlert: 'Meldung schließen', // gog-alert's dismiss button
     moreAvatars: (count) => `${count} weitere`, // gog-avatar-group's +N avatar
+    breadcrumbs: 'Brotkrumen', // gog-breadcrumbs' landmark
+    showBreadcrumbs: 'Ganzen Pfad zeigen', // its collapsed-trail button
+    stepper: 'Fortschritt', // gog-stepper's list
+    stepCompleted: 'erledigt', // hidden words after a step's label
+    stepError: 'fehlerhaft',
+    stepOptional: 'Optional',
+    fileDrop: 'Dateien hierher ziehen oder', // gog-file-upload's prompt
+    fileBrowse: 'durchsuchen',
+    fileRemove: (name) => `${name} entfernen`,
+    filesAdded: (count) => `${count} Datei(en) hinzugefügt`,
+    fileRejected: (name, reason) => `${name} wurde nicht hinzugefügt (${reason})`,
+    ratingStar: (value) => `${value} Sterne`, // gog-rating's star names
+    ratingValue: (value, max) => (value === null ? 'Nicht bewertet' : `${value} von ${max}`),
     pagination: 'Seitennavigation',
     previousPage: 'Vorherige Seite',
     nextPage: 'Nächste Seite',

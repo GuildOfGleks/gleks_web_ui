@@ -9,7 +9,7 @@ interface BundleBar {
   readonly emphasis: boolean;
 }
 
-// @guildofgleks/ui@21.17.0 re-measured 2026-10-04; Material (@angular/material@22.1.6 +cdk) and
+// @guildofgleks/ui@21.18.0 re-measured 2026-10-04; Material (@angular/material@22.1.6 +cdk) and
 // primeng@22.1.1 as of the full pass on 2026-09-13.
 // `percent` is each bar's share of the largest one (PrimeNG) — keep the three in
 // step when the numbers are refreshed, and keep them equal to the figures in
@@ -17,9 +17,9 @@ interface BundleBar {
 const BUNDLE_BARS: readonly BundleBar[] = [
   {
     label: 'Guild of Gleks UI',
-    detail: 'entire library — 33 components + 3 directives',
-    value: '131.9 KB',
-    percent: 40,
+    detail: 'entire library — 38 components + 3 directives',
+    value: '142.2 KB',
+    percent: 43,
     emphasis: true,
   },
   {
@@ -46,7 +46,7 @@ interface SpecRow {
 }
 
 const SPEC_ROWS: readonly SpecRow[] = [
-  { label: 'Components & directives', gleks: '32', material: '~35', primeng: '90+' },
+  { label: 'Components & directives', gleks: '38', material: '~35', primeng: '90+' },
   {
     label: 'Theming',
     gleks: 'Plain CSS variables',

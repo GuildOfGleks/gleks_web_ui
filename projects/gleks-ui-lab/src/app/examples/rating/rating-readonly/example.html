@@ -1,0 +1,6 @@
+@for (value of values; track $index) {
+  <div>
+    <span>{{ value ?? 'null' }}</span>
+    <gog-rating readonly size="sm" [value]="value" />
+  </div>
+}

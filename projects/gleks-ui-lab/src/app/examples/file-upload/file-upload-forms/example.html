@@ -1,0 +1,19 @@
+<div>
+  <gog-file-upload
+    label="Signed contract"
+    accept=".pdf"
+    errorMessage="Attach the signed contract"
+    errorDisplay="auto"
+    [formControl]="contract"
+  />
+  <p>
+    {{ contract.value.length }} file(s) · touched {{ contract.touched }} · valid
+    {{ contract.valid }}
+  </p>
+</div>
+<div>
+  <gog-button variant="secondary" size="sm" (gogClick)="contract.markAsTouched()">
+    markAsTouched()
+  </gog-button>
+  <gog-button variant="ghost" size="sm" (gogClick)="contract.reset()">reset()</gog-button>
+</div>

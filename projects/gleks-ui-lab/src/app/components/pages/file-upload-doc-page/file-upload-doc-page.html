@@ -1,0 +1,135 @@
+<div class="file-upload-doc">
+  <header class="file-upload-doc__hero">
+    <p class="file-upload-doc__eyebrow">gog-file-upload</p>
+    <h1 class="file-upload-doc__title font-heading">File Upload <app-since version="21.18.0" /></h1>
+    <p class="file-upload-doc__lead">
+      Choosing files, by the system picker or by a drop. The native <code>accept</code> only filters
+      what the picker offers — a reader can switch it to "All files", and a file dropped on the page
+      is never checked against it at all. This component checks every file, however it arrived,
+      against <code>accept</code>, <code>maxSize</code> and <code>maxFiles</code>, and says what it
+      refused and why. It does not upload: it holds <code>File</code> objects, and sending them is
+      your app's.
+    </p>
+  </header>
+
+  <section class="doc-section">
+    <h2 id="overview" class="doc-section__title font-heading">Overview</h2>
+    <app-markdown [markdown]="importSnippet" />
+
+    <p class="doc-section__intro">
+      A label, a hint, and the rules. A click anywhere on the zone opens the picker:
+    </p>
+    <div class="demo-card">
+      <app-demo
+        [component]="examples.overview"
+        [source]="sources.fileUploadOverview"
+        layout="fields"
+      />
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Sizes</h3>
+      <p class="demo-card__meta">Five text steps; the zone's padding grows with them.</p>
+      <app-demo [component]="examples.sizes" [source]="sources.fileUploadSizes" layout="fields" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">States</h3>
+      <p class="demo-card__meta">
+        Default, with an error (the border and the message take the danger colour), and disabled. A
+        drop on a disabled zone is still caught, so the browser does not navigate to the file.
+      </p>
+      <app-demo [component]="examples.states" [source]="sources.fileUploadStates" layout="fields" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Forms</h3>
+      <p class="demo-card__meta">
+        A <code>ControlValueAccessor</code> holding a <code>File[]</code>.
+        <code>errorDisplay="auto"</code> shows the message once the control is touched and invalid;
+        the <code>GOG_CONFIG.control.errorDisplay</code> key sets it app-wide.
+      </p>
+      <app-demo [component]="examples.forms" [source]="sources.fileUploadForms" layout="fields" />
+    </article>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="validation" class="doc-section__title font-heading">Validation</h2>
+    <p class="doc-section__intro">The check is the component’s, not the picker’s.</p>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">accept, maxSize, maxFiles and gogReject</h3>
+      <p class="demo-card__meta">
+        Drop an executable, a file over 1 MB, or a fourth file. Each refusal comes back from
+        <code>gogReject</code> with its reason — <code>'type'</code>, <code>'size'</code> or
+        <code>'count'</code> — and a polite live region says it. <code>maxFiles</code> counts the
+        files already chosen. <code>gogFileMatchesAccept(file, accept)</code> is exported for the
+        same check elsewhere.
+      </p>
+      <app-demo
+        [component]="examples.validation"
+        [source]="sources.fileUploadValidation"
+        layout="fields"
+      />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Without multiple</h3>
+      <p class="demo-card__meta">The field holds one file, and a new one replaces it.</p>
+      <app-demo [component]="examples.single" [source]="sources.fileUploadSingle" layout="fields" />
+    </article>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="accessibility" class="doc-section__title font-heading">Accessibility</h2>
+    <p class="doc-section__intro">
+      The drop zone is a mouse affordance; the control is a real file input.
+    </p>
+    <ul class="doc-section__intro">
+      <li>
+        <strong>The input is the control</strong> — the real
+        <code>&lt;input type="file"&gt;</code> lies over the whole zone, so it is what takes focus,
+        is named by <code>label</code> (or <code>ariaLabel</code>), is described by the hint and the
+        error, and opens with Enter or Space. The zone shows the input's focus ring.
+      </li>
+      <li>
+        <strong>What happened, said</strong> — a permanently mounted polite region announces "2
+        files added" and "setup.exe was not added: its type is not accepted"
+        (<code>filesAdded</code>, <code>fileRejected</code>).
+      </li>
+      <li>
+        <strong>Removing</strong> — each file's remove button is named "Remove report.pdf"
+        (<code>fileRemove</code>), and after a press focus moves to the next remove button, or back
+        to the input, never to <code>&lt;body&gt;</code>. The button paints 16px and takes the
+        pointer across 24.
+      </li>
+    </ul>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
+
+    <h3 class="doc-section__subtitle">gog-file-upload inputs</h3>
+    <app-api-table [rows]="fileUploadInputs" kind="inputs" />
+
+    <h3 class="doc-section__subtitle">gog-file-upload outputs</h3>
+    <app-api-table [rows]="fileUploadOutputs" kind="outputs" />
+  </section>
+
+  <app-global-config-note component="file-upload" />
+
+  <section class="doc-section">
+    <h2 id="styling" class="doc-section__title font-heading">Styling Tokens</h2>
+    <p class="doc-section__intro">
+      Every CSS custom property the file upload paints with. Override any of them — on a single
+      instance, a subtree, or a theme — to restyle it. See the
+      <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
+      <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
+    </p>
+    <app-api-table [rows]="styleTokens" kind="tokens" />
+  </section>
+</div>

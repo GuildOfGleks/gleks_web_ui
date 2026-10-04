@@ -1,0 +1,14 @@
+<gog-file-upload
+  label="Documents"
+  hint="PDF or images, up to 1 MB each, at most three"
+  accept=".pdf,image/*"
+  multiple
+  [maxSize]="1024 * 1024"
+  [maxFiles]="3"
+  [(value)]="files"
+  (gogReject)="rejected.set($event)"
+/>
+<p>{{ files().length }} file(s) chosen</p>
+@for (refusal of rejected(); track refusal.file) {
+  <p>{{ refusal.file.name }} — refused: {{ refusal.reason }}</p>
+}

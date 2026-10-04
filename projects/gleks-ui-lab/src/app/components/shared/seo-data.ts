@@ -80,7 +80,7 @@ export const PAGE_SEO: Readonly<Record<string, PageSeo>> = {
     title: `Theming Angular Components with CSS Variables`,
     description:
       'Retheme the whole library by overriding a handful of CSS custom properties — foundation, ' +
-      'component and instance layers, 1497 tokens, no preprocessor and no rebuild.',
+      'component and instance layers, 1681 tokens, no preprocessor and no rebuild.',
   },
   'general/theme-generator': {
     title: `Theme Generator — Build an Angular UI Theme`,
@@ -123,6 +123,31 @@ export const PAGE_SEO: Readonly<Record<string, PageSeo>> = {
     'Accordion',
     'An accessible Angular accordion with single or multiple open panels, projected headers and ' +
       'chevrons, animated height and full keyboard support.',
+  ),
+  'components/breadcrumbs': component(
+    'Breadcrumbs',
+    'Angular breadcrumbs on your own router links: a named landmark, aria-current on the last item, ' +
+      'hidden separators mirrored in RTL, and a collapsible middle that hands focus on when expanded.',
+  ),
+  'components/stepper': component(
+    'Stepper',
+    'An Angular stepper that indicates progress rather than owning a wizard: states announced in ' +
+      'words, linear reachability derived from your data, horizontal and vertical, five sizes.',
+  ),
+  'components/file-upload': component(
+    'File Upload',
+    'Angular file upload with a drop zone over a real file input: accept, maxSize and maxFiles ' +
+      'enforced on picked and dropped files alike, refusals reported, and a ControlValueAccessor.',
+  ),
+  'components/rating': component(
+    'Rating',
+    'An Angular star rating drawn over native radios — one tab stop, arrow keys, named stars — with ' +
+      'a clearable option, forms support, and a read-only score shown to the nearest half.',
+  ),
+  'components/empty-state': component(
+    'Empty State',
+    'An Angular empty state that a screen reader actually hears: announced when it appears and ' +
+      'again when its message changes, with an icon or illustration, a heading level and actions.',
   ),
   'components/alert': component(
     'Alert',

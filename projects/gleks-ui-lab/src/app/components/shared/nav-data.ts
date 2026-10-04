@@ -19,7 +19,7 @@ export const GENERAL_NAV_ITEMS: readonly NavItem[] = [
   { label: 'AGENTS.md', path: 'general/agents' },
 ];
 
-// 36 entries — 33 components and the three directives (gogBadge, gogTooltip, gogRipple) — grouped by what they're for rather
+// 41 entries — 38 components and the three directives (gogBadge, gogTooltip, gogRipple) — grouped by what they're for rather
 // than one long alphabetical run —
 // alphabetical within each group.
 const COMPONENT_NAV_GROUPS: readonly NavGroup[] = [
@@ -39,9 +39,11 @@ const COMPONENT_NAV_GROUPS: readonly NavGroup[] = [
       { label: 'Calendar', path: 'components/calendar' },
       { label: 'Checkbox', path: 'components/checkbox' },
       { label: 'Datepicker', path: 'components/datepicker' },
+      { label: 'File Upload', path: 'components/file-upload' },
       { label: 'Input Field', path: 'components/inputfield' },
       { label: 'Multiselect', path: 'components/multiselect' },
       { label: 'Radio Group', path: 'components/radio-group' },
+      { label: 'Rating', path: 'components/rating' },
       { label: 'Select', path: 'components/select' },
       { label: 'Slider', path: 'components/slider' },
       { label: 'Text Area', path: 'components/textarea' },
@@ -67,10 +69,12 @@ const COMPONENT_NAV_GROUPS: readonly NavGroup[] = [
     title: 'Layout & Navigation',
     items: [
       { label: 'Accordion', path: 'components/accordion' },
+      { label: 'Breadcrumbs', path: 'components/breadcrumbs' },
       { label: 'Card', path: 'components/card' },
       { label: 'Collapsible', path: 'components/collapsible' },
       { label: 'Panel', path: 'components/panel' },
       { label: 'Scroll', path: 'components/scroll' },
+      { label: 'Stepper', path: 'components/stepper' },
       { label: 'Tabs', path: 'components/tabs' },
     ],
   },
@@ -79,6 +83,7 @@ const COMPONENT_NAV_GROUPS: readonly NavGroup[] = [
     items: [
       { label: 'Alert', path: 'components/alert' },
       { label: 'Dialog', path: 'components/dialog' },
+      { label: 'Empty State', path: 'components/empty-state' },
       { label: 'Spinner', path: 'components/spinner' },
       { label: 'Toast', path: 'components/toast' },
       { label: 'Tooltip', path: 'components/tooltip' },

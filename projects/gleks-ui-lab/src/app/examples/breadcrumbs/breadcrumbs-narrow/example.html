@@ -1,0 +1,11 @@
+<div style="max-width: 16rem">
+  <gog-breadcrumbs>
+    @for (crumb of trail; track crumb; let last = $last) {
+      @if (last) {
+        <span *gogBreadcrumb>{{ crumb }}</span>
+      } @else {
+        <a *gogBreadcrumb routerLink="/components/breadcrumbs">{{ crumb }}</a>
+      }
+    }
+  </gog-breadcrumbs>
+</div>

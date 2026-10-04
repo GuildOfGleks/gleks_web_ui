@@ -1,0 +1,10 @@
+@for (size of sizes; track size) {
+  <div>
+    <span>{{ size }}</span>
+    <gog-breadcrumbs [size]="size">
+      <a *gogBreadcrumb routerLink="/">Home</a>
+      <a *gogBreadcrumb routerLink="/components/breadcrumbs">Components</a>
+      <span *gogBreadcrumb>Breadcrumbs</span>
+    </gog-breadcrumbs>
+  </div>
+}

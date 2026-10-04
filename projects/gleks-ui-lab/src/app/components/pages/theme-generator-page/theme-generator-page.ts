@@ -13,6 +13,13 @@ import {
   AutocompleteComponent,
   AvatarComponent,
   AvatarGroupComponent,
+  BreadcrumbsComponent,
+  EmptyStateComponent,
+  FileUploadComponent,
+  GogBreadcrumbDirective,
+  RatingComponent,
+  StepperComponent,
+  type GogStep,
   GogBadgeDirective,
   ButtonComponent,
   ButtonToggleGroupComponent,
@@ -101,6 +108,12 @@ interface FoundationGroupView {
     AutocompleteComponent,
     AvatarComponent,
     AvatarGroupComponent,
+    BreadcrumbsComponent,
+    EmptyStateComponent,
+    FileUploadComponent,
+    GogBreadcrumbDirective,
+    RatingComponent,
+    StepperComponent,
     GogBadgeDirective,
     ButtonComponent,
     ButtonToggleGroupComponent,
@@ -246,6 +259,11 @@ export class ThemeGeneratorPage {
   protected readonly tableRows = PREVIEW_TABLE_ROWS;
   protected readonly scrollPreviewLines = PREVIEW_SCROLL_LINES;
   protected readonly previewToast = PREVIEW_TOAST;
+  protected readonly stepperSteps: readonly GogStep[] = [
+    { label: 'Account', state: 'complete' },
+    { label: 'Address' },
+    { label: 'Review' },
+  ];
   protected readonly today = new Date();
 
   constructor() {

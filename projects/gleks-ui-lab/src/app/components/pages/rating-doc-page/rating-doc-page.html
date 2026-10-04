@@ -1,0 +1,124 @@
+<div class="rating-doc">
+  <header class="rating-doc__hero">
+    <p class="rating-doc__eyebrow">gog-rating</p>
+    <h1 class="rating-doc__title font-heading">Rating <app-since version="21.18.0" /></h1>
+    <p class="rating-doc__lead">
+      A score out of a few stars, to give or to show. A row of star icons is five tab stops with no
+      names; what it is, is one choice out of five. Interactive, the stars are drawn over native
+      radios, so the keyboard and the announcement come from the platform. Read-only, it is a
+      picture with a number in it, named in words.
+    </p>
+  </header>
+
+  <section class="doc-section">
+    <h2 id="overview" class="doc-section__title font-heading">Overview</h2>
+    <app-markdown [markdown]="importSnippet" />
+
+    <p class="doc-section__intro">
+      Bind the value two-way to give a rating; set <code>readonly</code> to show one:
+    </p>
+    <div class="demo-card">
+      <app-demo [component]="examples.overview" [source]="sources.ratingOverview" layout="fields" />
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Sizes</h3>
+      <p class="demo-card__meta">
+        Stars of 16 to 32px, interactive beside read-only. The pressable box around a star never
+        falls under 24x24, whatever the theme's density does to the star.
+      </p>
+      <app-demo [component]="examples.sizes" [source]="sources.ratingSizes" layout="rows" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Read-only, fractional values</h3>
+      <p class="demo-card__meta">
+        The value may be fractional. The stars draw to the nearest half — the precision an eye can
+        read off a star — and the accessible name keeps the real value: "Rated 3.7 out of 5".
+        <code>null</code> is "Not rated". A half star is mirrored under <code>dir="rtl"</code>.
+      </p>
+      <app-demo [component]="examples.readonly" [source]="sources.ratingReadonly" layout="rows" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">max and clearable</h3>
+      <p class="demo-card__meta">
+        <code>max</code> sets how many stars. With <code>clearable</code>, a press on the chosen
+        star — or Space on it — clears the rating to <code>null</code>, which native radios cannot
+        do; without it, a rating once given can only change. Hover previews the score a press would
+        give.
+      </p>
+      <app-demo
+        [component]="examples.clearable"
+        [source]="sources.ratingClearable"
+        layout="fields"
+      />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">States</h3>
+      <p class="demo-card__meta">Default, with an error, and disabled.</p>
+      <app-demo [component]="examples.states" [source]="sources.ratingStates" layout="fields" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Forms</h3>
+      <p class="demo-card__meta">
+        A <code>ControlValueAccessor</code> holding a <code>number | null</code>, with
+        <code>errorDisplay</code> and <code>GOG_CONFIG.control.size</code> like every field.
+      </p>
+      <app-demo [component]="examples.forms" [source]="sources.ratingForms" layout="fields" />
+    </article>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="accessibility" class="doc-section__title font-heading">Accessibility</h2>
+    <p class="doc-section__intro">
+      Interactive, a radio group; read-only, an image whose name is the score.
+    </p>
+    <ul class="doc-section__intro">
+      <li>
+        <strong>One tab stop</strong> — a <code>radiogroup</code> named by <code>label</code> (or
+        <code>ariaLabel</code>); Tab enters it on the chosen star and the arrow keys move the
+        rating.
+      </li>
+      <li>
+        <strong>Named stars</strong> — each radio is "3 stars"
+        (<code>GOG_CONFIG.labels.ratingStar</code>), read with its position: "3 stars, 3 of 5".
+      </li>
+      <li>
+        <strong>Clearing from the keyboard</strong> — with <code>clearable</code>, Space on the
+        chosen star clears it, and Space again chooses it back.
+      </li>
+      <li>
+        <strong>Read-only</strong> — one <code>role="img"</code>, named "Rated 4.7 out of 5"
+        (<code>ratingValue</code>), with the <code>label</code> in front when there is one. Use it
+        for a displayed average, not <code>disabled</code>.
+      </li>
+    </ul>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
+
+    <h3 class="doc-section__subtitle">gog-rating inputs</h3>
+    <app-api-table [rows]="ratingInputs" kind="inputs" />
+  </section>
+
+  <app-global-config-note component="rating" />
+
+  <section class="doc-section">
+    <h2 id="styling" class="doc-section__title font-heading">Styling Tokens</h2>
+    <p class="doc-section__intro">
+      Every CSS custom property the rating paints with. Override any of them — on a single instance,
+      a subtree, or a theme — to restyle it. See the
+      <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
+      <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
+    </p>
+    <app-api-table [rows]="styleTokens" kind="tokens" />
+  </section>
+</div>

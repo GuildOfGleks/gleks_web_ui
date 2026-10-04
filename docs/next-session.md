@@ -9,11 +9,11 @@ empty. A change that would remove or rename public API now waits for 22.0.0 behi
 comparison page's own column was re-measured against 21.17.0 (131.9 KB gzipped for the whole
 library; Material and PrimeNG still at their 2026-09-13 figures).
 
-**21.18.0 is built and `planned`, waiting for the owner to publish it** (2026-10-04):
-`gog-breadcrumbs` with `*gogBreadcrumb`, `gog-stepper`, `gog-file-upload`, `gog-rating` and `gog-empty-state` (`docs/breadcrumbs.md`, `docs/stepper.md`,
-`docs/file-upload.md`, `docs/rating.md`, `docs/empty-state.md`) — one minor carrying several components. Additive only, so
-`check:install` is not triggered. Once it is on npm, `docs/lab-after-publish.md`'s 21.18.0 section
-is the lab's work. Gaps' unbuilt-component list is done; one follow-up from it is filed in `docs/backlog.md` (`gog-table`'s empty row taking a `gog-empty-state`). The two
+**21.18.0 is released and the lab is caught up with it** (2026-10-04): five components in one
+minor — `gog-breadcrumbs`, `gog-stepper`, `gog-file-upload`, `gog-rating`, `gog-empty-state` — each
+with a lab page, and the comparison re-measured (142.2 KB gzipped for the whole library, 1.08×
+smaller than four Material components; the gap keeps narrowing as the catalogue grows, and the page
+says so). Gaps' unbuilt-component list is done; one follow-up from it is filed in `docs/backlog.md` (`gog-table`'s empty row taking a `gog-empty-state`). The two
 Defects left need a real screen reader — the owner's to check.
 
 **Deferred by the owner on 2026-09-13 — do not start these without asking:**

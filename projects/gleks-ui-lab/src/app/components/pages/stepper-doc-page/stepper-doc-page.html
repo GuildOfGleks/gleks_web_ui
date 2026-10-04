@@ -1,0 +1,146 @@
+<div class="stepper-doc">
+  <header class="stepper-doc__hero">
+    <p class="stepper-doc__eyebrow">gog-stepper</p>
+    <h1 class="stepper-doc__title font-heading">Stepper <app-since version="21.18.0" /></h1>
+    <p class="stepper-doc__lead">
+      Where a reader is in a multi-step task — an indicator, not a wizard. It shows the steps, says
+      each one's state in words a screen reader hears, and works out which steps can be reached; the
+      app renders each step's content and decides when a step is complete.
+    </p>
+  </header>
+
+  <section class="doc-section">
+    <h2 id="overview" class="doc-section__title font-heading">Overview</h2>
+    <app-markdown [markdown]="importSnippet" />
+
+    <p class="doc-section__intro">
+      Give it the steps as data and bind the active one. A press on a reachable step moves it:
+    </p>
+    <div class="demo-card">
+      <app-demo [component]="examples.overview" [source]="sources.stepperOverview" layout="wide" />
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Every state at once</h3>
+      <p class="demo-card__meta">
+        Complete (the check), error (the danger glyph), current (the accent ring), optional (the
+        word under the label), disabled, and pending. Each step's <code>state</code>,
+        <code>optional</code> and <code>disabled</code> live in your <code>GogStep</code> data.
+      </p>
+      <app-demo [component]="examples.states" [source]="sources.stepperStates" layout="wide" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">orientation="vertical"</h3>
+      <p class="demo-card__meta">
+        The same steps stacked, the connector running down between indicators. A description sits
+        under each label.
+      </p>
+      <app-demo [component]="examples.vertical" [source]="sources.stepperVertical" layout="block" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Sizes</h3>
+      <p class="demo-card__meta">
+        Five text steps; the indicator is a ratio of the label's size, so nothing else needs a value
+        per size.
+      </p>
+      <app-demo [component]="examples.sizes" [source]="sources.stepperSizes" layout="rows" />
+    </article>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="reachability" class="doc-section__title font-heading">Reachability</h2>
+    <p class="doc-section__intro">
+      In a linear flow, which steps are buttons follows from the steps’ states — getting that wrong
+      in markup either traps a reader or lets them skip a required step.
+    </p>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">A flow you can walk</h3>
+      <p class="demo-card__meta">
+        The stepper reacts to your data. Marking a step complete opens the way forward when
+        <code>linear</code> is on: a reader may go back to any step and forward only as far as the
+        steps before are complete or optional. Switch <code>linear</code> off and every step that is
+        not disabled can be reached.
+      </p>
+      <app-demo [component]="examples.flow" [source]="sources.stepperFlow" layout="wide" />
+    </article>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="layout" class="doc-section__title font-heading">Layout</h2>
+    <p class="doc-section__intro">
+      Direction and width. The row mirrors under RTL by itself; and a horizontal row has a minimum
+      width, which is a decision rather than a bug — past it, stack the steps.
+    </p>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Right to left</h3>
+      <p class="demo-card__meta">
+        The row runs from the right under <code>dir="rtl"</code>, connectors included.
+      </p>
+      <app-demo [component]="examples.rtl" [source]="sources.stepperRtl" layout="wide" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">A narrow container</h3>
+      <p class="demo-card__meta">
+        A label wraps only at its spaces and a step is never narrower than its longest word; the
+        connectors give way first. Past that a horizontal row overflows its container — six steps do
+        not fit 14rem side by side. <code>orientation="vertical"</code> fits any width.
+      </p>
+      <app-demo [component]="examples.narrow" [source]="sources.stepperNarrow" layout="block" />
+    </article>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="accessibility" class="doc-section__title font-heading">Accessibility</h2>
+    <p class="doc-section__intro">
+      A stepper's whole message is visual — filled, ringed, red, grey — and the component says it.
+    </p>
+    <ul class="doc-section__intro">
+      <li>
+        <strong>List</strong> — an ordered list named "Progress" (<code>ariaLabel</code>, or
+        <code>GOG_CONFIG.labels.stepper</code>).
+      </li>
+      <li><strong>Current step</strong> — <code>aria-current="step"</code>.</li>
+      <li>
+        <strong>State in words</strong> — visually hidden text after the label: "Account,
+        completed", "Card, has an error" (<code>stepCompleted</code>, <code>stepError</code>). The
+        number or glyph in the indicator is <code>aria-hidden</code>; it is drawn, not read.
+      </li>
+      <li>
+        <strong>Unreachable steps are text</strong>, not disabled buttons — a keyboard reader would
+        still have to Tab past a disabled button. Reachable steps are buttons.
+      </li>
+    </ul>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
+
+    <h3 class="doc-section__subtitle">gog-stepper inputs</h3>
+    <app-api-table [rows]="stepperInputs" kind="inputs" />
+
+    <h3 class="doc-section__subtitle">GogStep</h3>
+    <app-api-table [rows]="stepFields" kind="inputs" />
+  </section>
+
+  <app-global-config-note component="stepper" />
+
+  <section class="doc-section">
+    <h2 id="styling" class="doc-section__title font-heading">Styling Tokens</h2>
+    <p class="doc-section__intro">
+      Every CSS custom property the stepper paints with. Override any of them — on a single
+      instance, a subtree, or a theme — to restyle it. See the
+      <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
+      <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
+    </p>
+    <app-api-table [rows]="styleTokens" kind="tokens" />
+  </section>
+</div>

@@ -1,0 +1,36 @@
+<div>
+  <span>maxItems unset</span>
+  <gog-breadcrumbs>
+    @for (crumb of trail; track crumb; let last = $last) {
+      @if (last) {
+        <span *gogBreadcrumb>{{ crumb }}</span>
+      } @else {
+        <a *gogBreadcrumb routerLink="/components/breadcrumbs">{{ crumb }}</a>
+      }
+    }
+  </gog-breadcrumbs>
+</div>
+<div>
+  <span>[maxItems]="4"</span>
+  <gog-breadcrumbs [maxItems]="4">
+    @for (crumb of trail; track crumb; let last = $last) {
+      @if (last) {
+        <span *gogBreadcrumb>{{ crumb }}</span>
+      } @else {
+        <a *gogBreadcrumb routerLink="/components/breadcrumbs">{{ crumb }}</a>
+      }
+    }
+  </gog-breadcrumbs>
+</div>
+<div>
+  <span>itemsBefore 2, after 1</span>
+  <gog-breadcrumbs [maxItems]="4" [itemsBefore]="2" [itemsAfter]="1">
+    @for (crumb of trail; track crumb; let last = $last) {
+      @if (last) {
+        <span *gogBreadcrumb>{{ crumb }}</span>
+      } @else {
+        <a *gogBreadcrumb routerLink="/components/breadcrumbs">{{ crumb }}</a>
+      }
+    }
+  </gog-breadcrumbs>
+</div>

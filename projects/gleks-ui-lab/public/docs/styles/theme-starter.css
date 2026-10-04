@@ -657,6 +657,207 @@
      stays narrower than a typical pair of initials. */
   --gog-avatar-group-more-initials-ratio: 0.3;
 
+  /* ── Breadcrumbs ───────────────────────────────────────────────────────────
+     The parents are links in the muted colour, the current page is the text colour: the trail is
+     read as context, and the one item that is not a link is the one that says where you are. */
+  --gog-breadcrumbs-font-family: var(--gog-font-body);
+  /* A single line of labels: the tight end of the leading scale. */
+  --gog-breadcrumbs-line-height: var(--gog-line-height-snug);
+  --gog-breadcrumbs-gap: var(--gog-space-8);
+  --gog-breadcrumbs-link-color: var(--gog-muted-text-color);
+  --gog-breadcrumbs-link-hover-color: var(--gog-text-color);
+  --gog-breadcrumbs-current-color: var(--gog-text-color);
+  --gog-breadcrumbs-current-font-weight: var(--gog-font-weight-semibold);
+  --gog-breadcrumbs-separator-color: var(--gog-muted-text-color);
+  --gog-breadcrumbs-more-padding-y: var(--gog-space-4);
+  --gog-breadcrumbs-more-padding-x: var(--gog-space-8);
+  --gog-breadcrumbs-more-radius: var(--gog-radius);
+  --gog-breadcrumbs-more-hover-bg: var(--gog-hover-color);
+  --gog-breadcrumbs-focus-ring-width: var(--gog-focus-ring-width);
+  --gog-breadcrumbs-focus-ring-offset: var(--gog-focus-ring-offset);
+  --gog-breadcrumbs-focus-ring-color: var(--gog-accent-color);
+  --gog-breadcrumbs-xsm-font-size: var(--gog-text-xs);
+  --gog-breadcrumbs-sm-font-size: var(--gog-text-sm);
+  --gog-breadcrumbs-md-font-size: var(--gog-text-sm);
+  --gog-breadcrumbs-lg-font-size: var(--gog-text-md);
+  --gog-breadcrumbs-slg-font-size: var(--gog-text-lg);
+
+  /* ── Stepper ───────────────────────────────────────────────────────────────
+     An indicator per step, drawn from the step's font size. Done is the accent fill, the current
+     step the accent ring, an error the danger fill; a step not yet reachable is muted. */
+  --gog-stepper-font-family: var(--gog-font-body);
+  /* Label and description are one short block: the tight end of the leading scale. */
+  --gog-stepper-line-height: var(--gog-line-height-snug);
+  --gog-stepper-gap: var(--gog-space-8);
+  --gog-stepper-trigger-padding-y: var(--gog-space-4);
+  --gog-stepper-trigger-padding-x: var(--gog-space-8);
+  --gog-stepper-trigger-radius: var(--gog-radius);
+  --gog-stepper-trigger-hover-bg: var(--gog-hover-color);
+  --gog-stepper-trigger-press-bg: var(--gog-border-color);
+  --gog-stepper-focus-ring-width: var(--gog-focus-ring-width);
+  --gog-stepper-focus-ring-offset: var(--gog-focus-ring-offset);
+  --gog-stepper-focus-ring-color: var(--gog-accent-color);
+  /* The number at the label's size with half an em clear on every side. */
+  --gog-stepper-indicator-ratio: 2;
+  --gog-stepper-indicator-border-width: var(--gog-control-border-width);
+  --gog-stepper-indicator-border-color: var(--gog-control-boundary-color);
+  --gog-stepper-indicator-bg: transparent;
+  --gog-stepper-indicator-color: var(--gog-muted-text-color);
+  --gog-stepper-indicator-font-weight: var(--gog-font-weight-semibold);
+  --gog-stepper-label-color: var(--gog-text-color);
+  --gog-stepper-description-color: var(--gog-muted-text-color);
+  /* One step down the type scale from the label at md (--gog-text-xs / --gog-text-sm), as a ratio so
+     it follows every size. */
+  --gog-stepper-description-font-size: 0.857em;
+  /* A short note under a label: single-line in practice, so the label's own tight step. */
+  --gog-stepper-description-line-height: var(--gog-line-height-snug);
+  --gog-stepper-current-color: var(--gog-accent-color);
+  --gog-stepper-current-label-color: var(--gog-text-color);
+  --gog-stepper-current-font-weight: var(--gog-font-weight-semibold);
+  --gog-stepper-complete-bg: var(--gog-accent-color);
+  --gog-stepper-complete-color: var(--gog-accent-text-color, var(--gog-primary-color));
+  --gog-stepper-error-bg: var(--gog-danger-color);
+  --gog-stepper-error-color: var(--gog-danger-text-color);
+  --gog-stepper-error-label-color: var(--gog-danger-color);
+  --gog-stepper-unreachable-color: var(--gog-muted-text-color);
+  --gog-stepper-connector-thickness: var(--gog-control-border-width);
+  --gog-stepper-connector-min-length: var(--gog-space-24);
+  --gog-stepper-connector-color: var(--gog-control-boundary-color);
+  --gog-stepper-connector-done-color: var(--gog-accent-color);
+  --gog-stepper-xsm-font-size: var(--gog-text-xs);
+  --gog-stepper-sm-font-size: var(--gog-text-sm);
+  --gog-stepper-md-font-size: var(--gog-text-sm);
+  --gog-stepper-lg-font-size: var(--gog-text-md);
+  --gog-stepper-slg-font-size: var(--gog-text-lg);
+
+  /* ── File upload ───────────────────────────────────────────────────────────
+     A dashed surface around an invisible file input. The dash is the control boundary colour, so
+     the zone stays visible at 3:1; hover and a drag over it tint it with the accent. */
+  --gog-file-upload-font-family: var(--gog-font-body);
+  /* Prompt, file names: short lines of text. */
+  --gog-file-upload-line-height: var(--gog-line-height-snug);
+  --gog-file-upload-gap: var(--gog-space-8);
+  --gog-file-upload-label-font-family: var(--gog-field-label-font-family);
+  --gog-file-upload-label-font-size: var(--gog-field-label-font-size);
+  --gog-file-upload-label-line-height: var(--gog-field-label-line-height);
+  --gog-file-upload-label-font-weight: var(--gog-field-label-font-weight);
+  --gog-file-upload-label-color: var(--gog-field-label-color);
+  --gog-file-upload-label-text-transform: var(--gog-field-label-text-transform);
+  --gog-file-upload-label-letter-spacing: var(--gog-field-label-letter-spacing);
+  --gog-file-upload-zone-gap: var(--gog-space-4);
+  --gog-file-upload-zone-border-width: var(--gog-control-border-width);
+  --gog-file-upload-zone-border-color: var(--gog-control-boundary-color);
+  --gog-file-upload-zone-radius: var(--gog-radius);
+  --gog-file-upload-zone-bg: transparent;
+  --gog-file-upload-zone-active-border-color: var(--gog-accent-color);
+  --gog-file-upload-zone-active-bg: var(--gog-hover-color);
+  --gog-file-upload-transition-duration: var(--gog-duration-fast);
+  --gog-file-upload-prompt-color: var(--gog-text-color);
+  /* Marked by its underline and weight, not a colour: accent-dim fell to 4.29:1 on the hover tint in
+     one-dark, and the text colour clears every ground. */
+  --gog-file-upload-browse-color: var(--gog-text-color);
+  --gog-file-upload-browse-font-weight: var(--gog-font-weight-semibold);
+  --gog-file-upload-icon-color: var(--gog-muted-text-color);
+  /* Of the prompt's own size, as the basis the glyph is drawn from (1.2em of it). */
+  --gog-file-upload-icon-font-size: 1.5em;
+  /* A glyph in its own box: leading would push it off centre. */
+  --gog-file-upload-icon-line-height: var(--gog-line-height-none);
+  --gog-file-upload-hint-color: var(--gog-muted-text-color);
+  --gog-file-upload-hint-font-size: var(--gog-text-xs);
+  --gog-file-upload-hint-line-height: var(--gog-line-height-snug);
+  --gog-file-upload-list-gap: var(--gog-space-4);
+  --gog-file-upload-file-gap: var(--gog-space-8);
+  --gog-file-upload-name-color: var(--gog-text-color);
+  --gog-file-upload-remove-radius: var(--gog-radius);
+  --gog-file-upload-error-color: var(--gog-danger-color);
+  --gog-file-upload-focus-ring-width: var(--gog-focus-ring-width);
+  --gog-file-upload-focus-ring-offset: var(--gog-focus-ring-offset);
+  --gog-file-upload-focus-ring-color: var(--gog-accent-color);
+  --gog-file-upload-disabled-opacity: var(--gog-disabled-opacity);
+  --gog-file-upload-xsm-font-size: var(--gog-text-xs);
+  --gog-file-upload-sm-font-size: var(--gog-text-sm);
+  --gog-file-upload-md-font-size: var(--gog-text-sm);
+  --gog-file-upload-lg-font-size: var(--gog-text-md);
+  --gog-file-upload-slg-font-size: var(--gog-text-lg);
+  --gog-file-upload-xsm-zone-padding: var(--gog-space-12);
+  --gog-file-upload-sm-zone-padding: var(--gog-space-16);
+  --gog-file-upload-md-zone-padding: var(--gog-space-24);
+  --gog-file-upload-lg-zone-padding: var(--gog-space-32);
+  --gog-file-upload-slg-zone-padding: var(--gog-space-40);
+
+  /* ── Rating ────────────────────────────────────────────────────────────────
+     Stars over native radios. An empty star's outline is the control boundary colour, so there is
+     visibly a star to press at 3:1; a filled one is the accent. */
+  --gog-rating-font-family: var(--gog-font-body);
+  --gog-rating-gap: var(--gog-space-8);
+  --gog-rating-label-font-family: var(--gog-field-label-font-family);
+  --gog-rating-label-font-size: var(--gog-field-label-font-size);
+  --gog-rating-label-line-height: var(--gog-field-label-line-height);
+  --gog-rating-label-font-weight: var(--gog-field-label-font-weight);
+  --gog-rating-label-color: var(--gog-field-label-color);
+  --gog-rating-label-text-transform: var(--gog-field-label-text-transform);
+  --gog-rating-label-letter-spacing: var(--gog-field-label-letter-spacing);
+  /* The least room around a star; the component raises it to keep a 24x24 target. */
+  --gog-rating-star-padding: var(--gog-space-4);
+  --gog-rating-star-radius: var(--gog-radius);
+  /* A glyph in its own box: leading would push it off centre. */
+  --gog-rating-glyph-line-height: var(--gog-line-height-none);
+  --gog-rating-empty-color: var(--gog-control-boundary-color);
+  --gog-rating-fill-color: var(--gog-accent-color);
+  --gog-rating-focus-ring-width: var(--gog-focus-ring-width);
+  --gog-rating-focus-ring-offset: var(--gog-focus-ring-offset);
+  --gog-rating-focus-ring-color: var(--gog-accent-color);
+  --gog-rating-error-color: var(--gog-danger-color);
+  --gog-rating-error-font-size: var(--gog-text-xs);
+  --gog-rating-error-line-height: var(--gog-line-height-snug);
+  --gog-rating-disabled-opacity: var(--gog-disabled-opacity);
+  --gog-rating-xsm-star-size: var(--gog-space-16);
+  --gog-rating-sm-star-size: var(--gog-space-20);
+  --gog-rating-md-star-size: var(--gog-space-24);
+  --gog-rating-lg-star-size: var(--gog-space-28);
+  --gog-rating-slg-star-size: var(--gog-space-32);
+
+  /* ── Empty state ───────────────────────────────────────────────────────────
+     What a region says when it has nothing to show: a muted icon, a title, a description at a
+     readable measure, and actions. No border or fill — it sits in a surface that has one. */
+  --gog-empty-state-font-family: var(--gog-font-body);
+  --gog-empty-state-gap: var(--gog-space-12);
+  --gog-empty-state-message-gap: var(--gog-space-4);
+  /* A description reads as a paragraph, not one line across a wide table. */
+  --gog-empty-state-measure: 48ch;
+  --gog-empty-state-icon-color: var(--gog-muted-text-color);
+  /* A glyph in its own box: leading would push it off centre. */
+  --gog-empty-state-icon-line-height: var(--gog-line-height-none);
+  --gog-empty-state-heading-color: var(--gog-text-color);
+  --gog-empty-state-heading-font-weight: var(--gog-font-weight-semibold);
+  /* A title of a few words: the tight end of the leading scale. */
+  --gog-empty-state-heading-line-height: var(--gog-line-height-snug);
+  --gog-empty-state-description-color: var(--gog-muted-text-color);
+  --gog-empty-state-description-line-height: var(--gog-line-height-relaxed);
+  --gog-empty-state-actions-gap: var(--gog-space-8);
+  /* The actions sit a step further from the text than the text's own gap. */
+  --gog-empty-state-actions-offset: var(--gog-space-4);
+  --gog-empty-state-xsm-padding: var(--gog-space-12);
+  --gog-empty-state-sm-padding: var(--gog-space-16);
+  --gog-empty-state-md-padding: var(--gog-space-24);
+  --gog-empty-state-lg-padding: var(--gog-space-32);
+  --gog-empty-state-slg-padding: var(--gog-space-40);
+  --gog-empty-state-xsm-icon-size: var(--gog-space-24);
+  --gog-empty-state-sm-icon-size: var(--gog-space-32);
+  --gog-empty-state-md-icon-size: var(--gog-space-40);
+  --gog-empty-state-lg-icon-size: var(--gog-space-48);
+  --gog-empty-state-slg-icon-size: calc(var(--gog-space-32) * 2);
+  --gog-empty-state-xsm-heading-font-size: var(--gog-text-sm);
+  --gog-empty-state-sm-heading-font-size: var(--gog-text-md);
+  --gog-empty-state-md-heading-font-size: var(--gog-text-lg);
+  --gog-empty-state-lg-heading-font-size: var(--gog-text-xl);
+  --gog-empty-state-slg-heading-font-size: var(--gog-text-2xl);
+  --gog-empty-state-xsm-description-font-size: var(--gog-text-xs);
+  --gog-empty-state-sm-description-font-size: var(--gog-text-sm);
+  --gog-empty-state-md-description-font-size: var(--gog-text-sm);
+  --gog-empty-state-lg-description-font-size: var(--gog-text-md);
+  --gog-empty-state-slg-description-font-size: var(--gog-text-lg);
+
   /* ── Collapsible ───────────────────────────────────────────────────────────
      No owned markup: the `.gog-collapsible__*` rules live in utilities.css, because they style content
      the consumer projects, which a scoped stylesheet cannot reach. */

@@ -1,0 +1,145 @@
+<div class="breadcrumbs-doc">
+  <header class="breadcrumbs-doc__hero">
+    <p class="breadcrumbs-doc__eyebrow">gog-breadcrumbs</p>
+    <h1 class="breadcrumbs-doc__title font-heading">Breadcrumbs <app-since version="21.18.0" /></h1>
+    <p class="breadcrumbs-doc__lead">
+      Where the current page sits, as a trail of your own links. Every part of a correct trail is
+      invisible — the named landmark, the list, <code>aria-current="page"</code> on the last item,
+      separators a screen reader does not read — so nothing on screen says when a hand-built one is
+      missing them. The links stay yours: <code>routerLink</code>, <code>href</code> and anything
+      else on them keep working.
+    </p>
+  </header>
+
+  <section class="doc-section">
+    <h2 id="overview" class="doc-section__title font-heading">Overview</h2>
+    <app-markdown [markdown]="importSnippet" />
+
+    <p class="doc-section__intro">
+      Mark each item with the structural <code>*gogBreadcrumb</code> directive. The last item is the
+      current page — usually a <code>&lt;span&gt;</code>, since it does not link anywhere:
+    </p>
+    <div class="demo-card">
+      <app-demo
+        [component]="examples.overview"
+        [source]="sources.breadcrumbsOverview"
+        layout="block"
+      />
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Sizes</h3>
+      <p class="demo-card__meta">
+        Five text steps. The parents are links in the muted colour, the current page is the text
+        colour and semibold; hover a link for the underline, Tab to it for the ring.
+      </p>
+      <app-demo [component]="examples.sizes" [source]="sources.breadcrumbsSizes" layout="rows" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Collapsing a long trail</h3>
+      <p class="demo-card__meta">
+        Past <code>maxItems</code> the middle becomes a <code>…</code> button;
+        <code>itemsBefore</code> and <code>itemsAfter</code> say how many stay either side (one and
+        two by default — the current page and its parent). Press the <code>…</code> from the
+        keyboard: the button is removed by its own press, so focus moves to the first link it
+        revealed rather than falling to <code>&lt;body&gt;</code>. A trail that would hide nothing
+        does not collapse.
+      </p>
+      <app-demo
+        [component]="examples.collapse"
+        [source]="sources.breadcrumbsCollapse"
+        layout="rows"
+      />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">separatorIcon</h3>
+      <p class="demo-card__meta">
+        Any icon name, built-in or registered with <code>provideGogIcons</code>. It is drawn, not
+        written, so it never reaches a screen reader.
+      </p>
+      <app-demo
+        [component]="examples.separator"
+        [source]="sources.breadcrumbsSeparator"
+        layout="block"
+      />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Right to left</h3>
+      <p class="demo-card__meta">
+        The separator points from a parent to its child, which is leftwards under
+        <code>dir="rtl"</code>. Nothing to set — the trail reads the direction it is in.
+      </p>
+      <app-demo [component]="examples.rtl" [source]="sources.breadcrumbsRtl" layout="block" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">A narrow container</h3>
+      <p class="demo-card__meta">
+        A long trail wraps between items rather than overflowing; <code>maxItems</code> is the
+        answer when it should stay on one line.
+      </p>
+      <app-demo [component]="examples.narrow" [source]="sources.breadcrumbsNarrow" layout="block" />
+    </article>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="accessibility" class="doc-section__title font-heading">Accessibility</h2>
+    <p class="doc-section__intro">
+      A trail a screen reader can use is mostly structure that nothing on screen shows.
+    </p>
+    <ul class="doc-section__intro">
+      <li>
+        <strong>Landmark</strong> — a <code>&lt;nav&gt;</code> named "Breadcrumb", from
+        <code>ariaLabel</code> or <code>GOG_CONFIG.labels.breadcrumbs</code>, so it appears in a
+        screen reader's landmark list beside the main navigation.
+      </li>
+      <li>
+        <strong>List</strong> — an ordered list, one <code>&lt;li&gt;</code> per item, so the reader
+        hears how many levels deep the page is.
+      </li>
+      <li>
+        <strong>Current page</strong> — the trail sets <code>aria-current="page"</code> on your last
+        element, and moves it when the last item changes. Leave it out of the link: a link to the
+        page you are on is a dead end.
+      </li>
+      <li>
+        <strong>Separators</strong> — <code>aria-hidden</code>; "chevron" between every word is
+        noise.
+      </li>
+      <li>
+        <strong>The … button</strong> — a real button named "Show full path"
+        (<code>GOG_CONFIG.labels.showBreadcrumbs</code>), and focus moves to what it revealed.
+      </li>
+    </ul>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
+
+    <h3 class="doc-section__subtitle">gog-breadcrumbs inputs</h3>
+    <app-api-table [rows]="breadcrumbsInputs" kind="inputs" />
+
+    <h3 class="doc-section__subtitle">Directives</h3>
+    <app-api-table [rows]="breadcrumbsDirectives" kind="directives" />
+  </section>
+
+  <app-global-config-note component="breadcrumbs" />
+
+  <section class="doc-section">
+    <h2 id="styling" class="doc-section__title font-heading">Styling Tokens</h2>
+    <p class="doc-section__intro">
+      Every CSS custom property the breadcrumbs paints with. Override any of them — on a single
+      instance, a subtree, or a theme — to restyle it. See the
+      <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
+      <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
+    </p>
+    <app-api-table [rows]="styleTokens" kind="tokens" />
+  </section>
+</div>

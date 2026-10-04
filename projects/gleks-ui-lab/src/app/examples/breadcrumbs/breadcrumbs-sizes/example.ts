@@ -1,0 +1,13 @@
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { BreadcrumbsComponent, GogBreadcrumbDirective, type GogSize } from '@guildofgleks/ui';
+
+@Component({
+  selector: 'app-example',
+  imports: [BreadcrumbsComponent, GogBreadcrumbDirective, RouterLink],
+  templateUrl: './example.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class BreadcrumbsSizesExample {
+  protected readonly sizes: readonly GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];
+}

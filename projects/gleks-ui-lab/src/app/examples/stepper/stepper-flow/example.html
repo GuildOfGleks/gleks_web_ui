@@ -1,0 +1,9 @@
+<gog-stepper [steps]="steps()" [linear]="linear()" [(activeIndex)]="active" />
+<div>
+  <gog-button variant="secondary" [disabled]="active() === 0" (gogClick)="active.set(active() - 1)">
+    Back
+  </gog-button>
+  <gog-button (gogClick)="complete()">Mark "{{ steps()[active()].label }}" complete</gog-button>
+  <gog-button variant="ghost" (gogClick)="reset()">Start over</gog-button>
+  <gog-toggle label="linear" [(checked)]="linear" />
+</div>

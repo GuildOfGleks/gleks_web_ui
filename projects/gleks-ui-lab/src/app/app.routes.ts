@@ -102,6 +102,37 @@ export const routes: Routes = [
       import('./components/pages/avatar-doc-page/avatar-doc-page').then((m) => m.AvatarDocPage),
   },
   {
+    path: 'components/breadcrumbs',
+    loadComponent: () =>
+      import('./components/pages/breadcrumbs-doc-page/breadcrumbs-doc-page').then(
+        (m) => m.BreadcrumbsDocPage,
+      ),
+  },
+  {
+    path: 'components/stepper',
+    loadComponent: () =>
+      import('./components/pages/stepper-doc-page/stepper-doc-page').then((m) => m.StepperDocPage),
+  },
+  {
+    path: 'components/file-upload',
+    loadComponent: () =>
+      import('./components/pages/file-upload-doc-page/file-upload-doc-page').then(
+        (m) => m.FileUploadDocPage,
+      ),
+  },
+  {
+    path: 'components/rating',
+    loadComponent: () =>
+      import('./components/pages/rating-doc-page/rating-doc-page').then((m) => m.RatingDocPage),
+  },
+  {
+    path: 'components/empty-state',
+    loadComponent: () =>
+      import('./components/pages/empty-state-doc-page/empty-state-doc-page').then(
+        (m) => m.EmptyStateDocPage,
+      ),
+  },
+  {
     path: 'components/alert',
     loadComponent: () =>
       import('./components/pages/alert-doc-page/alert-doc-page').then((m) => m.AlertDocPage),

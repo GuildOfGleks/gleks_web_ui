@@ -1,0 +1,15 @@
+<div>
+  <gog-rating
+    label="Rate the delivery"
+    errorMessage="Pick a rating"
+    errorDisplay="auto"
+    [formControl]="delivery"
+  />
+  <p>value {{ delivery.value }} · touched {{ delivery.touched }} · valid {{ delivery.valid }}</p>
+</div>
+<div>
+  <gog-button variant="secondary" size="sm" (gogClick)="delivery.markAsTouched()">
+    markAsTouched()
+  </gog-button>
+  <gog-button variant="ghost" size="sm" (gogClick)="delivery.reset()">reset()</gog-button>
+</div>

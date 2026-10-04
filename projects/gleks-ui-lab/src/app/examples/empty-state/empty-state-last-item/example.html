@@ -1,0 +1,16 @@
+<gog-card>
+  <h3 gogCardHeader>Projects</h3>
+  @for (project of projects(); track project; let i = $index) {
+    <p>
+      {{ project }}
+      <gog-button variant="ghost" size="sm" (gogClick)="remove(i)">Remove</gog-button>
+    </p>
+  } @empty {
+    <gog-empty-state iconName="plus" heading="No projects" [headingLevel]="4" size="sm">
+      Projects group the work your team tracks.
+      <div gogEmptyStateActions>
+        <gog-button size="sm" (gogClick)="add()">New project</gog-button>
+      </div>
+    </gog-empty-state>
+  }
+</gog-card>

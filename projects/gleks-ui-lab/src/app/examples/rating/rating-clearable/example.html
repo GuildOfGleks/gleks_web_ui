@@ -1,0 +1,8 @@
+<div>
+  <gog-rating label="Out of ten" [max]="10" size="sm" [(value)]="outOfTen" />
+  <p>value: {{ outOfTen() }}</p>
+</div>
+<div>
+  <gog-rating label="Press the chosen star again" clearable [(value)]="clearable" />
+  <p>value: {{ clearable() }}</p>
+</div>

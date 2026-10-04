@@ -1,0 +1,7 @@
+@for (size of sizes; track size) {
+  <div>
+    <span>{{ size }}</span>
+    <gog-rating ariaLabel="Score" [size]="size" [value]="3" />
+    <gog-rating readonly [size]="size" [value]="3.5" />
+  </div>
+}

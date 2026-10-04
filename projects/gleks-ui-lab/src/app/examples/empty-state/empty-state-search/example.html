@@ -1,0 +1,17 @@
+<gog-inputfield label="Search invoices" [(value)]="query" />
+<gog-card>
+  @if (matches().length) {
+    @for (invoice of matches(); track invoice) {
+      <p>{{ invoice }}</p>
+    }
+  } @else {
+    <gog-empty-state iconName="search" heading="No invoices found" size="sm">
+      Nothing matches "{{ query() }}".
+      <div gogEmptyStateActions>
+        <gog-button variant="secondary" size="sm" (gogClick)="query.set('')"
+          >Clear search</gog-button
+        >
+      </div>
+    </gog-empty-state>
+  }
+</gog-card>

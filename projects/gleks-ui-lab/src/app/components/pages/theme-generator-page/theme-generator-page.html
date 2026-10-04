@@ -114,6 +114,15 @@
     </article>
 
     <article class="gallery__card">
+      <h3 class="gallery__card-title">Breadcrumbs</h3>
+      <gog-breadcrumbs>
+        <a *gogBreadcrumb href="#">Workspace</a>
+        <a *gogBreadcrumb href="#">Projects</a>
+        <span *gogBreadcrumb>Settings</span>
+      </gog-breadcrumbs>
+    </article>
+
+    <article class="gallery__card">
       <h3 class="gallery__card-title">Button</h3>
       <div class="gallery__row">
         <gog-button variant="primary">Primary</gog-button>
@@ -190,6 +199,18 @@
     </article>
 
     <article class="gallery__card">
+      <h3 class="gallery__card-title">Empty State</h3>
+      <gog-empty-state iconName="search" heading="No results" live="off" size="sm">
+        Nothing matches this search.
+      </gog-empty-state>
+    </article>
+
+    <article class="gallery__card">
+      <h3 class="gallery__card-title">File Upload</h3>
+      <gog-file-upload label="Attachments" hint="PDF or images" size="sm" />
+    </article>
+
+    <article class="gallery__card">
       <h3 class="gallery__card-title">Icon</h3>
       <div class="gallery__row">
         <gog-icon name="check" />
@@ -250,6 +271,12 @@
     </article>
 
     <article class="gallery__card">
+      <h3 class="gallery__card-title">Rating</h3>
+      <gog-rating label="Your rating" [value]="3" />
+      <gog-rating readonly [value]="4.5" size="sm" />
+    </article>
+
+    <article class="gallery__card">
       <h3 class="gallery__card-title">Ripple</h3>
       <button type="button" class="gallery__ripple-surface" gogRipple>Click me</button>
     </article>
@@ -292,6 +319,11 @@
     <article class="gallery__card">
       <h3 class="gallery__card-title">Spinner</h3>
       <gog-spinner size="lg" ariaLabel="Loading" />
+    </article>
+
+    <article class="gallery__card">
+      <h3 class="gallery__card-title">Stepper</h3>
+      <gog-stepper [steps]="stepperSteps" [activeIndex]="1" size="sm" />
     </article>
 
     <article class="gallery__card gallery__card--wide">
