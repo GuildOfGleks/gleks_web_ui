@@ -1,0 +1,11 @@
+<gog-tabs ariaLabel="Mailbox">
+  <!-- One template for every header. It renders inside the tab's button: markup only. -->
+  <ng-template gogTabHeader let-tab let-active="active">
+    {{ tab.label() }}
+    @if (tab.label() === 'Inbox') {
+      <gog-tag size="xsm" [variant]="active ? 'info' : 'warning'">12</gog-tag>
+    }
+  </ng-template>
+  <gog-tab label="Inbox"><p>Twelve unread.</p></gog-tab>
+  <gog-tab label="Sent"><p>Sent.</p></gog-tab>
+</gog-tabs>

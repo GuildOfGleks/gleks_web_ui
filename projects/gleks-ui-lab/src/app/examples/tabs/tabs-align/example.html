@@ -1,0 +1,8 @@
+@for (align of aligns; track align) {
+  <p>align: {{ align }}</p>
+  <gog-tabs [align]="align" size="sm" ariaLabel="Account">
+    <gog-tab label="Profile"><p>Profile.</p></gog-tab>
+    <gog-tab label="Billing"><p>Billing.</p></gog-tab>
+    <gog-tab label="Audit" disabled><p>Audit.</p></gog-tab>
+  </gog-tabs>
+}

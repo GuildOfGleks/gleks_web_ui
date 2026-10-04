@@ -1,0 +1,15 @@
+<div>
+  <gog-button variant="outline" size="sm" (gogClick)="activeIndex.set(2)">
+    activeIndex = 2 (disabled)
+  </gog-button>
+  <gog-button variant="outline" size="sm" (gogClick)="activeIndex.set(1)"
+    >activeIndex = 1</gog-button
+  >
+</div>
+<gog-tabs ariaLabel="Account" [(activeIndex)]="activeIndex">
+  <gog-tab label="Profile"><p>Profile.</p></gog-tab>
+  <gog-tab label="Billing"><p>Billing.</p></gog-tab>
+  <gog-tab label="Audit" disabled><p>Audit.</p></gog-tab>
+</gog-tabs>
+
+<p>activeIndex: {{ activeIndex() }}</p>

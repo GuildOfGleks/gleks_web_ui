@@ -1,0 +1,9 @@
+<!-- Each tablist holds an active tab, an inactive one and a disabled one. -->
+@for (size of sizes; track size) {
+  <p>size: {{ size }}</p>
+  <gog-tabs [size]="size" ariaLabel="Account">
+    <gog-tab label="Profile"><p>Profile.</p></gog-tab>
+    <gog-tab label="Billing"><p>Billing.</p></gog-tab>
+    <gog-tab label="Audit" disabled><p>Audit.</p></gog-tab>
+  </gog-tabs>
+}

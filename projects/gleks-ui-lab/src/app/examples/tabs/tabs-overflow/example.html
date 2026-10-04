@@ -1,0 +1,16 @@
+<!-- scrollActiveIntoView on (the default): the chosen tab is centred, no track. -->
+<gog-tabs size="sm" ariaLabel="Month" [activeIndex]="8">
+  @for (month of months; track month) {
+    <gog-tab [label]="month">
+      <p>{{ month }}.</p>
+    </gog-tab>
+  }
+</gog-tabs>
+<!-- Off: a track, shown while the pointer is over the row, reaches what is off-screen. -->
+<gog-tabs size="sm" ariaLabel="Month" [scrollActiveIntoView]="false">
+  @for (month of months; track month) {
+    <gog-tab [label]="month">
+      <p>{{ month }}.</p>
+    </gog-tab>
+  }
+</gog-tabs>

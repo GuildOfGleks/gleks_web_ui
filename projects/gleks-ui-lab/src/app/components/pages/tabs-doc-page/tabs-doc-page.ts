@@ -1,26 +1,20 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import {
-  GogTabContentDirective,
-  GogTabHeaderDirective,
-  GogTabsAlign,
-  TabComponent,
-  TabsComponent,
-  TagComponent,
-} from '@guildofgleks/ui';
-import { CodeTabsComponent } from '../../shared/code-tabs/code-tabs';
+import { ApiTableComponent, type ApiRow } from '../../shared/api-table/api-table';
+import { DemoComponent } from '../../shared/demo/demo';
 import { GlobalConfigNote } from '../../shared/global-config-note/global-config-note';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
-import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
-
-interface ApiRow {
-  readonly name: string;
-  readonly type: string;
-  readonly default: string;
-  readonly description: string;
-  readonly since?: string;
-}
+import { TABS_EXAMPLES } from '../../../examples/tabs/sources.generated';
+import { TabsAlignExample } from '../../../examples/tabs/tabs-align/example';
+import { TabsDisabledIndexExample } from '../../../examples/tabs/tabs-disabled-index/example';
+import { TabsHeaderExample } from '../../../examples/tabs/tabs-header/example';
+import { TabsIconsExample } from '../../../examples/tabs/tabs-icons/example';
+import { TabsLazyExample } from '../../../examples/tabs/tabs-lazy/example';
+import { TabsOverflowExample } from '../../../examples/tabs/tabs-overflow/example';
+import { TabsOverviewExample } from '../../../examples/tabs/tabs-overview/example';
+import { TabsSizesExample } from '../../../examples/tabs/tabs-sizes/example';
+import { TabsVerticalExample } from '../../../examples/tabs/tabs-vertical/example';
 
 const TABS_INPUTS: readonly ApiRow[] = [
   {
@@ -90,13 +84,11 @@ const TABS_OUTPUTS: readonly ApiRow[] = [
   {
     name: 'gogTabChange',
     type: 'number',
-    default: '—',
     description: 'Emitted with the new index when the active tab changes.',
   },
   {
     name: 'activeIndexChange',
     type: 'number',
-    default: '—',
     description: 'The activeIndex model’s change event, for [(activeIndex)].',
   },
 ];
@@ -123,171 +115,48 @@ const TAB_INPUTS: readonly ApiRow[] = [
   },
 ];
 
+const API_SLOTS: readonly ApiRow[] = [
+  {
+    name: 'gogTabHeader',
+    type: '$implicit (the gog-tab), active, disabled, index',
+    description: "On an <ng-template> inside gog-tabs. Replaces every header button's content.",
+  },
+  {
+    name: 'gogTabContent',
+    type: 'none',
+    description:
+      "On an <ng-template> inside a gog-tab. Makes that tab's content lazy — built on first activation, kept alive after.",
+  },
+];
+
 @Component({
   selector: 'app-tabs-doc-page',
-  imports: [
-    TabsComponent,
-    TabComponent,
-    GogTabContentDirective,
-    GogTabHeaderDirective,
-    TagComponent,
-    GlobalConfigNote,
-    MarkdownComponent,
-    CodeTabsComponent,
-    RouterLink,
-    SinceBadgeComponent,
-  ],
+  imports: [ApiTableComponent, DemoComponent, GlobalConfigNote, MarkdownComponent, RouterLink],
   templateUrl: './tabs-doc-page.html',
   styleUrl: './tabs-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TabsDocPage {
-  protected readonly alignments: GogTabsAlign[] = ['start', 'center', 'end', 'stretch'];
-
-  protected readonly activeIndex = signal(0);
-  protected readonly alignIndex = signal(0);
-
-  protected readonly apiInputs = TABS_INPUTS;
-  protected readonly apiOutputs = TABS_OUTPUTS;
+  protected readonly tabsInputs = TABS_INPUTS;
+  protected readonly tabsOutputs = TABS_OUTPUTS;
   protected readonly tabInputs = TAB_INPUTS;
+  protected readonly apiSlots = API_SLOTS;
   protected readonly styleTokens =
     TOKEN_SECTIONS.find((section) => section.id === 'tabs')?.tokens ?? [];
 
+  protected readonly sources = TABS_EXAMPLES;
+  protected readonly examples = {
+    overview: TabsOverviewExample,
+    sizes: TabsSizesExample,
+    align: TabsAlignExample,
+    icons: TabsIconsExample,
+    header: TabsHeaderExample,
+    vertical: TabsVerticalExample,
+    overflow: TabsOverflowExample,
+    disabledIndex: TabsDisabledIndexExample,
+    lazy: TabsLazyExample,
+  };
+
   protected readonly importSnippet =
     "```typescript\nimport { TabComponent, TabsComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [TabsComponent, TabComponent],\n})\n```";
-
-  protected readonly overviewHtml = [
-    '<gog-tabs ariaLabel="Account" [(activeIndex)]="activeIndex">',
-    '  <gog-tab label="Profile">Profile content.</gog-tab>',
-    '  <gog-tab label="Settings" iconName="info">Settings content.</gog-tab>',
-    '  <gog-tab label="Billing" [disabled]="true">Not available.</gog-tab>',
-    '</gog-tabs>',
-  ].join('\n');
-  protected readonly overviewTs = [
-    "import { Component, signal } from '@angular/core';",
-    "import { TabComponent, TabsComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [TabsComponent, TabComponent],',
-    '  template: `',
-    '    <gog-tabs ariaLabel="Account" [(activeIndex)]="activeIndex">',
-    '      <gog-tab label="Profile">Profile content.</gog-tab>',
-    '      <gog-tab label="Settings" iconName="info">Settings content.</gog-tab>',
-    '      <gog-tab label="Billing" [disabled]="true">Not available.</gog-tab>',
-    '    </gog-tabs>',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    '  protected readonly activeIndex = signal(0);',
-    '}',
-  ].join('\n');
-
-  protected readonly lazyHtml = [
-    '<gog-tabs ariaLabel="Reports">',
-    '  <!-- Eager: rendered up front, merely hidden while inactive. Scroll position and',
-    '       half-typed input survive a switch. -->',
-    '  <gog-tab label="Summary">',
-    '    <input placeholder="Type here, switch away, come back" />',
-    '  </gog-tab>',
-    '',
-    '  <!-- Lazy: built on first activation, kept alive after. -->',
-    '  <gog-tab label="Expensive report">',
-    '    <ng-template gogTabContent>',
-    '      <app-expensive-report />',
-    '    </ng-template>',
-    '  </gog-tab>',
-    '</gog-tabs>',
-  ].join('\n');
-  protected readonly lazyTs = [
-    "import { Component } from '@angular/core';",
-    "import { GogTabContentDirective, TabComponent, TabsComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [TabsComponent, TabComponent, GogTabContentDirective],',
-    '  template: `',
-    '    <gog-tabs ariaLabel="Reports">',
-    '      <gog-tab label="Summary">',
-    '        <input placeholder="Type here, switch away, come back" />',
-    '      </gog-tab>',
-    '      <gog-tab label="Expensive report">',
-    '        <ng-template gogTabContent>',
-    '          <app-expensive-report />',
-    '        </ng-template>',
-    '      </gog-tab>',
-    '    </gog-tabs>',
-    '  `,',
-    '})',
-    'export class ExampleComponent {}',
-  ].join('\n');
-
-  protected readonly alignHtml = [
-    '<gog-tabs align="start">…</gog-tabs>',
-    '<gog-tabs align="center">…</gog-tabs>',
-    '<gog-tabs align="end">…</gog-tabs>',
-    '<gog-tabs align="stretch">…</gog-tabs>',
-  ].join('\n');
-  protected readonly alignTs = [
-    "import { Component } from '@angular/core';",
-    "import { GogTabsAlign, TabComponent, TabsComponent } from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [TabsComponent, TabComponent],',
-    '  template: `',
-    '    @for (alignment of alignments; track alignment) {',
-    '      <gog-tabs [align]="alignment">',
-    '        <gog-tab label="One">…</gog-tab>',
-    '        <gog-tab label="Two">…</gog-tab>',
-    '      </gog-tabs>',
-    '    }',
-    '  `,',
-    '})',
-    'export class ExampleComponent {',
-    "  protected readonly alignments: GogTabsAlign[] = ['start', 'center', 'end', 'stretch'];",
-    '}',
-  ].join('\n');
-
-  protected readonly headerSlotHtml = [
-    '<gog-tabs ariaLabel="Inbox">',
-    '  <ng-template gogTabHeader let-tab let-active="active">',
-    '    <span>{{ tab.label() }}</span>',
-    '    @if (active) {',
-    '      <gog-tag variant="info" size="xsm">now</gog-tag>',
-    '    }',
-    '  </ng-template>',
-    '',
-    '  <gog-tab label="Unread">…</gog-tab>',
-    '  <gog-tab label="Archived">…</gog-tab>',
-    '</gog-tabs>',
-  ].join('\n');
-  protected readonly headerSlotTs = [
-    "import { Component } from '@angular/core';",
-    'import {',
-    '  GogTabHeaderDirective,',
-    '  TabComponent,',
-    '  TabsComponent,',
-    '  TagComponent,',
-    "} from '@guildofgleks/ui';",
-    '',
-    '@Component({',
-    "  selector: 'app-example',",
-    '  imports: [TabsComponent, TabComponent, GogTabHeaderDirective, TagComponent],',
-    '  template: `',
-    '    <gog-tabs ariaLabel="Inbox">',
-    '      <ng-template gogTabHeader let-tab let-active="active">',
-    '        <span>{{ tab.label() }}</span>',
-    '        @if (active) {',
-    '          <gog-tag variant="info" size="xsm">now</gog-tag>',
-    '        }',
-    '      </ng-template>',
-    '',
-    '      <gog-tab label="Unread">…</gog-tab>',
-    '      <gog-tab label="Archived">…</gog-tab>',
-    '    </gog-tabs>',
-    '  `,',
-    '})',
-    'export class ExampleComponent {}',
-  ].join('\n');
 }

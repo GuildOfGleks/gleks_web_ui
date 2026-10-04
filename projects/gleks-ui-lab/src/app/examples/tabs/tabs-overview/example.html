@@ -1,0 +1,8 @@
+<gog-tabs ariaLabel="Account" [(activeIndex)]="activeIndex" (gogTabChange)="lastChange.set($event)">
+  <gog-tab label="Profile"><p>Profile content.</p></gog-tab>
+  <gog-tab label="Billing"><p>Billing content.</p></gog-tab>
+  <gog-tab label="Audit" disabled><p>Not available.</p></gog-tab>
+  <gog-tab label="Team"><p>Team content.</p></gog-tab>
+</gog-tabs>
+
+<p>activeIndex: {{ activeIndex() }} · gogTabChange: {{ lastChange() ?? 'none yet' }}</p>

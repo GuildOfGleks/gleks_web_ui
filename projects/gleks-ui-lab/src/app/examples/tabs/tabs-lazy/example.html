@@ -1,0 +1,13 @@
+<gog-tabs ariaLabel="Content">
+  <!-- Eager: built at once, only hidden while inactive, so it keeps what was typed. -->
+  <gog-tab label="Eager">
+    <gog-inputfield label="Draft" placeholder="Type, switch away, come back" />
+  </gog-tab>
+  <gog-tab label="Another"><p>Switch back: the draft is still there.</p></gog-tab>
+  <!-- Lazy: built the first time its tab is shown, then kept. -->
+  <gog-tab label="Lazy">
+    <ng-template gogTabContent>
+      <p>Built on first activation — this was not in the DOM until now.</p>
+    </ng-template>
+  </gog-tab>
+</gog-tabs>
