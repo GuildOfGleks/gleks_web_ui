@@ -1,0 +1,8 @@
+<gog-collapsible [(open)]="open">
+  <button type="button" gogButton variant="outline" gogCollapsibleTrigger>
+    {{ open() ? 'Hide details' : 'Show details' }}
+  </button>
+  <p gogCollapsibleContent>Ships within 2 business days via standard courier.</p>
+</gog-collapsible>
+
+<p>open: {{ open() }}</p>

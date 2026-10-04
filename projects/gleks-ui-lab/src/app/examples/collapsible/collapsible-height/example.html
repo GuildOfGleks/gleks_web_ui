@@ -1,0 +1,11 @@
+<gog-collapsible [(open)]="open">
+  <button type="button" gogButton variant="outline" gogCollapsibleTrigger>
+    Changelog, capped at 6rem
+  </button>
+  <!-- An instance token: the panel stops at 6rem and clips the rest. -->
+  <ul gogCollapsibleContent style="--gog-collapsible-max-height: 6rem">
+    @for (version of versions; track version) {
+      <li>v{{ version }}.0 — fixes and polish.</li>
+    }
+  </ul>
+</gog-collapsible>

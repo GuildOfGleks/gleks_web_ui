@@ -1,0 +1,16 @@
+<!-- The trigger draws its own state from the open signal the page already holds. -->
+<gog-collapsible [(open)]="chevronOpen">
+  <button type="button" gogButton variant="ghost" gogCollapsibleTrigger>
+    Notifications
+    <gog-icon [name]="chevronOpen() ? 'chevron-up' : 'chevron-down'" />
+  </button>
+  <p gogCollapsibleContent>Email digests, push alerts, weekly summary.</p>
+</gog-collapsible>
+
+<gog-collapsible [(open)]="swapOpen">
+  <button type="button" gogButton variant="ghost" gogCollapsibleTrigger>
+    <gog-icon [name]="swapOpen() ? 'minus' : 'plus'" />
+    {{ swapOpen() ? 'Hide diagnostics' : 'Show diagnostics' }}
+  </button>
+  <p gogCollapsibleContent>Last check: all systems nominal, p99 118 ms.</p>
+</gog-collapsible>

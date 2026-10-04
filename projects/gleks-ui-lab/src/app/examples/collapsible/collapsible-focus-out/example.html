@@ -1,0 +1,9 @@
+<gog-collapsible [open]="open()" (openChange)="onOpenChange($event)" collapseOnFocusOut>
+  <button type="button" gogButton variant="outline" gogCollapsibleTrigger>Quick links</button>
+  <p gogCollapsibleContent>
+    Plain text in the content, then two links:
+    <a href="#overview">Billing</a> · <a href="#overview">Team</a>
+  </p>
+</gog-collapsible>
+
+<p>open: {{ open() }} · closed by focus leaving: {{ closes() }}</p>

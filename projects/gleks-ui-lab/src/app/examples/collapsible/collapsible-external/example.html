@@ -1,0 +1,14 @@
+<div>
+  <!-- No gogCollapsibleTrigger: wiring aria-expanded onto these is the page's job. -->
+  <gog-button variant="outline" size="sm" [ariaExpanded]="open()" (gogClick)="open.set(true)">
+    Open
+  </gog-button>
+  <gog-button variant="outline" size="sm" [ariaExpanded]="open()" (gogClick)="open.set(false)">
+    Close
+  </gog-button>
+</div>
+<gog-collapsible [(open)]="open">
+  <p gogCollapsibleContent>Opened from outside.</p>
+</gog-collapsible>
+
+<p>open: {{ open() }}</p>

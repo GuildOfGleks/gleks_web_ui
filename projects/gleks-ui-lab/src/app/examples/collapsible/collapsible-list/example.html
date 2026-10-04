@@ -1,0 +1,11 @@
+<div>
+  <!-- Each item holds its own state, so several can be open at once. -->
+  @for (item of faq(); track item.id) {
+    <gog-collapsible [open]="item.open" (openChange)="setOpen(item.id, $event)">
+      <button type="button" gogButton variant="ghost" gogCollapsibleTrigger>
+        {{ item.title }}
+      </button>
+      <p gogCollapsibleContent>{{ item.body }}</p>
+    </gog-collapsible>
+  }
+</div>

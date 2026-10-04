@@ -1,0 +1,6 @@
+<gog-collapsible [(open)]="open">
+  <button type="button" gogButton variant="outline" gogCollapsibleTrigger>Regional</button>
+  <div gogCollapsibleContent>
+    <gog-select label="Time zone" [options]="timezones" [(value)]="timezone" />
+  </div>
+</gog-collapsible>
