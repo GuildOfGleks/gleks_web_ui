@@ -61,6 +61,23 @@
       <gog-column field="updated" header="Updated" minWidth="8rem" />
     </gog-table>
 
+    <h3>gogTableEmpty</h3>
+    <p class="table-page__note">
+      With no rows the table shows <code>emptyMessage</code> as text in one cell, and a filter that
+      empties it says nothing to a screen reader. A <code>gogTableEmpty</code> template replaces
+      that cell's content; put a <code>gog-empty-state</code> in it and the emptied table is
+      announced.
+    </p>
+    <gog-table [value]="[]" size="sm" ariaLabel="Invoices" [showRowNumbers]="false">
+      <gog-column field="component" header="Invoice" />
+      <gog-column field="owner" header="Customer" />
+      <ng-template gogTableEmpty>
+        <gog-empty-state iconName="search" heading="No invoices" size="sm">
+          Nothing matches these filters.
+        </gog-empty-state>
+      </ng-template>
+    </gog-table>
+
     <h3>[fullWidth]="false"</h3>
     <p class="table-page__note">The table sizes to its columns instead of its container.</p>
     <gog-table [value]="rows" size="sm" [fullWidth]="false" [showRowNumbers]="false">

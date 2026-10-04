@@ -88,6 +88,25 @@ export class GogColumnHeaderDirective {
 }
 
 /**
+ * What the table shows when it has no rows, in place of `emptyMessage`:
+ *
+ * ```html
+ * <gog-table [value]="orders()">
+ *   <ng-template gogTableEmpty>
+ *     <gog-empty-state iconName="search" heading="No matching orders" size="sm" />
+ *   </ng-template>
+ * </gog-table>
+ * ```
+ *
+ * A `gog-empty-state` here is what makes an emptied table heard: the text of `emptyMessage` sits in
+ * a cell, and a filter that empties the table changes the screen without a word to a screen reader.
+ */
+@Directive({ selector: '[gogTableEmpty]' })
+export class GogTableEmptyDirective {
+  readonly templateRef = inject<TemplateRef<unknown>>(TemplateRef);
+}
+
+/**
  * One column of `gog-table`. Cell and header markup are projected as `gogColumnBody` /
  * `gogColumnHeader` templates inside the column itself, so the column owning them is
  * structural rather than looked up by a matching string.

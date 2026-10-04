@@ -2138,23 +2138,28 @@ the paginator and select — still land wherever the root does.
 | `emptyPlaceholder`            | `string`                         | `'-'` — a cell whose value is null              |
 | `emptyMessage`                | `string \| undefined`            | `'No data'`; via `GOG_CONFIG.labels.tableEmpty` |
 | `ariaLabel`                   | `string \| undefined`            | names the table and its scroll region           |
-| `paginatorPosition`           | `'left'\|'center'\|'right'`      | `'center'`                                      |
-| `totalPosition`               | `'left'\|'right'\|'opposite'`    | `'opposite'`                                    |
-| `loading`                     | `boolean`                        | `false`                                         |
-| `showColumnBorders`           | `boolean`                        | `false`                                         |
-| `stickyHeader`                | `boolean`                        | `false` — pair with `maxHeight`                 |
-| `maxHeight`                   | `string \| null`                 | `null` — any CSS length                         |
-| `size`                        | `GogSize`                        | `'lg'` (row density — not `'md'`)               |
-| `lazy`                        | `boolean`                        | `false` — see below                             |
-| `sort`                        | `GogTableSortEvent \| null`      | `null` — seeds the sort; see below              |
-| `totalRecords`                | `number \| null`                 | `null` — `lazy` only                            |
-| `selectionMode`               | `GogTableSelectionMode`          | `'none'`                                        |
-| `selection`                   | `model<T[]>`                     | `[]` — two-way bindable                         |
-| `dataKey`                     | `string`                         | `''` — row identity field                       |
-| `showSelectionColumn`         | `boolean`                        | `true` (once selection is on)                   |
-| `interactiveRows`             | `boolean`                        | `false`                                         |
-| `selectOnRowClick`            | `boolean`                        | `false` — needs `selectionMode`                 |
-| `virtualize`                  | `boolean`                        | `false` — needs `maxHeight` + `fullWidth`       |
+
+**`<ng-template gogTableEmpty>`** replaces `emptyMessage` when there are no rows. Put a
+`gog-empty-state` in it and a table emptied by a filter is announced, which the plain text cell is
+not. Import `GogTableEmptyDirective` from `@guildofgleks/ui/table`.
+
+| `paginatorPosition` | `'left'\|'center'\|'right'` | `'center'` |
+| `totalPosition` | `'left'\|'right'\|'opposite'` | `'opposite'` |
+| `loading` | `boolean` | `false` |
+| `showColumnBorders` | `boolean` | `false` |
+| `stickyHeader` | `boolean` | `false` — pair with `maxHeight` |
+| `maxHeight` | `string \| null` | `null` — any CSS length |
+| `size` | `GogSize` | `'lg'` (row density — not `'md'`) |
+| `lazy` | `boolean` | `false` — see below |
+| `sort` | `GogTableSortEvent \| null` | `null` — seeds the sort; see below |
+| `totalRecords` | `number \| null` | `null` — `lazy` only |
+| `selectionMode` | `GogTableSelectionMode` | `'none'` |
+| `selection` | `model<T[]>` | `[]` — two-way bindable |
+| `dataKey` | `string` | `''` — row identity field |
+| `showSelectionColumn` | `boolean` | `true` (once selection is on) |
+| `interactiveRows` | `boolean` | `false` |
+| `selectOnRowClick` | `boolean` | `false` — needs `selectionMode` |
+| `virtualize` | `boolean` | `false` — needs `maxHeight` + `fullWidth` |
 
 Outputs: `gogSortChange: GogTableSortEvent` (`{ field, direction }`, `{ field: '', direction:
 null }` when the third click clears it), `gogPageChange: number` (1-based; **does not fire** on

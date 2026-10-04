@@ -14,6 +14,7 @@ export {
   GogColumn,
   GogColumnBodyDirective,
   GogColumnHeaderDirective,
+  GogTableEmptyDirective,
 } from './column';
 export type { GogColumnBodyContext, GogColumnHeaderContext } from './column';
 export { TableComponent } from './table.component';

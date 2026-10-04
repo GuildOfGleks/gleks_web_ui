@@ -132,8 +132,16 @@
           </tr>
         } @else if (visibleRows().length === 0) {
           <tr>
-            <td class="gog-table__empty" [attr.colspan]="emptyColspan()">
-              {{ resolvedLabels().empty }}
+            <td
+              class="gog-table__empty"
+              [class.gog-table__empty--template]="emptySlot()"
+              [attr.colspan]="emptyColspan()"
+            >
+              @if (emptySlot(); as slot) {
+                <ng-container *ngTemplateOutlet="slot.templateRef" />
+              } @else {
+                {{ resolvedLabels().empty }}
+              }
             </td>
           </tr>
         } @else {

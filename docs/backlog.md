@@ -687,13 +687,11 @@ Each is additive: nothing here breaks an existing consumer, and none blocks anot
   `gog-panel` turned out to be exactly what `gog-card` was for. An `empty state` that cannot
   survive the same question — what does it own that a `<div>` and a class do not — is not ready.
 
-- **`gog-table`'s empty row is plain text, and is not announced.** It renders `emptyMessage` in one
-  cell, so a filter that empties a table changes the screen and says nothing — the problem
-  `gog-empty-state` was built to solve (`docs/empty-state.md` §1–2), one component over. A
-  `gogTableEmpty` template that the row renders, into which an app puts a `gog-empty-state`, would
-  close it; it is new table API, so a minor, and the table lives in `@guildofgleks/ui/table`, which
-  may import the root's empty state by package name. Until then an app can render the empty state
-  in place of the table, as the showcase specimen does. Found while building `gog-empty-state`.
+- ~~**`gog-table`'s empty row is plain text, and is not announced.**~~ **Shipped 2026-10-04 in
+  21.19.0** as `<ng-template gogTableEmpty>`, the shape this entry proposed. The table does not
+  import `gog-empty-state` itself — the template is the app's, so the table stays free of the
+  dependency and anything else can go in the cell. The showcase specimen dropped its workaround (an
+  empty state rendered in place of the table) for it.
 
 - **`gog-chip`'s `avatarUrl` is a bare `<img>`, with none of `gog-avatar`'s fallback.** A broken
   URL in a chip still shows the broken-image glyph. Rendering a `gog-avatar` inside the chip would

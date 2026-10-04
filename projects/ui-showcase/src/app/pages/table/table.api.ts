@@ -2,6 +2,7 @@ import {
   GogColumn,
   GogColumnBodyDirective,
   GogColumnHeaderDirective,
+  GogTableEmptyDirective,
   TableComponent,
 } from '@guildofgleks/ui/table';
 
@@ -87,4 +88,5 @@ export const TABLE_API: readonly DocApi[] = [
     ],
     outputs: [],
   },
+  { type: GogTableEmptyDirective, inputs: [], outputs: [] },
 ];

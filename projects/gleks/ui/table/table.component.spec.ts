@@ -9,7 +9,12 @@ import {
   type GogTableSelectionMode,
   type GogTableSortEvent,
 } from './table.component';
-import { GogColumn, GogColumnBodyDirective, GogColumnHeaderDirective } from './column';
+import {
+  GogColumn,
+  GogColumnBodyDirective,
+  GogColumnHeaderDirective,
+  GogTableEmptyDirective,
+} from './column';
 import { PaginatorComponent, ScrollComponent } from '@guildofgleks/ui';
 import { provideGogConfig, type GogGlobalConfig } from '@guildofgleks/ui/shared';
 
@@ -1607,5 +1612,36 @@ describe('TableComponent — ariaLabel', () => {
     expect(root.querySelector('table')?.getAttribute('aria-label')).toBe('Orders');
     const scroll = fixture.debugElement.query((el) => el.name === 'gog-scroll');
     expect(scroll.componentInstance.ariaLabel()).toBe('Orders');
+  });
+});
+
+describe('TableComponent — gogTableEmpty', () => {
+  @Component({
+    imports: [TableComponent, GogColumn, GogTableEmptyDirective],
+    template: `
+      <gog-table [value]="rows()">
+        <gog-column field="id" header="ID" />
+        <ng-template gogTableEmpty><p class="custom-empty">Nothing matches</p></ng-template>
+      </gog-table>
+    `,
+  })
+  class EmptyTemplateHost {
+    readonly rows = signal<{ id: number }[]>([]);
+  }
+
+  it('renders the template in place of emptyMessage, and only while there are no rows', async () => {
+    await TestBed.configureTestingModule({ imports: [EmptyTemplateHost] }).compileComponents();
+    const fixture = TestBed.createComponent(EmptyTemplateHost);
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const root = fixture.nativeElement as HTMLElement;
+    const cell = root.querySelector('.gog-table__empty')!;
+    expect(cell.querySelector('.custom-empty')?.textContent).toBe('Nothing matches');
+    expect(cell.textContent).not.toContain('No data');
+
+    fixture.componentInstance.rows.set([{ id: 1 }]);
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(root.querySelector('.custom-empty')).toBeNull();
   });
 });

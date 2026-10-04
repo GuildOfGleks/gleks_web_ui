@@ -7,11 +7,17 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { CheckboxComponent, TagComponent, type GogSize } from '@guildofgleks/ui';
+import {
+  CheckboxComponent,
+  EmptyStateComponent,
+  TagComponent,
+  type GogSize,
+} from '@guildofgleks/ui';
 import {
   GogColumn,
   GogColumnBodyDirective,
   GogColumnHeaderDirective,
+  GogTableEmptyDirective,
   TableComponent,
   type GogTableRowClickEvent,
   type GogTableSortEvent,
@@ -51,6 +57,8 @@ interface A11yRow {
     GogColumn,
     GogColumnBodyDirective,
     GogColumnHeaderDirective,
+    GogTableEmptyDirective,
+    EmptyStateComponent,
     TableComponent,
     DocAttrs,
     DocCell,

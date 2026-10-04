@@ -80,6 +80,7 @@ import {
 import {
   GogColumn,
   GogColumnBodyDirective,
+  GogTableEmptyDirective,
   GogColumnHeaderDirective,
   TableComponent,
 } from '@guildofgleks/ui/table';
@@ -430,6 +431,7 @@ export const UNITS: readonly GogUnit[] = [
       dir(GogColumn, 'gog-column'),
       dir(GogColumnHeaderDirective, '[gogColumnHeader]'),
       dir(GogColumnBodyDirective, '[gogColumnBody]'),
+      dir(GogTableEmptyDirective, '[gogTableEmpty]'),
     ],
   },
 

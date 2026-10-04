@@ -83,6 +83,7 @@ import {
 import {
   GogColumn,
   GogColumnBodyDirective,
+  GogTableEmptyDirective,
   GogColumnHeaderDirective,
   TableComponent,
 } from '@guildofgleks/ui/table';
@@ -156,6 +157,7 @@ import {
     GogCollapsibleTriggerDirective,
     GogColumn,
     GogColumnBodyDirective,
+    GogTableEmptyDirective,
     GogColumnHeaderDirective,
     GogDropdownChevronDirective,
     GogDropdownOptionDirective,

@@ -45,3 +45,5 @@ build.
   whose readout, min/max labels and `aria-valuetext` all come from the one function.
 - **Radio Group page**: the three accessors in the inputs table, and an example passing the
   consumer's own objects; drop any wording that says the shape is fixed.
+- **Table page**: a `gogTableEmpty` example with a `gog-empty-state` inside, `GogTableEmptyDirective`
+  in the import snippet and the slots table, and a link from the Empty State page's answers section.

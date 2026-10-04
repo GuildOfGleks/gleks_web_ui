@@ -5,6 +5,7 @@ import {
   ElementRef,
   PLATFORM_ID,
   computed,
+  contentChild,
   contentChildren,
   effect,
   inject,
@@ -35,6 +36,7 @@ import { resolveCssLengthPx } from '@guildofgleks/ui/shared';
 import { GogVariableWindow } from '@guildofgleks/ui/shared';
 import {
   GogColumn,
+  GogTableEmptyDirective,
   type GogColumnBodyContext,
   type GogColumnHeaderContext,
   defaultCompare,
@@ -359,6 +361,8 @@ export class TableComponent<T extends object> {
   readonly gogRowClick = output<GogTableRowClickEvent<T>>();
 
   readonly columns = contentChildren(GogColumn);
+  /** A `gogTableEmpty` template, shown in place of `emptyMessage` when there are no rows. */
+  protected readonly emptySlot = contentChild(GogTableEmptyDirective);
 
   /** The current sort: seeded from `sort`, then moved by header presses until `sort` changes. */
   readonly sortState = linkedSignal<SortState>(() => this.sort() ?? UNSORTED, {

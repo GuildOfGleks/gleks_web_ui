@@ -337,6 +337,12 @@
   line-height: var(--gog-table-empty-line-height);
 }
 
+/* A projected empty state brings its own padding and type; the cell only holds it. */
+.gog-table__empty--template {
+  padding: 0;
+  color: inherit;
+}
+
 .gog-table--loading thead {
   opacity: var(--gog-table-loading-opacity);
   pointer-events: none;

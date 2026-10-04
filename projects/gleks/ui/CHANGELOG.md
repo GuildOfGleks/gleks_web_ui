@@ -17,6 +17,9 @@ _Versioning_ section. Before 21.16.0 a minor could carry a breaking change, and 
 
 ### Added
 
+- **`gog-table` takes a `gogTableEmpty` template**, shown in place of `emptyMessage` when there are
+  no rows. With a `gog-empty-state` in it, a table emptied by a filter is announced — the text cell
+  never was. New export from `@guildofgleks/ui/table`: `GogTableEmptyDirective`.
 - **`gog-radio-group` takes `optionLabel`, `optionValue` and `optionDisabled`**, like every other
   collection control: your own objects, read by property path or function, instead of mapping each
   domain list into `{ id, label, disabled? }` first. The defaults read exactly that shape, so every
