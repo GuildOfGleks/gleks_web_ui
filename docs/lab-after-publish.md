@@ -48,3 +48,8 @@ build.
   while range is true", which says the form control is ignored in range mode — the claim 21.15.1
   corrected in the library's JSDoc and AGENTS.md. Only the `value` model is ignored; the form
   control carries the `{ start, end }` pair (the `range` row already says so). Reword it to match.
+- **Slider page, Accessibility: the pointer-target sentence.** It says range thumbs take the
+  pointer "at about 16px, under the 24px WCAG 2.5.8 asks for" — stale since 21.15.0 for horizontal
+  sliders, and since 21.15.1 for vertical ones too: each range thumb is a 24x24 target centred on
+  the drawn thumb, in both orientations (`--gog-slider-range-target-size`). Rewrite it, and try the
+  vertical range demo with a mouse before ticking.

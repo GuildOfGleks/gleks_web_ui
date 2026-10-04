@@ -329,9 +329,11 @@
     <h3>pointer targets</h3>
     <p class="slider-page__note">
       In single mode the whole track is the target — a press anywhere on it moves the thumb there.
-      In range mode only the thumbs are, and they take the pointer at about 16px, under the 24px
-      that WCAG 2.5.8 asks for. The keyboard reaches both thumbs fully; the pointer gap is filed in
-      the backlog rather than papered over here.
+      In range mode only the thumbs are, and each takes the pointer across 24x24
+      (<code>--gog-slider-range-target-size</code>, WCAG 2.5.8) centred on the drawn 16px thumb, in
+      both orientations: press up to 11px from a thumb's centre and it is grabbed, at any value, the
+      ends included. Try it on the vertical range slider under Orientation — until 21.15.1 it kept
+      the browser's default thumbs, about 16px and off-centre along the track.
     </p>
   </app-doc-section>
 </app-doc-page>

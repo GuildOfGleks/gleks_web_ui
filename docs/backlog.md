@@ -48,12 +48,6 @@ not worth carrying here.
   region when there is no `heading`") that was never built — the host has no role and needs no
   name, so the input would have nothing to name. The plan's table is what is wrong, not the code.
 
-- **A vertical `range` `gog-slider`'s thumbs still take the pointer at the browser's default size.**
-  21.15.0 gave the horizontal range thumbs a 24x24 target aligned with the drawn thumb; the
-  vertical input is laid out through `writing-mode`, where the same inset and size rules would need
-  their own measurement, so it was left on the default thumbs. Measure it the same way — a real
-  mouse, presses at fixed offsets from each thumb's centre — before changing it.
-
 - **21.16.0: remove `gog-autocomplete`'s four deprecated filter inputs, by splitting the base.**
   Deprecated in 21.15.0 (`@deprecated` tags on the autocomplete's own restatements, listed in
   `GOG_DEPRECATIONS`); `check:deprecations` fails once 21.16.0 is the version. The removal is a

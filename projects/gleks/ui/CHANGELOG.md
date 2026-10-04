@@ -35,6 +35,16 @@ reached 1.0, so breaking changes may land in minor versions.
   back. What is ignored is the other _model_: `value` in range mode, `rangeValue` outside it.
   Documentation only, plus a test that pins the form control's round trip in range mode.
 
+- **A vertical `range` `gog-slider`'s thumbs take the pointer at 24x24, centred on the drawn
+  thumb.** 21.15.0 did this for the horizontal range slider only; the vertical one kept the
+  browser's default thumbs, which took the pointer in a band about 16px wide and off-centre along
+  the track — measured with a real mouse in Chrome, a press 6px below the lower thumb's centre
+  missed while 12px above it grabbed. The vertical input now gets the horizontal rule's box on its
+  own axis: as thick as `--gog-slider-range-target-size`, half a target past each end of the track.
+  Measured the same way after: from 12px before a thumb's centre to 11px past it grabs, on both
+  axes, at the middle and at both ends, in LTR and RTL, and a press without a drag leaves the value
+  where it was — the native thumb sits under the drawn one.
+
 ## [21.15.0] - 03.10.2026
 
 ### Added
