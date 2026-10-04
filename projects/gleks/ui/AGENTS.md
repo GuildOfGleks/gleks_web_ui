@@ -1155,6 +1155,11 @@ the paginator and select — still land wherever the root does.
 `gog-datepicker` is a field + panel; `gog-calendar` is the month grid alone (what `inline` mode
 renders). Native `Date` only — no date library, no adapter.
 
+**`gog-calendar` is a date picker's grid, not an event calendar.** It picks a day, a range or a
+time; it has no week or day view and nothing that places events on dates. A booking screen, a
+schedule or a month of appointments wants a scheduler (FullCalendar and the like), not this
+component bent into one.
+
 | Input                                                 | Type                                         | Default                       | Notes                                                                        |
 | ----------------------------------------------------- | -------------------------------------------- | ----------------------------- | ---------------------------------------------------------------------------- |
 | `inputId`, `label`, `ariaLabel`, `placeholder`        | `string`                                     | `''`                          |                                                                              |

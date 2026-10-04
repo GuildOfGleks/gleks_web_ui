@@ -779,16 +779,11 @@ Carried over from `consumer-dx-plan.md`'s backlog, which was the project's secon
 2026-08-23. Not defects: each is a known wart with a stated reason for living with it, and the
 reason may stop holding.
 
-- **`AGENTS.md` does not say that `gog-calendar` is not an event calendar.** Raised by the owner
-  on 2026-10-03: "Calendar" also names full-page schedulers such as FullCalendar, and an agent
-  asked to build a booking or schedule view could reach for `gog-calendar` and try to bend it. The
-  lab's Calendar page says so in its lead (same day); `AGENTS.md`'s `gog-datepicker` /
-  `gog-calendar` section wants the same line — a date grid that picks a day, a range or a time,
-  not a week or month view of events — so it reaches the reader who never opens the site. It is
-  a package change, so it ships with the next release. No rename: the name follows the common
-  convention (`mat-calendar`, Ant Design's `Calendar`), the `gog-` prefix keeps the selector
-  unique, and a class-name clash with another `CalendarComponent` in one file is solved by an
-  import alias.
+- ~~**`AGENTS.md` does not say that `gog-calendar` is not an event calendar.**~~ **Closed
+  2026-10-04 in 21.19.0**: the `gog-datepicker` / `gog-calendar` section now opens with it — a date
+  grid that picks a day, a range or a time, not a scheduler. No rename, for the reasons the owner
+  gave when raising it: the name follows `mat-calendar` and Ant Design, and the `gog-` prefix keeps
+  the selector unique.
 
 - **A `gog-scroll` that does scroll is an unnamed region by default.** Since 21.15.0 the tab stop
   and `role="region"` appear only while the content overflows, so the dead stop is gone; what is
