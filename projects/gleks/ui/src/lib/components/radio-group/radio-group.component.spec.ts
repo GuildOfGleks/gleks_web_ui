@@ -288,3 +288,54 @@ describe('RadioGroupComponent', () => {
     });
   });
 });
+
+describe('RadioGroupComponent — option accessors', () => {
+  interface Plan {
+    code: string;
+    title: string;
+    retired?: boolean;
+  }
+
+  @Component({
+    imports: [RadioGroupComponent],
+    template: `
+      <gog-radio-group
+        label="Plan"
+        [options]="plans"
+        optionLabel="title"
+        optionValue="code"
+        [optionDisabled]="isRetired"
+        [(value)]="plan"
+      />
+    `,
+  })
+  class PlansHost {
+    readonly plans: Plan[] = [
+      { code: 'free', title: 'Free' },
+      { code: 'team', title: 'Team' },
+      { code: 'legacy', title: 'Legacy', retired: true },
+    ];
+    readonly isRetired = (plan: Plan) => !!plan.retired;
+    readonly plan = signal<string | number | null>('team');
+  }
+
+  it('reads a consumer’s own objects through optionLabel, optionValue and optionDisabled', async () => {
+    await TestBed.configureTestingModule({ imports: [PlansHost] }).compileComponents();
+    const fixture = TestBed.createComponent(PlansHost);
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const root = fixture.nativeElement as HTMLElement;
+    const radios = Array.from(root.querySelectorAll<HTMLInputElement>('input[type="radio"]'));
+    const labels = Array.from(root.querySelectorAll('.gog-radio__label')).map((el) =>
+      el.textContent?.trim(),
+    );
+    expect(labels).toEqual(['Free', 'Team', 'Legacy']);
+    expect(radios.map((r) => r.value)).toEqual(['free', 'team', 'legacy']);
+    expect(radios.map((r) => r.checked)).toEqual([false, true, false]);
+    expect(radios[2].disabled).toBe(true);
+
+    radios[0].click();
+    await fixture.whenStable();
+    expect(fixture.componentInstance.plan()).toBe('free');
+  });
+});

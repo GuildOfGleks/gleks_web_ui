@@ -13,14 +13,14 @@
   }
 
   <div class="gog-radio-group__options">
-    @for (option of options(); track option.id) {
+    @for (option of options(); track valueOf(option)) {
       <!-- A disabled group already fades as a whole; fading its options again would compound. -->
-      <label class="gog-radio" [class.gog-radio--disabled]="!isDisabled() && !!option.disabled">
+      <label class="gog-radio" [class.gog-radio--disabled]="!isDisabled() && isOwnDisabled(option)">
         <input
           class="gog-radio__input"
           type="radio"
           [name]="groupName()"
-          [value]="option.id"
+          [value]="valueOf(option)"
           [checked]="isSelected(option)"
           [disabled]="isOptionDisabled(option)"
           (change)="onOptionChange($event, option)"
@@ -31,7 +31,7 @@
             <span class="gog-radio__dot"></span>
           }
         </span>
-        <span class="gog-radio__label">{{ option.label }}</span>
+        <span class="gog-radio__label">{{ labelOf(option) }}</span>
       </label>
     }
   </div>

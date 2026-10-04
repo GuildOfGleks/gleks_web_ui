@@ -48,11 +48,13 @@
       </ng-template>
     </app-doc-matrix>
 
-    <h3>options — a fixed shape</h3>
+    <h3>options, and the accessors</h3>
     <p class="radio-group-page__note">
-      Options are <code>{{ '{' }} id, label, disabled? {{ '}' }}</code> and nothing else: there is
-      no <code>optionLabel</code> / <code>optionValue</code> accessor as on <code>gog-select</code>,
-      so a domain list is mapped into that shape first. The <code>id</code> is the value, and it
+      Options are read through <code>optionLabel</code> / <code>optionValue</code> /
+      <code>optionDisabled</code>, as on <code>gog-select</code>, defaulting to
+      <code>{{ '{' }} id, label, disabled? {{ '}' }}</code
+      >. The third group passes its own objects with <code>optionLabel="title"</code>,
+      <code>optionValue="code"</code> and a function for <code>optionDisabled</code>. The value
       keeps its type — the second group uses numbers and hands back a number. A long label wraps
       beside its circle rather than pushing it out of line.
     </p>
@@ -63,6 +65,16 @@
       </div>
       <div class="radio-group-page__frame">
         <gog-radio-group label="When offline" [options]="longOptions" value="keep" />
+      </div>
+      <div class="radio-group-page__demo">
+        <gog-radio-group
+          label="Billing"
+          [options]="billing"
+          optionLabel="title"
+          optionValue="code"
+          [optionDisabled]="isRetired"
+          value="yearly"
+        />
       </div>
     </div>
 

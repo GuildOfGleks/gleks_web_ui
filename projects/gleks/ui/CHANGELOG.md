@@ -17,6 +17,10 @@ _Versioning_ section. Before 21.16.0 a minor could carry a breaking change, and 
 
 ### Added
 
+- **`gog-radio-group` takes `optionLabel`, `optionValue` and `optionDisabled`**, like every other
+  collection control: your own objects, read by property path or function, instead of mapping each
+  domain list into `{ id, label, disabled? }` first. The defaults read exactly that shape, so every
+  existing binding is unchanged. The value is still a string or a number.
 - **`gog-slider` takes `valueFormat`**, one function that writes the readout, the min and max labels
   and each thumb's `aria-valuetext`: a price range reads "€40 – €120" on screen and "€40" to a
   screen reader, where it used to say "40" with the unit only in the label. The readout's reserved

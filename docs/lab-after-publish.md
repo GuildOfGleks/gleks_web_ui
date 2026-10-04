@@ -43,3 +43,5 @@ build.
   accessibility section and any "status" wording change with it.
 - **Slider page**: `valueFormat` in the inputs table, and an example — a price range in euros
   whose readout, min/max labels and `aria-valuetext` all come from the one function.
+- **Radio Group page**: the three accessors in the inputs table, and an example passing the
+  consumer's own objects; drop any wording that says the shape is fixed.

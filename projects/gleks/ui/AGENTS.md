@@ -132,10 +132,11 @@ exist.
   datepicker — shows a clear (×) button once the field has content. Off by default everywhere
   except `gog-multiselect`, which had one before the input existed.
 - **Generic option accessors, not a fixed DTO.** Any collection-driven control (`gog-select`,
-  `gog-multiselect`, `gog-autocomplete`, `gog-button-toggle-group`) takes **your own object
-  shape** through `optionLabel` / `optionValue` / `optionDisabled` — each is a property path
-  (`'name'`, dot-paths like `'profile.title'` work) **or** a function
-  `(option: T) => TResult`. Defaults are `'name'` / `'id'` / `'disabled'`. Set
+  `gog-multiselect`, `gog-autocomplete`, `gog-button-toggle-group`, and `gog-radio-group` since
+  21.19.0) takes **your own object shape** through `optionLabel` / `optionValue` /
+  `optionDisabled` — each is a property path (`'name'`, dot-paths like `'profile.title'` work)
+  **or** a function `(option: T) => TResult`. Defaults are `'name'` / `'id'` / `'disabled'`
+  (`gog-radio-group`'s are `'label'` / `'id'` / `'disabled'`, the shape it used to require). Set
   `[optionValue]="null"` to emit **the option object itself** instead of a plucked id — the
   control then round-trips your own object with no lookup table needed:
   ```html
@@ -1010,17 +1011,18 @@ Model: `checked: boolean`. CVA: yes.
 
 #### `gog-radio-group`
 
-| Input                          | Type                                                     | Default          |
-| ------------------------------ | -------------------------------------------------------- | ---------------- |
-| `options`                      | `readonly GogRadioOption[]` (`{ id, label, disabled? }`) | `[]`             |
-| `label`, `ariaLabel`, `name`   | `string`                                                 | `''`             |
-| `size`                         | `GogSize \| undefined`                                   | `'md'`           |
-| `disabled`, `fullWidth`        | `boolean`                                                | `false`          |
-| `orientation`                  | `GogOrientation`                                         | `'vertical'`     |
-| `errorMessage`, `errorDisplay` |                                                          | `''`, `'manual'` |
+| Input                                            | Type                                                                    | Default                           |
+| ------------------------------------------------ | ----------------------------------------------------------------------- | --------------------------------- |
+| `options`                                        | your objects (`GogRadioOption`'s `{ id, label, disabled? }` by default) | `[]`                              |
+| `optionLabel` / `optionValue` / `optionDisabled` | property path or function                                               | `'label'` / `'id'` / `'disabled'` |
+| `label`, `ariaLabel`, `name`                     | `string`                                                                | `''`                              |
+| `size`                                           | `GogSize \| undefined`                                                  | `'md'`                            |
+| `disabled`, `fullWidth`                          | `boolean`                                                               | `false`                           |
+| `orientation`                                    | `GogOrientation`                                                        | `'vertical'`                      |
+| `errorMessage`, `errorDisplay`                   |                                                                         | `''`, `'manual'`                  |
 
-Model: `value: string | number | null`. CVA: yes. Fixed `{ id, label, disabled? }` shape (not
-a generic accessor, unlike select/multiselect/button-toggle).
+Model: `value: string | number | null`. CVA: yes. `optionValue` must give a string or a number,
+since that is what `value` holds; there is no `[optionValue]="null"` here as there is on select.
 
 ```html
 <gog-radio-group

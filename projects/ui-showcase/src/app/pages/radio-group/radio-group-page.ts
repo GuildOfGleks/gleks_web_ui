@@ -45,6 +45,13 @@ interface Layout {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RadioGroupPage {
+  protected readonly billing = [
+    { code: 'monthly', title: 'Monthly' },
+    { code: 'yearly', title: 'Yearly' },
+    { code: 'lifetime', title: 'Lifetime (retired)', retired: true },
+  ];
+  protected readonly isRetired = (plan: { retired?: boolean }) => !!plan.retired;
+
   protected readonly sizes: readonly GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];
 
   protected readonly plans: GogRadioOption[] = [

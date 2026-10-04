@@ -753,14 +753,13 @@ Each is additive: nothing here breaks an existing consumer, and none blocks anot
   separately from use. Build it once in `lib/shared` and adopt it in the dropdowns first — a fixed
   row height — before the table, which has variable rows, a sticky header and a selection column.
 
-- **`gog-radio-group` is the one collection control with a fixed option shape.** `gog-select`,
-  `gog-multiselect`, `gog-autocomplete` and `gog-button-toggle-group` all read an option through
-  `optionLabel` / `optionValue` / `optionDisabled`; the radio group takes `{ id, label, disabled? }`
-  and nothing else, so a consumer maps every domain list into that shape before binding it, and
-  cannot give an option a second line of text or a template. Found writing the showcase's Radio
-  group page (2026-09-22), which now says so rather than working around it. Additive: the three
-  accessors defaulting to `'label'`, `'id'` and `'disabled'` keep every existing binding as it is.
-  `AGENTS.md` names the difference, so nobody is misled today — it is a gap, not a defect.
+- ~~**`gog-radio-group` is the one collection control with a fixed option shape.**~~ **Shipped
+  2026-10-04 in 21.19.0**: `optionLabel` / `optionValue` / `optionDisabled`, defaulting to the old
+  shape. **Not as a generic component**, which the other four are: a generic would change the type
+  `TestBed.createComponent(RadioGroupComponent)` returns in a consumer's own spec, and `options()`
+  read back as `unknown[]` would break code that used to read `GogRadioOption[]` — both type breaks a
+  minor may not carry. The accessors take a `never` option, so a function written for the
+  consumer's type is accepted, and `options` is `any[]`. Making it generic is a 22.0.0 question.
 
 - ~~**`gog-slider` prints its value as a bare number, and says it the same way.**~~ **Shipped
   2026-10-04 in 21.19.0** as the input this entry proposed, `valueFormat`, driving the readout, the

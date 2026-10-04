@@ -15,6 +15,7 @@ import { GogOrientation, GogSize } from '@guildofgleks/ui/shared';
 import { nextGogControlId } from '@guildofgleks/ui/shared';
 import { GogErrorState, type GogErrorDisplay } from '@guildofgleks/ui/shared';
 import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
+import { type GogOptionAccessor, readOption } from '@guildofgleks/ui/shared';
 
 /** Built-in defaults, used when neither the instance input nor `GOG_CONFIG` supplies one. */
 const DEFAULT_SIZE: GogSize = 'md';
@@ -24,7 +25,7 @@ import {
   GOG_CHECKABLE_CONTROL_SIZE_MAP,
 } from '@guildofgleks/ui/shared';
 
-/** A single choice in a `gog-radio-group`. */
+/** A single choice in a `gog-radio-group`, in the shape the accessors read by default. */
 export interface GogRadioOption {
   id: string | number;
   label: string;
@@ -49,7 +50,24 @@ export interface GogRadioOption {
 export class RadioGroupComponent implements ControlValueAccessor, DoCheck {
   protected readonly uid = nextGogControlId('gog-radio-group');
 
-  readonly options = input<readonly GogRadioOption[]>([]);
+  /**
+   * The choices: your own objects, read through `optionLabel` / `optionValue` / `optionDisabled`
+   * like every other collection control. The defaults read `GogRadioOption`'s `label`, `id` and
+   * `disabled`, so `{ id, label }` options work with no accessor at all.
+   *
+   * Not a generic component, unlike `gog-button-toggle-group`: making it one would change the type
+   * `TestBed.createComponent(RadioGroupComponent)` returns in a consumer's own tests, which a minor
+   * may not do. The accessors' option parameter is `never`, so a function written for your type —
+   * `(plan: Plan) => plan.retired` — is accepted as it is.
+   */
+  // `any`, not `unknown`: before 21.19.0 this read as `GogRadioOption[]`, and code reading it back
+  // (`group.options()[0].label`) must keep compiling in a minor.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  readonly options = input<readonly any[]>([]);
+  readonly optionLabel = input<GogOptionAccessor<never, string>>('label');
+  /** What the group's value holds for an option: a string or a number, as `value` does. */
+  readonly optionValue = input<GogOptionAccessor<never, string | number>>('id');
+  readonly optionDisabled = input<GogOptionAccessor<never, boolean>>('disabled');
   readonly label = input('');
   readonly ariaLabel = input('');
   /** Shared `name` for the underlying native radios. Auto-generated per instance if unset. */
@@ -132,21 +150,35 @@ export class RadioGroupComponent implements ControlValueAccessor, DoCheck {
     this.cvaDisabled.set(isDisabled);
   }
 
-  protected isOptionDisabled(option: GogRadioOption): boolean {
-    return this.isDisabled() || !!option.disabled;
+  protected labelOf(option: unknown): string {
+    return String(readOption(option as never, this.optionLabel()) ?? '');
   }
 
-  protected isSelected(option: GogRadioOption): boolean {
-    return this.value() === option.id;
+  protected valueOf(option: unknown): string | number {
+    return readOption(option as never, this.optionValue());
   }
 
-  protected onOptionChange(event: Event, option: GogRadioOption): void {
+  /** The option's own `disabled`, apart from the group's. */
+  protected isOwnDisabled(option: unknown): boolean {
+    return !!readOption(option as never, this.optionDisabled());
+  }
+
+  protected isOptionDisabled(option: unknown): boolean {
+    return this.isDisabled() || this.isOwnDisabled(option);
+  }
+
+  protected isSelected(option: unknown): boolean {
+    return this.value() === this.valueOf(option);
+  }
+
+  protected onOptionChange(event: Event, option: unknown): void {
     if (this.isOptionDisabled(option)) return;
     const input = event.target as HTMLInputElement;
     if (!input.checked) return;
 
-    this.value.set(option.id);
-    this.onChange(option.id);
+    const value = this.valueOf(option);
+    this.value.set(value);
+    this.onChange(value);
   }
 
   protected onBlur(): void {
