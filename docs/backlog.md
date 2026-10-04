@@ -678,14 +678,7 @@ Each is additive: nothing here breaks an existing consumer, and none blocks anot
   **And it found a defect three releases old in something else entirely.** Five alerts side by
   side made it obvious that `dark` painted `accent` and `warning` in the same hex; `check:oklch`'s
   R3 had been comparing four statuses and not the five-member `GogSeverity`. A new component is a
-  new rendering of the old palette, which is a kind of test. **`card` and `gog-panel` came off this list in 21.6.1**
-  — see `docs/panel-card.md`. `empty state` is the next one with a plan waiting to be written, and
-  that plan is the same argument as the card's: it has to own something a class cannot.
-
-  When you write that plan, `panel-card.md`'s _Iteration 4, as it finished_ is the shape to copy:
-  the card/panel split earned itself when the one showcase block in 250 that refused to become a
-  `gog-panel` turned out to be exactly what `gog-card` was for. An `empty state` that cannot
-  survive the same question — what does it own that a `<div>` and a class do not — is not ready.
+  new rendering of the old palette, which is a kind of test.
 
 - ~~**`gog-table`'s empty row is plain text, and is not announced.**~~ **Shipped 2026-10-04 in
   21.19.0** as `<ng-template gogTableEmpty>`, the shape this entry proposed. The table does not
@@ -794,14 +787,14 @@ reason may stop holding.
 - ~~**A `gog-tabs` with no `ariaLabel` is an unnamed tablist.**~~ **Closed 2026-10-04**, with the
   `gog-scroll` entry above: it warns in dev mode.
 
-- **Every `ui-showcase` page builds its content twice on arrival.** Instrumented on the Tabs page on
-  2026-09-26 with a counter component: on a client-side navigation the page component is
-  constructed once, but every component in its template — including one outside any library
-  component — is constructed, initialised, destroyed and constructed again in the same tick. Not
-  caused by hydration (it happens on client navigation) nor by `app-doc-page`/`app-doc-section`,
-  which render `<ng-content>` unconditionally; the cause was not found. It doubles the cost of
-  every page and makes any "built N times" demo wrong, which is why the Tabs page reports lazy
-  content as built or not rather than counting.
+- ~~**Every `ui-showcase` page builds its content twice on arrival.**~~ **Not reproduced,
+  2026-10-04 — closed.** Measured three ways on the Tabs page, each counting what is _built_ rather
+  than what is shown: `Document.prototype.createElement` patched before navigating from the overview
+  by link, in the production build and on the dev server — 22 `gog-tabs` and 83 `gog-tab` created,
+  exactly the 22 and 83 in the DOM, and the old page the only node removed; and patched before the
+  page's own scripts on a direct load, where hydration reuses the prerendered DOM and creates none.
+  Whatever doubled the counter on 2026-09-26 is gone; the cause was never found, so if the Tabs
+  page's "built or not" ever reads wrong again, this is the measurement to repeat, not the counter.
 
 - ~~**A `gog-progressbar` with no name ships silently.**~~ **Closed 2026-10-04**, with the
   `gog-scroll` entry above: it warns in dev mode unless `ariaLabel` or an `aria-labelledby` on the
@@ -825,19 +818,15 @@ reason may stop holding.
   without the Angular linker, fair between the three libraries and not what one component costs in
   a real app.
 
-- **The lab's bundle budget has 118 kB of headroom again, because 21.14.0 bought some back.**
-  `gleks-ui-lab`'s initial bundle is **981.69 kB** on 21.14.0 against a `maximumError` of 1.1MB,
-  down from 1053.79 kB on 21.13.0: the lab's shell never used the table or the datepicker, and once
-  the root stopped exporting them their code left the initial chunk. The dialog stays, because the
-  shell mounts `gog-dialog`. The history, measured 2026-09-13 by building the lab with only the
-  installed package changed: 1003.85 kB when the error had to go up from 1MB, 1028.48 kB on 21.12.0,
-  1053.79 kB on 21.13.0 (virtualization in the four collection components, measured separately as
-  14 kB in a consumer app), 981.69 kB on 21.14.0.
-
-  Not a release concern — the lab is not published — and no longer urgent. The heavy dependencies
-  are already imported narrowly (FontAwesome icon by icon, `highlight.js` language by language); the
-  next real fix, when it is needed, is still to lazy-load the syntax highlighter or move the docs
-  renderer off the initial route.
+- **The lab's bundle budget is down to about 40 kB of headroom.** `gleks-ui-lab`'s initial bundle
+  is **1060.3 kB** on 21.18.0 against a `maximumError` of 1.1MB (measured 2026-10-04 with
+  `npm run build:lab`). The history: 1003.85 kB when the error had to go up from 1MB, 1028.48 kB on
+  21.12.0, 1053.79 kB on 21.13.0, 981.69 kB on 21.14.0 (the table and datepicker left the shell's
+  chunk when the root stopped exporting them), and back up through 21.15.0–21.18.0 as the root grew
+  by eight components. Not a release concern — the lab is not published — but the next root
+  component or two will reach the error. The fix is unchanged: lazy-load the syntax highlighter, or
+  move the docs renderer off the initial route. The dialog stays in the shell either way, because
+  the shell mounts `gog-dialog`.
 
 - **The lab's header is its own component now, and that entry is closed.** `app.scss` was
   6.20 kB against a 4 kB warning and an 8 kB error, two thirds of it belonging to one row of the

@@ -117,7 +117,11 @@ lives in `GogFilterableDropdownBase` now) and left `GOG_DEPRECATIONS` empty. **2
 semver rule. **21.18.0 is released** (2026-10-04) — `gog-breadcrumbs`, `gog-stepper`, `gog-file-upload`,
 `gog-rating` and `gog-empty-state` (`docs/breadcrumbs.md`, `docs/stepper.md`, `docs/file-upload.md`,
 `docs/rating.md`, `docs/empty-state.md`) — the whole unbuilt-component list of Gaps, five
-components in one minor. No version is open; the next change opens one with a `planned` heading.
+components in one minor. **21.19.0 is open, heading `planned`** — the backlog's remaining Gaps
+and rough edges: `gogTableEmpty`, `gog-table` `ariaLabel`, `gog-slider` `valueFormat`,
+`gog-radio-group`'s option accessors, `gog-chip`'s avatar as a `gog-avatar`, a labelled skeleton as
+a `progressbar`, and a dev-mode warning for a component that needs a name and has none. Additive, so
+`check:install` is not triggered, and `npm run check:release` fails again, correctly.
 
 ### The release sequence
 
