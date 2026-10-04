@@ -17,6 +17,10 @@ _Versioning_ section. Before 21.16.0 a minor could carry a breaking change, and 
 
 ### Added
 
+- **`gog-slider` takes `valueFormat`**, one function that writes the readout, the min and max labels
+  and each thumb's `aria-valuetext`: a price range reads "€40 – €120" on screen and "€40" to a
+  screen reader, where it used to say "40" with the unit only in the label. The readout's reserved
+  width is measured on the formatted endpoints, so it still does not shift while dragging.
 - **`gog-table` takes `ariaLabel`**, which names the table and, whenever its columns overflow, the
   scrolling region that makes it reachable by Tab. A table had no way to be named at all, and an
   overflowing one was an unnamed region in the tab order.

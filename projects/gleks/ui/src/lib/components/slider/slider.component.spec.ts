@@ -22,6 +22,44 @@ describe('SliderComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  describe('valueFormat', () => {
+    const euros = (value: number) => `€${value}`;
+    const root = () => fixture.nativeElement as HTMLElement;
+
+    it('writes the readout, the min/max labels and aria-valuetext through the format', async () => {
+      fixture.componentRef.setInput('min', 0);
+      fixture.componentRef.setInput('max', 500);
+      fixture.componentRef.setInput('value', 40);
+      fixture.componentRef.setInput('valueFormat', euros);
+      fixture.detectChanges();
+      await fixture.whenStable();
+      expect(root().querySelector('.gog-slider__value')?.textContent?.trim()).toBe('€40');
+      const labels = Array.from(root().querySelectorAll('.gog-slider__range-labels span'));
+      expect(labels.map((el) => el.textContent?.trim())).toEqual(['€0', '€500']);
+      const input = root().querySelector('input[type="range"]')!;
+      expect(input.getAttribute('aria-valuetext')).toBe('€40');
+      expect(input.getAttribute('aria-valuenow')).toBe('40');
+      // The reserve is measured on the formatted endpoints: "€500" is four characters.
+      expect(fixture.nativeElement.style.getPropertyValue('--value-chars')).toBe('4');
+    });
+
+    it('formats both ends of a range, and leaves aria-valuetext off without a format', async () => {
+      fixture.componentRef.setInput('max', 500);
+      fixture.componentRef.setInput('range', true);
+      fixture.componentRef.setInput('rangeValue', { start: 40, end: 120 });
+      fixture.detectChanges();
+      await fixture.whenStable();
+      expect(root().querySelector('input[type="range"]')!.hasAttribute('aria-valuetext')).toBe(
+        false,
+      );
+      fixture.componentRef.setInput('valueFormat', euros);
+      fixture.detectChanges();
+      expect(root().querySelector('.gog-slider__value')?.textContent?.trim()).toBe('€40 – €120');
+      const inputs = Array.from(root().querySelectorAll('input[type="range"]'));
+      expect(inputs.map((el) => el.getAttribute('aria-valuetext'))).toEqual(['€40', '€120']);
+    });
+  });
+
   describe('fullWidth', () => {
     it('should not apply the auto-width host class by default', () => {
       expect(fixture.nativeElement.classList.contains('gog-host--auto-width')).toBe(false);

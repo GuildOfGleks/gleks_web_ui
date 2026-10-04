@@ -762,14 +762,9 @@ Each is additive: nothing here breaks an existing consumer, and none blocks anot
   accessors defaulting to `'label'`, `'id'` and `'disabled'` keep every existing binding as it is.
   `AGENTS.md` names the difference, so nobody is misled today — it is a gap, not a defect.
 
-- **`gog-slider` prints its value as a bare number, and says it the same way.** There is no
-  formatter input and no `aria-valuetext`: a price range reads "40 – 120" on screen and "40" to a
-  screen reader, with the unit only in the label if the consumer put it there. The readout's width
-  reservation (`valueDisplayChars`) is computed from `min`/`max`/`step` as plain digits, so a
-  formatter would have to feed that too, or the readout starts shifting again as it did before the
-  reservation existed. Additive: a `valueFormat: (value: number) => string` input driving both the
-  readout and `aria-valuetext`. Found writing the showcase's Slider page (2026-09-22), which tells
-  the reader to put the unit in the label for now.
+- ~~**`gog-slider` prints its value as a bare number, and says it the same way.**~~ **Shipped
+  2026-10-04 in 21.19.0** as the input this entry proposed, `valueFormat`, driving the readout, the
+  min/max labels and `aria-valuetext`; the width reservation measures the formatted endpoints.
 
 ---
 

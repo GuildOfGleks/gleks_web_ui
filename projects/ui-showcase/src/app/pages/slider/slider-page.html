@@ -33,8 +33,8 @@
     <p class="slider-page__note">
       The readout reserves the width of the longest number <code>min</code>, <code>max</code> and
       <code>step</code> can print and uses tabular figures, so it never shifts as the value changes
-      — drag any of these and the label beside it stays put. The value is printed as a plain number:
-      there is no formatter, so a unit or a currency belongs in the <code>label</code>.
+      — drag any of these and the label beside it stays put. The value is a plain number unless
+      <code>valueFormat</code> says otherwise (below).
     </p>
     <app-doc-matrix rowAxis="range" colAxis="">
       <ng-template appDocCell [rows]="steps" [cols]="controlColumn" let-row>
@@ -49,6 +49,24 @@
         </div>
       </ng-template>
     </app-doc-matrix>
+
+    <h3>valueFormat</h3>
+    <p class="slider-page__note">
+      One function writes the readout, the min and max labels and each thumb's
+      <code>aria-valuetext</code>, so a screen reader hears "€40" rather than "40". The readout's
+      reserved width is measured on the formatted endpoints.
+    </p>
+    <div class="slider-page__cell">
+      <gog-slider
+        label="Price"
+        range
+        [min]="0"
+        [max]="500"
+        [step]="10"
+        [rangeValue]="{ start: 40, end: 120 }"
+        [valueFormat]="euros"
+      />
+    </div>
 
     <h3>orientation="vertical"</h3>
     <p class="slider-page__note">

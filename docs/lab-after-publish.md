@@ -41,3 +41,5 @@ build.
   three pass a name, so the site's console stays clean.
 - **Skeleton page**: a labelled skeleton is now `role="progressbar"`, like the spinner — its
   accessibility section and any "status" wording change with it.
+- **Slider page**: `valueFormat` in the inputs table, and an example — a price range in euros
+  whose readout, min/max labels and `aria-valuetext` all come from the one function.

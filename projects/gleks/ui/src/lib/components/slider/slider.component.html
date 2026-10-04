@@ -12,7 +12,9 @@
     }
 
     @if (showValue()) {
-      <span class="gog-slider__value">{{ range() ? rangeDisplayValue() : clampedValue() }}</span>
+      <span class="gog-slider__value">{{
+        range() ? rangeDisplayValue() : format(clampedValue())
+      }}</span>
     }
   </div>
 
@@ -59,6 +61,7 @@
         [attr.aria-valuemin]="min()"
         [attr.aria-valuemax]="clampedRange().end"
         [attr.aria-valuenow]="clampedRange().start"
+        [attr.aria-valuetext]="valueText(clampedRange().start)"
         [attr.aria-invalid]="hasError()"
         [attr.aria-describedby]="errorId()"
         [attr.aria-orientation]="isVertical() ? 'vertical' : null"
@@ -77,6 +80,7 @@
         [attr.aria-valuemin]="clampedRange().start"
         [attr.aria-valuemax]="max()"
         [attr.aria-valuenow]="clampedRange().end"
+        [attr.aria-valuetext]="valueText(clampedRange().end)"
         [attr.aria-invalid]="hasError()"
         [attr.aria-describedby]="errorId()"
         [attr.aria-orientation]="isVertical() ? 'vertical' : null"
@@ -97,6 +101,7 @@
         [attr.aria-valuemin]="min()"
         [attr.aria-valuemax]="max()"
         [attr.aria-valuenow]="clampedValue()"
+        [attr.aria-valuetext]="valueText(clampedValue())"
         [attr.aria-invalid]="hasError()"
         [attr.aria-describedby]="errorId()"
         [attr.aria-orientation]="isVertical() ? 'vertical' : null"
@@ -112,8 +117,8 @@
   </div>
 
   <div class="gog-slider__range-labels">
-    <span>{{ min() }}</span>
-    <span>{{ max() }}</span>
+    <span>{{ format(min()) }}</span>
+    <span>{{ format(max()) }}</span>
   </div>
 
   @if (hasError()) {

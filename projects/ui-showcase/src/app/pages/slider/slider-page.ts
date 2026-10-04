@@ -71,6 +71,7 @@ export class SliderPage {
 
   /** The single column of a matrix whose rows are the only axis. */
   protected readonly controlColumn = ['control'] as const;
+  protected readonly euros = (value: number) => `€${value}`;
 
   protected readonly steps = [
     { name: 'min 0 · max 100 · step 1', min: 0, max: 100, step: 1, value: 40 },

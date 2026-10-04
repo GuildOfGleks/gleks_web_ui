@@ -17,6 +17,11 @@ export const SLIDER_API: readonly DocApi[] = [
       { name: 'disabled', type: 'boolean', default: 'false' },
       { name: 'fullWidth', type: 'boolean', default: 'true' },
       { name: 'orientation', type: 'GogSliderOrientation', default: "'horizontal'" },
+      {
+        name: 'valueFormat',
+        type: '((value: number) => string) | null',
+        default: 'null (the bare number)',
+      },
       { name: 'range', type: 'boolean', default: 'false' },
       { name: 'rangeValue', type: 'GogSliderRange (model)', default: '{ start: 0, end: 100 }' },
       { name: 'startAriaLabel', type: 'string', default: "'' ('Minimum')" },

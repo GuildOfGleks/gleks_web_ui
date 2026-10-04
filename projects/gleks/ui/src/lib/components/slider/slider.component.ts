@@ -93,6 +93,12 @@ export class SliderComponent implements ControlValueAccessor, DoCheck {
    * as they do horizontally.
    */
   readonly orientation = input<GogSliderOrientation>('horizontal');
+  /**
+   * How a value is written: the readout, the min/max labels and each thumb's `aria-valuetext`, so
+   * a price range reads "€40 – €120" on screen and "€40" to a screen reader rather than "40".
+   * Unset, the bare number, and no `aria-valuetext`.
+   */
+  readonly valueFormat = input<((value: number) => string) | null>(null);
 
   /**
    * Switches the slider to two-thumb mode for picking a *range* of values instead of a
@@ -211,9 +217,18 @@ export class SliderComponent implements ControlValueAccessor, DoCheck {
   protected readonly fillScale = computed(() => this.fillPercent() / 100);
   protected readonly rangeStartPos = computed(() => `${this.rangeStartPercent()}%`);
   protected readonly rangeEndPos = computed(() => `${this.rangeEndPercent()}%`);
+  /** A value as written on screen and in `aria-valuetext`. */
+  protected format(value: number): string {
+    const format = this.valueFormat();
+    return format ? format(value) : String(value);
+  }
+  /** `aria-valuetext` for a thumb: only when there is a format, since otherwise it adds nothing. */
+  protected valueText(value: number): string | null {
+    return this.valueFormat() ? this.format(value) : null;
+  }
   protected readonly rangeDisplayValue = computed(() => {
     const { start, end } = this.clampedRange();
-    return `${start} – ${end}`;
+    return `${this.format(start)} – ${this.format(end)}`;
   });
   /**
    * Reserved width for `.gog-slider__value`, in `ch`. Without this the span sizes to
@@ -227,8 +242,12 @@ export class SliderComponent implements ControlValueAccessor, DoCheck {
    * characters is already the worst case for every value in between.
    */
   protected readonly valueDisplayChars = computed(() => {
+    // With a format the endpoints are measured as formatted: a unit or a currency sign widens both,
+    // and a format is expected to grow with the number the way the digits do.
     const decimals = decimalPlaces(this.step());
-    const chars = Math.max(digitLength(this.min(), decimals), digitLength(this.max(), decimals));
+    const chars = this.valueFormat()
+      ? Math.max(this.format(this.min()).length, this.format(this.max()).length)
+      : Math.max(digitLength(this.min(), decimals), digitLength(this.max(), decimals));
     return this.range() ? chars * 2 + 3 : chars; // +3 for the " – " separator
   });
   /** What each thumb's name starts with in `range` mode: the visible label, else `ariaLabel`. */
