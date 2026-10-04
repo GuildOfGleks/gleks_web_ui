@@ -124,6 +124,8 @@
 }
 
 .gog-chip__avatar {
+  /* The same diameter the template hands the avatar as --gog-avatar-size, stated on its box too, so
+     the chip's row never depends on how the avatar sizes itself. */
   width: var(
     --gog-chip-avatar-size,
     var(--gog-chip-size-avatar-size, var(--gog-chip-md-avatar-size))
@@ -132,8 +134,6 @@
     --gog-chip-avatar-size,
     var(--gog-chip-size-avatar-size, var(--gog-chip-md-avatar-size))
   );
-  border-radius: 50%;
-  object-fit: cover;
   flex-shrink: 0;
 }
 

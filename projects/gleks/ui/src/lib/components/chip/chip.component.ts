@@ -10,6 +10,7 @@ import {
   booleanAttribute,
 } from '@angular/core';
 
+import { AvatarComponent } from '../avatar/avatar.component';
 import { type GogIconName, IconComponent } from '../icon/icon.component';
 import { GogSize, GogTagShape } from '@guildofgleks/ui/shared';
 import { GOG_CONFIG } from '@guildofgleks/ui/shared';
@@ -19,7 +20,7 @@ import { configurableBooleanAttribute } from '@guildofgleks/ui/shared';
 
 @Component({
   selector: 'gog-chip',
-  imports: [GogRippleDirective, IconComponent],
+  imports: [AvatarComponent, GogRippleDirective, IconComponent],
   templateUrl: './chip.component.html',
   styleUrl: './chip.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -62,6 +63,13 @@ export class ChipComponent {
   readonly removeAriaLabel = input('Remove chip');
   readonly avatarUrl = input<string | null>(null);
   readonly avatarAlt = input('');
+  /**
+   * The chip's own em-sized diameter, handed to the avatar through its instance override (bound,
+   * as `gog-avatar-group` does, since the token is undeclared by contract): the avatar's fixed
+   * pixel steps never apply inside a chip, and its initials scale as a ratio of this.
+   */
+  protected readonly avatarSize =
+    'var(--gog-chip-avatar-size, var(--gog-chip-size-avatar-size, var(--gog-chip-md-avatar-size)))';
   readonly iconName = input<GogIconName | null>(null);
   /**
    * Press ripple. Unset, falls back to `GOG_CONFIG.ripple.enabled`, then to `false` — so

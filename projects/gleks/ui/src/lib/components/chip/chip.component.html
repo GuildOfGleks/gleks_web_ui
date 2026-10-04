@@ -25,7 +25,18 @@
     (blur)="surfaceFocusVisible.set(false)"
   >
     @if (avatarUrl()) {
-      <img class="gog-chip__avatar" [src]="avatarUrl()" [alt]="avatarAlt()" />
+      <!--
+        A gog-avatar rather than a bare <img>: a broken URL falls back to the initials (from
+        avatarAlt) or the icon instead of the browser's broken-image glyph. No avatarAlt keeps it
+        decorative, as alt="" did.
+      -->
+      <gog-avatar
+        class="gog-chip__avatar"
+        [style.--gog-avatar-size]="avatarSize"
+        [src]="avatarUrl()"
+        [name]="avatarAlt()"
+        [decorative]="!avatarAlt()"
+      />
     }
 
     @if (iconName()) {

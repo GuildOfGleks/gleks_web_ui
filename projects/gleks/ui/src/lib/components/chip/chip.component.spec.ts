@@ -85,6 +85,20 @@ describe('ChipComponent', () => {
     expect(host.querySelector('.gog-chip__remove')).toBeTruthy();
   });
 
+  it('draws the avatar as a gog-avatar, decorative without avatarAlt and named with it', () => {
+    fixture.componentRef.setInput('avatarUrl', '/no-such-avatar.png');
+    fixture.detectChanges();
+    const host = fixture.nativeElement as HTMLElement;
+    const avatar = host.querySelector('gog-avatar.gog-chip__avatar')!;
+    expect(avatar).toBeTruthy();
+    expect(avatar.getAttribute('aria-hidden')).toBe('true');
+
+    fixture.componentRef.setInput('avatarAlt', 'Ada Lovelace');
+    fixture.detectChanges();
+    expect(avatar.getAttribute('role')).toBe('img');
+    expect(avatar.getAttribute('aria-label')).toBe('Ada Lovelace');
+  });
+
   it('should keep remove button pointer cursor', () => {
     fixture.componentRef.setInput('removable', true);
     fixture.detectChanges();

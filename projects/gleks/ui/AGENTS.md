@@ -1454,18 +1454,23 @@ belongs to rather than on its icon.
 
 #### `gog-chip`
 
-| Input                          | Type                                | Default                                  |
-| ------------------------------ | ----------------------------------- | ---------------------------------------- |
-| `size`                         | `GogSize`                           | `'md'`                                   |
-| `shape`                        | `GogTagShape` (`'rounded'\|'pill'`) | `'rounded'`                              |
-| `disabled`, `clickable`        | `boolean`                           | `false`, `true`                          |
-| `selected`                     | `boolean \| null` (two-way)         | `null` — see below                       |
-| `removable`                    | `boolean`                           | `false`                                  |
-| `fullWidth`                    | `boolean`                           | `false`                                  |
-| `ariaLabel`, `removeAriaLabel` | `string`                            | `''`, `'Remove chip'`                    |
-| `avatarUrl`, `avatarAlt`       | `string \| null` / `string`         | `null`, `''`                             |
-| `iconName`                     | `GogIconName \| null`               | `null`                                   |
-| `ripple`                       | `boolean \| undefined`              | `false`; via `GOG_CONFIG.ripple.enabled` |
+| Input                          | Type                                | Default               |
+| ------------------------------ | ----------------------------------- | --------------------- |
+| `size`                         | `GogSize`                           | `'md'`                |
+| `shape`                        | `GogTagShape` (`'rounded'\|'pill'`) | `'rounded'`           |
+| `disabled`, `clickable`        | `boolean`                           | `false`, `true`       |
+| `selected`                     | `boolean \| null` (two-way)         | `null` — see below    |
+| `removable`                    | `boolean`                           | `false`               |
+| `fullWidth`                    | `boolean`                           | `false`               |
+| `ariaLabel`, `removeAriaLabel` | `string`                            | `''`, `'Remove chip'` |
+| `avatarUrl`, `avatarAlt`       | `string \| null` / `string`         | `null`, `''`          |
+
+The avatar is a `gog-avatar` at the chip's own size: a URL that fails shows the initials of
+`avatarAlt` (or the person icon without it) rather than a broken image. No `avatarAlt` keeps it
+decorative, as `alt=""` did.
+
+| `iconName` | `GogIconName \| null` | `null` |
+| `ripple` | `boolean \| undefined` | `false`; via `GOG_CONFIG.ripple.enabled` |
 
 Outputs: `gogClick: MouseEvent | KeyboardEvent`, `gogRemove: void`.
 

@@ -47,3 +47,5 @@ build.
   consumer's own objects; drop any wording that says the shape is fixed.
 - **Table page**: a `gogTableEmpty` example with a `gog-empty-state` inside, `GogTableEmptyDirective`
   in the import snippet and the slots table, and a link from the Empty State page's answers section.
+- **Chip page**: the avatar falls back like `gog-avatar` does — worth one example with a broken
+  `avatarUrl` and an `avatarAlt`, showing initials.

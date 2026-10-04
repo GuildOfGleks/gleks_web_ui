@@ -693,11 +693,12 @@ Each is additive: nothing here breaks an existing consumer, and none blocks anot
   dependency and anything else can go in the cell. The showcase specimen dropped its workaround (an
   empty state rendered in place of the table) for it.
 
-- **`gog-chip`'s `avatarUrl` is a bare `<img>`, with none of `gog-avatar`'s fallback.** A broken
-  URL in a chip still shows the broken-image glyph. Rendering a `gog-avatar` inside the chip would
-  fix that, but the chip sizes its avatar in `em` of its own font (`--gog-chip-*-avatar-size`,
-  1.5em) and the avatar's five sizes are fixed pixel steps, so it is a geometry decision, not a
-  swap. Found while planning `gog-avatar` (`docs/avatar.md`, "What it is not").
+- ~~**`gog-chip`'s `avatarUrl` is a bare `<img>`, with none of `gog-avatar`'s fallback.**~~
+  **Shipped 2026-10-04 in 21.19.0.** The geometry decision turned out not to be one: the avatar
+  already takes its diameter from `--gog-avatar-size`, its instance override, and draws its initials
+  as a ratio of it, so the chip hands it its own em-based size and the avatar's pixel steps never
+  apply. Bound from the template rather than declared in the stylesheet, as `gog-avatar-group` does,
+  because `check:tokens` rule D holds that token undeclared. Measured unchanged, 17 to 27px.
 
 - ~~**`gog-table`'s ceiling.**~~ **Written down 2026-09-12**, in `README.md` where a consumer
   evaluates the table and in `AGENTS.md` where an agent writes against it. No column resizing or

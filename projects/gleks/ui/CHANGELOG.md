@@ -9,6 +9,11 @@ _Versioning_ section. Before 21.16.0 a minor could carry a breaking change, and 
 
 ### Changed
 
+- **`gog-chip`'s avatar is a `gog-avatar`**, at the chip's own em-based size: a broken
+  `avatarUrl` falls back to the initials of `avatarAlt`, or the person icon, instead of the
+  browser's broken-image glyph. No `avatarAlt` keeps it decorative, as `alt=""` did; with one it is
+  named by it, as before. Measured on the showcase's Chip page: the same 17 to 27px across the five
+  sizes as the `<img>` it replaces.
 - **A labelled `gog-skeleton` is an indeterminate `role="progressbar"`, not `role="status"`** — the
   role `gog-spinner` has taken since 21.15.0, so a loading area reads "progress bar, Loading
   profile" whichever of the two draws it. `status` was a live region that never spoke (a skeleton
