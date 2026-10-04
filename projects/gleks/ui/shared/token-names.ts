@@ -1183,6 +1183,33 @@ export type GogTokenName =
   | '--gog-radio-padding'
   | '--gog-radio-transition-duration'
   | '--gog-radius'
+  | '--gog-rating-disabled-opacity'
+  | '--gog-rating-empty-color'
+  | '--gog-rating-error-color'
+  | '--gog-rating-error-font-size'
+  | '--gog-rating-error-line-height'
+  | '--gog-rating-fill'
+  | '--gog-rating-fill-color'
+  | '--gog-rating-focus-ring-color'
+  | '--gog-rating-focus-ring-offset'
+  | '--gog-rating-focus-ring-width'
+  | '--gog-rating-font-family'
+  | '--gog-rating-gap'
+  | '--gog-rating-glyph-line-height'
+  | '--gog-rating-label-color'
+  | '--gog-rating-label-font-family'
+  | '--gog-rating-label-font-size'
+  | '--gog-rating-label-font-weight'
+  | '--gog-rating-label-letter-spacing'
+  | '--gog-rating-label-line-height'
+  | '--gog-rating-label-text-transform'
+  | '--gog-rating-lg-star-size'
+  | '--gog-rating-md-star-size'
+  | '--gog-rating-slg-star-size'
+  | '--gog-rating-sm-star-size'
+  | '--gog-rating-star-padding'
+  | '--gog-rating-star-radius'
+  | '--gog-rating-xsm-star-size'
   | '--gog-ripple-color'
   | '--gog-ripple-easing'
   | '--gog-ripple-enter-duration'
@@ -2295,6 +2322,38 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-file-upload-zone-border-width',
       '--gog-file-upload-zone-gap',
       '--gog-file-upload-zone-radius',
+    ],
+  },
+  {
+    section: 'Rating',
+    layer: 'component',
+    tokens: [
+      '--gog-rating-disabled-opacity',
+      '--gog-rating-empty-color',
+      '--gog-rating-error-color',
+      '--gog-rating-error-font-size',
+      '--gog-rating-error-line-height',
+      '--gog-rating-fill-color',
+      '--gog-rating-focus-ring-color',
+      '--gog-rating-focus-ring-offset',
+      '--gog-rating-focus-ring-width',
+      '--gog-rating-font-family',
+      '--gog-rating-gap',
+      '--gog-rating-glyph-line-height',
+      '--gog-rating-label-color',
+      '--gog-rating-label-font-family',
+      '--gog-rating-label-font-size',
+      '--gog-rating-label-font-weight',
+      '--gog-rating-label-letter-spacing',
+      '--gog-rating-label-line-height',
+      '--gog-rating-label-text-transform',
+      '--gog-rating-lg-star-size',
+      '--gog-rating-md-star-size',
+      '--gog-rating-slg-star-size',
+      '--gog-rating-sm-star-size',
+      '--gog-rating-star-padding',
+      '--gog-rating-star-radius',
+      '--gog-rating-xsm-star-size',
     ],
   },
   {
@@ -3788,6 +3847,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-radio-box-size',
       '--gog-radio-label-size',
       '--gog-radio-padding',
+      '--gog-rating-fill',
       '--gog-select-control-font',
       '--gog-select-control-padding-x',
       '--gog-select-control-padding-y',

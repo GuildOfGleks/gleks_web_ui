@@ -69,6 +69,7 @@ const OUTERMOST = new Map([
   ['file-upload-zone', 'the drop zone sits in the consumer’s form; nothing frames it'],
   ['file-upload-remove', 'a button in a list row, not inside a rounded box'],
   ['stepper-trigger', 'a step’s hover and focus corner, in the consumer’s flow'],
+  ['rating-star', 'a star’s focus corner, in the consumer’s flow'],
   ['button-toggle', 'its own component — it shares a name prefix with the button, not a box'],
   ['card', 'the outermost surface'],
   ['checkbox', 'the box is the control'],

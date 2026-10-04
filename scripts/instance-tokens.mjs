@@ -129,6 +129,8 @@ export const INSTANCE_TOKENS = new Set([
   '--gog-progressbar-fill-bg',
   '--gog-progressbar-height',
   '--gog-progressbar-track-bg',
+  // gog-rating: how much of each star is filled, bound per star by the template
+  '--gog-rating-fill',
   // gog-radio-group
   '--gog-radio-box-size',
   '--gog-radio-label-size',

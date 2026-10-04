@@ -1,0 +1,115 @@
+/*
+ * Token layering (see styles/theme.css):
+ *   --gog-rating-size-star-size   internal, set by the size classes below.
+ *   --gog-rating-fill             internal, per star: 0, 0.5 or 1, bound by the template.
+ *   --gog-rating-<name>           the actual values, all in styles/theme.css.
+ */
+:host {
+  display: inline-block;
+  font-family: var(--gog-rating-font-family);
+  --gog-icon-size: var(--gog-rating-size-star-size, var(--gog-rating-md-star-size));
+}
+
+.gog-rating {
+  display: inline-flex;
+  flex-direction: column;
+  gap: var(--gog-rating-gap);
+}
+
+.gog-rating__label {
+  font-family: var(--gog-rating-label-font-family);
+  font-size: var(--gog-rating-label-font-size);
+  line-height: var(--gog-rating-label-line-height);
+  font-weight: var(--gog-rating-label-font-weight);
+  color: var(--gog-rating-label-color);
+  text-transform: var(--gog-rating-label-text-transform);
+  letter-spacing: var(--gog-rating-label-letter-spacing);
+}
+
+.gog-rating__stars {
+  display: inline-flex;
+  align-items: center;
+}
+
+/*
+ * A glyph button, square: law 3's 2:1 ratio is for a label inside a control, and there is none.
+ * The padding never lets the box fall under 24x24 (law 5), whatever the density does to the star.
+ */
+.gog-rating__star {
+  position: relative;
+  display: inline-flex;
+  padding: max(
+    var(--gog-rating-star-padding),
+    calc((24px - var(--gog-rating-size-star-size, var(--gog-rating-md-star-size))) / 2)
+  );
+  border-radius: var(--gog-rating-star-radius);
+}
+
+/* The real radio lies over the star: the press lands on it, and it is what takes focus. */
+.gog-rating__input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.gog-rating__star:has(.gog-rating__input:focus-visible) {
+  outline: var(--gog-rating-focus-ring-width) solid var(--gog-rating-focus-ring-color);
+  outline-offset: var(--gog-rating-focus-ring-offset);
+}
+
+.gog-rating__glyph {
+  position: relative;
+  display: inline-flex;
+  line-height: var(--gog-rating-glyph-line-height);
+}
+
+.gog-rating__empty {
+  color: var(--gog-rating-empty-color);
+}
+
+/* Clipped from the end it does not reach, so a half star is its leading half. */
+.gog-rating__full {
+  position: absolute;
+  inset: 0;
+  color: var(--gog-rating-fill-color);
+  clip-path: inset(0 calc((1 - var(--gog-rating-fill)) * 100%) 0 0);
+}
+
+:host-context([dir='rtl']) .gog-rating__full {
+  clip-path: inset(0 0 0 calc((1 - var(--gog-rating-fill)) * 100%));
+}
+
+.gog-rating__error {
+  color: var(--gog-rating-error-color);
+  font-size: var(--gog-rating-error-font-size);
+  line-height: var(--gog-rating-error-line-height);
+}
+
+.gog-rating--disabled {
+  opacity: var(--gog-rating-disabled-opacity);
+}
+
+.gog-rating--disabled .gog-rating__input {
+  cursor: not-allowed;
+}
+
+/* === Sizes ===
+   `md` needs no block: it is what the chains above fall back to. */
+
+:host(.gog-rating--xsm) {
+  --gog-rating-size-star-size: var(--gog-rating-xsm-star-size);
+}
+
+:host(.gog-rating--sm) {
+  --gog-rating-size-star-size: var(--gog-rating-sm-star-size);
+}
+
+:host(.gog-rating--lg) {
+  --gog-rating-size-star-size: var(--gog-rating-lg-star-size);
+}
+
+:host(.gog-rating--slg) {
+  --gog-rating-size-star-size: var(--gog-rating-slg-star-size);
+}

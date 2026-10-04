@@ -172,6 +172,13 @@
                 [disabled]="disabled()"
                 [(value)]="digestLimit"
               />
+              <gog-rating
+                label="How is the app so far?"
+                clearable
+                [size]="size()"
+                [disabled]="disabled()"
+                [(value)]="appRating"
+              />
               <div class="specimen__checks">
                 <gog-toggle
                   label="Public profile"
@@ -352,6 +359,7 @@
         </div>
         <h3 gogCardHeader>{{ fullName() }}</h3>
         <p class="specimen__muted">Finance lead · Kyiv</p>
+        <gog-rating readonly size="xsm" [value]="4.6" />
         <gog-avatar-group size="xsm" ariaLabel="Reports to">
           <gog-avatar name="Oleh Bondar" />
           <gog-avatar name="Ines Varga" />

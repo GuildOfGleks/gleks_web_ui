@@ -794,6 +794,38 @@
   --gog-file-upload-lg-zone-padding: var(--gog-space-32);
   --gog-file-upload-slg-zone-padding: var(--gog-space-40);
 
+  /* ── Rating ────────────────────────────────────────────────────────────────
+     Stars over native radios. An empty star's outline is the control boundary colour, so there is
+     visibly a star to press at 3:1; a filled one is the accent. */
+  --gog-rating-font-family: var(--gog-font-body);
+  --gog-rating-gap: var(--gog-space-8);
+  --gog-rating-label-font-family: var(--gog-field-label-font-family);
+  --gog-rating-label-font-size: var(--gog-field-label-font-size);
+  --gog-rating-label-line-height: var(--gog-field-label-line-height);
+  --gog-rating-label-font-weight: var(--gog-field-label-font-weight);
+  --gog-rating-label-color: var(--gog-field-label-color);
+  --gog-rating-label-text-transform: var(--gog-field-label-text-transform);
+  --gog-rating-label-letter-spacing: var(--gog-field-label-letter-spacing);
+  /* The least room around a star; the component raises it to keep a 24x24 target. */
+  --gog-rating-star-padding: var(--gog-space-4);
+  --gog-rating-star-radius: var(--gog-radius);
+  /* A glyph in its own box: leading would push it off centre. */
+  --gog-rating-glyph-line-height: var(--gog-line-height-none);
+  --gog-rating-empty-color: var(--gog-control-boundary-color);
+  --gog-rating-fill-color: var(--gog-accent-color);
+  --gog-rating-focus-ring-width: var(--gog-focus-ring-width);
+  --gog-rating-focus-ring-offset: var(--gog-focus-ring-offset);
+  --gog-rating-focus-ring-color: var(--gog-accent-color);
+  --gog-rating-error-color: var(--gog-danger-color);
+  --gog-rating-error-font-size: var(--gog-text-xs);
+  --gog-rating-error-line-height: var(--gog-line-height-snug);
+  --gog-rating-disabled-opacity: var(--gog-disabled-opacity);
+  --gog-rating-xsm-star-size: var(--gog-space-16);
+  --gog-rating-sm-star-size: var(--gog-space-20);
+  --gog-rating-md-star-size: var(--gog-space-24);
+  --gog-rating-lg-star-size: var(--gog-space-28);
+  --gog-rating-slg-star-size: var(--gog-space-32);
+
   /* ── Collapsible ───────────────────────────────────────────────────────────
      No owned markup: the `.gog-collapsible__*` rules live in utilities.css, because they style content
      the consumer projects, which a scoped stylesheet cannot reach. */

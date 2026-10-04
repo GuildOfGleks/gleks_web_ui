@@ -8,6 +8,7 @@ import {
   BreadcrumbsComponent,
   StepperComponent,
   FileUploadComponent,
+  RatingComponent,
   ButtonComponent,
   ButtonToggleGroupComponent,
   CardComponent,
@@ -222,6 +223,13 @@ export const UNITS: readonly GogUnit[] = [
     group: 'form',
     entry: 'root',
     parts: [cmp(FileUploadComponent)],
+  },
+  {
+    id: 'rating',
+    name: 'Rating',
+    group: 'form',
+    entry: 'root',
+    parts: [cmp(RatingComponent)],
   },
   {
     id: 'datepicker',

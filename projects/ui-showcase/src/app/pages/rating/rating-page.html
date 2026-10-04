@@ -1,0 +1,116 @@
+<app-doc-page unit="rating">
+  <app-doc-section
+    id="states"
+    title="States"
+    lead="Stars over native radios. Hover to preview the score a press would give; Tab in and use the arrow keys."
+  >
+    <h3>state</h3>
+    <app-doc-matrix rowAxis="state" colAxis="">
+      <ng-template appDocCell [rows]="states" [cols]="column" let-state>
+        <gog-rating
+          label="Your stay"
+          [value]="3"
+          [disabled]="state.value.disabled"
+          [errorMessage]="state.value.error"
+        />
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>size</h3>
+    <app-doc-matrix rowAxis="size" colAxis="mode">
+      <ng-template appDocCell [rows]="sizes" [cols]="modes" let-size let-mode="col">
+        <gog-rating
+          [size]="size"
+          [value]="mode === 'readonly' ? 3.5 : 3"
+          [readonly]="mode === 'readonly'"
+          ariaLabel="Score"
+        />
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section
+    id="readonly"
+    title="Read-only"
+    lead="A picture of a score, not a control: one image named in words. The stars draw to the nearest half; the name keeps the real value."
+  >
+    <h3>readonly, fractional values</h3>
+    <div class="rating-page__stack">
+      @for (value of displayed; track value) {
+        <div class="rating-page__row">
+          <gog-rating readonly size="sm" [value]="value" />
+          <code>{{ value }}</code>
+        </div>
+      }
+      <div class="rating-page__row">
+        <gog-rating readonly size="sm" [value]="null" />
+        <code>null</code>
+      </div>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="choosing"
+    title="Choosing"
+    lead="A press sets the value. With clearable, a press on the chosen star — or Space on it — clears the rating, which native radios cannot do."
+  >
+    <h3>[(value)], max</h3>
+    <div class="rating-page__stack">
+      <gog-rating label="Your rating" [(value)]="score" />
+      <gog-rating label="Out of ten" [max]="10" size="sm" [(value)]="score" />
+      <code>value: {{ score() }}</code>
+    </div>
+
+    <h3>clearable</h3>
+    <div class="rating-page__stack">
+      <gog-rating label="Press the chosen star again" clearable [(value)]="clearableScore" />
+      <code>value: {{ clearableScore() }}</code>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="forms"
+    title="Forms"
+    lead="A ControlValueAccessor holding a number or null; errorDisplay='auto' shows the message once the control is touched and invalid."
+  >
+    <h3>[formControl], Validators.required, errorDisplay="auto"</h3>
+    <div class="rating-page__stack">
+      <gog-rating
+        label="Rate the delivery"
+        errorMessage="Pick a rating"
+        errorDisplay="auto"
+        [formControl]="control"
+      />
+      <code
+        >control: {{ control.value }} · touched {{ control.touched }} · valid
+        {{ control.valid }}</code
+      >
+      <div class="rating-page__row">
+        <button type="button" (click)="control.markAsTouched()">markAsTouched()</button>
+        <button type="button" (click)="control.disabled ? control.enable() : control.disable()">
+          {{ control.disabled ? 'enable()' : 'disable()' }}
+        </button>
+        <button type="button" (click)="control.reset()">reset()</button>
+      </div>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="Interactive, a radio group with each star named in words; read-only, one image whose name is the score."
+  >
+    <h3>what assistive tech gets</h3>
+    <div class="rating-page__stack">
+      <app-doc-attrs target="[role=radiogroup]">
+        <gog-rating label="Your rating" [value]="2" errorMessage="Required" />
+      </app-doc-attrs>
+      <app-doc-attrs target="input[type=radio]">
+        <gog-rating ariaLabel="Score" [value]="2" [max]="3" />
+      </app-doc-attrs>
+      <app-doc-attrs target="[role=img]">
+        <gog-rating readonly [value]="4.7" />
+      </app-doc-attrs>
+    </div>
+  </app-doc-section>
+</app-doc-page>

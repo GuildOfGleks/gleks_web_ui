@@ -1,0 +1,21 @@
+.rating-page__stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gog-space-12);
+  max-width: 32rem;
+  margin-block-end: var(--gog-space-16);
+}
+
+.rating-page__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--gog-space-8);
+}
+
+.rating-page__note {
+  margin-block: 0 var(--gog-space-8);
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-xs);
+  max-width: 60rem;
+}

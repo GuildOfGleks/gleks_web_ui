@@ -1,0 +1,67 @@
+<div class="gog-rating" [class.gog-rating--disabled]="isDisabled()">
+  @if (label()) {
+    <span class="gog-rating__label" [id]="labelId">{{ label() }}</span>
+  }
+
+  @if (readonly()) {
+    <!-- A picture of the score: one image, named in words, rather than five unnamed glyphs. -->
+    <div
+      class="gog-rating__stars"
+      role="img"
+      [attr.aria-labelledby]="label() ? labelId + ' ' + valueId : valueId"
+    >
+      @for (star of stars(); track star.value) {
+        <span class="gog-rating__star">
+          <ng-container *ngTemplateOutlet="glyph; context: { $implicit: star }" />
+        </span>
+      }
+      <span class="gog-visually-hidden" [id]="valueId">{{ valueText() }}</span>
+    </div>
+  } @else {
+    <!--
+      The stars are drawn over native radios: one tab stop, the arrow keys move the rating, and
+      each star is read as "3 stars, 3 of 5" without a key handler of ours.
+    -->
+    <div
+      class="gog-rating__stars"
+      role="radiogroup"
+      [attr.aria-labelledby]="label() ? labelId : null"
+      [attr.aria-label]="label() ? null : ariaLabel() || null"
+      [attr.aria-invalid]="hasError() || null"
+      [attr.aria-describedby]="hasError() ? errorId : null"
+      (mouseleave)="preview(null)"
+    >
+      @for (star of stars(); track star.value) {
+        <label class="gog-rating__star" (mouseenter)="preview(star.value)">
+          <input
+            class="gog-rating__input"
+            type="radio"
+            [name]="uid"
+            [value]="star.value"
+            [checked]="value() === star.value"
+            [disabled]="isDisabled()"
+            [attr.aria-label]="resolvedLabels().star(star.value, stars().length)"
+            (click)="choose(star.value)"
+            (keydown.space)="clearWithSpace($event, star.value)"
+            (blur)="onTouched()"
+          />
+          <ng-container *ngTemplateOutlet="glyph; context: { $implicit: star }" />
+        </label>
+      }
+    </div>
+  }
+
+  @if (hasError()) {
+    <span class="gog-rating__error" [id]="errorId" role="alert">{{ visibleError() }}</span>
+  }
+</div>
+
+<!-- The outline star, with the filled one over it clipped to the star's fill. -->
+<ng-template #glyph let-star>
+  <span class="gog-rating__glyph" aria-hidden="true" [style.--gog-rating-fill]="star.fill">
+    <gog-icon class="gog-rating__empty" name="star" />
+    @if (star.fill > 0) {
+      <gog-icon class="gog-rating__full" name="star-filled" />
+    }
+  </span>
+</ng-template>

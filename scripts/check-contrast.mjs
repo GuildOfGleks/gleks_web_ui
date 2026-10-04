@@ -641,6 +641,36 @@ const WASH_PAIRS = [
     ['--gog-background-color'],
     4.5,
   ],
+  // A rating's stars are graphics: the empty outline is what shows there is a star to press, and
+  // the fill is what says which are chosen, so both are held to 3:1.
+  [
+    'rating empty star',
+    '--gog-rating-empty-color',
+    '--gog-background-color',
+    ['--gog-background-color'],
+    3,
+  ],
+  [
+    'rating empty star on surface',
+    '--gog-rating-empty-color',
+    '--gog-surface-color',
+    ['--gog-surface-color'],
+    3,
+  ],
+  [
+    'rating filled star',
+    '--gog-rating-fill-color',
+    '--gog-background-color',
+    ['--gog-background-color'],
+    3,
+  ],
+  [
+    'rating filled star on surface',
+    '--gog-rating-fill-color',
+    '--gog-surface-color',
+    ['--gog-surface-color'],
+    3,
+  ],
   // A breadcrumb trail's parent links, its hover, and the current page, on the page or a surface.
   [
     'breadcrumbs link',

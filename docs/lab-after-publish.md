@@ -55,7 +55,14 @@ build.
   control, the live region, focus after a removal). Route, navigation (Forms & Inputs), SEO,
   sitemap, Global Config note and labels list (five keys), generator catalogue and gallery, token
   reference; `theme-starter.css` regenerated.
+- **A new Rating page**, in the D6 shape: states and sizes (interactive and read-only side by side),
+  read-only with fractional values drawn to the nearest half, choosing with `[(value)]`, `max` and
+  `clearable` (a press or Space on the chosen star clears it), forms with `errorDisplay="auto"`, and
+  accessibility (a radio group with each star named; read-only, one image named by the score).
+  Route, navigation (Forms & Inputs), SEO, sitemap, Global Config note and labels list (two keys,
+  `ratingStar` and `ratingValue`), generator catalogue and gallery, token reference;
+  `theme-starter.css` regenerated.
 - **Consider using it in the lab itself**: a doc page under `/components/` is two levels deep and
   has no trail. Not required — decide by looking.
-- **Counts**: 33 components becomes 36 on the comparison page, the FAQ and `nav-data.ts`; the
+- **Counts**: 33 components becomes 37 on the comparison page, the FAQ and `nav-data.ts`; the
   whole-library bundle row is a re-measurement, not an edit.

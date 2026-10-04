@@ -353,7 +353,7 @@ parent's config**, one level deep per key — it does not replace it.
 | `paginator`    | `showPageSizeSelect`, `pageSizeOptions`                                               | `gog-paginator`, and through it `gog-table`'s built-in pagination.                                                                                                                                                                                                                                                                                                                                                                         |
 | `toast`        | `position`, `duration`                                                                | `ToastService`.                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | `theme`        | `storageKey`, `defaultTheme`, `followSystem`, `lightTheme`, `darkTheme`               | `ThemeService`. All off/neutral by default — see below.                                                                                                                                                                                                                                                                                                                                                                                    |
-| `labels`       | every fixed string the library renders — see below                                    | inputfield, textarea, select, multiselect, autocomplete, datepicker, calendar, paginator, table, avatar-group, breadcrumbs, stepper, file-upload, `DialogService`, `ToastService`.                                                                                                                                                                                                                                                         |
+| `labels`       | every fixed string the library renders — see below                                    | inputfield, textarea, select, multiselect, autocomplete, datepicker, calendar, paginator, table, avatar-group, breadcrumbs, stepper, file-upload, rating, `DialogService`, `ToastService`.                                                                                                                                                                                                                                                 |
 
 Anything visual does **not** belong here — override the `--gog-*` token instead.
 
@@ -413,6 +413,8 @@ provideGogConfig({
     fileRemove: (name) => `${name} entfernen`,
     filesAdded: (count) => `${count} Datei(en) hinzugefügt`,
     fileRejected: (name, reason) => `${name} wurde nicht hinzugefügt (${reason})`,
+    ratingStar: (value) => `${value} Sterne`, // gog-rating's star names
+    ratingValue: (value, max) => (value === null ? 'Nicht bewertet' : `${value} von ${max}`),
   },
 });
 ```
@@ -1108,6 +1110,39 @@ accept)` is exported for the same check elsewhere.
   not accepted"); removing a file moves focus to the next remove button, or the input. Words come
   from `GOG_CONFIG.labels`: `fileDrop`, `fileBrowse`, and the formatters `fileRemove(name)`,
   `filesAdded(count)`, `fileRejected(name, reason)`.
+
+#### `gog-rating`
+
+A score out of a few stars, to give or to show.
+
+```html
+<gog-rating label="Your rating" clearable [formControl]="score" />
+<gog-rating readonly [value]="product.averageRating" />
+```
+
+| Input / model         | Type                              | Default                            |
+| --------------------- | --------------------------------- | ---------------------------------- |
+| `value`               | `number \| null` (model; and CVA) | `null`                             |
+| `max`                 | `number`                          | `5`                                |
+| `readonly`            | `boolean`                         | `false`                            |
+| `clearable`           | `boolean`                         | `false`                            |
+| `label` / `ariaLabel` | `string`                          | `''`                               |
+| `errorMessage`        | `string`                          | `''`                               |
+| `errorDisplay`        | `GogErrorDisplay \| undefined`    | `'manual'`                         |
+| `disabled`            | `boolean`                         | `false`                            |
+| `size`                | `GogSize \| undefined`            | `'md'` (`GOG_CONFIG.control.size`) |
+
+- **Interactive, it is a radio group** — the stars are drawn over native radios, so it is one tab
+  stop, the arrow keys move the rating, and each star is read as "3 stars". The pointer previews
+  the score a press would give. `null` means not rated.
+- **`clearable`**: a press on the chosen star, or Space on it, sets `null`. Off, a rating once given
+  can only change.
+- **`readonly` is a picture, not a control**: one `role="img"` named "Rated 4.7 out of 5" (with
+  `label` in front when there is one). The value may be fractional; the stars draw to the nearest
+  half, mirrored under `dir="rtl"`, and the name keeps the real number. Use it for a displayed
+  average, not `disabled`.
+- Words come from `GOG_CONFIG.labels`: the formatters `ratingStar(value, max)` and
+  `ratingValue(value, max)` (`value` is `null` when not rated).
 
 #### `gog-datepicker` / `gog-calendar`
 

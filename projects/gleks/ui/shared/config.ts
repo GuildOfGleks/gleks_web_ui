@@ -347,6 +347,12 @@ export interface GogGlobalConfig {
     fileRemove?: (name: string) => string;
     filesAdded?: (count: number) => string;
     fileRejected?: (name: string, reason: 'type' | 'size' | 'count') => string;
+    /**
+     * `gog-rating`: each star's name ("3 stars"), and the read-only picture's ("Rated 4.7 out of
+     * 5", "Not rated"). Formatters, like `page`, because they interpolate a number.
+     */
+    ratingStar?: (value: number, max: number) => string;
+    ratingValue?: (value: number | null, max: number) => string;
     /** `gog-datepicker`'s button that opens the calendar panel. */
     openCalendar?: string;
     /**

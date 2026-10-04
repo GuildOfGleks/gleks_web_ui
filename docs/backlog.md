@@ -662,7 +662,7 @@ Each is additive: nothing here breaks an existing consumer, and none blocks anot
   in 21.17.0 (`docs/avatar.md`). `breadcrumbs` **came off on
   2026-10-04 as well**, into the in-progress 21.18.0 (`docs/breadcrumbs.md`). `stepper` came off
   the same day, into the same 21.18.0 (`docs/stepper.md`). `file upload` too
-  (`docs/file-upload.md`). What is left: `rating`, `empty state`. Each is additive and
+  (`docs/file-upload.md`), and `rating` (`docs/rating.md`). What is left: `empty state`. Each is additive and
   independent; none blocks anything else.
 
   **What building the first one taught, and it is not about alerts.** The plan's required question

@@ -13,6 +13,7 @@ import {
   BreadcrumbsComponent,
   StepperComponent,
   FileUploadComponent,
+  RatingComponent,
   GogBreadcrumbDirective,
   ChipComponent,
   CollapsibleComponent,
@@ -127,6 +128,7 @@ import {
     BreadcrumbsComponent,
     StepperComponent,
     FileUploadComponent,
+    RatingComponent,
     GogBreadcrumbDirective,
     ChipComponent,
     CollapsibleComponent,
@@ -232,6 +234,7 @@ export class SpecimenPage {
   protected readonly birthday = signal<Date | GogDateRange | null>(new Date(1990, 4, 17));
   protected readonly plan = signal<string | number | null>('team');
   protected readonly digestLimit = signal(12);
+  protected readonly appRating = signal<number | null>(null);
   protected readonly publicProfile = signal(true);
   protected readonly terms = signal(false);
   protected readonly mentions = signal(true);

@@ -8,6 +8,7 @@ import { AVATAR_API } from './avatar/avatar.api';
 import { BREADCRUMBS_API } from './breadcrumbs/breadcrumbs.api';
 import { STEPPER_API } from './stepper/stepper.api';
 import { FILE_UPLOAD_API } from './file-upload/file-upload.api';
+import { RATING_API } from './rating/rating.api';
 import { BADGE_API } from './badge/badge.api';
 import { BUTTON_API } from './button/button.api';
 import { BUTTON_TOGGLE_API } from './button-toggle/button-toggle.api';
@@ -133,6 +134,11 @@ export const PAGES: Readonly<Record<string, DocPageEntry>> = {
     load: () => import('./file-upload/file-upload-page').then((m) => m.FileUploadPage),
     api: FILE_UPLOAD_API,
     tokens: ['File upload', 'Field label'],
+  },
+  rating: {
+    load: () => import('./rating/rating-page').then((m) => m.RatingPage),
+    api: RATING_API,
+    tokens: ['Rating', 'Field label'],
   },
   stepper: {
     load: () => import('./stepper/stepper-page').then((m) => m.StepperPage),

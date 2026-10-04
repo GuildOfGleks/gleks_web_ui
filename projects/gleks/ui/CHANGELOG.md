@@ -38,6 +38,13 @@ _Versioning_ section. Before 21.16.0 a minor could carry a breaking change, and 
   `GogFileRejectionReason`, `gogFileMatchesAccept`. New labels: `fileDrop`, `fileBrowse`,
   `fileRemove`, `filesAdded`, `fileRejected`. New tokens: `--gog-file-upload-*`. Plan in
   `docs/file-upload.md`.
+- **`gog-rating`** — a score out of a few stars, to give or to show. Interactive, the stars are
+  drawn over native radios: one tab stop, the arrow keys move the rating, each star is read as
+  "3 stars", and the pointer previews the score a press would give; `clearable` lets a press on the
+  chosen star, or Space on it, clear the rating. A `ControlValueAccessor` holding a `number | null`,
+  with the library's error state. `readonly` renders one `role="img"` named "Rated 4.7 out of 5",
+  its stars drawn to the nearest half and mirrored under RTL. New export: `RatingComponent`. New
+  labels: `ratingStar`, `ratingValue`. New tokens: `--gog-rating-*`. Plan in `docs/rating.md`.
 
 ## [21.17.0] - 04.10.2026
 
