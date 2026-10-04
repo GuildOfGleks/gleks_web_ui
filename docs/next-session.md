@@ -1,12 +1,16 @@
 # Where to start
 
-**21.15.0 is released and the lab is caught up with it** (2026-10-03).
-**`docs/lab-component-pages.md` is done** (2026-10-04): every component page in the lab has one
-shape, its examples carry no stylesheet, and the generator now refuses one. The plan is a record.
+**21.15.1 is released and the lab is caught up with it** (2026-10-04). Defects left in
+`docs/backlog.md` are the two that need a real screen reader (the table's row announcement and
+`gog-alert`'s live-region copy) — the owner's to check, not an agent's.
 
-**Next: back to `docs/backlog.md`, Defects first.** The accordion defect that work turned up is
-fixed for 21.15.1 (`planned`); once it is published, the lab's Accordion page gets its overlay
-example back (`docs/lab-after-publish.md`).
+**Next: 21.16.0, the release the 21 line is declared stable from** (agreed with the owner on
+2026-10-04). It carries the last scheduled break — `gog-autocomplete`'s four deprecated filter
+inputs removed by splitting `GogDropdownBase` (`docs/backlog.md` has the shape) — and then says so
+in writing: the changelog's "not yet reached 1.0" preamble, a versioning section in the README,
+and `docs/branching-and-support.md`'s open question about breaking changes in minors. From
+21.16.0: patches fix, minors add (new components are minors, not patches), and only 22.0.0
+breaks, alongside the Angular upgrade.
 
 **Deferred by the owner on 2026-09-13 — do not start these without asking:**
 
