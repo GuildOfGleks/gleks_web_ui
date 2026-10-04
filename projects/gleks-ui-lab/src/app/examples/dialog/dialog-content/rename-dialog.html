@@ -1,0 +1,9 @@
+<div style="display: grid; gap: 16px">
+  <gog-inputfield label="Name" [(value)]="name" />
+  <!-- appendToBody: the dialog body scrolls, and a list inside it would be clipped. -->
+  <gog-select label="Folder" [options]="folders" appendToBody [(value)]="folder" />
+  <div style="display: flex; justify-content: flex-end; gap: 12px">
+    <gog-button variant="ghost" (gogClick)="ref.close()">Cancel</gog-button>
+    <gog-button (gogClick)="save()">Save</gog-button>
+  </div>
+</div>

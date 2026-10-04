@@ -79,8 +79,13 @@ function camel(name) {
 function contractViolations(dir) {
   const ts = read(dir, 'example.ts');
   const problems = [];
-  if (/\btemplate\s*:/.test(ts)) problems.push('inline `template:` — use templateUrl');
-  if (/\bstyles\s*:/.test(ts)) problems.push('inline `styles:` — examples carry no styles');
+  for (const name of ['example.ts', ...companions(dir, '.ts')]) {
+    const source = read(dir, name);
+    if (/\btemplate\s*:/.test(source))
+      problems.push(`${name}: inline \`template:\` — use templateUrl`);
+    if (/\bstyles\s*:/.test(source))
+      problems.push(`${name}: inline \`styles:\` — examples carry no styles`);
+  }
   if (/\bstyleUrls?\s*:/.test(ts) && !existsSync(join(dir, 'example.css'))) {
     problems.push('`styleUrl` without an example.css');
   }
@@ -88,6 +93,30 @@ function contractViolations(dir) {
     problems.push('example.html exists but example.ts has no templateUrl');
   }
   return problems;
+}
+
+/**
+ * Files beside `example.{ts,html}` that belong to the same example — a dialog's content component,
+ * which `DialogService.open()` needs as a class and so cannot be part of the example's own
+ * template. Each is shown in the tab of its kind, after the example's own file and under a comment
+ * naming it, so the two tabs stay the whole example and nothing is hidden in a file no tab shows.
+ */
+function companions(dir, extension) {
+  return readdirSync(dir)
+    .filter((entry) => entry.endsWith(extension) && !entry.startsWith('example.'))
+    .sort();
+}
+
+/** One tab's text: the example's own file, then each companion of the same kind. */
+function tab(dir, file) {
+  const extension = file.slice(file.lastIndexOf('.'));
+  const parts = [read(dir, file)];
+  if (extension === '.css') return parts[0];
+  for (const name of companions(dir, extension)) {
+    const header = extension === '.html' ? `<!-- ${name} -->` : `// ${name}`;
+    parts.push(`${header}\n${read(dir, name)}`);
+  }
+  return parts.filter(Boolean).join('\n\n');
 }
 
 let stale = 0;
@@ -104,7 +133,7 @@ for (const component of dirsIn(EXAMPLES_ROOT)) {
       console.error(`  ${dir}: ${problem}`);
       violations++;
     }
-    const files = FILES.map(([key, file]) => `    ${key}: ${literal(read(dir, file))},`).join('\n');
+    const files = FILES.map(([key, file]) => `    ${key}: ${literal(tab(dir, file))},`).join('\n');
     return `  ${camel(name)}: {\n${files}\n  },`;
   });
 

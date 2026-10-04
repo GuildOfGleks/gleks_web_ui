@@ -18,6 +18,10 @@ status, is `docs/lab-component-pages.md`; the rules are stated here because they
 2. **Two tabs, HTML and TS. The TS tab is TypeScript only**: `templateUrl: './example.html'`, no
    `template:`, no `styles:`, no `styleUrl`. The markup lives in the HTML tab and is never repeated
    inside the TS one. `generate-example-sources.mjs --check` (run by `build:lab`) fails otherwise.
+   **A second component the example needs** — a dialog's body, which `DialogService.open()` takes
+   as a class — lives in the same folder as `<name>.ts` + `<name>.html`, under the same rules (no
+   `template:`, no `styles:`). The generator appends it to the TS and HTML tabs under a comment
+   naming the file, so the two tabs remain the whole example.
 3. **An example carries no stylesheet.** Its arrangement is the lab's (`layout`, below). When styles
    are the subject, set instance tokens inline in the HTML (`style="--gog-…"`), or show a theme-level
    block as a fenced `css` snippet in the card's prose.

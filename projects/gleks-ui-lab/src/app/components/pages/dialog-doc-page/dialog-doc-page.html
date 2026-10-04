@@ -12,206 +12,151 @@
   <section class="doc-section">
     <h2 id="overview" class="doc-section__title font-heading">Overview</h2>
     <p class="doc-section__intro">
-      Import <code>DialogComponent</code> and mount <code>&lt;gog-dialog /&gt;</code> once —
-      typically near the root of your app. Every <code>DialogService.open()</code> call renders
-      through that single outlet, so it only needs to exist once no matter how many places call it.
+      Import <code>DialogComponent</code> and mount <code>&lt;gog-dialog /&gt;</code> once, near the
+      root of the app. Every <code>DialogService.open()</code> renders through that one outlet. Both
+      come from <code>@guildofgleks/ui/dialog</code>, with the confirmation dialog and the dialog
+      tokens — a dialog opened only behind a lazy route keeps its own code out of the initial
+      bundle. What it imports from the root package (the button, icon and scroll area it renders)
+      loads wherever the root package already does.
     </p>
     <app-markdown [markdown]="importSnippet" />
-    <p class="doc-section__intro">
-      <strong
-        >Import the dialog and <code>DialogService</code> from
-        <code>@guildofgleks/ui/dialog</code></strong
-      >, with the confirmation dialog and the dialog tokens. The root package has not exported it
-      since 21.14.0 — in 21.13.0 it still did, deprecated — and that is what lets a dialog opened
-      only behind a lazy route keep its own code out of your app's initial bundle.
-      <strong>What it imports from the root does not move</strong>: the button, icon and scroll area
-      it renders belong to the root package, and load wherever your first page already loads it.
-      Measured on a fresh app with the table, datepicker, calendar and dialog behind one lazy route:
-      the initial bundle went from 101.2 kB to 88.2 kB, and 27 kB of those components' root
-      dependencies stayed in it.
-    </p>
 
     <p class="doc-section__intro">
-      Basic usage — the library ships a ready-made <code>ConfirmationDialogComponent</code> for
-      confirm/cancel prompts. It shows the question as its own heading, so the dialog is named by
-      that heading rather than given a <code>title</code> that would print the question twice:
+      Basic usage — the library's <code>ConfirmationDialogComponent</code> for a confirm/cancel
+      prompt. It shows the question as its own heading, so the dialog is named by that heading:
       <code>ariaLabelledBy</code> on the config and <code>titleId</code> in its data
-      <app-since version="21.15.0" /> are the same id. Every dialog needs a name — a
-      <code>title</code> or an <code>ariaLabelledBy</code> — and dev mode warns about one that has
-      neither.
+      <app-since version="21.15.0" /> are the same id. <code>afterClosed</code> resolves with
+      <code>true</code>, <code>false</code>, or <code>undefined</code> when dismissed.
     </p>
     <div class="demo-card">
-      <div class="demo-card__preview">
-        <gog-button (gogClick)="openConfirm()">Delete workspace</gog-button>
-      </div>
-      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
+      <app-demo [component]="examples.overview" [source]="sources.dialogOverview" layout="row" />
     </div>
-    <p class="doc-section__meta">Last result: {{ lastResult() }}</p>
   </section>
 
   <section class="doc-section">
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Custom content</h3>
+      <h3 class="demo-card__title">Modal, closable, draggable, role, title</h3>
       <p class="demo-card__meta">
-        Any component can be the dialog body. Inject <code>DIALOG_DATA</code> to read the data
-        passed to <code>open()</code>, and <code>DIALOG_REF</code> to close the dialog and resolve
-        <code>afterClosed</code> from inside the body itself. Escape is shared fairly with what the
-        body contains <app-since version="21.15.0" />: an open select or multiselect in a dialog
-        closes its list on the first press and the dialog on the next, and a control of your own can
-        claim the key the same way, by calling <code>preventDefault()</code> on it.
+        <code>modal</code>, <code>closable</code> and <code>draggable</code> are all on by default.
+        Off, <code>modal</code> drops the dimmed backdrop, the focus trap and the body scroll lock,
+        and a press on the page reaches the page and leaves the dialog open
+        <app-since version="21.15.0" />; <code>closable</code> removes the close button, Escape and
+        the backdrop press, leaving the content's own buttons; <code>draggable</code> keeps the
+        header but stops it moving. Without a <code>title</code> the header holds only the close
+        button — and the dialog has no name, which dev mode warns about.
       </p>
-      <div class="demo-card__preview action-row">
-        <gog-button (gogClick)="openCustomContent()">Open custom dialog</gog-button>
-      </div>
-      <app-code-tabs [html]="customContentHtml" [ts]="customContentTs" />
+      <app-demo [component]="examples.config" [source]="sources.dialogConfig" layout="row" />
     </article>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Non-closable</h3>
+      <h3 class="demo-card__title">Your own component</h3>
       <p class="demo-card__meta">
-        <code>closable: false</code> hides the header close button and ignores Escape and backdrop
-        clicks — the only way out is a control inside the body.
+        Any component can be the body: it reads <code>DIALOG_DATA</code> and closes itself through
+        <code>DIALOG_REF</code>, and what it closes with resolves <code>afterClosed</code> — Save
+        with an object, Cancel and the close button with <code>undefined</code>. The select needs
+        <code>appendToBody</code>: the dialog's body is a scroller, and a list rendered inside it is
+        clipped under the header. Escape closes the open list first and the dialog only on the next
+        press <app-since version="21.15.0" />; a control of your own can claim the key the same way,
+        with <code>preventDefault()</code>.
       </p>
-      <div class="demo-card__preview action-row">
-        <gog-button variant="outline" (gogClick)="openNonClosable()">
-          Open non-closable dialog
-        </gog-button>
-      </div>
-      <app-code-tabs [html]="nonClosableHtml" [ts]="nonClosableTs" />
+      <app-demo [component]="examples.content" [source]="sources.dialogContent" layout="row" />
     </article>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Non-modal</h3>
+      <h3 class="demo-card__title">width and maxWidth</h3>
       <p class="demo-card__meta">
-        <code>modal: false</code> leaves the page behind it usable — no dim, no scroll lock, no Tab
-        focus trap — for a lightweight panel rather than a blocking prompt. A press on the page
-        reaches the page and leaves the dialog open <app-since version="21.15.0" />; it closes by
-        its own buttons, the close button or Escape. Before 21.15.0 an invisible backdrop still
-        covered the page and closed the dialog on any press.
+        Both are CSS lengths written onto the panel; <code>maxWidth</code> wins when the two
+        disagree. Unset, the panel is as wide as its content, up to <code>90vw</code>.
       </p>
-      <div class="demo-card__preview action-row">
-        <gog-button variant="outline" (gogClick)="openNonModal()">Open non-modal dialog</gog-button>
-      </div>
-      <app-code-tabs [html]="nonModalHtml" [ts]="nonModalTs" />
+      <app-demo [component]="examples.width" [source]="sources.dialogWidth" layout="row" />
     </article>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Custom width</h3>
+      <h3 class="demo-card__title">Long content</h3>
       <p class="demo-card__meta">
-        <code>width</code> and <code>maxWidth</code> are plain CSS values forwarded to the panel.
+        The body scrolls inside the panel, capped by <code>--gog-dialog-body-max-height</code>, and
+        the header — with the close button and the drag handle — stays put.
       </p>
-      <div class="demo-card__preview action-row">
-        <gog-button variant="outline" (gogClick)="openCustomWidth()">Open wide dialog</gog-button>
-      </div>
-      <app-code-tabs [html]="widthHtml" [ts]="widthTs" />
+      <app-demo [component]="examples.long" [source]="sources.dialogLong" layout="row" />
     </article>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Stacked dialogs</h3>
+      <h3 class="demo-card__title">closeIconName and closeIconTemplate</h3>
       <p class="demo-card__meta">
-        Calling <code>open()</code> again from inside a dialog's body stacks a new one on top, each
-        with an increasing z-index — the body component can inject
-        <code>DialogService</code> itself, same as any other consumer.
+        Only the look of the close button changes: it keeps its name, its focus ring and Escape.
       </p>
-      <div class="demo-card__preview action-row">
-        <gog-button variant="outline" (gogClick)="openStacked()">Open stacked dialogs</gog-button>
-      </div>
-      <app-code-tabs [html]="stackedHtml" [ts]="stackedTs" />
+      <app-demo [component]="examples.closeIcon" [source]="sources.dialogCloseIcon" layout="row" />
     </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Stacking, and closeAll</h3>
+      <p class="demo-card__meta">
+        Open one, then another from inside it — the body injects <code>DialogService</code> like any
+        other consumer. Each opens above the last; Escape closes only the top one, and closing the
+        last returns focus to what had it before the first opened. Close all resolves every open
+        dialog's <code>afterClosed</code> with the value it is given.
+      </p>
+      <app-demo [component]="examples.stack" [source]="sources.dialogStack" layout="row" />
+    </article>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="accessibility" class="doc-section__title font-heading">Accessibility</h2>
+    <p class="doc-section__intro">
+      The panel is <code>role="dialog"</code> (or <code>alertdialog</code>),
+      <code>aria-modal</code> while modal, and named by its title through
+      <code>aria-labelledby</code>.
+    </p>
+    <ul class="doc-section__intro">
+      <li>
+        <strong>Name</strong> — every dialog needs a <code>title</code> or an
+        <code>ariaLabelledBy</code>; dev mode warns about one with neither. When the content carries
+        its own heading, point <code>ariaLabelledBy</code> at it instead of repeating it as a title
+        — for <code>ConfirmationDialogComponent</code>, pass the same id as
+        <code>data.titleId</code>.
+      </li>
+      <li>
+        <strong>Keyboard</strong> — the top dialog takes focus; <kbd>Tab</kbd> and
+        <kbd>Shift+Tab</kbd> cycle inside a modal one, a non-modal one lets focus leave.
+        <kbd>Escape</kbd> closes the top dialog, after anything inside that claimed it. Closing the
+        last one returns focus to what had it before the first opened.
+      </li>
+      <li>
+        <strong>Dismissing</strong> — <kbd>Escape</kbd>, the close button, and a press that both
+        starts and ends on the backdrop; a drag that starts in the panel and is released outside
+        does not close. All three resolve <code>afterClosed</code> with <code>undefined</code>.
+      </li>
+      <li>
+        <strong>Close button</strong> — named by <code>closeAriaLabel</code>, or
+        <code>GOG_CONFIG.labels.closeDialog</code> app-wide.
+      </li>
+      <li>
+        <strong>Overlays inside</strong> — a tooltip or a dropdown opened from a dialog stacks above
+        it: the panel raises <code>--gog-tooltip-z</code> and <code>--gog-dropdown-z</code>.
+      </li>
+    </ul>
   </section>
 
   <section class="doc-section">
     <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
 
     <h3 class="doc-section__subtitle">DialogConfig</h3>
-    <p class="doc-section__intro">Passed to <code>DialogService.open(config)</code>.</p>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Default</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of configOptions; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-                @if (row.since) {
-                  <app-since [version]="row.since" />
-                }
-              </td>
-              <td>
-                <code>{{ row.type }}</code>
-              </td>
-              <td>
-                <code>{{ row.default }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="configOptions" kind="inputs" />
 
     <h3 class="doc-section__subtitle">DialogService methods</h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Signature</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of serviceMethods; track row.signature) {
-            <tr>
-              <td>
-                <code>{{ row.signature }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="serviceMethods" kind="methods" />
 
     <h3 class="doc-section__subtitle">Injection tokens</h3>
-    <p class="doc-section__intro">
-      Used inside the component passed as <code>DialogConfig.component</code>.
-    </p>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Token</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of injectionTokens; track row.signature) {
-            <tr>
-              <td>
-                <code>{{ row.signature }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="injectionTokens" kind="methods" />
 
     <h3 class="doc-section__subtitle">ConfirmationDialogComponent</h3>
     <p class="doc-section__intro">
-      A ready-made dialog body for confirm/cancel prompts — pass it as <code>component</code> with a
-      <code>ConfirmDialogData</code> object as <code>data</code>:
-      <code>&#123; title, description, confirmText, cancelText &#125;</code>. It closes itself with
-      <code>true</code> on confirm and <code>false</code> on cancel.
+      A ready-made body for confirm/cancel prompts — pass it as <code>component</code> with a
+      <code>ConfirmDialogData</code> as <code>data</code>:
+      <code>&#123; title, titleId?, description, confirmText, cancelText &#125;</code>. It closes
+      itself with <code>true</code> on confirm and <code>false</code> on cancel.
     </p>
   </section>
 
@@ -225,25 +170,6 @@
       <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
       <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
     </p>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Token</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of styleTokens; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="styleTokens" kind="tokens" />
   </section>
 </div>

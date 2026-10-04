@@ -1,0 +1,6 @@
+<p>Dialog {{ data.depth }}. Each new one opens above the last; Escape closes only the top one.</p>
+<div style="display: flex; justify-content: flex-end; gap: 12px">
+  <!-- closeAll resolves every open dialog's afterClosed with the value it is given. -->
+  <gog-button variant="ghost" (gogClick)="dialogs.closeAll('closeAll')">Close all</gog-button>
+  <gog-button (gogClick)="openAnother()">Open another</gog-button>
+</div>

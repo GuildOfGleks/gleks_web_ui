@@ -41,6 +41,12 @@ the whole template, and never appears inside the TS. `scripts/generate-example-s
 enforces it: `--check` (which `build:lab` runs) fails on an `example.ts` containing any of those
 keys, or on an `example.css` existing at all once the migration is done.
 
+**D2a. A companion component stays in the example folder** (added 2026-10-04, for `dialog`).
+`DialogService.open()` takes a component class, so a dialog example needs a second component, and
+D2 forbids writing it inline. It goes beside the example as `<name>.ts` + `<name>.html`, held to
+the same contract; `generate-example-sources.mjs` appends each companion to the tab of its kind
+under a `// <name>.ts` or `<!-- <name>.html -->` header. Two tabs, nothing hidden.
+
 **D3. Demo layout belongs to the lab, not to the example.** `<app-demo>` takes a `layout` input —
 `block` (default), `row`, `rows`, `frame` as built in the pilot; every one keeps the example
 centred, its controls spaced apart and clear space above the code block — and owns the preview box, including the host
@@ -147,7 +153,7 @@ template.
 | chip          | legacy   | 11    | 11  | ✅       |
 | collapsible   | legacy   | 6     | 6   | ✅       |
 | datepicker    | legacy   | 6     | 6   | ✅       |
-| dialog        | legacy   | 6     | 4   |          |
+| dialog        | legacy   | 6     | 4   | ✅       |
 | divider       | legacy   | 5     | 5   | ✅       |
 | icon          | legacy   | 5     | 5   | ✅       |
 | inputfield    | legacy   | 13    | 13  | ✅       |
