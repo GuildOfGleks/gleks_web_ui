@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { GOG_DEPRECATIONS } from '@guildofgleks/ui';
 import { ApiTableComponent, type ApiRow } from '../../shared/api-table/api-table';
 import { DemoComponent } from '../../shared/demo/demo';
 import { GlobalConfigNote } from '../../shared/global-config-note/global-config-note';
@@ -106,18 +105,6 @@ const OWN_INPUTS: readonly ApiRow[] = [
     since: '21.13.0',
   },
 ];
-
-/**
- * The panel-search-box inputs this control inherits and deprecated in 21.15.0. Matched by name
- * against the manifest, which names inputs without their component — so the set is spelled out
- * here, and the table empties itself once the installed package stops listing them.
- */
-const DEPRECATED_INPUT_NAMES = new Set([
-  'filter',
-  'filterPlaceholder',
-  'filterPosition',
-  'filterEmptyMessage',
-]);
 
 const SHARED_INPUTS: readonly ApiRow[] = [
   {
@@ -244,14 +231,6 @@ export class AutocompleteDocPage {
   protected readonly sharedInputs = SHARED_INPUTS;
   protected readonly apiOutputs = API_OUTPUTS;
   protected readonly apiSlots = API_SLOTS;
-  protected readonly deprecatedInputs: readonly ApiRow[] = GOG_DEPRECATIONS.filter(
-    (entry) => entry.kind === 'symbol' && DEPRECATED_INPUT_NAMES.has(entry.name),
-  ).map((entry) => ({
-    name: entry.name,
-    type: `${entry.since} (${entry.sinceDate})`,
-    default: entry.removedIn,
-    description: entry.replacement,
-  }));
   protected readonly styleTokens =
     TOKEN_SECTIONS.find((section) => section.id === 'autocomplete')?.tokens ?? [];
 

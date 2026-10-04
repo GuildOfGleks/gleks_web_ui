@@ -3,7 +3,7 @@
 @include doc.hero('releases');
 
 .releases {
-  /* The "not yet 1.0" note describes the file, not a release, so it reads as page copy rather
+  /* The versioning note describes the file, not a release, so it reads as page copy rather
      than as the first tab's content. */
   &__intro {
     display: block;

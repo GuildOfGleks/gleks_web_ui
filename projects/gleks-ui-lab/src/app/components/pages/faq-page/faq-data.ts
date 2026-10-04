@@ -43,14 +43,17 @@ export const FAQ_SECTIONS: readonly FaqSection[] = [
     item(
       'Is this ready for production?',
       `
-The library hasn't reached 1.0 yet, which under [semantic versioning](https://semver.org/)
-means a breaking change can land in a minor release, not just a major one — every one that
-does is called out explicitly in the [Changelog](https://github.com/GuildOfGleks/gleks_web_ui/blob/master/projects/gleks/ui/CHANGELOG.md),
-with a migration note. In practice that's been rare: every release so far has been additive
-(new components, new inputs), and the first one that removes anything is 21.5.0 — see
-[what's deprecated right now](/general/faq#whats-deprecated-right-now-and-when-does-it-go),
-which lists all of it with the replacement. Pin an exact version or a \`~21.x.x\` range if you'd
-rather opt into minors by hand and read the changelog first.
+Yes, and since **21.16.0** its version numbers say how much an upgrade can change. The package
+follows [semantic versioning](https://semver.org/): a **patch** only fixes, a **minor** only adds —
+a new component, input, token or config key — and only a **major** breaks. The major follows
+Angular's: \`21.x\` is the Angular 21 line, and a breaking change waits for the next one. Anything
+that will go is deprecated first, in a minor, with \`@deprecated\` in the typings and an entry in
+\`GOG_DEPRECATIONS\` — see
+[what's deprecated right now](/general/faq#whats-deprecated-right-now-and-when-does-it-go).
+
+So \`^21.16.0\` is a safe range. Before 21.16.0 a minor could carry a breaking change, and each one
+that did is called out in the [Changelog](https://github.com/GuildOfGleks/gleks_web_ui/blob/master/projects/gleks/ui/CHANGELOG.md)
+with a migration note; 21.16.0 carried the last one.
 `,
     ),
     item(
@@ -396,13 +399,16 @@ component doc pages call these out explicitly wherever they apply.
     item(
       "What's deprecated right now, and when does it go?",
       `
-**Four inputs on \`gog-autocomplete\`, going in 21.16.0.** \`filter\`, \`filterPlaceholder\`,
-\`filterPosition\` and \`filterEmptyMessage\` were deprecated in 21.15.0: the field filters as you
-type and its panel has no search box. Drop \`filter\` and \`filterPosition\`; use \`placeholder\` for
-\`filterPlaceholder\` and \`emptyMessage\` for \`filterEmptyMessage\`. \`GOG_DEPRECATIONS\` — the manifest
-the package exports, generated from the library's own source with \`since\`, \`sinceDate\`,
-\`replacement\` and \`removedIn\` for whatever it lists — names all four, and the
-[Autocomplete](/components/autocomplete) page marks them in its API table.
+**Nothing.** \`GOG_DEPRECATIONS\` — the manifest the package exports, generated from the
+library's own source with \`since\`, \`sinceDate\`, \`replacement\` and \`removedIn\` for whatever
+it lists — is empty in 21.16.0. From here on a deprecation is announced in a minor and removed no
+earlier than the next major.
+
+**21.16.0 removed the last scheduled one**: \`gog-autocomplete\`'s \`filter\`, \`filterPlaceholder\`,
+\`filterPosition\` and \`filterEmptyMessage\`, deprecated in 21.15.0. The field filters as you type
+and its panel has no search box, so they never did anything on it; binding one is now a compile
+error. Drop \`filter\` and \`filterPosition\`; use \`placeholder\` for \`filterPlaceholder\` and
+\`emptyMessage\` for \`filterEmptyMessage\`.
 
 The library's three earlier deprecation waves are all fully removed.
 **21.14.0** removed the latest of them: \`gog-table\`, \`gog-datepicker\`/\`gog-calendar\` and \`gog-dialog\` left

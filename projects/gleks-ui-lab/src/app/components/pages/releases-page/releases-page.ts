@@ -74,7 +74,7 @@ export class ReleasesPage {
    * The changelog with its own `# Changelog` title dropped.
    *
    * The file opens with an H1 and an explanatory paragraph. The paragraph is worth keeping — it
-   * is where "not yet 1.0, so breaking changes may land in minor versions" is stated — but the
+   * is where the versioning rule ("from 21.16.0 … semantic versioning") is stated — but the
    * H1 is not: this page already has one in its hero, and two `<h1>`s is a page that tells a
    * crawler two different things it is about. Only a *leading* H1 is removed, so a stray `#`
    * later in the file (there is none today) would survive.
@@ -118,7 +118,7 @@ export class ReleasesPage {
   });
 
   /**
-   * Whatever precedes the first release heading — the "not yet 1.0" note. It describes the file
+   * Whatever precedes the first release heading — the versioning note. It describes the file
    * rather than any one release, so it stays above the tabs instead of being folded into one.
    */
   protected readonly intro = computed(() => {

@@ -31,19 +31,3 @@ it found the lab's sidebar hover label and two `code` chips under AA.
 `running-commands.instructions.md`). After a publish, `npm install` at the repo root first, so
 `node_modules/@guildofgleks/ui` is the new version rather than a stale one or a leftover local
 build.
-
-## 21.16.0
-
-- **FAQ, "Is this ready for production?"** It says the library has not reached 1.0, so a minor can
-  break. From 21.16.0 it follows semantic versioning — patches fix, minors add, only a major
-  breaks, and the major follows Angular's (README, _Versioning_). Rewrite the answer around that,
-  including the advice to pin `~21.x.x`: `^21.16.0` is now the safe range. Read the FAQ's
-  "what's deprecated right now" answer too — `GOG_DEPRECATIONS` is `[]` again.
-- **Autocomplete page: the four panel-filter inputs are gone.** The deprecated-inputs table
-  empties itself once the installed manifest stops listing them; delete `DEPRECATED_INPUT_NAMES`
-  and the table with it, and say in the prose that binding one is now a compile error
-  (`placeholder` and `emptyMessage` are the replacements). Check the shared-inputs rows do not
-  list them either.
-- **Releases page:** two comments in `releases-page.ts` and one in `releases-page.scss` quote the
-  changelog's "not yet 1.0" preamble, which now states the semver rule instead. Reword them, and
-  look at the page to see the new preamble reads as page copy.

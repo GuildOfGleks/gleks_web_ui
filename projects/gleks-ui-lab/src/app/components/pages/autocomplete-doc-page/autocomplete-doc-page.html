@@ -375,23 +375,15 @@
     <h3 class="doc-section__subtitle">Inputs — shared with Select</h3>
     <p class="doc-section__intro">
       These come from <code>GogDropdownBase</code> and behave as they do on
-      <a routerLink="/components/select">Select</a>. The exception is the panel's search box: an
-      autocomplete's trigger already <em>is</em> the search box, so the four inputs that configure
-      it are deprecated here (below). <code>filterMatch</code> still applies, since it plugs into
+      <a routerLink="/components/select">Select</a>. The panel's search box is not among them: an
+      autocomplete's trigger already <em>is</em> the search box, so <code>filter</code>,
+      <code>filterPlaceholder</code>, <code>filterPosition</code> and
+      <code>filterEmptyMessage</code> do not exist here — they did until 21.16.0, deprecated and
+      doing nothing, and binding one is now a compile error. Use <code>placeholder</code> and
+      <code>emptyMessage</code>. <code>filterMatch</code> still applies, since it plugs into
       <code>filterLocal</code>'s own matching.
     </p>
     <app-api-table [rows]="sharedInputs" kind="inputs" />
-
-    @if (deprecatedInputs.length > 0) {
-      <h3 id="deprecated" class="doc-section__subtitle">Deprecated inputs</h3>
-      <p class="doc-section__intro">
-        Inherited from the base the three dropdowns share, where they configure the panel's search
-        box — which this control does not have, so they never did anything on it. Remove the
-        bindings. Read from <code>GOG_DEPRECATIONS</code> in the installed package, so this table
-        empties itself once they are gone.
-      </p>
-      <app-api-table [rows]="deprecatedInputs" kind="deprecations" />
-    }
 
     <h3 class="doc-section__subtitle">Outputs</h3>
     <app-api-table [rows]="apiOutputs" kind="outputs" />

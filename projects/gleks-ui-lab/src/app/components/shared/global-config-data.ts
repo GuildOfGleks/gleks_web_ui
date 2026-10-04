@@ -7,8 +7,9 @@
 // every `globalConfig.<key>?.<field>` read traced through the shared state classes
 // (`GogDropdownBase`, `GogClearableState`, `GogFloatLabelState`, `GogErrorState`) that several
 // components resolve their config in, then cross-checked against each component's own template so
-// an inherited-but-unused field (gog-autocomplete inherits `dropdown.filter`/`filterPosition` from
-// `GogDropdownBase` but never renders the filter box that reads them) is correctly left out.
+// a field a component could inherit without reading is correctly left out. (gog-autocomplete was
+// that case for `dropdown.filter`/`filterPosition` until 21.16.0, which moved the panel search box
+// into `GogFilterableDropdownBase`, extended by select and multiselect only.)
 //
 // Verified against the source again for 21.8.0, which corrected `config.ts`'s own "Applies to …"
 // sentences on four keys: the two now agree, so a difference between them is a bug in one of them
