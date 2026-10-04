@@ -1,0 +1,17 @@
+<div>
+  <gog-button variant="outline" (gogClick)="loading.set(!loading())">
+    {{ loading() ? 'Finish loading' : 'Start loading' }}
+  </gog-button>
+</div>
+<gog-accordion [items]="items" [loading]="loading()">
+  <ng-template gogAccordionContent let-item>
+    <p>{{ item['body'] }}</p>
+  </ng-template>
+</gog-accordion>
+
+<!-- The items have not arrived: skeletonCount decides how many rows wait for them. -->
+<p>items=[], skeletonCount=2</p>
+<gog-accordion [items]="[]" loading [skeletonCount]="2" />
+
+<p>showChevron=false</p>
+<gog-accordion [items]="items" loading [showChevron]="false" />

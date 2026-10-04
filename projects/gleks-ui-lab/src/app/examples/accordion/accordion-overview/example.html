@@ -1,0 +1,7 @@
+<gog-accordion [items]="items" expandFirst (gogToggle)="onToggle($event)">
+  <ng-template gogAccordionContent let-item>
+    <p>{{ item['body'] }}</p>
+  </ng-template>
+</gog-accordion>
+
+<p>gogToggle: {{ lastToggle() }}</p>

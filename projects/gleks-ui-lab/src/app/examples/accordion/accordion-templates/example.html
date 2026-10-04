@@ -1,0 +1,22 @@
+<p>gogAccordionHeader</p>
+<gog-accordion [items]="services">
+  <!-- Rendered inside the header button, stacked: markup only, never another control. -->
+  <ng-template gogAccordionHeader let-item let-open="open">
+    <span><gog-icon [name]="item['icon']" [style.color]="item['color']" /> {{ item.title }}</span>
+    <small>{{ open ? 'expanded' : item['subtitle'] }}</small>
+  </ng-template>
+  <ng-template gogAccordionContent let-item>
+    <p>{{ item['body'] }}</p>
+  </ng-template>
+</gog-accordion>
+
+<p>gogAccordionChevron</p>
+<gog-accordion [items]="faq">
+  <!-- A custom chevron draws its own state; nothing rotates underneath it. -->
+  <ng-template gogAccordionChevron let-open="open">
+    <gog-icon [name]="open ? 'minus' : 'plus'" />
+  </ng-template>
+  <ng-template gogAccordionContent let-item>
+    <p>{{ item['body'] }}</p>
+  </ng-template>
+</gog-accordion>

@@ -31,3 +31,11 @@ it found the lab's sidebar hover label and two `code` chips under AA.
 `running-commands.instructions.md`). After a publish, `npm install` at the repo root first, so
 `node_modules/@guildofgleks/ui` is the new version rather than a stale one or a leftover local
 build.
+
+## The release that fixes the accordion body's transform
+
+- **Accordion page: add the "An overlay inside the body" example.** Left out on 2026-10-04 because
+  on 21.15.0 a select's list in an open body paints under the code block below the demo
+  (`docs/backlog.md`, Defects). A `Profile` item and a `Region` item whose body holds a
+  `gog-select` of time zones, in `layout="wide"`; the prose says the body clips only while it
+  animates. Open it in a browser and check the list covers the code block before ticking.

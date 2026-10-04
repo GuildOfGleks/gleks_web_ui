@@ -1,0 +1,6 @@
+<!-- Each header button is wrapped in role="heading" aria-level="3". -->
+<gog-accordion [items]="items" [headingLevel]="3">
+  <ng-template gogAccordionContent let-item>
+    <p>{{ item['body'] }}</p>
+  </ng-template>
+</gog-accordion>

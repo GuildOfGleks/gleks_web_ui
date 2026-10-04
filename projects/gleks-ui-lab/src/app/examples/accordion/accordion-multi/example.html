@@ -1,0 +1,10 @@
+<div>
+  <gog-toggle label="multi" [(checked)]="multi" />
+</div>
+<gog-accordion [items]="items" [multi]="multi()" [(openIds)]="openIds">
+  <ng-template gogAccordionContent let-item>
+    <p>{{ item['body'] }}</p>
+  </ng-template>
+</gog-accordion>
+
+<p>openIds: {{ openList() }}</p>

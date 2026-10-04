@@ -15,113 +15,85 @@
 
     <p class="doc-section__intro">
       Basic usage — three sections, one disabled, the first expanded on load. The body comes from
-      the <code>gogAccordionContent</code> template, which receives the item back.
+      the <code>gogAccordionContent</code> template, which receives the item back, and
+      <code>gogToggle</code> reports each press.
     </p>
     <div class="demo-card">
-      <div class="demo-card__preview">
-        <gog-accordion [items]="basicItems" [expandFirst]="true" (gogToggle)="onToggle($event)">
-          <ng-template gogAccordionContent let-item>
-            <p>{{ item.body }}</p>
-          </ng-template>
-        </gog-accordion>
-      </div>
-      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
+      <app-demo
+        [component]="examples.overview"
+        [source]="sources.accordionOverview"
+        layout="wide"
+      />
     </div>
-    <p class="doc-section__meta">{{ lastToggled() }}</p>
   </section>
 
   <section class="doc-section">
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Sizes</h3>
+      <h3 class="demo-card__title">Sizes and item states</h3>
       <p class="demo-card__meta">
-        Every size, from <code>xsm</code> through <code>slg</code>. The three smallest look closer
-        together than the gap between <code>lg</code> and <code>slg</code>, and that is correct:
-        they all label at <code>--gog-text-xs</code>, and since
-        <app-since version="21.11.0" inline /> the chevron is a ratio of the header's own type
-        rather than a px ladder of its own — so it no longer manufactures a difference the type does
-        not have.
+        Every size, from <code>xsm</code> through <code>slg</code>; <code>lg</code> is the default.
+        States belong to items, not to the accordion: each one here holds an open item, a closed one
+        and one disabled through <code>disabled: true</code> on the item object. A disabled header
+        cannot be opened and keyboard navigation skips it. Hover, focus and press are live — the
+        page cannot force them. The three smallest sizes look closer together than
+        <code>lg</code> and <code>slg</code>, and that is correct: they all label at
+        <code>--gog-text-xs</code>, and the chevron is a ratio of the header's own type, so it does
+        not manufacture a difference the type does not have.
       </p>
-      <div class="demo-card__preview size-grid">
-        @for (sizeOption of sizes; track sizeOption) {
-          <div class="size-grid__cell">
-            <span class="size-grid__label">{{ sizeOption }}</span>
-            <gog-accordion [items]="sizeDemoItems" [size]="sizeOption" [expandFirst]="true">
-              <ng-template gogAccordionContent let-item>
-                <p>{{ item.body }}</p>
-              </ng-template>
-            </gog-accordion>
-          </div>
-        }
-      </div>
-      <app-code-tabs [html]="sizesHtml" [ts]="sizesTs" />
+      <app-demo [component]="examples.sizes" [source]="sources.accordionSizes" layout="wide" />
     </article>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Single vs. multi-open</h3>
+      <h3 class="demo-card__title">Loading skeleton</h3>
       <p class="demo-card__meta">
-        By default opening one item closes the rest. <code>multi</code> lifts that restriction.
+        While <code>loading</code> is on, each row is a placeholder: one per item when the items are
+        known, <code>skeletonCount</code> of them when <code>items</code> is still empty. The
+        chevron gets a placeholder too — or none, with <code>showChevron</code> off — so the row
+        that arrives has the silhouette of the one that waited.
       </p>
-      <div class="demo-card__preview">
-        <div class="action-row">
-          <gog-button variant="outline" (gogClick)="toggleMulti()">
-            Multi-open: {{ multi() ? 'on' : 'off' }}
-          </gog-button>
-        </div>
-        <gog-accordion [items]="multiItems" [multi]="multi()">
-          <ng-template gogAccordionContent let-item>
-            <p>{{ item.body }}</p>
-          </ng-template>
-        </gog-accordion>
-      </div>
-      <app-code-tabs [html]="multiHtml" [ts]="multiTs" />
+      <app-demo [component]="examples.loading" [source]="sources.accordionLoading" layout="wide" />
     </article>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Disabled item</h3>
+      <h3 class="demo-card__title">Single and multi-open</h3>
       <p class="demo-card__meta">
-        A disabled item's header is non-interactive and skipped by keyboard navigation — see
-        "Warranty" above.
+        By default opening one item closes the one that was open. <code>multi</code> lets items open
+        independently. <code>openIds</code> is two-way, so the page can read which are open.
       </p>
-      <app-code-tabs [html]="disabledHtml" [ts]="disabledTs" />
+      <app-demo [component]="examples.multi" [source]="sources.accordionMulti" layout="wide" />
     </article>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Custom header &amp; chevron</h3>
+      <h3 class="demo-card__title">Controlled open state</h3>
+      <p class="demo-card__meta">
+        <code>openIds</code> is a model, so the app can also write it — the buttons set the whole
+        set and the accordion follows.
+      </p>
+      <app-demo
+        [component]="examples.controlled"
+        [source]="sources.accordionControlled"
+        layout="wide"
+      />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Header and chevron templates</h3>
       <p class="demo-card__meta">
         <code>gogAccordionHeader</code> and <code>gogAccordionChevron</code> both receive the item
-        plus the current <code>open</code> state, so either can react to it. A header template
-        renders as written <app-since version="21.15.0" />: the theme's title casing and tracking
-        apply to the default title only, so the subtitle below is not uppercased in the themes that
-        uppercase headers. A template that wants the casing applies
-        <code>--gog-accordion-header-text-transform</code> itself.
+        and its <code>open</code> state. A header template renders inside the header button, so it
+        holds markup and never another control. It renders as written
+        <app-since version="21.15.0" />: the theme's title casing applies to the default title only,
+        so the lines above are not uppercased in the themes that uppercase headers. The default
+        chevron rotates by itself; a template draws its own open and closed look, and nothing
+        rotates underneath it.
       </p>
-      <div class="demo-card__preview">
-        <gog-accordion [items]="statusItems">
-          <ng-template gogAccordionHeader let-item let-open="open">
-            <gog-icon
-              [name]="item.icon"
-              class="status-header__icon status-header__icon--{{ item.icon }}"
-            />
-            <span class="status-header__text">
-              <span class="status-header__title">{{ item.title }}</span>
-              <span class="status-header__subtitle">
-                {{ open ? 'Expanded' : item.subtitle }}
-              </span>
-            </span>
-          </ng-template>
-
-          <ng-template gogAccordionChevron let-open="open">
-            <gog-icon [name]="open ? 'chevron-up' : 'chevron-down'" />
-          </ng-template>
-
-          <ng-template gogAccordionContent let-item>
-            <p>{{ item.body }}</p>
-          </ng-template>
-        </gog-accordion>
-      </div>
-      <app-code-tabs [html]="customHeaderHtml" [ts]="customHeaderTs" />
+      <app-demo
+        [component]="examples.templates"
+        [source]="sources.accordionTemplates"
+        layout="wide"
+      />
     </article>
 
     <article class="demo-card">
@@ -131,141 +103,60 @@
         <code>aria-level</code>, so screen-reader users can jump straight to a section. Leave it
         unset when the accordion isn't part of the page outline (e.g. nested in a card).
       </p>
-      <div class="demo-card__preview">
-        <gog-accordion [items]="basicItems" [headingLevel]="3">
-          <ng-template gogAccordionContent let-item>
-            <p>{{ item.body }}</p>
-          </ng-template>
-        </gog-accordion>
-      </div>
-      <app-code-tabs [html]="headingLevelHtml" [ts]="headingLevelTs" />
+      <app-demo
+        [component]="examples.headingLevel"
+        [source]="sources.accordionHeadingLevel"
+        layout="wide"
+      />
     </article>
+  </section>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Loading skeleton</h3>
-      <p class="demo-card__meta">
-        For when the item list itself hasn't arrived yet — every item is replaced by a shimmering
-        placeholder row.
-      </p>
-      <div class="demo-card__preview">
-        <div class="action-row">
-          <gog-button variant="outline" (gogClick)="toggleLoading()">Toggle loading</gog-button>
-        </div>
-        <gog-accordion
-          class="accordion-doc__loading-demo"
-          [items]="basicItems"
-          [loading]="isAccordionLoading()"
-        />
-      </div>
-      <app-code-tabs [html]="loadingHtml" [ts]="loadingTs" />
-    </article>
-
-    <article class="demo-card">
-      <h3 class="demo-card__title">Controlled open state</h3>
-      <p class="demo-card__meta">
-        <code>openIds</code> is a model, so it can be driven from outside the component — here two
-        buttons expand or collapse every item.
-      </p>
-      <div class="demo-card__preview">
-        <div class="action-row">
-          <gog-button variant="outline" (gogClick)="expandAll()">Expand all</gog-button>
-          <gog-button variant="outline" (gogClick)="collapseAll()">Collapse all</gog-button>
-        </div>
-        <gog-accordion [items]="multiItems" [multi]="true" [(openIds)]="openIds">
-          <ng-template gogAccordionContent let-item>
-            <p>{{ item.body }}</p>
-          </ng-template>
-        </gog-accordion>
-      </div>
-      <app-code-tabs [html]="controlledHtml" [ts]="controlledTs" />
-    </article>
+  <section class="doc-section">
+    <h2 id="accessibility" class="doc-section__title font-heading">Accessibility</h2>
+    <p class="doc-section__intro">
+      Each header is a real <code>&lt;button&gt;</code> that says whether it is expanded and which
+      body it controls; each body is a region named by its header.
+    </p>
+    <ul class="doc-section__intro">
+      <li>
+        <strong>Role and name</strong> — the header button carries <code>aria-expanded</code> and
+        <code>aria-controls</code>; the body is <code>role="region"</code> with
+        <code>aria-labelledby</code> pointing at its header. With <code>headingLevel</code> set,
+        each button sits inside <code>role="heading"</code> at that <code>aria-level</code>.
+      </li>
+      <li>
+        <strong>Keyboard</strong> — <kbd>Tab</kbd> moves between headers and into an open body;
+        <kbd>Enter</kbd> or <kbd>Space</kbd> toggles the focused item; <kbd>ArrowDown</kbd> and
+        <kbd>ArrowUp</kbd> move focus to the next and previous header, wrapping at the ends;
+        <kbd>Home</kbd> and <kbd>End</kbd> go to the first and last. Disabled headers are skipped.
+      </li>
+      <li>
+        <strong>Closed bodies</strong> stay in the DOM, <code>aria-hidden</code> and
+        <code>inert</code>, so nothing inside them takes focus or is read out.
+      </li>
+      <li>
+        <strong>Templates</strong> — a custom chevron is <code>aria-hidden</code> like the default
+        one; <code>aria-expanded</code> on the header is what says open. A header template must not
+        hold another control: a button inside a button is invalid and unreachable.
+      </li>
+      <li>
+        <strong>Loading</strong> sets <code>aria-busy="true"</code> on the host. The skeleton rows
+        are <code>aria-hidden</code>, so the accordion reads as "coming" rather than empty.
+      </li>
+    </ul>
   </section>
 
   <section class="doc-section">
     <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
 
     <h3 class="doc-section__subtitle">Inputs</h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Default</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of apiInputs; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-                @if (row.since) {
-                  <app-since [version]="row.since" />
-                }
-              </td>
-              <td>
-                <code>{{ row.type }}</code>
-              </td>
-              <td>
-                <code>{{ row.default }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="apiInputs" kind="inputs" />
 
     <h3 class="doc-section__subtitle">Outputs</h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>gogToggle</code></td>
-            <td><code>EventEmitter&lt;GogAccordionToggleEvent&gt;</code></td>
-            <td>Emitted with the item and its new open state whenever a header is toggled.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="apiOutputs" kind="outputs" />
 
-    <h3 class="doc-section__subtitle">Content projection</h3>
-    <p class="doc-section__intro">
-      Three structural directives, applied to <code>&lt;ng-template&gt;</code> elements inside
-      <code>&lt;gog-accordion&gt;</code>, override parts of the default rendering.
-    </p>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Directive</th>
-            <th>Template context</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of contentSlots; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-              </td>
-              <td>
-                <code>{{ row.context }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <h3 class="doc-section__subtitle">Content slots</h3>
+    <app-api-table [rows]="apiSlots" kind="slots" />
   </section>
 
   <app-global-config-note component="accordion" />
@@ -278,25 +169,6 @@
       <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
       <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
     </p>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Token</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of styleTokens; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="styleTokens" kind="tokens" />
   </section>
 </div>

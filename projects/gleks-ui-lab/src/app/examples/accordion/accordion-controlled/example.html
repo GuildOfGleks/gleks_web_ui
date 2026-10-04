@@ -1,0 +1,9 @@
+<div>
+  <gog-button variant="outline" (gogClick)="openAll()">Open all</gog-button>
+  <gog-button variant="outline" (gogClick)="closeAll()">Close all</gog-button>
+</div>
+<gog-accordion [items]="items" multi [(openIds)]="openIds">
+  <ng-template gogAccordionContent let-item>
+    <p>{{ item['body'] }}</p>
+  </ng-template>
+</gog-accordion>

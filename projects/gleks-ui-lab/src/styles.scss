@@ -370,6 +370,16 @@ h3[id] {
   text-align: center;
 }
 
+/* A `<div>` in a wide example holds the controls that drive the component under it — a centred
+   row, so its buttons keep their own width instead of stretching across the card. */
+.demo-preview--wide > * > div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
 /* `rows` — each top-level element a wrapping row; the rows form one block, centred, so a
    leading label column stays aligned while the whole example sits in the middle of the card. */
 .demo-preview--rows > * {

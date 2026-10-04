@@ -1,0 +1,9 @@
+<!-- Each accordion holds one open item, one closed and one disabled. -->
+@for (size of sizes; track size) {
+  <p>size: {{ size }}</p>
+  <gog-accordion [items]="items" [size]="size" [openIds]="firstOpen">
+    <ng-template gogAccordionContent let-item>
+      <p>{{ item['body'] }}</p>
+    </ng-template>
+  </gog-accordion>
+}
