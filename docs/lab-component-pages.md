@@ -158,7 +158,7 @@ template.
 | select        | legacy   | 12    | 12  | ✅       |
 | skeleton      | legacy   | 9     | 9   | ✅       |
 | slider        | legacy   | 9     | 9   | ✅       |
-| spinner       | legacy   | 9     | 9   |          |
+| spinner       | legacy   | 9     | 9   | ✅       |
 | table         | legacy   | 14    | 14  |          |
 | tabs          | legacy   | 4     | 4   | ✅       |
 | tag           | legacy   | 6     | 6   | ✅       |

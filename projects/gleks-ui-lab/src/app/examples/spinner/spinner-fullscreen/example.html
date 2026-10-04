@@ -1,0 +1,5 @@
+<gog-button variant="outline" size="sm" (gogClick)="cover()">Cover the page for 1.5s</gog-button>
+<!-- Behind a flag that ends on its own: it swallows every click while it is up. -->
+@if (covering()) {
+  <gog-spinner overlay size="lg" ariaLabel="Loading page" />
+}

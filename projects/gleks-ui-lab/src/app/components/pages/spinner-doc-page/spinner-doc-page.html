@@ -14,12 +14,9 @@
     <p class="doc-section__intro">Import the component and drop it into a template.</p>
     <app-markdown [markdown]="importSnippet" />
 
-    <p class="doc-section__intro">Basic usage:</p>
+    <p class="doc-section__intro">Basic usage — a spinner named for what is loading:</p>
     <div class="demo-card">
-      <div class="demo-card__preview">
-        <gog-spinner ariaLabel="Loading" />
-      </div>
-      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
+      <app-demo [component]="examples.overview" [source]="sources.spinnerOverview" layout="row" />
     </div>
   </section>
 
@@ -27,263 +24,117 @@
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Sizes</h3>
-      <p class="demo-card__meta">Five size steps, from xsm to slg.</p>
-      <div class="demo-card__preview spinner-grid">
-        @for (sizeOption of sizes; track sizeOption) {
-          <div class="spinner-tile">
-            <gog-spinner [size]="sizeOption" [ariaLabel]="'Loading ' + sizeOption" />
-            <span class="spinner-tile__meta">{{ sizeOption }}</span>
-          </div>
-        }
-      </div>
-      <app-code-tabs [html]="sizesHtml" [ts]="sizesTs" />
-    </article>
-
-    <article class="demo-card">
-      <h3 class="demo-card__title">Variants</h3>
+      <h3 class="demo-card__title">Sizes and variants</h3>
       <p class="demo-card__meta">
-        Two built-in animations ship with <code>gog-spinner</code> — pick one via
-        <code>variant</code>. <code>runic</code> is the original branded spin-and-glow;
-        <code>ring</code> is a plain tapered ring for a more neutral look.
+        <code>runic</code> is the default and the library's own; <code>ring</code> is the plain one.
+        <code>custom</code> projects your markup into the same size box, so it scales like the other
+        two — the third column projects an SVG that animates without a stylesheet. Under
+        <code>prefers-reduced-motion</code> the built-ins stop moving and stay drawn; a custom one
+        is yours to stop.
       </p>
-      <div class="demo-card__preview spinner-grid">
-        @for (variantOption of variants; track variantOption) {
-          <div class="spinner-tile">
-            <gog-spinner
-              [variant]="variantOption"
-              size="lg"
-              [ariaLabel]="'Loading, ' + variantOption + ' variant'"
-            />
-            <span class="spinner-tile__meta">{{ variantOption }}</span>
-          </div>
-        }
-      </div>
-      <app-code-tabs [html]="variantsHtml" [ts]="variantsTs" />
+      <app-demo [component]="examples.sizes" [source]="sources.spinnerSizes" layout="rows" />
     </article>
 
     <article class="demo-card">
       <h3 class="demo-card__title">Animation speed</h3>
       <p class="demo-card__meta">
         <code>--gog-spinner-spin-duration</code> (and <code>-pulse-duration</code> for the rune
-        glow) retime the built-in animations per instance, without swapping variant — useful to
-        signal urgency, or just to match a surrounding motion rhythm.
+        glow) retime the built-in animations per instance without swapping variant — to signal
+        urgency, or to match a surrounding motion rhythm.
       </p>
-      <div class="demo-card__preview spinner-grid">
-        <div class="spinner-tile">
-          <gog-spinner
-            size="lg"
-            style="--gog-spinner-spin-duration: 2.4s"
-            ariaLabel="Loading, slow"
-          />
-          <span class="spinner-tile__meta">slow (2.4s)</span>
-        </div>
-        <div class="spinner-tile">
-          <gog-spinner
-            size="lg"
-            style="--gog-spinner-spin-duration: 0.5s"
-            ariaLabel="Loading, fast"
-          />
-          <span class="spinner-tile__meta">fast (0.5s)</span>
-        </div>
-      </div>
-      <app-code-tabs [html]="speedHtml" [ts]="speedTs" />
+      <app-demo [component]="examples.speed" [source]="sources.spinnerSpeed" layout="row" />
     </article>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Custom variant</h3>
+      <h3 class="demo-card__title">Colour</h3>
       <p class="demo-card__meta">
-        Need an animation entirely of your own? <code>variant="custom"</code> projects any markup —
-        it inherits the size wrapper and overlay behavior, and picks up
-        <code>--gog-spinner-color</code> like the built-in presets, but the motion is yours.
+        The spinner draws in the accent colour. On a surface where the accent does not read — a
+        danger banner, a filled button — set <code>--gog-spinner-color</code> on it or an ancestor.
       </p>
-      <div class="demo-card__preview spinner-grid">
-        <div class="spinner-tile">
-          <gog-spinner variant="custom" size="lg" ariaLabel="Loading, custom variant">
-            <div class="dots-loader"><span></span><span></span><span></span></div>
-          </gog-spinner>
-          <span class="spinner-tile__meta">custom</span>
-        </div>
-      </div>
-      <app-code-tabs [html]="customVariantHtml" [ts]="customVariantTs" [css]="customVariantCss" />
+      <app-demo [component]="examples.color" [source]="sources.spinnerColor" layout="row" />
     </article>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">The app’s own indicator, everywhere at once</h3>
+      <h3 class="demo-card__title">The app's own indicator, everywhere at once</h3>
       <p class="demo-card__meta">
-        <code>variant="custom"</code> above restyles <em>one</em> spinner. Most of the spinners an
-        app shows are not ones it writes: <code>gog-button</code> draws one while
-        <code>loading</code>, <code>gog-autocomplete</code> while it searches, and
-        <code>gog-table</code> in place of its rows — none of them take a spinner input.
-        <code>GOG_CONFIG.spinner.component</code> is how those get your look too: pass a
-        <em>component</em>, and every spinner the library draws renders it instead.
+        Most of the spinners an app shows are not ones it writes: <code>gog-button</code> draws one
+        while <code>loading</code>, <code>gog-autocomplete</code> while it searches,
+        <code>gog-table</code> in place of its rows, <code>gog-spinner-overlay</code> over a region
+        — none take a spinner input. <code>GOG_CONFIG.spinner.component</code> gives them your look:
+        pass a component, and every spinner the library draws renders it inside its own size box,
+        keeping the sizing and the accessible name. Here a pulsing skeleton bone stands in for your
+        loader, so the example carries no stylesheet. An instance's own <code>variant</code> still
+        wins; <code>GOG_CONFIG.spinner.variant</code> is the lighter key, choosing between
+        <code>runic</code> and <code>ring</code> app-wide. See
+        <a routerLink="/general/global-config">Global Configuration</a>.
       </p>
-      <div class="demo-card__preview">
-        <app-house-spinner-demo />
-      </div>
+      <app-demo [component]="examples.config" [source]="sources.spinnerConfig" layout="row" />
+    </article>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="overlay" class="doc-section__title font-heading">Covering a region</h2>
+    <article class="demo-card">
+      <h3 class="demo-card__title">gog-spinner-overlay</h3>
       <p class="demo-card__meta">
-        Your component sits inside the library’s own size wrapper, so it keeps the sizing, the
-        overlay behaviour, the <code>progressbar</code> role and the accessible name — only the
-        visual is yours. An instance that asks for something specific still wins:
-        <code>&lt;gog-spinner variant="ring"&gt;</code> is a ring even here.
-        <strong>The provider on this demo is scoped to it</strong>, which is a route’s mechanism
-        rather than an app’s — the rest of this page shows the built-in look. See
-        <a routerLink="/general/global-config">Global Configuration</a> for the full precedence
-        rules, including <code>gog-spinner-overlay</code>, which honours the key from 21.10.0 on.
+        Lays a scrim and a spinner over its own content while <code>loading</code> is on, and marks
+        the region <code>aria-busy</code>. The content stays rendered underneath, so nothing jumps
+        when loading ends. The scrim stops the pointer and the content is <code>inert</code>
+        <app-since version="21.15.0" />, so Tab skips it too; focus that was inside — press Export,
+        then load — waits on the spinner and comes back when loading ends. It forwards
+        <code>variant</code>, <code>size</code> and <code>ariaLabel</code> to its spinner.
       </p>
-      <app-code-tabs [html]="houseSpinnerHtml" [ts]="houseSpinnerTs" />
+      <app-demo [component]="examples.region" [source]="sources.spinnerRegion" />
     </article>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Custom color</h3>
+      <h3 class="demo-card__title">The whole viewport</h3>
       <p class="demo-card__meta">
-        Override <code>--gog-spinner-color</code> to recolor the spinner regardless of theme —
-        useful when it sits on a surface where the default accent color wouldn't read well.
+        <code>overlay</code> on <code>gog-spinner</code> itself covers the viewport, for a load that
+        blocks the whole app. "The viewport" holds only while no ancestor creates a containing
+        block: a <code>transform</code>, <code>filter</code> or <code>contain</code> above it
+        retargets the overlay to that element, so render it near the app's root.
+        <strong>On this site it covers the content area rather than the window</strong> — that area
+        is a <a routerLink="/components/scroll">gog-scroll</a>, which sets
+        <code>contain: layout style</code>.
       </p>
-      <div class="demo-card__preview spinner-grid">
-        <div class="spinner-tile">
-          <gog-spinner
-            ariaLabel="Loading, danger color"
-            style="--gog-spinner-color: var(--gog-danger-color)"
-          />
-          <span class="spinner-tile__meta">danger</span>
-        </div>
-        <div class="spinner-tile">
-          <gog-spinner
-            ariaLabel="Loading, success color"
-            style="--gog-spinner-color: var(--gog-success-color)"
-          />
-          <span class="spinner-tile__meta">success</span>
-        </div>
-      </div>
-      <app-code-tabs [html]="colorHtml" [ts]="colorTs" />
+      <app-demo [component]="examples.fullscreen" [source]="sources.spinnerFullscreen" />
     </article>
+  </section>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Overlay mode — gog-spinner-overlay</h3>
-      <p class="demo-card__meta">
-        Wrap any section to block interaction while it loads. A companion component,
-        <code>gog-spinner-overlay</code>, forwards <code>variant</code>/<code>size</code>/
-        <code>ariaLabel</code> straight to the inner <code>gog-spinner</code>. Its own
-        <code>variant</code> is unset by default, so an overlay that asks for nothing forwards
-        nothing and <code>GOG_CONFIG.spinner</code> reaches the spinner inside — the same way it
-        reaches a bare <code>gog-spinner</code>. Until 21.10.0 that input defaulted to
-        <code>runic</code>, which the inner spinner correctly read as an instance overruling the
-        config, so this was the one place a configured house spinner never appeared.
-      </p>
-      <p class="demo-card__meta">
-        While loading, the content is <code>inert</code> <app-since version="21.15.0" />: Tab steps
-        over it and nothing inside can be pressed, so there is no need to disable its controls
-        yourself. Focus that was inside when loading began waits on the spinner and comes back when
-        it ends. Before 21.15.0 the scrim blocked the pointer and not the keyboard.
-      </p>
-      <div class="demo-card__preview">
-        <gog-button variant="primary" type="button" (gogClick)="previewOverlay()">
-          Preview overlay
-        </gog-button>
-        <gog-spinner-overlay
-          [loading]="showOverlay()"
-          size="lg"
-          variant="ring"
-          ariaLabel="Loading content"
-        >
-          <div class="overlay-panel">
-            <p class="demo-card__meta">This area can be a card, a sidebar, or any section.</p>
-          </div>
-        </gog-spinner-overlay>
-      </div>
-      <app-code-tabs [html]="overlayHtml" [ts]="overlayTs" />
-    </article>
-
-    <article class="demo-card">
-      <h3 class="demo-card__title">Full-screen overlay</h3>
-      <p class="demo-card__meta">
-        <code>gog-spinner</code> itself can render as a fixed, viewport-covering overlay via
-        <code>overlay="true"</code> — distinct from <code>gog-spinner-overlay</code> above, which
-        only covers its own content. Put it behind a flag that ends on its own: it swallows every
-        click while it is up, so an always-on one takes the page hostage.
-        <strong>On this page it covers the article rather than the window</strong> — the overlay is
-        <code>position: fixed</code>, and any ancestor with a <code>contain</code>,
-        <code>transform</code>, <code>filter</code> or <code>backdrop-filter</code> becomes its
-        containing block instead of the viewport. This site's content area is a
-        <a routerLink="/components/scroll">gog-scroll</a>, which sets
-        <code>contain: layout style</code>. In an app without such an ancestor it covers the whole
-        window, and the same caveat applies to any fixed overlay, this library's or your own.
-      </p>
-      <div class="demo-card__preview">
-        <gog-button variant="primary" type="button" (gogClick)="previewFullscreenOverlay()">
-          Preview full-screen overlay
-        </gog-button>
-        @if (showFullscreenOverlay()) {
-          <gog-spinner [overlay]="true" size="lg" ariaLabel="Loading page" />
-        }
-      </div>
-      <app-code-tabs [html]="fullscreenHtml" [ts]="fullscreenTs" />
-    </article>
+  <section class="doc-section">
+    <h2 id="accessibility" class="doc-section__title font-heading">Accessibility</h2>
+    <p class="doc-section__intro">
+      An indeterminate progress bar named by <code>ariaLabel</code>. It does not announce itself —
+      the region that is busy does, with <code>aria-busy</code>.
+    </p>
+    <ul class="doc-section__intro">
+      <li>
+        <strong>Role and name</strong> — <code>role="progressbar"</code> with no value, the pattern
+        for "working, no idea how long", named by <code>ariaLabel</code>
+        <app-since version="21.15.0" />. Name it for what is loading when more than one thing can
+        be; <code>ariaLabel=""</code> makes it decorative.
+      </li>
+      <li>
+        <strong>Inside a loading <code>gog-button</code></strong> it is <code>aria-hidden</code>,
+        because the button already says it is busy.
+      </li>
+      <li>
+        <strong>Regions</strong> — <code>gog-spinner-overlay</code> sets <code>aria-busy</code> on
+        the region it covers and makes its content <code>inert</code> while loading.
+      </li>
+      <li><strong>Keyboard</strong> — none. A spinner is not focusable.</li>
+    </ul>
   </section>
 
   <section class="doc-section">
     <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
 
     <h3 class="doc-section__subtitle">gog-spinner — Inputs</h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Default</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of spinnerApiInputs; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-              </td>
-              <td>
-                <code>{{ row.type }}</code>
-              </td>
-              <td>
-                <code>{{ row.default }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="spinnerInputs" kind="inputs" />
 
     <h3 class="doc-section__subtitle">gog-spinner-overlay — Inputs</h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Default</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of spinnerOverlayApiInputs; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-              </td>
-              <td>
-                <code>{{ row.type }}</code>
-              </td>
-              <td>
-                <code>{{ row.default }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="overlayInputs" kind="inputs" />
   </section>
 
   <app-global-config-note component="spinner" />
@@ -296,25 +147,6 @@
       <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
       <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
     </p>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Token</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of styleTokens; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="styleTokens" kind="tokens" />
   </section>
 </div>

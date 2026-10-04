@@ -1,0 +1,5 @@
+<gog-spinner size="lg" ariaLabel="Loading" />
+<!-- No spinner input at all: the button draws the configured component too. -->
+<gog-button [loading]="saving()" (gogClick)="save()">Save</gog-button>
+<!-- An instance that asks for something specific still wins. -->
+<gog-spinner size="lg" variant="ring" ariaLabel="Loading" />

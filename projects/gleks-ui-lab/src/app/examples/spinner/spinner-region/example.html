@@ -1,0 +1,8 @@
+<!-- The content stays rendered underneath, and is inert while loading. -->
+<gog-spinner-overlay [loading]="loading()" ariaLabel="Loading invoices">
+  <gog-panel>
+    <p>Twelve invoices, three overdue.</p>
+    <gog-button variant="outline" size="sm">Export</gog-button>
+  </gog-panel>
+</gog-spinner-overlay>
+<gog-button variant="outline" size="sm" (gogClick)="load()">Load for 3s</gog-button>

@@ -1,0 +1,23 @@
+@for (size of sizes; track size) {
+  <div>
+    <span>size: {{ size }}</span>
+    <gog-spinner [size]="size" ariaLabel="Loading" />
+    <gog-spinner [size]="size" variant="ring" ariaLabel="Loading" />
+    <!-- custom: your markup in the same size box. This one animates with SVG, no stylesheet. -->
+    <gog-spinner [size]="size" variant="custom" ariaLabel="Loading">
+      <svg viewBox="0 0 24 24" width="100%" height="100%" style="fill: var(--gog-accent-color)">
+        @for (x of [4, 12, 20]; track x; let i = $index) {
+          <circle [attr.cx]="x" cy="12" r="3">
+            <animate
+              attributeName="opacity"
+              values="0.2;1;0.2"
+              dur="1s"
+              [attr.begin]="i * 0.15 + 's'"
+              repeatCount="indefinite"
+            />
+          </circle>
+        }
+      </svg>
+    </gog-spinner>
+  </div>
+}
