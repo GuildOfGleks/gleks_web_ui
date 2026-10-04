@@ -20,6 +20,10 @@ _Versioning_ section. Before 21.16.0 a minor could carry a breaking change, and 
 
 ### Documentation
 
+- **`gog-tabs`' `activeIndex` documents what happens when it names a disabled tab**: the first
+  enabled tab is shown and the model keeps the value it was given, on purpose — a tab disabled while
+  its data loads is selected again once it is enabled, which writing the shown index back would
+  lose.
 - **`AGENTS.md` says that `gog-calendar` is not an event calendar** — a date grid that picks a day,
   a range or a time, with no week or day view and nothing that places events. "Calendar" also
   names full-page schedulers, and an agent asked for a booking view could otherwise reach for it.

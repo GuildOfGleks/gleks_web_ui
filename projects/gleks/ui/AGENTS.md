@@ -1870,6 +1870,11 @@ its edge; it clips only while opening and closing.
 
 Model: `activeIndex: number`. Output: `gogTabChange: number`.
 
+**An `activeIndex` naming a disabled tab is kept, not corrected.** The tablist shows the first
+enabled tab, but the model keeps your value, so a tab disabled while its data loads is selected
+again the moment it is enabled. A saved index restored onto a tab that is now disabled therefore
+reads back unchanged — check the tab's `disabled` if you need to know what is shown.
+
 | Input (on `gog-tab`) | Type                  | Default |
 | -------------------- | --------------------- | ------- |
 | `label`              | `string`              | `''`    |

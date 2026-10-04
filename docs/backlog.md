@@ -791,13 +791,12 @@ reason may stop holding.
   a fourth instance inside the library: `gog-table`'s own `gog-scroll` became an unnamed region
   whenever its columns overflowed, and the table had no name to give it. It has `ariaLabel` now.
 
-- **`gog-tabs` shows a different tab from the one `activeIndex` names, and does not say so.**
-  Set `activeIndex` to a disabled tab and the tablist falls back to the first enabled one — the
-  right thing to show — but the model keeps the value it was given, so `[(activeIndex)]` and the
-  screen disagree: bound 2, "Profile" (index 0) selected, verified on the Tabs page on 2026-09-26.
-  A consumer restoring a saved index that has since become disabled reads back a tab that is not
-  shown. Writing the resolved index back would fix the disagreement at the cost of a model write
-  the consumer did not make; either way the choice wants writing down on the input.
+- ~~**`gog-tabs` shows a different tab from the one `activeIndex` names, and does not say so.**~~
+  **Decided 2026-10-04: keep the value, and say so** (21.19.0, on the input and in `AGENTS.md`). The
+  argument that settled it is the case the entry did not weigh: a tab is most often disabled
+  _temporarily_, while its data loads, and writing the shown index back would turn a passing state
+  into a permanent change of the consumer's selection. The disagreement is real but harmless and
+  now documented; losing the selection would be neither.
 
 - ~~**A `gog-tabs` with no `ariaLabel` is an unnamed tablist.**~~ **Closed 2026-10-04**, with the
   `gog-scroll` entry above: it warns in dev mode.

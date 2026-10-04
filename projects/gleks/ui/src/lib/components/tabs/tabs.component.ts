@@ -99,7 +99,15 @@ export class GogTabHeaderDirective {
 export class TabsComponent implements GogTabsState {
   readonly tabs = contentChildren(TabComponent);
 
-  /** Two-way bindable index of the visible tab: `[(activeIndex)]="signal"`. */
+  /**
+   * Two-way bindable index of the visible tab: `[(activeIndex)]="signal"`.
+   *
+   * **An index that names a disabled or missing tab is kept, not corrected.** The tablist shows the
+   * first enabled tab instead, but the model keeps the value it was given, so a tab disabled for a
+   * moment (while its data loads) comes back as soon as it is enabled. Writing the shown index back
+   * would lose that choice for good. Read what is on screen from `gogTabChange`, or compare the
+   * index with the tab's own `disabled`.
+   */
   readonly activeIndex = model(0);
   readonly align = input<GogTabsAlign>('start');
   readonly orientation = input<GogOrientation>('horizontal');
