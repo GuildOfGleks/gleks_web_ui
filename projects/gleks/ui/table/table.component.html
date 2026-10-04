@@ -13,6 +13,7 @@
     class="gog-table-scroll"
     [class.gog-table-scroll--framed]="maxHeight()"
     [class.gog-table-scroll--fit]="maxHeight() && !fullWidth()"
+    [ariaLabel]="ariaLabel() ?? ''"
     (gogScroll)="onTableScroll($event)"
   >
     <table
@@ -25,6 +26,7 @@
       [class.gog-table--in-frame]="maxHeight()"
       [style.width]="fullWidth() ? '100%' : 'fit-content'"
       [attr.aria-rowcount]="ariaRowCount()"
+      [attr.aria-label]="ariaLabel() || null"
     >
       <colgroup>
         @if (hasSelectionColumn()) {

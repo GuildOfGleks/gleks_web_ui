@@ -197,6 +197,12 @@ exist.
   tag. An `aria-label` attribute placed directly on `<gog-button>` in a template lands on the
   custom element wrapper, not on the inner `<button>`, so assistive tech never sees it — always
   use the component's own `ariaLabel` input instead.
+- **Four components need a name only you can give, and warn in dev mode without one.**
+  `gog-progressbar` (what it measures), `gog-tabs` (what the tabs switch between), `gog-scroll`
+  while its content overflows and it becomes a scrolling region, and `gog-table`, whose `ariaLabel`
+  names the table and that region. The library cannot invent these — "Loading" on a bar measuring
+  an upload is worse than nothing — so an unnamed one logs one `console.warn` per component per
+  page, in dev mode only. Pass `ariaLabel` (or, on `gog-progressbar`, `aria-labelledby` on the host).
 
 ## Theming
 
@@ -2123,6 +2129,7 @@ the paginator and select — still land wherever the root does.
 | `showRowNumbers`, `showTotal` | `boolean`                        | `true`, `false`                                 |
 | `emptyPlaceholder`            | `string`                         | `'-'` — a cell whose value is null              |
 | `emptyMessage`                | `string \| undefined`            | `'No data'`; via `GOG_CONFIG.labels.tableEmpty` |
+| `ariaLabel`                   | `string \| undefined`            | names the table and its scroll region           |
 | `paginatorPosition`           | `'left'\|'center'\|'right'`      | `'center'`                                      |
 | `totalPosition`               | `'left'\|'right'\|'opposite'`    | `'opposite'`                                    |
 | `loading`                     | `boolean`                        | `false`                                         |

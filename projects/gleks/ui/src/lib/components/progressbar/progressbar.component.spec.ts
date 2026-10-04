@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { gogResetUnnamedWarnings } from '@guildofgleks/ui/shared';
 import { ProgressbarComponent } from './progressbar.component';
 
 describe('ProgressbarComponent', () => {
@@ -132,5 +133,24 @@ describe('ProgressbarComponent', () => {
     fixture.detectChanges();
 
     expect(host().getAttribute('aria-label')).toBe('File upload');
+  });
+
+  it('warns once in dev mode when it has no name, and not when it has one', async () => {
+    gogResetUnnamedWarnings();
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const unnamed = TestBed.createComponent(ProgressbarComponent);
+    unnamed.detectChanges();
+    await unnamed.whenStable();
+    expect(warn).toHaveBeenCalledOnce();
+    expect(String(warn.mock.calls[0][0])).toContain('[gog-progressbar]');
+
+    gogResetUnnamedWarnings();
+    warn.mockClear();
+    const named = TestBed.createComponent(ProgressbarComponent);
+    named.componentRef.setInput('ariaLabel', 'Upload');
+    named.detectChanges();
+    await named.whenStable();
+    expect(warn).not.toHaveBeenCalled();
+    warn.mockRestore();
   });
 });

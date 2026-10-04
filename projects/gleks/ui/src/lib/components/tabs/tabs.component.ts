@@ -6,6 +6,7 @@ import {
   ElementRef,
   PLATFORM_ID,
   TemplateRef,
+  afterNextRender,
   computed,
   contentChild,
   contentChildren,
@@ -15,6 +16,7 @@ import {
   input,
   model,
   output,
+  viewChild,
   viewChildren,
   booleanAttribute,
 } from '@angular/core';
@@ -29,6 +31,7 @@ import { GogOrientation, GogSize, GogTabsAlign } from '@guildofgleks/ui/shared';
 import { GOG_TABS_STATE, type GogTabsState } from './tabs-state';
 import { TabComponent } from './tab.component';
 import { configurableBooleanAttribute } from '@guildofgleks/ui/shared';
+import { gogWarnIfUnnamed } from '@guildofgleks/ui/shared';
 
 /** Context handed to a `gogTabHeader` template. */
 export interface GogTabHeaderContext {
@@ -102,6 +105,7 @@ export class TabsComponent implements GogTabsState {
   readonly orientation = input<GogOrientation>('horizontal');
   readonly size = input<GogSize>('md');
   readonly fullWidth = input(false, { transform: booleanAttribute });
+  /** Names the tablist: what the tabs switch between ("Account settings"). Unset, it warns in dev mode. */
   readonly ariaLabel = input('');
   /**
    * Press ripple. Unset, falls back to `GOG_CONFIG.ripple.enabled`, then to `false` — so
@@ -141,6 +145,7 @@ export class TabsComponent implements GogTabsState {
 
   protected readonly headerSlot = contentChild(GogTabHeaderDirective);
   private readonly headerRefs = viewChildren<ElementRef<HTMLButtonElement>>('tabHeader');
+  private readonly tablistRef = viewChild.required<ElementRef<HTMLElement>>('tablist');
 
   /**
    * The index actually shown. Clamped, and never a disabled tab: `activeIndex` is a plain
@@ -176,6 +181,14 @@ export class TabsComponent implements GogTabsState {
   private hasScrolledOnce = false;
 
   constructor() {
+    afterNextRender(() =>
+      gogWarnIfUnnamed(
+        this.tablistRef().nativeElement,
+        'gog-tabs',
+        'Set ariaLabel to what the tabs switch between.',
+      ),
+    );
+
     effect(() => {
       const index = this.resolvedIndex();
       const header = this.headerRefs()[index]?.nativeElement;

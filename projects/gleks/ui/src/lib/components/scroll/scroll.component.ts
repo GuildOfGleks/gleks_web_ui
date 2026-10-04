@@ -6,6 +6,7 @@ import {
   ElementRef,
   PLATFORM_ID,
   afterNextRender,
+  afterRenderEffect,
   computed,
   effect,
   inject,
@@ -20,6 +21,7 @@ import { GogScrollAxis, GogScrollOverscrollBehavior, GogScrollSize } from '@guil
 import { GOG_CONFIG } from '@guildofgleks/ui/shared';
 import { resolveLengthToken } from '@guildofgleks/ui/shared';
 import { configurableBooleanAttribute } from '@guildofgleks/ui/shared';
+import { gogWarnIfUnnamed } from '@guildofgleks/ui/shared';
 
 /** Snapshot of the viewport's native scroll geometry, emitted on every scroll/resize. */
 export interface GogScrollMetrics {
@@ -97,7 +99,10 @@ export class ScrollComponent {
    * add a redundant stop — the descendants' own focus still auto-scrolls into view either way.
    */
   readonly focusable = input(true, { transform: booleanAttribute });
-  /** Accessible name for the viewport when `focusable` is true and there is no visible label. */
+  /**
+   * Names the viewport while it is a scrolling region. A region that scrolls and has no name warns
+   * in dev mode; a `gog-table` passes its own `ariaLabel` here.
+   */
   readonly ariaLabel = input('');
   /**
    * What happens when a scroll gesture reaches this instance's edge. Unset, falls back to
@@ -269,6 +274,16 @@ export class ScrollComponent {
       }
 
       this.scheduleMeasure();
+    });
+
+    // The region exists only while the content overflows, so the name is checked when it appears.
+    afterRenderEffect(() => {
+      if (!this.isTabStop()) return;
+      gogWarnIfUnnamed(
+        this.viewportRef().nativeElement,
+        'gog-scroll',
+        'Set ariaLabel on the gog-scroll, or on the gog-table it scrolls.',
+      );
     });
 
     // Re-measures on axis/size changes; guarded because this also fires once before

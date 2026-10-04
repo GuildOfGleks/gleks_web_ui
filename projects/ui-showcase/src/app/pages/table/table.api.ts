@@ -44,6 +44,7 @@ export const TABLE_API: readonly DocApi[] = [
         default: "'No data'",
         config: 'GOG_CONFIG.labels.tableEmpty',
       },
+      { name: 'ariaLabel', type: 'string | undefined', default: 'undefined (warns in dev mode)' },
       { name: 'paginatorPosition', type: "'left' | 'center' | 'right'", default: "'center'" },
       { name: 'totalPosition', type: "'left' | 'right' | 'opposite'", default: "'opposite'" },
       { name: 'loading', type: 'boolean', default: 'false' },

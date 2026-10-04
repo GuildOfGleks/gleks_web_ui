@@ -256,7 +256,13 @@
                 [showValue]="true"
                 [size]="size()"
               />
-              <gog-table [value]="sessions" [showRowNumbers]="false" dataKey="id" [size]="size()">
+              <gog-table
+                ariaLabel="Active sessions"
+                [value]="sessions"
+                [showRowNumbers]="false"
+                dataKey="id"
+                [size]="size()"
+              >
                 <gog-column field="device" header="Device">
                   <ng-template gogColumnHeader let-header>
                     <span class="specimen__inline"><gog-icon name="user" /> {{ header }}</span>
@@ -774,6 +780,7 @@
             </gog-empty-state>
           } @else {
             <gog-table
+              ariaLabel="Orders"
               dataKey="id"
               selectionMode="multiple"
               [value]="orders()"

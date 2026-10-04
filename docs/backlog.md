@@ -785,11 +785,11 @@ reason may stop holding.
   gave when raising it: the name follows `mat-calendar` and Ant Design, and the `gog-` prefix keeps
   the selector unique.
 
-- **A `gog-scroll` that does scroll is an unnamed region by default.** Since 21.15.0 the tab stop
-  and `role="region"` appear only while the content overflows, so the dead stop is gone; what is
-  left is the name — `ariaLabel` defaults to `''`, the same default-empty shape as the tablist and
-  progressbar entries, and it wants the same decision (a dev-mode warning, decided once for every
-  component that needs a consumer-supplied name).
+- ~~**A `gog-scroll` that does scroll is an unnamed region by default.**~~ **Closed 2026-10-04 in
+  21.19.0**, with the tablist and progressbar entries, by the decision all three were waiting for: a
+  dev-mode warning (`gogWarnIfUnnamed` in `shared/`), one per component per page. Deciding it found
+  a fourth instance inside the library: `gog-table`'s own `gog-scroll` became an unnamed region
+  whenever its columns overflowed, and the table had no name to give it. It has `ariaLabel` now.
 
 - **`gog-tabs` shows a different tab from the one `activeIndex` names, and does not say so.**
   Set `activeIndex` to a disabled tab and the tablist falls back to the first enabled one — the
@@ -799,9 +799,8 @@ reason may stop holding.
   shown. Writing the resolved index back would fix the disagreement at the cost of a model write
   the consumer did not make; either way the choice wants writing down on the input.
 
-- **A `gog-tabs` with no `ariaLabel` is an unnamed tablist.** `ariaLabel` defaults to `''`, which
-  renders no attribute, and there is no `aria-labelledby` path — the same shape as the unnamed
-  `gog-progressbar` entry below. The Tabs page tells consumers to name it.
+- ~~**A `gog-tabs` with no `ariaLabel` is an unnamed tablist.**~~ **Closed 2026-10-04**, with the
+  `gog-scroll` entry above: it warns in dev mode.
 
 - **Every `ui-showcase` page builds its content twice on arrival.** Instrumented on the Tabs page on
   2026-09-26 with a counter component: on a client-side navigation the page component is
@@ -812,17 +811,9 @@ reason may stop holding.
   every page and makes any "built N times" demo wrong, which is why the Tabs page reports lazy
   content as built or not rather than counting.
 
-- **A `gog-progressbar` with no name ships silently.** `ariaLabel` defaults to `''`, and a bar with
-  neither it nor an `aria-labelledby` written on its host is `progressbar ""` in Chrome's
-  accessibility tree (measured 2026-09-22 on the showcase's Progressbar page) — "progress bar, 62
-  percent", of nothing. axe flags it as `aria-progressbar-name`. The component cannot pick a
-  default the way `gog-spinner` does ("Loading"): a determinate bar measures something specific,
-  and a generic name would be as unhelpful as none while hiding the omission.
-
-  **Why it was left.** The fix is a dev-mode warning after the first render when the host has no
-  `aria-label` and no `aria-labelledby` — the same kind `gog-icon` gives for an unknown name —
-  and that wants deciding for every component that needs a consumer-supplied name, not just this
-  one. The Progressbar page says to pass one and shows both ways.
+- ~~**A `gog-progressbar` with no name ships silently.**~~ **Closed 2026-10-04**, with the
+  `gog-scroll` entry above: it warns in dev mode unless `ariaLabel` or an `aria-labelledby` on the
+  host names it.
 
 - **The two loading indicators take two different roles.** Since 21.15.0 `gog-spinner` is an
   indeterminate `role="progressbar"` named by `ariaLabel` (the pattern Material's progress

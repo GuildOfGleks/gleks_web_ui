@@ -7,6 +7,17 @@ _Versioning_ section. Before 21.16.0 a minor could carry a breaking change, and 
 
 ## [21.19.0] - planned
 
+### Added
+
+- **`gog-table` takes `ariaLabel`**, which names the table and, whenever its columns overflow, the
+  scrolling region that makes it reachable by Tab. A table had no way to be named at all, and an
+  overflowing one was an unnamed region in the tab order.
+- **A dev-mode warning for a component that needs a name and has none**: `gog-progressbar`,
+  `gog-tabs`, `gog-scroll` while it is a scrolling region, and `gog-table` through it. Each needs a
+  name only the app can give — a default like "Loading" on a bar measuring an upload says something
+  false — so an unnamed one used to ship silently, read as "progress bar, 62 percent" of nothing.
+  One `console.warn` per component per page, never in production.
+
 ### Documentation
 
 - **`AGENTS.md` says that `gog-calendar` is not an event calendar** — a date grid that picks a day,

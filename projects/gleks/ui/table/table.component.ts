@@ -300,6 +300,11 @@ export class TableComponent<T extends object> {
    * things in different places — "No orders yet" is not "Nothing matches these filters".
    */
   readonly emptyMessage = input<string | undefined>(undefined);
+  /**
+   * Names the table ("Orders"), and its scrolling region whenever the columns overflow: a table
+   * reached by Tab, which an overflowing one is, wants a name to be told apart from the page.
+   */
+  readonly ariaLabel = input<string | undefined>(undefined);
   /** Alignment of pagination controls */
   readonly paginatorPosition = input<'left' | 'center' | 'right'>('center');
   /** Alignment of total count label (only when showTotal=true) */

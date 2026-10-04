@@ -1,12 +1,20 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  ElementRef,
+  afterNextRender,
   computed,
+  inject,
   input,
   booleanAttribute,
 } from '@angular/core';
 
-import { GogProgressbarMode, GogProgressbarVariant, GogSize } from '@guildofgleks/ui/shared';
+import {
+  GogProgressbarMode,
+  GogProgressbarVariant,
+  GogSize,
+  gogWarnIfUnnamed,
+} from '@guildofgleks/ui/shared';
 
 const MIN = 0;
 const MAX = 100;
@@ -60,7 +68,22 @@ export class ProgressbarComponent {
   readonly size = input<GogSize>('md');
   /** Renders the percentage next to the bar. Off by default — most bars sit under a label. */
   readonly showValue = input(false, { transform: booleanAttribute });
+  /**
+   * What the bar measures ("Upload", "Storage used"). Unset, the host needs an `aria-labelledby` of
+   * your own: a bar with neither is "progress bar, 62 percent" of nothing, and warns in dev mode.
+   */
   readonly ariaLabel = input('');
+
+  constructor() {
+    const host = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
+    afterNextRender(() =>
+      gogWarnIfUnnamed(
+        host,
+        'gog-progressbar',
+        'Set ariaLabel to what it measures, or aria-labelledby on the host.',
+      ),
+    );
+  }
 
   protected readonly isIndeterminate = computed(() => this.mode() === 'indeterminate');
   protected readonly clampedValue = computed(() => clamp(this.value()));

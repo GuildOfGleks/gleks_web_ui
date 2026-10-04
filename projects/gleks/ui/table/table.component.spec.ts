@@ -1584,3 +1584,28 @@ describe('TableComponent — the empty message', () => {
     expect(text(fixture)).toBe('No orders yet');
   });
 });
+
+describe('TableComponent — ariaLabel', () => {
+  @Component({
+    imports: [TableComponent, GogColumn],
+    template: `
+      <gog-table [value]="rows" ariaLabel="Orders">
+        <gog-column field="id" header="ID" />
+      </gog-table>
+    `,
+  })
+  class NamedHost {
+    readonly rows = [{ id: 1 }];
+  }
+
+  it('names the table, and hands the name to its scroll region', async () => {
+    await TestBed.configureTestingModule({ imports: [NamedHost] }).compileComponents();
+    const fixture = TestBed.createComponent(NamedHost);
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const root = fixture.nativeElement as HTMLElement;
+    expect(root.querySelector('table')?.getAttribute('aria-label')).toBe('Orders');
+    const scroll = fixture.debugElement.query((el) => el.name === 'gog-scroll');
+    expect(scroll.componentInstance.ariaLabel()).toBe('Orders');
+  });
+});

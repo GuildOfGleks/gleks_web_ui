@@ -31,3 +31,11 @@ it found the lab's sidebar hover label and two `code` chips under AA.
 `running-commands.instructions.md`). After a publish, `npm install` at the repo root first, so
 `node_modules/@guildofgleks/ui` is the new version rather than a stale one or a leftover local
 build.
+
+## 21.19.0
+
+- **Table page**: `ariaLabel` in the inputs table, and a sentence in Accessibility — it names the
+  table and, when the columns overflow, the scrolling region that puts it in the tab order.
+- **Progressbar, Tabs and Scroll pages**: their accessibility sections say a missing name now warns
+  in dev mode (one `console.warn` per component per page), and the lab's own examples of those
+  three pass a name, so the site's console stays clean.

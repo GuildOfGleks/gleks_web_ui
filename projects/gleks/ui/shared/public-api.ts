@@ -35,5 +35,6 @@ export * from './token-names';
 export * from './token-values';
 export * from './tooltip-position';
 export * from './types';
+export * from './unnamed-warning';
 export * from './variable-window';
 export * from './virtual-window';
