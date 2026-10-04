@@ -1,0 +1,17 @@
+<!-- The step buttons disable themselves at the edges. -->
+<div>
+  <span>[page]="1"</span>
+  <gog-paginator [totalPages]="5" [page]="1" [fullWidth]="false" />
+</div>
+<div>
+  <span>[page]="3"</span>
+  <gog-paginator [totalPages]="5" [page]="3" [fullWidth]="false" />
+</div>
+<div>
+  <span>[page]="5"</span>
+  <gog-paginator [totalPages]="5" [page]="5" [fullWidth]="false" />
+</div>
+<div>
+  <span>disabled</span>
+  <gog-paginator [totalPages]="5" [page]="3" [fullWidth]="false" disabled />
+</div>

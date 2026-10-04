@@ -1,0 +1,6 @@
+@for (size of sizes; track size) {
+  <div>
+    <span>size: {{ size }}</span>
+    <gog-paginator [size]="size" [totalPages]="5" [page]="3" [fullWidth]="false" />
+  </div>
+}

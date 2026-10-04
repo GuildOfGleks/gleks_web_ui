@@ -1,0 +1,8 @@
+<div>
+  <gog-button variant="outline" size="sm" (gogClick)="totalPages.set(3)">totalPages = 3</gog-button>
+  <gog-button variant="outline" size="sm" (gogClick)="reset()">Reset to 8 of 8</gog-button>
+</div>
+<!-- A page past the new end is written back through [(page)]. -->
+<gog-paginator [(page)]="page" [totalPages]="totalPages()" [fullWidth]="false" />
+
+<p>page: {{ page() }} · totalPages: {{ totalPages() }}</p>

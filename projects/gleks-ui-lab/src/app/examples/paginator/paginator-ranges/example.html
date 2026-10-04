@@ -1,0 +1,38 @@
+<!-- Twenty pages each, starting on page 10: click towards either end. -->
+<div>
+  <span>window (default)</span>
+  <gog-paginator [(page)]="windowPage" [totalPages]="20" [fullWidth]="false" />
+</div>
+<div>
+  <span>window, pinned ends</span>
+  <gog-paginator
+    [(page)]="pinnedPage"
+    [totalPages]="20"
+    showFirstPage
+    showLastPage
+    [fullWidth]="false"
+  />
+</div>
+<div>
+  <span>[visiblePages]="3"</span>
+  <gog-paginator [(page)]="threePage" [totalPages]="20" [visiblePages]="3" [fullWidth]="false" />
+</div>
+<div>
+  <span>ellipsis</span>
+  <gog-paginator
+    [(page)]="ellipsisPage"
+    [totalPages]="20"
+    rangeMode="ellipsis"
+    [fullWidth]="false"
+  />
+</div>
+<div>
+  <span>ellipsis, [siblingCount]="1"</span>
+  <gog-paginator
+    [(page)]="siblingPage"
+    [totalPages]="20"
+    rangeMode="ellipsis"
+    [siblingCount]="1"
+    [fullWidth]="false"
+  />
+</div>

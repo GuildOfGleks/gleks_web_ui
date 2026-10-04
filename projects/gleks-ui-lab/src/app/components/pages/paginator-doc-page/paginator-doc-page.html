@@ -15,215 +15,131 @@
     <app-markdown [markdown]="importSnippet" />
 
     <p class="doc-section__intro">
-      <code>page</code> is a two-way bindable model — <code>[(page)]="mySignal"</code> — and
+      <code>page</code> is a two-way model — <code>[(page)]="mySignal"</code> — and
       <code>totalPages</code> is the only other thing the paginator needs. By default it shows a
-      fixed, centered window of page buttons that slides as you navigate.
+      fixed, centred window of page buttons that slides as you navigate.
     </p>
     <div class="demo-card">
-      <div class="demo-card__preview">
-        <gog-paginator [(page)]="basicPage" [totalPages]="basicTotalPages()" />
-      </div>
-      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
+      <app-demo [component]="examples.overview" [source]="sources.paginatorOverview" />
     </div>
-    <p class="doc-section__meta">Page {{ basicPage() }} of {{ basicTotalPages() }}</p>
-    <p class="doc-section__intro">
-      <strong>The current page is stated, not only worded.</strong>
-      <app-since version="21.15.0" /> Its button carries <code>aria-current="page"</code> and is
-      named "Page 3", where it used to be named "Page 3, current page" with nothing machine-readable
-      behind it. A screen reader announces <code>aria-current</code> by itself, so if you translate
-      the names through <code>GOG_CONFIG.labels.page</code>, leave the "current" half out — see
-      <a routerLink="/general/global-config">Global Configuration</a>.
-    </p>
-  </section>
-
-  <section class="doc-section">
-    <h2 id="total-records" class="doc-section__title font-heading">
-      Paging a row count — <code>totalRecords</code> <app-since version="21.4.0" />
-    </h2>
-    <p class="doc-section__intro">
-      Usually you know how many <em>rows</em> there are, not how many pages. Give the paginator
-      <code>totalRecords</code> and it derives the page count from <code>pageSize</code> itself —
-      which removes the <code>computed(() =&gt; Math.ceil(total / size))</code> you would otherwise
-      write <em>and</em> keep in sync with the rows-per-page select.
-    </p>
-    <div class="demo-card">
-      <div class="demo-card__preview">
-        <gog-paginator
-          [(page)]="recordsPage"
-          [(pageSize)]="recordsPageSize"
-          [totalRecords]="totalRecords()"
-          [showPageSizeSelect]="true"
-          [pageSizeOptions]="[10, 20, 50]"
-        />
-      </div>
-      <p class="demo-card__meta">Showing {{ recordsRange() }}</p>
-      <app-code-tabs [html]="recordsHtml" [ts]="recordsTs" />
-    </div>
-    <p class="doc-section__intro">
-      <code>totalPages</code> still works and is the right input when a server tells you a page
-      count directly; <code>totalRecords</code> wins when both are set.
-    </p>
-    <p class="doc-section__intro">
-      The rows-per-page select is <strong>off by default</strong> — turn it on per instance, or
-      app-wide through <code>GOG_CONFIG.paginator</code> (<code>showPageSizeSelect</code>,
-      <code>pageSizeOptions</code>), with <code>GOG_CONFIG.labels.rowsPerPage</code> for its
-      accessible name. See <a routerLink="/general/global-config">Global Configuration</a>.
-    </p>
-    <p class="doc-section__intro">
-      Changing the size always returns to page 1: "page 5" of 10-row pages is not "page 5" of 50-row
-      ones, so clamping alone would leave the user somewhere they never asked to be.
-    </p>
-    <p class="doc-section__intro">
-      <strong
-        ><code>pageSize</code> being a <code>model</code> on both the paginator and
-        <a routerLink="/components/table">the table</a> is what makes the two connect with no
-        go-between signal</strong
-      >
-      — the table binds its own model straight to the paginator's, and the select writes back
-      through it.
-    </p>
   </section>
 
   <section class="doc-section">
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Range mode: window (default)</h3>
-      <p class="demo-card__meta">
-        Keeps exactly <code>visiblePages</code> buttons on screen, centered on the current page.
-        <code>showFirstPage</code> / <code>showLastPage</code> pin the first/last page with a "…"
-        once it scrolls out of the window — click through to page 10+ to see it.
-      </p>
-      <div class="demo-card__preview">
-        <gog-paginator
-          [(page)]="windowPage"
-          [totalPages]="windowTotalPages()"
-          [visiblePages]="5"
-          [showFirstPage]="true"
-          [showLastPage]="true"
-        />
-      </div>
-      <p class="demo-card__meta">Page {{ windowPage() }} of {{ windowTotalPages() }}</p>
-      <app-code-tabs [html]="windowModeHtml" [ts]="windowModeTs" />
-    </article>
-
-    <article class="demo-card">
-      <h3 class="demo-card__title">Range mode: ellipsis</h3>
-      <p class="demo-card__meta">
-        The original behavior, kept as an opt-in for consumers already built around that look (like
-        <code>gog-table</code>): first and last page always pinned, <code>siblingCount</code> pages
-        kept around the current one, with a "…" filling the gap.
-      </p>
-      <div class="demo-card__preview">
-        <gog-paginator
-          [(page)]="ellipsisPage"
-          [totalPages]="ellipsisTotalPages()"
-          rangeMode="ellipsis"
-          [siblingCount]="1"
-        />
-      </div>
-      <p class="demo-card__meta">Page {{ ellipsisPage() }} of {{ ellipsisTotalPages() }}</p>
-      <app-code-tabs [html]="ellipsisModeHtml" [ts]="ellipsisModeTs" />
-    </article>
-
-    <article class="demo-card">
       <h3 class="demo-card__title">Sizes</h3>
-      <p class="demo-card__meta">Five size steps, from xsm to slg.</p>
-      <div class="demo-card__preview paginator-size-stack">
-        @for (sizeOption of sizes; track sizeOption) {
-          <div class="paginator-size-stack__row">
-            <span class="paginator-size-stack__label">{{ sizeOption }}</span>
-            <gog-paginator [totalPages]="5" [page]="sizeDemoPage()" [size]="sizeOption" />
-          </div>
-        }
-      </div>
-      <app-code-tabs [html]="sizesHtml" [ts]="sizesTs" />
+      <p class="demo-card__meta">
+        Five steps, from <code>xsm</code> through <code>slg</code>. The current page is the one
+        primary button; the rest are ghost buttons.
+      </p>
+      <app-demo [component]="examples.sizes" [source]="sources.paginatorSizes" layout="rows" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">States</h3>
+      <p class="demo-card__meta">
+        On the first page "previous" is disabled, on the last "next". <code>disabled</code> freezes
+        every control — useful while the page it navigates is itself loading. Hover, focus and press
+        are the buttons' own and are live.
+      </p>
+      <app-demo [component]="examples.states" [source]="sources.paginatorStates" layout="rows" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Range modes</h3>
+      <p class="demo-card__meta">
+        <code>window</code> (the default) keeps <code>visiblePages</code> buttons and slides them to
+        centre the current page, clamped at the edges; <code>showFirstPage</code> and
+        <code>showLastPage</code> pin the ends with a "…" between. <code>ellipsis</code> always pins
+        the first and last page and keeps <code>siblingCount</code> pages either side of the current
+        one — the look <code>gog-table</code> uses.
+      </p>
+      <app-demo [component]="examples.ranges" [source]="sources.paginatorRanges" layout="rows" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Paging a row count — <code>totalRecords</code></h3>
+      <p class="demo-card__meta">
+        Usually you know how many <em>rows</em> there are, not how many pages. With
+        <code>totalRecords</code> the paginator derives the page count from <code>pageSize</code>
+        itself, so nothing is recomputed when the rows-per-page select changes it — and changing it
+        returns to page 1, the only position that means the same thing at every size.
+        <code>totalPages</code> is still right when a server reports a page count;
+        <code>totalRecords</code> wins when both are set. The select is off by default.
+        <code>pageSize</code> is a model here and on
+        <a routerLink="/components/table">the table</a>, which is what lets the two bind straight to
+        each other.
+      </p>
+      <app-demo [component]="examples.records" [source]="sources.paginatorRecords" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">A page count that shrinks under the current page</h3>
+      <p class="demo-card__meta">
+        The paginator is on page 8 of 8. Drop the total to 3 and it writes page 3 back through
+        <code>page</code> rather than showing a page that does not exist.
+      </p>
+      <app-demo [component]="examples.shrink" [source]="sources.paginatorShrink" />
     </article>
 
     <article class="demo-card">
       <h3 class="demo-card__title">Full width</h3>
       <p class="demo-card__meta">
-        Full width of its container by default — the dashed outline below is the container, not the
-        paginator, so you can see the box claims the full row even though the buttons don't fill it.
-        <code>[fullWidth]="false"</code> shrinks the box to fit the buttons instead.
+        On by default: the paginator takes its container's width — the dashed box here.
+        <code>[fullWidth]="false"</code> shrinks it to its buttons.
       </p>
-      <div class="demo-card__preview paginator-width-demo">
-        <p class="demo-card__meta">fullWidth: true (default)</p>
-        <div class="paginator-width-demo__box">
-          <gog-paginator [totalPages]="5" [page]="2" />
-        </div>
-        <p class="demo-card__meta">fullWidth: false</p>
-        <div class="paginator-width-demo__box">
-          <gog-paginator [totalPages]="5" [page]="2" [fullWidth]="false" />
-        </div>
-      </div>
-      <app-code-tabs [html]="fullWidthHtml" [ts]="fullWidthTs" />
+      <app-demo [component]="examples.width" [source]="sources.paginatorWidth" layout="frame" />
     </article>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Disabled</h3>
+      <h3 class="demo-card__title">App-wide defaults — <code>GOG_CONFIG</code></h3>
       <p class="demo-card__meta">
-        Freezes every control — useful while the page it navigates is itself loading.
+        The navigation's name and the button labels come from <code>GOG_CONFIG.labels</code> —
+        <code>pagination</code>, <code>previousPage</code>, <code>nextPage</code>,
+        <code>rowsPerPage</code>, and <code>page</code>, a function
+        <code>(page, isCurrent) =&gt; string</code> that names each number button. Whether the
+        rows-per-page select shows, and its choices, come from <code>GOG_CONFIG.paginator</code>. In
+        an app the provider goes in <code>app.config.ts</code> — see
+        <a routerLink="/general/global-config">Global Configuration</a>.
       </p>
-      <div class="demo-card__preview">
-        <gog-paginator [(page)]="disabledPage" [totalPages]="8" [disabled]="true" />
-      </div>
-      <app-code-tabs [html]="disabledHtml" [ts]="disabledTs" />
+      <app-demo [component]="examples.config" [source]="sources.paginatorConfig" />
     </article>
+  </section>
 
-    <article class="demo-card">
-      <h3 class="demo-card__title">Applied to a plain list</h3>
-      <p class="demo-card__meta">
-        No table, no rows — just an array sliced by hand using <code>page</code> and a page size the
-        consumer owns.
-      </p>
-      <div class="demo-card__preview">
-        <ul class="fruit-list">
-          @for (item of visibleListItems(); track item) {
-            <li class="fruit-list__item">{{ item }}</li>
-          }
-        </ul>
-        <gog-paginator [(page)]="listPage" [totalPages]="listTotalPages()" />
-      </div>
-      <app-code-tabs [html]="listHtml" [ts]="listTs" />
-    </article>
+  <section class="doc-section">
+    <h2 id="accessibility" class="doc-section__title font-heading">Accessibility</h2>
+    <p class="doc-section__intro">
+      A navigation landmark of real buttons, each named for where it goes.
+    </p>
+    <ul class="doc-section__intro">
+      <li>
+        <strong>Landmark</strong> — a <code>&lt;nav&gt;</code> named by <code>ariaLabel</code>, or
+        <code>GOG_CONFIG.labels.pagination</code>.
+      </li>
+      <li>
+        <strong>Names</strong> — the page numbers are "Go to page N"; the current one is "Page N"
+        with <code>aria-current="page"</code> <app-since version="21.15.0" /> carrying its state. A
+        screen reader announces that itself, so a translated <code>labels.page</code> should leave
+        the "current" half out. The step buttons are named from config, since ‹ and › say nothing on
+        their own.
+      </li>
+      <li>
+        <strong>Keyboard</strong> — <kbd>Tab</kbd> moves through the buttons and the rows-per-page
+        select; <kbd>Enter</kbd> or <kbd>Space</kbd> presses. A disabled step button is a native
+        <code>disabled</code> button, out of the tab order.
+      </li>
+    </ul>
   </section>
 
   <section class="doc-section">
     <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
 
     <h3 class="doc-section__subtitle">Inputs</h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Default</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of apiInputs; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-                @if (row.since) {
-                  <app-since [version]="row.since" />
-                }
-              </td>
-              <td>
-                <code>{{ row.type }}</code>
-              </td>
-              <td>
-                <code>{{ row.default }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="apiInputs" kind="inputs" />
+
+    <h3 class="doc-section__subtitle">Outputs</h3>
+    <app-api-table [rows]="apiOutputs" kind="outputs" />
   </section>
 
   <app-global-config-note component="paginator" />
@@ -236,25 +152,6 @@
       <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
       <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
     </p>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Token</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of styleTokens; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="styleTokens" kind="tokens" />
   </section>
 </div>

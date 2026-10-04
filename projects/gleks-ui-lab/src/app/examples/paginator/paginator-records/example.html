@@ -1,0 +1,17 @@
+<div>
+  <ol [start]="(page() - 1) * pageSize() + 1">
+    @for (person of visiblePeople(); track person) {
+      <li>{{ person }}</li>
+    }
+  </ol>
+</div>
+<!-- totalRecords: the paginator counts pages from pageSize itself. -->
+<gog-paginator
+  [(page)]="page"
+  [(pageSize)]="pageSize"
+  [totalRecords]="people.length"
+  showPageSizeSelect
+  [pageSizeOptions]="[5, 10, 20]"
+/>
+
+<p>page: {{ page() }} · pageSize: {{ pageSize() }} · totalRecords: {{ people.length }}</p>

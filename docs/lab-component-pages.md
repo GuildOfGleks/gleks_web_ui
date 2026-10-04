@@ -152,7 +152,7 @@ template.
 | icon          | legacy   | 5     | 5   | ✅       |
 | inputfield    | legacy   | 13    | 13  | ✅       |
 | multiselect   | legacy   | 13    | 13  | ✅       |
-| paginator     | legacy   | 8     | 8   |          |
+| paginator     | legacy   | 8     | 8   | ✅       |
 | progressbar   | legacy   | 6     | 6   |          |
 | radio-group   | legacy   | 4     | 4   | ✅       |
 | select        | legacy   | 12    | 12  | ✅       |
