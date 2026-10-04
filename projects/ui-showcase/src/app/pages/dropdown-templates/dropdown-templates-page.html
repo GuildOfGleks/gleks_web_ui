@@ -81,9 +81,10 @@
     <p class="dropdown-templates-page__note">
       <code>gogDropdownOption</code> works in all three. <code>gogDropdownChevron</code> works in
       two: <strong><code>gog-autocomplete</code> has no chevron at all</strong> — its trigger is a
-      text field, so there is nothing for the template to replace and it is silently dropped. The
-      directive is still accepted there, because all three inherit it from the same base; the
-      backlog carries that.
+      text field, so there is nothing for the template to replace and it is silently dropped. Since
+      21.16.0 the chevron slot belongs to the base only the select and the multiselect extend, so
+      the autocomplete does not even read it; the directive is standalone, which is why writing it
+      there is not an error.
     </p>
     <app-doc-matrix rowAxis="slot" colAxis="host">
       <ng-template appDocCell [rows]="slots" [cols]="hosts" let-slot let-host="col">

@@ -408,12 +408,12 @@
     <h3>trigger attributes</h3>
     <p class="multiselect-page__note">
       Read from the live DOM, so <code>aria-expanded</code> follows the panel — open one and watch
-      it flip. One row is worth reading against the same one on the Select page:
-      <code>errorMessage</code> puts <code>aria-invalid="true"</code> here as it does there, but no
-      <code>aria-describedby</code> pointing at the message. The trigger also carries the
-      full-selection tooltip, and that directive owns <code>aria-describedby</code> on its host — it
-      is the one control in the library whose error text is not linked, and the reason is recorded
-      in the backlog rather than papered over here.
+      it flip. <code>errorMessage</code> puts <code>aria-invalid="true"</code> on the trigger and an
+      <code>aria-describedby</code> pointing at the message, as on the Select page. The trigger also
+      carries the full-selection tooltip, which adds its own id to
+      <code>aria-describedby</code> while it shows rather than replacing the list, so the error
+      stays linked. (Until 21.15.0 it did not: the multiselect was the one control whose error text
+      was not linked.)
     </p>
     <app-doc-matrix rowAxis="input" colAxis="">
       <ng-template appDocCell [rows]="a11yStates" [cols]="a11yColumns" let-state>
