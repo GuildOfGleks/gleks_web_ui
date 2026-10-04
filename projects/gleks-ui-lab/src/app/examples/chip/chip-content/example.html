@@ -1,0 +1,18 @@
+@for (size of sizes; track size) {
+  <div>
+    <span>size: {{ size }}</span>
+    <gog-chip [size]="size" [avatarUrl]="ada" avatarAlt="">Ada Lovelace</gog-chip>
+    <gog-chip [size]="size" iconName="star">Starred</gog-chip>
+    <!-- Avatar and icon are independent: set both and both render. -->
+    <gog-chip
+      [size]="size"
+      [avatarUrl]="alan"
+      avatarAlt=""
+      iconName="warning"
+      removable
+      removeAriaLabel="Remove Alan Turing"
+    >
+      Alan Turing
+    </gog-chip>
+  </div>
+}

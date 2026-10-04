@@ -1,0 +1,6 @@
+<!-- Two-way: each chip flips its own value on click, Enter and Space. -->
+@for (topic of topics; track topic.label) {
+  <gog-chip [(selected)]="topic.on">{{ topic.label }}</gog-chip>
+}
+
+<p>selected: {{ selectedTopics().join(', ') || 'none' }}</p>

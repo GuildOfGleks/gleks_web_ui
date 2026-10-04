@@ -1,0 +1,15 @@
+<!-- The chip does not remove itself: the list it came from does. -->
+@for (filter of filters(); track filter) {
+  <gog-chip
+    [clickable]="false"
+    removable
+    [removeAriaLabel]="'Remove filter ' + filter"
+    (gogRemove)="remove(filter)"
+  >
+    {{ filter }}
+  </gog-chip>
+}
+<gog-chip [clickable]="false" removable disabled>Disabled hides the button</gog-chip>
+<gog-button variant="outline" size="sm" (gogClick)="reset()">Reset</gog-button>
+
+<p>last: {{ lastAction() }}</p>

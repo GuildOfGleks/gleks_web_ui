@@ -1,0 +1,13 @@
+@for (size of sizes; track size) {
+  <div>
+    <span>size: {{ size }}</span>
+    <gog-chip [size]="size">default</gog-chip>
+    <!-- A toggle that is off: it says so with aria-pressed="false". -->
+    <gog-chip [size]="size" [selected]="false">off</gog-chip>
+    <gog-chip [size]="size" [selected]="true">on</gog-chip>
+    <gog-chip [size]="size" disabled>disabled</gog-chip>
+    <!-- On, and unavailable right now: the ring stays. -->
+    <gog-chip [size]="size" [selected]="true" disabled>disabled, on</gog-chip>
+    <gog-chip [size]="size" [clickable]="false">label</gog-chip>
+  </div>
+}
