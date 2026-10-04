@@ -5,6 +5,21 @@ All notable changes to `@guildofgleks/ui` are documented here. Format follows
 semantic versioning**: a patch fixes, a minor adds, and only a major breaks — see the README's
 _Versioning_ section. Before 21.16.0 a minor could carry a breaking change, and its entry said so.
 
+## [21.18.0] - planned
+
+### Added
+
+- **`gog-breadcrumbs` and `*gogBreadcrumb`** — where the current page sits, as a trail of your own
+  links. The items are your elements (`<a *gogBreadcrumb routerLink="…">`), so `routerLink`,
+  `href` and anything else on them keep working and the package still has no router dependency.
+  The trail owns what a hand-written one usually gets wrong because none of it shows: a `<nav>`
+  landmark with a name, an ordered list, `aria-current="page"` on the last item, and separators
+  drawn as hidden icons rather than written as text a screen reader reads aloud — mirrored under
+  `dir="rtl"`. Past `maxItems` the middle collapses into a `…` button that expands the trail in
+  place and moves focus to the first item it revealed. Links get a 24x24 pointer target. New
+  labels: `GOG_CONFIG.labels.breadcrumbs` and `showBreadcrumbs`. New tokens: `--gog-breadcrumbs-*`.
+  Plan in `docs/breadcrumbs.md`.
+
 ## [21.17.0] - 04.10.2026
 
 ### Added

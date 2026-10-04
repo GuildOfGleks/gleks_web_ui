@@ -31,3 +31,18 @@ it found the lab's sidebar hover label and two `code` chips under AA.
 `running-commands.instructions.md`). After a publish, `npm install` at the repo root first, so
 `node_modules/@guildofgleks/ui` is the new version rather than a stale one or a leftover local
 build.
+
+## 21.18.0
+
+- **A new Breadcrumbs page**, in the D6 shape: the five sizes, a trail of `routerLink`s (the lab
+  has the router, so the example is the real thing, not `href="#"`), collapsing with `maxItems`,
+  `itemsBefore` and `itemsAfter` and the focus rule, `separatorIcon`, `dir="rtl"`, wrapping in a
+  narrow container. Accessibility: the landmark and its label, `aria-current` set on your element,
+  separators hidden, the `…` button's name, and why the current page is not a link. Route,
+  navigation (Layout & Navigation), SEO, sitemap, Global Config note and labels list
+  (`breadcrumbs`, `showBreadcrumbs`), theme generator catalogue and gallery, and a Breadcrumbs
+  section in the token reference; regenerate `theme-starter.css`.
+- **Consider using it in the lab itself**: a doc page under `/components/` is two levels deep and
+  has no trail. Not required — decide by looking.
+- **Counts**: 33 components becomes 34 on the comparison page, the FAQ and `nav-data.ts`; the
+  whole-library bundle row is a re-measurement, not an edit.

@@ -326,6 +326,9 @@ export interface GogGlobalConfig {
      * `` (count) => `${count} more` ``.
      */
     moreAvatars?: (count: number) => string;
+    /** `gog-breadcrumbs`: the landmark's name, and the button that expands a collapsed trail. */
+    breadcrumbs?: string;
+    showBreadcrumbs?: string;
     /** `gog-datepicker`'s button that opens the calendar panel. */
     openCalendar?: string;
     /**

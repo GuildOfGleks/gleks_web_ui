@@ -166,6 +166,46 @@
 }
 
 /*
+ * `gog-breadcrumbs` stamps your own elements (`*gogBreadcrumb`) into its list, so their rules live
+ * here: a scoped stylesheet cannot reach them. A parent is a link; the last item carries
+ * `aria-current="page"`, set by the trail.
+ */
+.gog-breadcrumbs__item > a {
+  position: relative;
+  color: var(--gog-breadcrumbs-link-color);
+  text-decoration: none;
+  border-radius: var(--gog-breadcrumbs-more-radius);
+}
+
+/* WCAG 2.5.8: a trail is not a sentence, so its links get 24x24 of target and keep their paint. */
+.gog-breadcrumbs__item > a::before {
+  content: '';
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  translate: -50% -50%;
+  min-inline-size: 24px;
+  min-block-size: 24px;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.gog-breadcrumbs__item > a:hover {
+  color: var(--gog-breadcrumbs-link-hover-color);
+  text-decoration: underline;
+}
+
+.gog-breadcrumbs__item > a:focus-visible {
+  outline: var(--gog-breadcrumbs-focus-ring-width) solid var(--gog-breadcrumbs-focus-ring-color);
+  outline-offset: var(--gog-breadcrumbs-focus-ring-offset);
+}
+
+.gog-breadcrumbs__item > [aria-current='page'] {
+  color: var(--gog-breadcrumbs-current-color);
+  font-weight: var(--gog-breadcrumbs-current-font-weight);
+}
+
+/*
  * `gog-avatar-group`'s rules for the avatars projected into it, which its scoped stylesheet cannot
  * reach. Each avatar steps back over the one before it by a fraction of the diameter, and a ring in
  * the group's ground colour separates the two edges. `box-shadow` rather than a border, so the

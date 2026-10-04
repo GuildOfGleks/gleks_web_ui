@@ -61,6 +61,10 @@ const OUTERMOST = new Map([
     'avatar-rounded',
     'an inline mark in the consumer’s flow; it clips its own picture rather than nesting one',
   ],
+  [
+    'breadcrumbs-more',
+    'the trail’s own button and its links’ focus corner; inline in the consumer’s flow',
+  ],
   ['button', 'sits in the consumer layout'],
   ['button-toggle', 'its own component — it shares a name prefix with the button, not a box'],
   ['card', 'the outermost surface'],

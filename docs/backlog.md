@@ -659,8 +659,9 @@ Each is additive: nothing here breaks an existing consumer, and none blocks anot
 - **Missing components**, in rough order of how often a real site wants them.
   ~~`alert`/`banner`~~ **came off this list on 2026-09-12** — `gog-alert` ships in the in-progress
   21.13.0, plan and iterations in `docs/alert.md`. `avatar` **came off on 2026-10-04**, built
-  into the in-progress 21.17.0 (`docs/avatar.md`). What is left: `breadcrumbs`, `stepper`,
-  `file upload`, `rating`, `empty state`. Each is additive and
+  into the in-progress 21.17.0 (`docs/avatar.md`). `breadcrumbs` **came off on
+  2026-10-04 as well**, into the in-progress 21.18.0 (`docs/breadcrumbs.md`). What is left:
+  `stepper`, `file upload`, `rating`, `empty state`. Each is additive and
   independent; none blocks anything else.
 
   **What building the first one taught, and it is not about alerts.** The plan's required question

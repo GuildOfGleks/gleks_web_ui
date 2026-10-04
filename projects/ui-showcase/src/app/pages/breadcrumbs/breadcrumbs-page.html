@@ -1,0 +1,141 @@
+<app-doc-page unit="breadcrumbs">
+  <app-doc-section
+    id="states"
+    title="States"
+    lead="A trail of your own links; the last item is the current page. The links are the only interactive state, and hover, focus and the current page are what change."
+  >
+    <h3>size</h3>
+    <p class="breadcrumbs-page__note">
+      The parents are links in the muted colour; the current page is the text colour and semibold,
+      with <code>aria-current="page"</code> set by the trail on your element. Hover a link for the
+      underline, Tab to it for the ring.
+    </p>
+    <app-doc-matrix rowAxis="size" colAxis="">
+      <ng-template appDocCell [rows]="sizes" [cols]="trailColumn" let-size>
+        <gog-breadcrumbs [size]="size">
+          <a *gogBreadcrumb href="#states">Home</a>
+          <a *gogBreadcrumb href="#states">Components</a>
+          <span *gogBreadcrumb>Breadcrumbs</span>
+        </gog-breadcrumbs>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section
+    id="collapsing"
+    title="Collapsing"
+    lead="Past maxItems the middle becomes a … button; pressing it expands the trail in place and focuses the first item it revealed."
+  >
+    <h3>maxItems, itemsBefore, itemsAfter</h3>
+    <p class="breadcrumbs-page__note">
+      Six crumbs. Press the <code>…</code> from the keyboard for the full effect: the button is
+      removed by its own press, so focus lands on the first revealed link rather than on
+      <code>&lt;body&gt;</code>. A trail that would hide nothing does not collapse.
+    </p>
+    @for (gen of [generation()]; track gen) {
+      <div class="breadcrumbs-page__stack">
+        <p class="breadcrumbs-page__note">maxItems unset</p>
+        <gog-breadcrumbs>
+          @for (crumb of deep; track crumb; let last = $last) {
+            @if (last) {
+              <span *gogBreadcrumb>{{ crumb }}</span>
+            } @else {
+              <a *gogBreadcrumb href="#collapsing">{{ crumb }}</a>
+            }
+          }
+        </gog-breadcrumbs>
+        <p class="breadcrumbs-page__note">[maxItems]="4" — first one, last two</p>
+        <gog-breadcrumbs [maxItems]="4">
+          @for (crumb of deep; track crumb; let last = $last) {
+            @if (last) {
+              <span *gogBreadcrumb>{{ crumb }}</span>
+            } @else {
+              <a *gogBreadcrumb href="#collapsing">{{ crumb }}</a>
+            }
+          }
+        </gog-breadcrumbs>
+        <p class="breadcrumbs-page__note">[maxItems]="4" [itemsBefore]="2" [itemsAfter]="1"</p>
+        <gog-breadcrumbs [maxItems]="4" [itemsBefore]="2" [itemsAfter]="1">
+          @for (crumb of deep; track crumb; let last = $last) {
+            @if (last) {
+              <span *gogBreadcrumb>{{ crumb }}</span>
+            } @else {
+              <a *gogBreadcrumb href="#collapsing">{{ crumb }}</a>
+            }
+          }
+        </gog-breadcrumbs>
+      </div>
+    }
+    <button type="button" (click)="generation.set(generation() + 1)">collapse them again</button>
+  </app-doc-section>
+
+  <app-doc-section
+    id="content"
+    title="Content & layout"
+    lead="The separator is drawn, not written, and points the other way in a right-to-left page. A long trail wraps."
+  >
+    <h3>separatorIcon</h3>
+    <div class="breadcrumbs-page__stack">
+      <gog-breadcrumbs separatorIcon="arrow-right">
+        <a *gogBreadcrumb href="#content">Home</a>
+        <a *gogBreadcrumb href="#content">Docs</a>
+        <span *gogBreadcrumb>Install</span>
+      </gog-breadcrumbs>
+    </div>
+
+    <h3>dir="rtl"</h3>
+    <p class="breadcrumbs-page__note">
+      The chevron points from a parent to its child, which is leftwards here.
+    </p>
+    <div class="breadcrumbs-page__stack" dir="rtl">
+      <gog-breadcrumbs>
+        <a *gogBreadcrumb href="#content">Home</a>
+        <a *gogBreadcrumb href="#content">Docs</a>
+        <span *gogBreadcrumb>Install</span>
+      </gog-breadcrumbs>
+    </div>
+
+    <h3>a narrow container</h3>
+    <div class="breadcrumbs-page__narrow">
+      <gog-breadcrumbs>
+        @for (crumb of deep; track crumb; let last = $last) {
+          @if (last) {
+            <span *gogBreadcrumb>{{ crumb }}</span>
+          } @else {
+            <a *gogBreadcrumb href="#content">{{ crumb }}</a>
+          }
+        }
+      </gog-breadcrumbs>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="A named navigation landmark holding an ordered list; aria-current on the last item; separators a screen reader does not read."
+  >
+    <h3>what assistive tech gets</h3>
+    <div class="breadcrumbs-page__stack">
+      <app-doc-attrs target="nav">
+        <gog-breadcrumbs>
+          <a *gogBreadcrumb href="#accessibility">Home</a>
+          <span *gogBreadcrumb>Breadcrumbs</span>
+        </gog-breadcrumbs>
+      </app-doc-attrs>
+      <app-doc-attrs target="[aria-current]">
+        <gog-breadcrumbs>
+          <a *gogBreadcrumb href="#accessibility">Home</a>
+          <span *gogBreadcrumb>Breadcrumbs</span>
+        </gog-breadcrumbs>
+      </app-doc-attrs>
+      <app-doc-attrs target=".gog-breadcrumbs__more">
+        <gog-breadcrumbs [maxItems]="2">
+          <a *gogBreadcrumb href="#accessibility">Home</a>
+          <a *gogBreadcrumb href="#accessibility">Docs</a>
+          <a *gogBreadcrumb href="#accessibility">Components</a>
+          <span *gogBreadcrumb>Breadcrumbs</span>
+        </gog-breadcrumbs>
+      </app-doc-attrs>
+    </div>
+  </app-doc-section>
+</app-doc-page>

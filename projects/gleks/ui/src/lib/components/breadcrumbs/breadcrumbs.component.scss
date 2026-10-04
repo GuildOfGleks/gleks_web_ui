@@ -1,0 +1,98 @@
+/*
+ * Token layering (see styles/theme.css):
+ *   --gog-breadcrumbs-size-font-size   internal, set by the size classes below.
+ *   --gog-breadcrumbs-<name>           the actual values, all in styles/theme.css.
+ *
+ * The items are your elements, stamped from your templates, so this scoped stylesheet cannot reach
+ * them: their link, current-page and target rules are in utilities.css. This one lays out the list
+ * and draws what the trail owns — the separators and the `…` button.
+ */
+:host {
+  display: block;
+  font-family: var(--gog-breadcrumbs-font-family);
+  font-size: var(--gog-breadcrumbs-size-font-size, var(--gog-breadcrumbs-md-font-size));
+  line-height: var(--gog-breadcrumbs-line-height);
+}
+
+.gog-breadcrumbs__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--gog-breadcrumbs-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.gog-breadcrumbs__item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gog-breadcrumbs-gap);
+  min-width: 0;
+}
+
+.gog-breadcrumbs__separator {
+  flex-shrink: 0;
+  color: var(--gog-breadcrumbs-separator-color);
+}
+
+/* It points from a parent to its child, which is leftwards in a right-to-left page. */
+:host-context([dir='rtl']) .gog-breadcrumbs__separator {
+  transform: scaleX(-1);
+}
+
+.gog-breadcrumbs__more {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--gog-breadcrumbs-more-padding-y) var(--gog-breadcrumbs-more-padding-x);
+  border: 0;
+  border-radius: var(--gog-breadcrumbs-more-radius);
+  background: transparent;
+  color: var(--gog-breadcrumbs-link-color);
+  font: inherit;
+  cursor: pointer;
+}
+
+/* WCAG 2.5.8: the glyph stays the size it is, the target is 24x24. */
+.gog-breadcrumbs__more::before {
+  content: '';
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  translate: -50% -50%;
+  min-inline-size: 24px;
+  min-block-size: 24px;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.gog-breadcrumbs__more:hover {
+  background-color: var(--gog-breadcrumbs-more-hover-bg);
+  color: var(--gog-breadcrumbs-link-hover-color);
+}
+
+.gog-breadcrumbs__more:focus-visible {
+  outline: var(--gog-breadcrumbs-focus-ring-width) solid var(--gog-breadcrumbs-focus-ring-color);
+  outline-offset: var(--gog-breadcrumbs-focus-ring-offset);
+}
+
+/* === Sizes ===
+   `md` needs no block: it is what the chain above falls back to. */
+
+:host(.gog-breadcrumbs--xsm) {
+  --gog-breadcrumbs-size-font-size: var(--gog-breadcrumbs-xsm-font-size);
+}
+
+:host(.gog-breadcrumbs--sm) {
+  --gog-breadcrumbs-size-font-size: var(--gog-breadcrumbs-sm-font-size);
+}
+
+:host(.gog-breadcrumbs--lg) {
+  --gog-breadcrumbs-size-font-size: var(--gog-breadcrumbs-lg-font-size);
+}
+
+:host(.gog-breadcrumbs--slg) {
+  --gog-breadcrumbs-size-font-size: var(--gog-breadcrumbs-slg-font-size);
+}

@@ -6,7 +6,7 @@
 
 # @guildofgleks/ui
 
-An Angular 21 and 22 component library with **no CDK and no Material**. 31 components, 5
+An Angular 21 and 22 component library with **no CDK and no Material**. 32 components, 5
 directives and 3 services, all standalone, all signal-based, themed entirely through CSS custom
 properties.
 
@@ -453,14 +453,14 @@ dropdowns, always for the menu.
 | Form controls       | `gog-inputfield`, `gog-textarea`, `gog-select`, `gog-multiselect`, `gog-autocomplete`, `gog-checkbox`, `gog-radio-group`, `gog-toggle`, `gog-slider`, `gog-datepicker`, `gog-calendar`, `gog-button-toggle-group` |
 | Actions             | `gog-button`, `gog-chip`                                                                                                                                                                                          |
 | Data                | `gog-table` (+ `gog-column`), `gog-paginator`, `gog-tag`                                                                                                                                                          |
-| Layout & disclosure | `gog-accordion`, `gog-tabs` (+ `gog-tab`), `gog-collapsible`, `gog-card`, `gog-panel`, `gog-divider`, `gog-scroll`                                                                                                |
+| Layout & disclosure | `gog-accordion`, `gog-tabs` (+ `gog-tab`), `gog-collapsible`, `gog-card`, `gog-panel`, `gog-divider`, `gog-scroll`, `gog-breadcrumbs`                                                                             |
 | Overlays            | `gog-dialog`, `gog-confirmation-dialog`, `gog-toast` (+ `gog-toast-container`), `gog-menu` (+ `gogMenuTrigger` / `gogMenuItem`)                                                                                   |
 | Feedback            | `gog-spinner`, `gog-spinner-overlay`, `gog-progressbar`, `gog-skeleton`, `gog-alert`                                                                                                                              |
 | Content             | `gog-icon`, `gog-avatar` (+ `gog-avatar-group`)                                                                                                                                                                   |
 
 **Directives:** `gogButton` (a link that looks like a button), `gogTooltip`, `gogBadge`,
 `gogRipple` (a press wash on any element), `gogCollapsibleTrigger`, `gogCollapsibleContent`,
-`gogCardLink` (a link the whole card activates).
+`gogCardLink` (a link the whole card activates), `*gogBreadcrumb` (your link as a breadcrumb item).
 **Services:** `DialogService`, `ToastService`, `ThemeService`.
 
 Seventeen more directives go on markup you own rather than configuring a component through an

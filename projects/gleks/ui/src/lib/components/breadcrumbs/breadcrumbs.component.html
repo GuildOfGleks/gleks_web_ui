@@ -1,0 +1,25 @@
+<nav class="gog-breadcrumbs__nav" [attr.aria-label]="resolvedLabels().landmark">
+  <ol class="gog-breadcrumbs__list">
+    @for (entry of entries(); track entry.key; let last = $last) {
+      <li class="gog-breadcrumbs__item">
+        @if (entry.item; as item) {
+          <!-- Your element, stamped from your template: every directive on it keeps working. -->
+          <ng-container [ngTemplateOutlet]="item.templateRef" />
+        } @else {
+          <button
+            type="button"
+            class="gog-breadcrumbs__more"
+            [attr.aria-label]="resolvedLabels().more"
+            (click)="expand()"
+          >
+            <gog-icon name="more-horizontal" />
+          </button>
+        }
+        @if (!last) {
+          <!-- Drawn, not written: a screen reader would otherwise say "chevron" or "slash". -->
+          <gog-icon class="gog-breadcrumbs__separator" [name]="separatorIcon()" />
+        }
+      </li>
+    }
+  </ol>
+</nav>

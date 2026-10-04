@@ -353,7 +353,7 @@ parent's config**, one level deep per key — it does not replace it.
 | `paginator`    | `showPageSizeSelect`, `pageSizeOptions`                                               | `gog-paginator`, and through it `gog-table`'s built-in pagination.                                                                                                                                                                                                                                                                                                                                                                         |
 | `toast`        | `position`, `duration`                                                                | `ToastService`.                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | `theme`        | `storageKey`, `defaultTheme`, `followSystem`, `lightTheme`, `darkTheme`               | `ThemeService`. All off/neutral by default — see below.                                                                                                                                                                                                                                                                                                                                                                                    |
-| `labels`       | every fixed string the library renders — see below                                    | inputfield, textarea, select, multiselect, autocomplete, datepicker, calendar, paginator, table, avatar-group, `DialogService`, `ToastService`.                                                                                                                                                                                                                                                                                            |
+| `labels`       | every fixed string the library renders — see below                                    | inputfield, textarea, select, multiselect, autocomplete, datepicker, calendar, paginator, table, avatar-group, breadcrumbs, `DialogService`, `ToastService`.                                                                                                                                                                                                                                                                               |
 
 Anything visual does **not** belong here — override the `--gog-*` token instead.
 
@@ -402,6 +402,8 @@ provideGogConfig({
     // around a number vary by language, so they take a formatter.
     page: (page, isCurrent) => (isCurrent ? `Seite ${page}` : `Zu Seite ${page} wechseln`),
     moreAvatars: (count) => `${count} weitere`, // gog-avatar-group's +N avatar
+    breadcrumbs: 'Brotkrumen', // gog-breadcrumbs' landmark
+    showBreadcrumbs: 'Ganzen Pfad zeigen', // its collapsed-trail button
   },
 });
 ```
@@ -1836,6 +1838,43 @@ Model: `open: boolean` (default `true`, ignored while `collapsible` is off). No 
   titled before its content arrives, and blanking the title would move the layout twice.
 - **The surface is never itself a link** — there is no `gogPanelLink`. Controls live inside a
   panel, and a region that is a link cannot hold them. Use `gog-card` for that.
+
+#### `gog-breadcrumbs` + `*gogBreadcrumb`
+
+Where the current page sits, as a trail. **The items are your own elements** — the package has no
+router dependency, so a link keeps its own `routerLink` or `href` — marked with the structural
+`*gogBreadcrumb`, one element per item. The last item is the current page.
+
+```html
+<gog-breadcrumbs [maxItems]="4">
+  <a *gogBreadcrumb routerLink="/">Home</a>
+  <a *gogBreadcrumb routerLink="/components">Components</a>
+  <span *gogBreadcrumb>Breadcrumbs</span>
+</gog-breadcrumbs>
+```
+
+| Input           | Type                  | Default                      |
+| --------------- | --------------------- | ---------------------------- |
+| `maxItems`      | `number \| null`      | `null` — never collapse      |
+| `itemsBefore`   | `number`              | `1`                          |
+| `itemsAfter`    | `number`              | `2`                          |
+| `separatorIcon` | `GogIconName`         | `'chevron-right'`            |
+| `size`          | `GogSize`             | `'md'`                       |
+| `ariaLabel`     | `string \| undefined` | `undefined` — `'Breadcrumb'` |
+
+- **It owns the semantics**: a `<nav>` named by `ariaLabel` (or `GOG_CONFIG.labels.breadcrumbs`),
+  an `<ol>` with each item in its own `<li>`, `aria-current="page"` set on the last item's element,
+  and separators drawn as `aria-hidden` icons — so never write a `/` or `›` between items yourself,
+  a screen reader would read it. The separator mirrors under `dir="rtl"`.
+- **Collapsing**: past `maxItems` it keeps `itemsBefore` items, a `…` button
+  (`GOG_CONFIG.labels.showBreadcrumbs`, "Show full path") and `itemsAfter` items. The button
+  expands the trail in place and moves focus to the first item it revealed. A trail that would hide
+  nothing does not collapse.
+- **Use `*gogBreadcrumb`, with the star** — the trail needs the template, not the element, to wrap
+  each item in a list item and to leave items out while collapsed. One element per item; a
+  template with two root elements breaks `aria-current`.
+- The items' link, hover, focus and current-page styles live in the baseline stylesheet
+  (`utilities.css`), since they are your elements: `--gog-breadcrumbs-*` tokens restyle them.
 
 #### `gog-paginator`
 

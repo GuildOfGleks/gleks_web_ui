@@ -31,6 +31,11 @@
 
 <!-- Scene 1: account settings -->
 <section class="specimen__scene" aria-labelledby="specimen-account">
+  <gog-breadcrumbs [size]="size()">
+    <a *gogBreadcrumb href="#specimen-account">Workspace</a>
+    <a *gogBreadcrumb href="#specimen-account">People</a>
+    <span *gogBreadcrumb>{{ fullName() }}</span>
+  </gog-breadcrumbs>
   <h2 id="specimen-account" class="specimen__scene-title">Account settings</h2>
 
   <div class="specimen__layout">
@@ -424,6 +429,12 @@
 
 <!-- Scene 2: orders -->
 <section class="specimen__scene" aria-labelledby="specimen-orders">
+  <gog-breadcrumbs [size]="size()" [maxItems]="3">
+    <a *gogBreadcrumb href="#specimen-orders">Workspace</a>
+    <a *gogBreadcrumb href="#specimen-orders">Sales</a>
+    <a *gogBreadcrumb href="#specimen-orders">Europe</a>
+    <span *gogBreadcrumb>Orders</span>
+  </gog-breadcrumbs>
   <h2 id="specimen-orders" class="specimen__scene-title">Orders</h2>
 
   <div class="specimen__cards">

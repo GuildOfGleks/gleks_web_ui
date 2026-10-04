@@ -666,6 +666,31 @@
      stays narrower than a typical pair of initials. */
   --gog-avatar-group-more-initials-ratio: 0.3;
 
+  /* ── Breadcrumbs ───────────────────────────────────────────────────────────
+     The parents are links in the muted colour, the current page is the text colour: the trail is
+     read as context, and the one item that is not a link is the one that says where you are. */
+  --gog-breadcrumbs-font-family: var(--gog-font-body);
+  /* A single line of labels: the tight end of the leading scale. */
+  --gog-breadcrumbs-line-height: var(--gog-line-height-snug);
+  --gog-breadcrumbs-gap: var(--gog-space-8);
+  --gog-breadcrumbs-link-color: var(--gog-muted-text-color);
+  --gog-breadcrumbs-link-hover-color: var(--gog-text-color);
+  --gog-breadcrumbs-current-color: var(--gog-text-color);
+  --gog-breadcrumbs-current-font-weight: var(--gog-font-weight-semibold);
+  --gog-breadcrumbs-separator-color: var(--gog-muted-text-color);
+  --gog-breadcrumbs-more-padding-y: var(--gog-space-4);
+  --gog-breadcrumbs-more-padding-x: var(--gog-space-8);
+  --gog-breadcrumbs-more-radius: var(--gog-radius);
+  --gog-breadcrumbs-more-hover-bg: var(--gog-hover-color);
+  --gog-breadcrumbs-focus-ring-width: var(--gog-focus-ring-width);
+  --gog-breadcrumbs-focus-ring-offset: var(--gog-focus-ring-offset);
+  --gog-breadcrumbs-focus-ring-color: var(--gog-accent-color);
+  --gog-breadcrumbs-xsm-font-size: var(--gog-text-xs);
+  --gog-breadcrumbs-sm-font-size: var(--gog-text-sm);
+  --gog-breadcrumbs-md-font-size: var(--gog-text-sm);
+  --gog-breadcrumbs-lg-font-size: var(--gog-text-md);
+  --gog-breadcrumbs-slg-font-size: var(--gog-text-lg);
+
   /* ── Collapsible ───────────────────────────────────────────────────────────
      No owned markup: the `.gog-collapsible__*` rules live in utilities.css, because they style content
      the consumer projects, which a scoped stylesheet cannot reach. */

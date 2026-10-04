@@ -504,6 +504,35 @@ const WASH_PAIRS = [
     ['--gog-background-color', '--gog-surface-color'],
     4.5,
   ],
+  // A breadcrumb trail's parent links, its hover, and the current page, on the page or a surface.
+  [
+    'breadcrumbs link',
+    '--gog-breadcrumbs-link-color',
+    '--gog-background-color',
+    ['--gog-background-color'],
+    4.5,
+  ],
+  [
+    'breadcrumbs link on surface',
+    '--gog-breadcrumbs-link-color',
+    '--gog-surface-color',
+    ['--gog-surface-color'],
+    4.5,
+  ],
+  [
+    'breadcrumbs current',
+    '--gog-breadcrumbs-current-color',
+    '--gog-background-color',
+    ['--gog-background-color'],
+    4.5,
+  ],
+  [
+    'breadcrumbs more hover',
+    '--gog-breadcrumbs-link-hover-color',
+    '--gog-breadcrumbs-more-hover-bg',
+    ['--gog-background-color', '--gog-surface-color'],
+    4.5,
+  ],
   // An avatar's initials (and its fallback icon) on its own fill. Body text, not large text: at
   // `xsm` the letters are under 10px.
   [

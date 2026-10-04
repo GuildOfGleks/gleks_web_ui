@@ -42,11 +42,14 @@ function needles(selector: string): string[] {
   return [...found];
 }
 
-/** Occurrences in a template of an element (`<gog-x`) or an attribute (`gogX`, `[gogX]`). */
+/**
+ * Occurrences in a template of an element (`<gog-x`) or an attribute (`gogX`, `[gogX]`, and the
+ * structural `*gogX`).
+ */
 function count(template: string, needle: string): number {
   const pattern = needle.startsWith('<')
     ? new RegExp(`${needle}(?=[\\s/>])`, 'g')
-    : new RegExp(`(?<=\\s)\\[?${needle}\\]?(?=[\\s=>/])`, 'g');
+    : new RegExp(`(?<=\\s)[[*]?${needle}\\]?(?=[\\s=>/])`, 'g');
   return template.match(pattern)?.length ?? 0;
 }
 

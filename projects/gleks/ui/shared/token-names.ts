@@ -243,6 +243,26 @@ export type GogTokenName =
   | '--gog-border-color'
   | '--gog-border-style'
   | '--gog-border-width'
+  | '--gog-breadcrumbs-current-color'
+  | '--gog-breadcrumbs-current-font-weight'
+  | '--gog-breadcrumbs-focus-ring-color'
+  | '--gog-breadcrumbs-focus-ring-offset'
+  | '--gog-breadcrumbs-focus-ring-width'
+  | '--gog-breadcrumbs-font-family'
+  | '--gog-breadcrumbs-gap'
+  | '--gog-breadcrumbs-lg-font-size'
+  | '--gog-breadcrumbs-line-height'
+  | '--gog-breadcrumbs-link-color'
+  | '--gog-breadcrumbs-link-hover-color'
+  | '--gog-breadcrumbs-md-font-size'
+  | '--gog-breadcrumbs-more-hover-bg'
+  | '--gog-breadcrumbs-more-padding-x'
+  | '--gog-breadcrumbs-more-padding-y'
+  | '--gog-breadcrumbs-more-radius'
+  | '--gog-breadcrumbs-separator-color'
+  | '--gog-breadcrumbs-slg-font-size'
+  | '--gog-breadcrumbs-sm-font-size'
+  | '--gog-breadcrumbs-xsm-font-size'
   | '--gog-button-active-scale'
   | '--gog-button-bg'
   | '--gog-button-border'
@@ -2067,6 +2087,32 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-avatar-slg-size',
       '--gog-avatar-sm-size',
       '--gog-avatar-xsm-size',
+    ],
+  },
+  {
+    section: 'Breadcrumbs',
+    layer: 'component',
+    tokens: [
+      '--gog-breadcrumbs-current-color',
+      '--gog-breadcrumbs-current-font-weight',
+      '--gog-breadcrumbs-focus-ring-color',
+      '--gog-breadcrumbs-focus-ring-offset',
+      '--gog-breadcrumbs-focus-ring-width',
+      '--gog-breadcrumbs-font-family',
+      '--gog-breadcrumbs-gap',
+      '--gog-breadcrumbs-lg-font-size',
+      '--gog-breadcrumbs-line-height',
+      '--gog-breadcrumbs-link-color',
+      '--gog-breadcrumbs-link-hover-color',
+      '--gog-breadcrumbs-md-font-size',
+      '--gog-breadcrumbs-more-hover-bg',
+      '--gog-breadcrumbs-more-padding-x',
+      '--gog-breadcrumbs-more-padding-y',
+      '--gog-breadcrumbs-more-radius',
+      '--gog-breadcrumbs-separator-color',
+      '--gog-breadcrumbs-slg-font-size',
+      '--gog-breadcrumbs-sm-font-size',
+      '--gog-breadcrumbs-xsm-font-size',
     ],
   },
   {
