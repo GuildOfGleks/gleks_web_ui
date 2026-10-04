@@ -4,7 +4,6 @@ import { ApiTableComponent, type ApiRow } from '../../shared/api-table/api-table
 import { DemoComponent } from '../../shared/demo/demo';
 import { GlobalConfigNote } from '../../shared/global-config-note/global-config-note';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
-import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 import { TEXTAREA_EXAMPLES } from '../../../examples/textarea/sources.generated';
 import { TextareaClearableExample } from '../../../examples/textarea/textarea-clearable/example';
@@ -151,14 +150,7 @@ const API_OUTPUTS: readonly ApiRow[] = [
 
 @Component({
   selector: 'app-textarea-doc-page',
-  imports: [
-    ApiTableComponent,
-    DemoComponent,
-    GlobalConfigNote,
-    MarkdownComponent,
-    RouterLink,
-    SinceBadgeComponent,
-  ],
+  imports: [ApiTableComponent, DemoComponent, GlobalConfigNote, MarkdownComponent, RouterLink],
   templateUrl: './textarea-doc-page.html',
   styleUrl: './textarea-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
