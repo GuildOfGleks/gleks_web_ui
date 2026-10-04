@@ -6,46 +6,37 @@ export const TABS_EXAMPLES = {
   tabsAlign: {
     html: '@for (align of aligns; track align) {\n  <p>align: {{ align }}</p>\n  <gog-tabs [align]="align" size="sm" ariaLabel="Account">\n    <gog-tab label="Profile"><p>Profile.</p></gog-tab>\n    <gog-tab label="Billing"><p>Billing.</p></gog-tab>\n    <gog-tab label="Audit" disabled><p>Audit.</p></gog-tab>\n  </gog-tabs>\n}',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { GogTabsAlign, TabComponent, TabsComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [TabComponent, TabsComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class TabsAlignExample {\n  protected readonly aligns: GogTabsAlign[] = ['start', 'center', 'end', 'stretch'];\n}",
-    css: '',
   },
   tabsDisabledIndex: {
     html: '<div>\n  <gog-button variant="outline" size="sm" (gogClick)="activeIndex.set(2)">\n    activeIndex = 2 (disabled)\n  </gog-button>\n  <gog-button variant="outline" size="sm" (gogClick)="activeIndex.set(1)"\n    >activeIndex = 1</gog-button\n  >\n</div>\n<gog-tabs ariaLabel="Account" [(activeIndex)]="activeIndex">\n  <gog-tab label="Profile"><p>Profile.</p></gog-tab>\n  <gog-tab label="Billing"><p>Billing.</p></gog-tab>\n  <gog-tab label="Audit" disabled><p>Audit.</p></gog-tab>\n</gog-tabs>\n\n<p>activeIndex: {{ activeIndex() }}</p>',
     ts: "import { ChangeDetectionStrategy, Component, signal } from '@angular/core';\nimport { ButtonComponent, TabComponent, TabsComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ButtonComponent, TabComponent, TabsComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class TabsDisabledIndexExample {\n  protected readonly activeIndex = signal(1);\n}",
-    css: '',
   },
   tabsHeader: {
     html: '<gog-tabs ariaLabel="Mailbox">\n  <!-- One template for every header. It renders inside the tab\'s button: markup only. -->\n  <ng-template gogTabHeader let-tab let-active="active">\n    {{ tab.label() }}\n    @if (tab.label() === \'Inbox\') {\n      <gog-tag size="xsm" [variant]="active ? \'info\' : \'warning\'">12</gog-tag>\n    }\n  </ng-template>\n  <gog-tab label="Inbox"><p>Twelve unread.</p></gog-tab>\n  <gog-tab label="Sent"><p>Sent.</p></gog-tab>\n</gog-tabs>',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { GogTabHeaderDirective, TabComponent, TabsComponent, TagComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [GogTabHeaderDirective, TabComponent, TabsComponent, TagComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class TabsHeaderExample {}",
-    css: '',
   },
   tabsIcons: {
     html: '<gog-tabs ariaLabel="Mailbox">\n  <gog-tab label="Inbox" iconName="mail"><p>Inbox.</p></gog-tab>\n  <gog-tab label="Starred" iconName="star"><p>Starred.</p></gog-tab>\n  <gog-tab label="Archive" iconName="download"><p>Archive.</p></gog-tab>\n</gog-tabs>',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { TabComponent, TabsComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [TabComponent, TabsComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class TabsIconsExample {}",
-    css: '',
   },
   tabsLazy: {
     html: '<gog-tabs ariaLabel="Content">\n  <!-- Eager: built at once, only hidden while inactive, so it keeps what was typed. -->\n  <gog-tab label="Eager">\n    <gog-inputfield label="Draft" placeholder="Type, switch away, come back" />\n  </gog-tab>\n  <gog-tab label="Another"><p>Switch back: the draft is still there.</p></gog-tab>\n  <!-- Lazy: built the first time its tab is shown, then kept. -->\n  <gog-tab label="Lazy">\n    <ng-template gogTabContent>\n      <p>Built on first activation — this was not in the DOM until now.</p>\n    </ng-template>\n  </gog-tab>\n</gog-tabs>',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport {\n  GogTabContentDirective,\n  InputfieldComponent,\n  TabComponent,\n  TabsComponent,\n} from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [GogTabContentDirective, InputfieldComponent, TabComponent, TabsComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class TabsLazyExample {}",
-    css: '',
   },
   tabsOverflow: {
     html: '<!-- scrollActiveIntoView on (the default): the chosen tab is centred, no track. -->\n<gog-tabs size="sm" ariaLabel="Month" [activeIndex]="8">\n  @for (month of months; track month) {\n    <gog-tab [label]="month">\n      <p>{{ month }}.</p>\n    </gog-tab>\n  }\n</gog-tabs>\n<!-- Off: a track, shown while the pointer is over the row, reaches what is off-screen. -->\n<gog-tabs size="sm" ariaLabel="Month" [scrollActiveIntoView]="false">\n  @for (month of months; track month) {\n    <gog-tab [label]="month">\n      <p>{{ month }}.</p>\n    </gog-tab>\n  }\n</gog-tabs>',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { TabComponent, TabsComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [TabComponent, TabsComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class TabsOverflowExample {\n  protected readonly months = [\n    'January',\n    'February',\n    'March',\n    'April',\n    'May',\n    'June',\n    'July',\n    'August',\n    'September',\n    'October',\n    'November',\n    'December',\n  ];\n}",
-    css: '',
   },
   tabsOverview: {
     html: '<gog-tabs ariaLabel="Account" [(activeIndex)]="activeIndex" (gogTabChange)="lastChange.set($event)">\n  <gog-tab label="Profile"><p>Profile content.</p></gog-tab>\n  <gog-tab label="Billing"><p>Billing content.</p></gog-tab>\n  <gog-tab label="Audit" disabled><p>Not available.</p></gog-tab>\n  <gog-tab label="Team"><p>Team content.</p></gog-tab>\n</gog-tabs>\n\n<p>activeIndex: {{ activeIndex() }} · gogTabChange: {{ lastChange() ?? \'none yet\' }}</p>',
     ts: "import { ChangeDetectionStrategy, Component, signal } from '@angular/core';\nimport { TabComponent, TabsComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [TabComponent, TabsComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class TabsOverviewExample {\n  protected readonly activeIndex = signal(0);\n  protected readonly lastChange = signal<number | null>(null);\n}",
-    css: '',
   },
   tabsSizes: {
     html: '<!-- Each tablist holds an active tab, an inactive one and a disabled one. -->\n@for (size of sizes; track size) {\n  <p>size: {{ size }}</p>\n  <gog-tabs [size]="size" ariaLabel="Account">\n    <gog-tab label="Profile"><p>Profile.</p></gog-tab>\n    <gog-tab label="Billing"><p>Billing.</p></gog-tab>\n    <gog-tab label="Audit" disabled><p>Audit.</p></gog-tab>\n  </gog-tabs>\n}',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { GogSize, TabComponent, TabsComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [TabComponent, TabsComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class TabsSizesExample {\n  protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];\n}",
-    css: '',
   },
   tabsVertical: {
     html: '<gog-tabs orientation="vertical" ariaLabel="Settings">\n  <gog-tab label="General"><p>General settings.</p></gog-tab>\n  <gog-tab label="Security"><p>Security settings.</p></gog-tab>\n  <gog-tab label="Billing"><p>Billing settings.</p></gog-tab>\n</gog-tabs>',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { TabComponent, TabsComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [TabComponent, TabsComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class TabsVerticalExample {}",
-    css: '',
   },
 } as const satisfies Record<string, ExampleSource>;

@@ -28,7 +28,7 @@ import type { ExampleSource } from '../example-source';
 export type DemoLayout = 'block' | 'row' | 'rows' | 'fields' | 'wide' | 'overhang' | 'frame';
 
 /**
- * One documentation example: the live component, then its three files behind the tab strip.
+ * One documentation example: the live component, then its two tabs, HTML and TS.
  *
  * The card's heading and prose stay in the page — they are documentation about the example, not
  * part of it. This owns only the pair that has to agree with itself: what is rendered, and the

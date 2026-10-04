@@ -6,36 +6,29 @@ export const PROGRESSBAR_EXAMPLES = {
   progressbarClamp: {
     html: '<gog-progressbar [value]="value()" showValue ariaLabel="Uploading" />\n<div>\n  <gog-button variant="outline" size="sm" (gogClick)="value.set(value() - 25)">−25</gog-button>\n  <gog-button variant="outline" size="sm" (gogClick)="value.set(value() + 25)">+25</gog-button>\n</div>\n<p>value: {{ value() }}</p>\n\n<!-- Clamped to 0–100 rather than trusted; NaN reads as 0. -->\n@for (fixed of fixedValues; track $index) {\n  <p>[value]="{{ fixed }}"</p>\n  <gog-progressbar [value]="fixed" showValue ariaLabel="Uploading" />\n}',
     ts: "import { ChangeDetectionStrategy, Component, signal } from '@angular/core';\nimport { ButtonComponent, ProgressbarComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ButtonComponent, ProgressbarComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class ProgressbarClampExample {\n  protected readonly value = signal(20);\n  protected readonly fixedValues = [-20, 140, Number.NaN];\n}",
-    css: '',
   },
   progressbarEdge: {
     html: '@for (variant of variants; track variant) {\n  <div>\n    <gog-progressbar [variant]="variant" [value]="62" ariaLabel="Uploading" />\n    <p>{{ variant }}</p>\n  </div>\n  <!-- The same bar with hue taken away: is the end of the fill still visible? -->\n  <div style="filter: grayscale(1)">\n    <gog-progressbar [variant]="variant" [value]="62" ariaLabel="Uploading" />\n    <p>{{ variant }}, grayscale</p>\n  </div>\n  <div style="filter: grayscale(1); --gog-progressbar-edge-width: 1px">\n    <gog-progressbar [variant]="variant" [value]="62" ariaLabel="Uploading" />\n    <p>{{ variant }}, grayscale, edge 1px</p>\n  </div>\n}',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { GogProgressbarVariant, ProgressbarComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ProgressbarComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class ProgressbarEdgeExample {\n  protected readonly variants: GogProgressbarVariant[] = [\n    'accent',\n    'info',\n    'success',\n    'warning',\n    'danger',\n  ];\n}",
-    css: '',
   },
   progressbarNaming: {
     html: '<gog-progressbar [value]="62" ariaLabel="Uploading report.pdf" />\n\n<!-- A visible label beside the bar: point at it from the host. -->\n<p id="progressbar-naming-label">report.pdf</p>\n<gog-progressbar [value]="62" aria-labelledby="progressbar-naming-label" />',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { ProgressbarComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ProgressbarComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class ProgressbarNamingExample {}",
-    css: '',
   },
   progressbarOverview: {
     html: '<gog-progressbar [value]="42" ariaLabel="Upload progress" />',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { ProgressbarComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ProgressbarComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class ProgressbarOverviewExample {}",
-    css: '',
   },
   progressbarShowValue: {
     html: '<gog-progressbar [value]="62" showValue ariaLabel="Uploading" />\n<gog-progressbar [value]="7" showValue ariaLabel="Uploading" />\n<!-- Indeterminate has no number, so showValue prints nothing. -->\n<gog-progressbar mode="indeterminate" showValue ariaLabel="Uploading" />',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { ProgressbarComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ProgressbarComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class ProgressbarShowValueExample {}",
-    css: '',
   },
   progressbarSizes: {
     html: '@for (size of sizes; track size) {\n  @for (mode of modes; track mode) {\n    <div>\n      <gog-progressbar\n        [size]="size"\n        [mode]="mode"\n        [value]="40"\n        [buffer]="70"\n        ariaLabel="Uploading"\n      />\n      <p>{{ size }} · {{ mode }}</p>\n    </div>\n  }\n}',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { GogProgressbarMode, GogSize, ProgressbarComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ProgressbarComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class ProgressbarSizesExample {\n  protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];\n  protected readonly modes: GogProgressbarMode[] = ['determinate', 'buffer', 'indeterminate'];\n}",
-    css: '',
   },
   progressbarVariants: {
     html: '@for (variant of variants; track variant) {\n  @for (mode of modes; track mode) {\n    <div>\n      <gog-progressbar\n        [variant]="variant"\n        [mode]="mode"\n        [value]="40"\n        [buffer]="70"\n        ariaLabel="Uploading"\n      />\n      <p>{{ variant }} · {{ mode }}</p>\n    </div>\n  }\n}',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { GogProgressbarMode, GogProgressbarVariant, ProgressbarComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ProgressbarComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class ProgressbarVariantsExample {\n  protected readonly variants: GogProgressbarVariant[] = [\n    'accent',\n    'info',\n    'success',\n    'warning',\n    'danger',\n  ];\n  protected readonly modes: GogProgressbarMode[] = ['determinate', 'buffer', 'indeterminate'];\n}",
-    css: '',
   },
 } as const satisfies Record<string, ExampleSource>;

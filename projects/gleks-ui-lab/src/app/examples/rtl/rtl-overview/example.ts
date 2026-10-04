@@ -5,6 +5,7 @@ import {
   CheckboxComponent,
   GogTooltipDirective,
   InputfieldComponent,
+  PanelComponent,
   ProgressbarComponent,
   SelectComponent,
   SliderComponent,
@@ -24,9 +25,9 @@ import {
     TagComponent,
     ButtonComponent,
     GogTooltipDirective,
+    PanelComponent,
   ],
   templateUrl: './example.html',
-  styleUrl: './example.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RtlOverviewExample {

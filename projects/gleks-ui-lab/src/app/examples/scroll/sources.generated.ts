@@ -6,46 +6,37 @@ export const SCROLL_EXAMPLES = {
   scrollAxis: {
     html: '<div>\n  <gog-scroll style="height: 160px" axis="vertical" [autoHide]="false" ariaLabel="Vertical">\n    @for (item of items; track item) {\n      <p>{{ item }}</p>\n    }\n  </gog-scroll>\n  <p>axis="vertical" (default)</p>\n</div>\n<div>\n  <!-- No height: on the horizontal axis the row sizes itself. -->\n  <gog-scroll axis="horizontal" [autoHide]="false" ariaLabel="Horizontal">\n    <div style="display: flex; gap: 8px; padding: 8px">\n      @for (item of items; track item) {\n        <gog-chip [clickable]="false">{{ item }}</gog-chip>\n      }\n    </div>\n  </gog-scroll>\n  <p>axis="horizontal"</p>\n</div>\n<div>\n  <gog-scroll style="height: 160px" axis="both" [autoHide]="false" ariaLabel="Both">\n    <table>\n      @for (row of items; track row) {\n        <tr>\n          @for (column of items.slice(0, 8); track column) {\n            <td style="white-space: nowrap">{{ row }} · {{ column }}</td>\n          }\n        </tr>\n      }\n    </table>\n  </gog-scroll>\n  <p>axis="both"</p>\n</div>',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { ChipComponent, ScrollComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ChipComponent, ScrollComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class ScrollAxisExample {\n  protected readonly items = Array.from({ length: 20 }, (_, i) => `Item ${i + 1}`);\n}",
-    css: '',
   },
   scrollGlobalConfig: {
     html: '',
     ts: "import { ApplicationConfig } from '@angular/core';\nimport { provideGogConfig } from '@guildofgleks/ui';\n\nexport const appConfig: ApplicationConfig = {\n  providers: [\n    provideGogConfig({\n      scroll: { size: 'thin', hideDelay: 1200, overscrollBehavior: 'contain' },\n    }),\n  ],\n};",
-    css: '',
   },
   scrollHorizontalWheel: {
     html: '<!-- The same content on the same axis; only the input differs. Hover each and turn the wheel. -->\n<p>off — a vertical wheel scrolls the page (the default)</p>\n<gog-scroll axis="horizontal" [autoHide]="false" ariaLabel="Columns, wheel off">\n  <div style="display: flex; gap: 8px; padding: 8px">\n    @for (item of items; track item) {\n      <gog-chip [clickable]="false">{{ item }}</gog-chip>\n    }\n  </div>\n</gog-scroll>\n\n<p>horizontalWheel — the same turn scrolls the row</p>\n<gog-scroll axis="horizontal" [autoHide]="false" horizontalWheel ariaLabel="Columns, wheel on">\n  <div style="display: flex; gap: 8px; padding: 8px">\n    @for (item of items; track item) {\n      <gog-chip [clickable]="false">{{ item }}</gog-chip>\n    }\n  </div>\n</gog-scroll>',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { ChipComponent, ScrollComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ChipComponent, ScrollComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class ScrollHorizontalWheelExample {\n  protected readonly items = Array.from({ length: 20 }, (_, i) => `Column ${i + 1}`);\n}",
-    css: '',
   },
   scrollMethods: {
     html: '<div>\n  <gog-button size="sm" (gogClick)="scroller()?.scrollToTop()">To top</gog-button>\n  <gog-button size="sm" (gogClick)="scroller()?.scrollToBottom()">To bottom</gog-button>\n</div>\n<!-- #scrollRegion, not #scroller: a template reference would shadow the viewChild signal. -->\n<gog-scroll #scrollRegion style="height: 200px" ariaLabel="Example list">\n  @for (item of items; track item) {\n    <p>{{ item }}</p>\n  }\n</gog-scroll>',
     ts: "import { ChangeDetectionStrategy, Component, viewChild } from '@angular/core';\nimport { ButtonComponent, ScrollComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ButtonComponent, ScrollComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class ScrollMethodsExample {\n  protected readonly scroller = viewChild<ScrollComponent>('scrollRegion');\n\n  protected readonly items = Array.from({ length: 30 }, (_, i) => `Row ${i + 1}`);\n}",
-    css: '',
   },
   scrollOverscroll: {
     html: '@for (behavior of behaviors; track behavior) {\n  <div>\n    <gog-scroll style="height: 160px" [overscrollBehavior]="behavior" ariaLabel="Example list">\n      @for (item of items; track item) {\n        <p>{{ item }}</p>\n      }\n    </gog-scroll>\n    <p>overscrollBehavior="{{ behavior }}"</p>\n  </div>\n}',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { GogScrollOverscrollBehavior, ScrollComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ScrollComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class ScrollOverscrollExample {\n  protected readonly behaviors: GogScrollOverscrollBehavior[] = ['auto', 'contain'];\n  protected readonly items = Array.from({ length: 30 }, (_, i) => `Row ${i + 1}`);\n}",
-    css: '',
   },
   scrollOverview: {
     html: '<!-- The region scrolls whatever does not fit the box its host is given: set a height on it. -->\n<gog-scroll style="height: 200px" ariaLabel="Example list">\n  @for (item of items; track item) {\n    <p>{{ item }}</p>\n  }\n</gog-scroll>',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { ScrollComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ScrollComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class ScrollOverviewExample {\n  protected readonly items = Array.from({ length: 30 }, (_, i) => `Row ${i + 1}`);\n}",
-    css: '',
   },
   scrollReach: {
     html: '<gog-scroll\n  style="height: 200px"\n  ariaLabel="Example list"\n  [reachThreshold]="8"\n  (gogReachStart)="reachState.set(\'At the top\')"\n  (gogReachEnd)="reachState.set(\'At the bottom\')"\n  (gogScroll)="onScroll($event)"\n>\n  @for (item of items; track item) {\n    <p>{{ item }}</p>\n  }\n</gog-scroll>\n\n<p>\n  {{ reachState() }}\n  @if (lastMetrics(); as metrics) {\n    — scrollTop: {{ metrics.scrollTop | number: \'1.0-0\' }}\n  }\n</p>',
     ts: "import { DecimalPipe } from '@angular/common';\nimport { ChangeDetectionStrategy, Component, signal } from '@angular/core';\nimport { GogScrollMetrics, ScrollComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ScrollComponent, DecimalPipe],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class ScrollReachExample {\n  protected readonly reachState = signal(\n    'Scroll to the edges to see gogReachStart / gogReachEnd fire.',\n  );\n  protected readonly lastMetrics = signal<GogScrollMetrics | null>(null);\n\n  protected readonly items = Array.from({ length: 30 }, (_, i) => `Row ${i + 1}`);\n\n  protected onScroll(metrics: GogScrollMetrics): void {\n    this.lastMetrics.set(metrics);\n  }\n}",
-    css: '',
   },
   scrollShowTrack: {
     html: '<!-- No thumb and no track; wheel, touch, keyboard and script still scroll it. -->\n<gog-scroll style="height: 160px" [showTrack]="false" ariaLabel="Example list">\n  @for (item of items; track item) {\n    <p>{{ item }}</p>\n  }\n</gog-scroll>',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { ScrollComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ScrollComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class ScrollShowTrackExample {\n  protected readonly items = Array.from({ length: 30 }, (_, i) => `Row ${i + 1}`);\n}",
-    css: '',
   },
   scrollStates: {
     html: '@for (size of sizes; track size) {\n  @for (autoHide of [true, false]; track autoHide) {\n    <div>\n      <gog-scroll\n        style="height: 160px"\n        [size]="size"\n        [autoHide]="autoHide"\n        ariaLabel="Example list"\n      >\n        @for (item of items; track item) {\n          <p>{{ item }}</p>\n        }\n      </gog-scroll>\n      <p>size="{{ size }}", autoHide {{ autoHide ? \'on\' : \'off\' }}</p>\n    </div>\n  }\n}',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { GogScrollSize, ScrollComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ScrollComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class ScrollStatesExample {\n  protected readonly sizes: GogScrollSize[] = ['normal', 'thin'];\n  protected readonly items = Array.from({ length: 30 }, (_, i) => `Row ${i + 1}`);\n}",
-    css: '',
   },
 } as const satisfies Record<string, ExampleSource>;

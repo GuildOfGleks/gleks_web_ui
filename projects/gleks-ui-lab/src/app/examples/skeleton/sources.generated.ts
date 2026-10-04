@@ -6,31 +6,25 @@ export const SKELETON_EXAMPLES = {
   skeletonAnimations: {
     html: '@for (animation of animations; track animation) {\n  @for (shape of shapes; track shape) {\n    <div>\n      <gog-skeleton [shape]="shape" [animation]="animation" [lines]="2" />\n      <p>{{ animation }} · {{ shape }}</p>\n    </div>\n  }\n}',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { GogSkeletonAnimation, GogSkeletonShape, SkeletonComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [SkeletonComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class SkeletonAnimationsExample {\n  protected readonly animations: GogSkeletonAnimation[] = ['pulse', 'wave', 'none'];\n  protected readonly shapes: GogSkeletonShape[] = ['text', 'circle', 'rect'];\n}",
-    css: '',
   },
   skeletonComposed: {
     html: '<!-- aria-busy on the container is what tells a screen reader the area is changing. -->\n<gog-card [attr.aria-busy]="loading()">\n  @if (loading()) {\n    <div style="display: flex; align-items: center; gap: 12px">\n      <gog-skeleton shape="circle" size="lg" ariaLabel="Loading profile" />\n      <gog-skeleton shape="text" size="lg" width="10rem" />\n    </div>\n    <!-- The paragraph wraps to three lines, so its bone has three. -->\n    <gog-skeleton shape="text" [lines]="3" />\n    <gog-skeleton shape="rect" height="8rem" />\n  } @else {\n    <div style="display: flex; align-items: center; gap: 12px">\n      <img [src]="avatar" alt="" width="48" height="48" />\n      <strong>Ada Lovelace</strong>\n    </div>\n    <p>\n      Wrote the first published algorithm for a machine that had not yet been built, and argued it\n      could do more than arithmetic.\n    </p>\n    <gog-panel variant="outlined" style="height: 8rem">Analytical Engine, Note G</gog-panel>\n  }\n</gog-card>\n<gog-button variant="outline" size="sm" [disabled]="loading()" (gogClick)="reload()">\n  Reload for 2s\n</gog-button>',
     ts: "import {\n  ChangeDetectionStrategy,\n  Component,\n  DestroyRef,\n  afterNextRender,\n  inject,\n  signal,\n} from '@angular/core';\nimport {\n  ButtonComponent,\n  CardComponent,\n  PanelComponent,\n  SkeletonComponent,\n} from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ButtonComponent, CardComponent, PanelComponent, SkeletonComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class SkeletonComposedExample {\n  protected readonly avatar =\n    \"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='32' fill='%23c9b896'/><text x='32' y='40' text-anchor='middle' font-size='24' font-family='Arial' fill='%231a1208'>AL</text></svg>\";\n  protected readonly loading = signal(true);\n  private timer: ReturnType<typeof setTimeout> | undefined;\n\n  constructor() {\n    // In the browser only: a server render has no one to show the content to.\n    afterNextRender(() => this.reload());\n    inject(DestroyRef).onDestroy(() => clearTimeout(this.timer));\n  }\n\n  protected reload(): void {\n    this.loading.set(true);\n    clearTimeout(this.timer);\n    this.timer = setTimeout(() => this.loading.set(false), 2000);\n  }\n}",
-    css: '',
   },
   skeletonDimensions: {
     html: '<div>\n  <gog-skeleton shape="text" width="8rem" [lines]="2" />\n  <p>width="8rem"</p>\n</div>\n<div>\n  <!-- A circle given only a width stays a circle. -->\n  <gog-skeleton shape="circle" width="4rem" />\n  <p>circle, width="4rem"</p>\n</div>\n<div>\n  <gog-skeleton shape="rect" height="6rem" [rounded]="false" />\n  <p>height="6rem" [rounded]="false"</p>\n</div>',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { SkeletonComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [SkeletonComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class SkeletonDimensionsExample {}",
-    css: '',
   },
   skeletonLines: {
     html: '@for (count of lineCounts; track count) {\n  <div>\n    <gog-skeleton [lines]="count" />\n    <p>[lines]="{{ count }}"</p>\n  </div>\n}',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { SkeletonComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [SkeletonComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class SkeletonLinesExample {\n  protected readonly lineCounts = [1, 2, 4];\n}",
-    css: '',
   },
   skeletonOverview: {
     html: '<gog-skeleton shape="text" [lines]="3" />',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { SkeletonComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [SkeletonComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class SkeletonOverviewExample {}",
-    css: '',
   },
   skeletonSizes: {
     html: '<!-- text and rect fill their container\'s width; each cell here is one. -->\n@for (size of sizes; track size) {\n  @for (shape of shapes; track shape) {\n    <div>\n      <gog-skeleton [shape]="shape" [size]="size" />\n      <p>{{ size }} · {{ shape }}</p>\n    </div>\n  }\n}',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { GogSize, GogSkeletonShape, SkeletonComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [SkeletonComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class SkeletonSizesExample {\n  protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];\n  protected readonly shapes: GogSkeletonShape[] = ['text', 'circle', 'rect'];\n}",
-    css: '',
   },
 } as const satisfies Record<string, ExampleSource>;

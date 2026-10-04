@@ -26,7 +26,6 @@ const EXAMPLES_ROOT = 'projects/gleks-ui-lab/src/app/examples';
 const FILES = [
   ['html', 'example.html'],
   ['ts', 'example.ts'],
-  ['css', 'example.css'],
 ];
 
 const check = process.argv.includes('--check');
@@ -73,8 +72,8 @@ function camel(name) {
  * The TS tab is TypeScript and nothing else (`docs/lab-component-pages.md`, D2): the template is
  * `example.html`, reached through `templateUrl`, and never inlined — an inline `template:` is how
  * the legacy pages ended up showing the same markup twice. `styles:` is refused for the same
- * reason. `styleUrl` is allowed only while the example still has an `example.css`; the
- * migration removes both, and its close-out makes an `example.css` an error too.
+ * reason, and so are `styleUrl` and an `example.css`: an example carries no stylesheet, because
+ * its arrangement is `<app-demo>`'s layout and the instance tokens it teaches go inline (D3, D4).
  */
 function contractViolations(dir) {
   const ts = read(dir, 'example.ts');
@@ -85,9 +84,11 @@ function contractViolations(dir) {
       problems.push(`${name}: inline \`template:\` — use templateUrl`);
     if (/\bstyles\s*:/.test(source))
       problems.push(`${name}: inline \`styles:\` — examples carry no styles`);
+    if (/\bstyleUrls?\s*:/.test(source))
+      problems.push(`${name}: \`styleUrl\` — examples carry no styles`);
   }
-  if (/\bstyleUrls?\s*:/.test(ts) && !existsSync(join(dir, 'example.css'))) {
-    problems.push('`styleUrl` without an example.css');
+  for (const name of readdirSync(dir).filter((entry) => entry.endsWith('.css'))) {
+    problems.push(`${name} — examples carry no styles`);
   }
   if (existsSync(join(dir, 'example.html')) && !/\btemplateUrl\s*:/.test(ts)) {
     problems.push('example.html exists but example.ts has no templateUrl');
@@ -111,7 +112,6 @@ function companions(dir, extension) {
 function tab(dir, file) {
   const extension = file.slice(file.lastIndexOf('.'));
   const parts = [read(dir, file)];
-  if (extension === '.css') return parts[0];
   for (const name of companions(dir, extension)) {
     const header = extension === '.html' ? `<!-- ${name} -->` : `// ${name}`;
     parts.push(`${header}\n${read(dir, name)}`);

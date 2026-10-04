@@ -6,31 +6,25 @@ export const TOOLTIP_EXAMPLES = {
   tooltipConfig: {
     html: '<!-- No position or delay of its own: both come from the config. -->\n<gog-button variant="outline" gogTooltip="Below, at once">Configured</gog-button>\n<gog-button variant="outline" gogTooltip="The instance wins" gogTooltipPosition="right">\n  gogTooltipPosition="right"\n</gog-button>',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { ButtonComponent, GogTooltipDirective, provideGogConfig } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ButtonComponent, GogTooltipDirective],\n  // Usually in app.config.ts; here on the component, so it reaches only its own tooltips.\n  providers: [provideGogConfig({ tooltip: { position: 'bottom', showDelay: 0, hideDelay: 100 } })],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class TooltipConfigExample {}",
-    css: '',
   },
   tooltipContent: {
     html: '<gog-button variant="outline" gogTooltip="Save changes">Save</gog-button>\n<!-- A long string wraps at the bubble\'s width cap. -->\n<gog-button\n  variant="outline"\n  gogTooltip="Publishing makes this version visible to everyone with the link, including people outside your organisation. Earlier versions stay in the history."\n>\n  Publish\n</gog-button>\n<gog-button variant="outline" [gogTooltip]="shortcut">Undo</gog-button>\n<ng-template #shortcut>Undo <kbd>Ctrl+Z</kbd></ng-template>\n\n<gog-button variant="outline" [gogTooltip]="deployHint">Deploy</gog-button>\n<ng-template #deployHint>\n  <strong>Deployment blocked</strong>\n  <p>Two checks are still running. <gog-tag variant="warning" size="xsm">CI</gog-tag></p>\n</ng-template>\n\n<!-- Taller than --gog-tooltip-max-height: it scrolls inside the bubble. -->\n<gog-button variant="outline" [gogTooltip]="longText">Read the long one</gog-button>',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { ButtonComponent, GogTooltipDirective, TagComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ButtonComponent, GogTooltipDirective, TagComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class TooltipContentExample {\n  protected readonly longText =\n    'A tooltip taller than --gog-tooltip-max-height scrolls inside an internal gog-scroll, ' +\n    'using the same themeable scrollbar as every other overflowing panel in this library. ' +\n    'Move the pointer onto the bubble and the pending hide is cancelled rather than raced, ' +\n    'so you can actually read it — that is WCAG 2.1 SC 1.4.13. Content under the cap renders ' +\n    'at exactly its own height, so a short tooltip is never padded out to a fixed box.';\n}",
-    css: '',
   },
   tooltipDelays: {
     html: '<gog-button variant="outline" gogTooltip="No delay" [gogTooltipShowDelay]="0">0 ms</gog-button>\n<gog-button variant="outline" gogTooltip="The default">300 ms</gog-button>\n<gog-button variant="outline" gogTooltip="A full second" [gogTooltipShowDelay]="1000">\n  1000 ms\n</gog-button>',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { ButtonComponent, GogTooltipDirective } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ButtonComponent, GogTooltipDirective],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class TooltipDelaysExample {}",
-    css: '',
   },
   tooltipDismiss: {
     html: '<!-- Move onto the bubble: it stays. Press Escape: it goes, and the trigger keeps focus. -->\n<gog-button variant="outline" gogTooltip="Hints can be switched off" [gogTooltipDisabled]="muted()">\n  Hint {{ muted() ? \'off\' : \'on\' }}\n</gog-button>\n<gog-toggle label="gogTooltipDisabled" [(checked)]="muted" />',
     ts: "import { ChangeDetectionStrategy, Component, signal } from '@angular/core';\nimport { ButtonComponent, GogTooltipDirective, ToggleComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ButtonComponent, GogTooltipDirective, ToggleComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class TooltipDismissExample {\n  protected readonly muted = signal(false);\n}",
-    css: '',
   },
   tooltipOverview: {
     html: '<gog-button gogTooltip="Save changes">Save</gog-button>\n<gog-chip gogTooltip="Not visible to anyone else yet">Draft</gog-chip>\n<gog-icon name="info" gogTooltip="An icon works too" />',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport {\n  ButtonComponent,\n  ChipComponent,\n  GogTooltipDirective,\n  IconComponent,\n} from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ButtonComponent, ChipComponent, GogTooltipDirective, IconComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class TooltipOverviewExample {}",
-    css: '',
   },
   tooltipPositions: {
     html: '@for (position of positions; track position) {\n  <gog-button variant="outline" [gogTooltip]="\'Placed \' + position" [gogTooltipPosition]="position">\n    {{ position }}\n  </gog-button>\n}',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { ButtonComponent, GogTooltipDirective, GogTooltipPosition } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ButtonComponent, GogTooltipDirective],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class TooltipPositionsExample {\n  protected readonly positions: GogTooltipPosition[] = ['auto', 'top', 'bottom', 'left', 'right'];\n}",
-    css: '',
   },
 } as const satisfies Record<string, ExampleSource>;

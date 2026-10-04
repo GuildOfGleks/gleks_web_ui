@@ -1,5 +1,5 @@
 /**
- * The three files of one documentation example, as text.
+ * The two tabs of one documentation example, as text.
  *
  * Produced by `scripts/generate-example-sources.mjs` from the example's own folder, never typed
  * by hand — see that script's header for what typing them by hand cost.
@@ -10,5 +10,4 @@
 export interface ExampleSource {
   readonly html: string;
   readonly ts: string;
-  readonly css: string;
 }

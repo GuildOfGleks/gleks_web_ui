@@ -5,12 +5,11 @@ import { highlightCode } from '../code-highlight';
 
 const COPIED_LABEL_DURATION_MS = 1500;
 
-type CodeTab = 'html' | 'ts' | 'css';
+type CodeTab = 'html' | 'ts';
 
 const LANGUAGE: Record<CodeTab, string> = {
   html: 'html',
   ts: 'typescript',
-  css: 'css',
 };
 
 /**
@@ -19,10 +18,7 @@ const LANGUAGE: Record<CodeTab, string> = {
  * **HTML and TS, and the TS is TypeScript only** (`docs/lab-component-pages.md`, D1/D2): the
  * component uses `templateUrl`, so the markup is in the HTML tab and never repeated inside the TS
  * one. An example carries no stylesheet — its preview layout is `<app-demo>`'s — so there is no
- * CSS tab.
- *
- * `css` survives only for the pages not yet converted: a CSS tab appears while one of them still
- * passes a non-empty stylesheet, and the input goes when the last page is converted.
+ * CSS tab, and `generate-example-sources.mjs` refuses an `example.css`.
  */
 @Component({
   selector: 'app-code-tabs',
@@ -36,16 +32,11 @@ export class CodeTabsComponent {
 
   readonly html = input.required<string>();
   readonly ts = input.required<string>();
-  /** Legacy pages only — see the class comment. */
-  readonly css = input<string>('');
 
-  protected readonly tabs = computed<readonly { readonly id: CodeTab; readonly label: string }[]>(
-    () => [
-      { id: 'html', label: 'HTML' },
-      { id: 'ts', label: 'TS' },
-      ...(this.css().trim() ? [{ id: 'css' as const, label: 'CSS' }] : []),
-    ],
-  );
+  protected readonly tabs: readonly { readonly id: CodeTab; readonly label: string }[] = [
+    { id: 'html', label: 'HTML' },
+    { id: 'ts', label: 'TS' },
+  ];
 
   /** Markup first: it is the part a reader compares against what is rendered above it. */
   protected readonly activeTab = signal<CodeTab>('html');
@@ -54,7 +45,6 @@ export class CodeTabsComponent {
   private readonly sources = computed<Record<CodeTab, string>>(() => ({
     html: this.html(),
     ts: this.ts(),
-    css: this.css(),
   }));
 
   protected readonly activeSource = computed(() => this.sources()[this.activeTab()]);

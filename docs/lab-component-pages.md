@@ -131,10 +131,10 @@ are the same everywhere and a fix lands once.
 
 | #   | What                                                                                                                                                                                                                                                                                             | Status                                        |
 | --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------- |
-| 1   | **Pilot: `button`, plus the machinery it needs** — `<app-demo [layout]>`, `<app-code-tabs>` with HTML and TS only (CSS shown only while a legacy page still passes it), the D2 rule in the generator for new examples, `<app-api-table>`. The owner reviews the page before anything else moves. | built 2026-10-03, awaiting the owner's review |
+| 1   | **Pilot: `button`, plus the machinery it needs** — `<app-demo [layout]>`, `<app-code-tabs>` with HTML and TS only (CSS shown only while a legacy page still passes it), the D2 rule in the generator for new examples, `<app-api-table>`. The owner reviews the page before anything else moves. | built 2026-10-03; every later page follows it |
 | 2   | The 28 other legacy pages, one per commit — simple ones first, then the layout-heavy ones (`table`, `spinner`, `dialog`, `toast`) last.                                                                                                                                                          | done 2026-10-04                               |
 | 3   | The 6 already-extracted pages: drop each `example.css` per D3/D4, align the outline.                                                                                                                                                                                                             | done 2026-10-04                               |
-| 4   | Close-out: the generator fails on any `example.css` and any `template:`; `<app-code-tabs>` loses its `css` input; `<app-demo>` is the only way a page renders an example; this file's table is all ✅ and the file becomes a record.                                                             | planned                                       |
+| 4   | Close-out: the generator fails on any `example.css` and any `template:`; `<app-code-tabs>` loses its `css` input; `<app-demo>` is the only way a page renders an example; this file's table is all ✅ and the file becomes a record.                                                             | done 2026-10-04                               |
 
 ### Pages
 
@@ -181,6 +181,12 @@ template.
 
 ## Open after the pilot
 
-- Whether the `layout` set in D3 is enough, or a few examples want a page-level class after all.
-- Whether `lab-appearance-baseline.md` is re-captured wholesale after iteration 2, since most of
-  its lines will have changed for explained reasons.
+- **The layout set grew, and that answered the first question.** `block`, `row`, `rows` and
+  `frame` from the pilot were joined by `fields` (a grid of equal cells — fields, cards, alerts,
+  progress bars), `wide` (a full-width component, with a `<div>` control row) and `overhang` (`row`
+  at twice the spacing, for a badge drawn outside its host). No example needed a page-level class.
+- **Two things stayed inline on purpose**, and both are the subject rather than scaffolding: the
+  height of a `gog-scroll` region, and the background and radius of the markup `gogRipple` sits on.
+  A dialog's body is a companion component (D2a).
+- Whether `lab-appearance-baseline.md` is re-captured wholesale, since most of its lines have
+  changed for explained reasons — not done in iterations 2–4.

@@ -1,4 +1,4 @@
-<div class="rtl-controls">
+<div>
   <gog-button-toggle-group
     [options]="directions"
     [(value)]="dir"
@@ -12,14 +12,14 @@
   including panels that render into <body> — the select below copies this dir onto its portaled
   host, which is why its own list mirrors with the region rather than with the page.
 -->
-<section class="rtl-region" [attr.dir]="dir()">
+<gog-panel variant="outlined" [attr.dir]="dir()">
   <gog-inputfield label="Search" iconStart="search" placeholder="Type here" [(value)]="query" />
 
   <gog-select
     [options]="branches"
     [(value)]="branch"
     label="Branch"
-    [appendToBody]="true"
+    appendToBody
     placeholder="Pick one"
   />
 
@@ -29,8 +29,8 @@
 
   <gog-progressbar [value]="progress()" />
 
-  <div class="rtl-row">
+  <div style="display: flex; align-items: center; gap: 12px">
     <gog-tag iconName="check" variant="success">Passing</gog-tag>
     <gog-button variant="outline" size="sm" gogTooltip="Runs the whole suite">Re-run</gog-button>
   </div>
-</section>
+</gog-panel>

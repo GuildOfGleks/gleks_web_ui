@@ -6,26 +6,21 @@ export const TAG_EXAMPLES = {
   tagAccent: {
     html: '<!-- One colour in, and the fill, border and text are derived from it. -->\n<gog-tag style="--gog-tag-accent: #7c5cdb">Design</gog-tag>\n<gog-tag style="--gog-tag-accent: #1f8a80">Platform</gog-tag>\n<gog-tag style="--gog-tag-accent: #c2417c" shape="pill">Research</gog-tag>',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { TagComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [TagComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class TagAccentExample {}",
-    css: '',
   },
   tagOverview: {
     html: '<gog-tag variant="success" iconName="success">Paid</gog-tag>\n<gog-tag variant="warning" iconName="clock">Due in 3 days</gog-tag>',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { TagComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [TagComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class TagOverviewExample {}",
-    css: '',
   },
   tagShapes: {
     html: '@for (shape of shapes; track shape) {\n  <div>\n    <span>shape="{{ shape }}"</span>\n    <gog-tag [shape]="shape" variant="success">Paid</gog-tag>\n    <gog-tag [shape]="shape" variant="success" iconName="success">Paid</gog-tag>\n    <!-- The template replaces the icon with any markup, and wins over iconName. -->\n    <gog-tag [shape]="shape" variant="warning">\n      <ng-template gogTagIcon><gog-icon name="clock" /></ng-template>\n      Due in 3 days\n    </gog-tag>\n  </div>\n}',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { GogTagIconDirective, IconComponent, TagComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [GogTagIconDirective, IconComponent, TagComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class TagShapesExample {\n  protected readonly shapes = ['rounded', 'pill'] as const;\n}",
-    css: '',
   },
   tagVariants: {
     html: '@for (size of sizes; track size) {\n  <div>\n    <span>size: {{ size }}</span>\n    @for (variant of variants; track variant) {\n      <gog-tag [size]="size" [variant]="variant" [iconName]="variantIcons[variant]">\n        {{ variant }}\n      </gog-tag>\n    }\n  </div>\n}',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { GogIconName, GogSize, GogTagVariant, TagComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [TagComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class TagVariantsExample {\n  protected readonly sizes: GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];\n  protected readonly variants: GogTagVariant[] = ['info', 'success', 'warning', 'danger'];\n  // The icon each status reads best with — a pairing, not something the tag does itself.\n  protected readonly variantIcons: Record<GogTagVariant, GogIconName> = {\n    info: 'info',\n    success: 'success',\n    warning: 'warning',\n    danger: 'error',\n  };\n}",
-    css: '',
   },
   tagWidth: {
     html: '<gog-tag variant="info">fits its text</gog-tag>\n<gog-tag variant="info" fullWidth>fullWidth</gog-tag>\n<!-- Longer than its room: an ellipsis inside the border; a screen reader still reads it all. -->\n<gog-tag variant="warning" iconName="clock">\n  Awaiting a sign-off from the regional finance team before release\n</gog-tag>',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { TagComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [TagComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class TagWidthExample {}",
-    css: '',
   },
 } as const satisfies Record<string, ExampleSource>;

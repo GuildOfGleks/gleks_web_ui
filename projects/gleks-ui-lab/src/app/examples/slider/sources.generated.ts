@@ -6,61 +6,49 @@ export const SLIDER_EXAMPLES = {
   sliderAriaLabel: {
     html: '<gog-slider ariaLabel="Opacity" [value]="60" />\n<!-- Each thumb is named from ariaLabel: "Price Minimum", "Price Maximum". -->\n<gog-slider ariaLabel="Price" range [rangeValue]="{ start: 20, end: 70 }" />',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { SliderComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [SliderComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class SliderAriaLabelExample {}",
-    css: '',
   },
   sliderClamp: {
     html: '<div>\n  <!-- Drawn clamped to [min, max]; the model keeps 150 until the thumb moves. -->\n  <gog-slider label="Clamped" [(value)]="level" />\n  <div>\n    <gog-button variant="outline" size="sm" (gogClick)="level.set(150)">value.set(150)</gog-button>\n  </div>\n  <code>value: {{ level() }}</code>\n</div>',
     ts: "import { ChangeDetectionStrategy, Component, signal } from '@angular/core';\nimport { ButtonComponent, SliderComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ButtonComponent, SliderComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class SliderClampExample {\n  protected readonly level = signal(150);\n}",
-    css: '',
   },
   sliderConfig: {
     html: '<!-- errorDisplay unset: \'auto\' from the config holds the error until the slider is touched. -->\n<gog-slider\n  label="errorDisplay from the config"\n  [formControl]="fromConfig"\n  errorMessage="At least 20"\n/>\n<gog-slider\n  label=\'errorDisplay="manual" — the instance wins\'\n  errorDisplay="manual"\n  [formControl]="manual"\n  errorMessage="At least 20"\n/>',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';\nimport { SliderComponent, provideGogConfig } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ReactiveFormsModule, SliderComponent],\n  // Usually in app.config.ts; here on the component, so it reaches only its own sliders.\n  providers: [provideGogConfig({ control: { errorDisplay: 'auto' } })],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class SliderConfigExample {\n  // One control each, so touching one does not reveal the other's error.\n  protected readonly fromConfig = new FormControl(10, {\n    nonNullable: true,\n    validators: [Validators.min(20)],\n  });\n  protected readonly manual = new FormControl(10, {\n    nonNullable: true,\n    validators: [Validators.min(20)],\n  });\n}",
-    css: '',
   },
   sliderForms: {
     html: '<div>\n  <gog-slider\n    label="Budget"\n    [formControl]="control"\n    errorDisplay="auto"\n    errorMessage="At least 20"\n  />\n  <div>\n    <gog-button variant="outline" size="sm" (gogClick)="control.markAsTouched()">\n      markAsTouched()\n    </gog-button>\n    <gog-button variant="outline" size="sm" (gogClick)="toggleDisabled()">\n      {{ control.disabled ? \'enable()\' : \'disable()\' }}\n    </gog-button>\n  </div>\n  <code>\n    value: {{ control.value }} · valid: {{ control.valid }} · touched: {{ control.touched }} ·\n    disabled: {{ control.disabled }}\n  </code>\n</div>',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';\nimport { ButtonComponent, SliderComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ButtonComponent, ReactiveFormsModule, SliderComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class SliderFormsExample {\n  protected readonly control = new FormControl(10, {\n    nonNullable: true,\n    validators: [Validators.min(20)],\n  });\n\n  protected toggleDisabled(): void {\n    if (this.control.disabled) {\n      this.control.enable();\n    } else {\n      this.control.disable();\n    }\n  }\n}",
-    css: '',
   },
   sliderOverview: {
     html: '<div>\n  <gog-slider\n    label="Volume"\n    [step]="5"\n    [(value)]="volume"\n    (valueChange)="changes.update((n) => n + 1)"\n  />\n  <!-- valueChange fires on every step of a drag, not once at the end. -->\n  <code>value: {{ volume() }} · {{ changes() }} valueChange</code>\n</div>',
     ts: "import { ChangeDetectionStrategy, Component, signal } from '@angular/core';\nimport { SliderComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [SliderComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class SliderOverviewExample {\n  protected readonly volume = signal(40);\n  protected readonly changes = signal(0);\n}",
-    css: '',
   },
   sliderPinned: {
     html: '<gog-slider label="Floor pinned" range startDisabled [(rangeValue)]="floorPinned" />\n<gog-slider label="Ceiling pinned" range endDisabled [(rangeValue)]="ceilingPinned" />',
     ts: "import { ChangeDetectionStrategy, Component, signal } from '@angular/core';\nimport { SliderComponent, type GogSliderRange } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [SliderComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class SliderPinnedExample {\n  protected readonly floorPinned = signal<GogSliderRange>({ start: 20, end: 60 });\n  protected readonly ceilingPinned = signal<GogSliderRange>({ start: 20, end: 60 });\n}",
-    css: '',
   },
   sliderRange: {
     html: '<div>\n  <gog-slider\n    label="Price"\n    range\n    [min]="0"\n    [max]="200"\n    [step]="5"\n    startAriaLabel="Lowest price"\n    endAriaLabel="Highest price"\n    [(rangeValue)]="price"\n    (rangeValueChange)="changes.update((n) => n + 1)"\n  />\n  <code>rangeValue: {{ price().start }}–{{ price().end }} · {{ changes() }} rangeValueChange</code>\n</div>',
     ts: "import { ChangeDetectionStrategy, Component, signal } from '@angular/core';\nimport { SliderComponent, type GogSliderRange } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [SliderComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class SliderRangeExample {\n  protected readonly price = signal<GogSliderRange>({ start: 40, end: 120 });\n  protected readonly changes = signal(0);\n}",
-    css: '',
   },
   sliderStates: {
     html: '<gog-slider label="Default" [value]="40" />\n<gog-slider label="Default · range" range [rangeValue]="{ start: 20, end: 70 }" />\n<!-- A meter-like bar that still answers the pointer and the keyboard. -->\n<gog-slider label="showThumb false" [showThumb]="false" [value]="40" />\n<gog-slider\n  label="showThumb false · range"\n  range\n  [showThumb]="false"\n  [rangeValue]="{ start: 20, end: 70 }"\n/>\n<gog-slider label="showValue false" [showValue]="false" [value]="40" />\n<gog-slider\n  label="showValue false · range"\n  range\n  [showValue]="false"\n  [rangeValue]="{ start: 20, end: 70 }"\n/>\n<gog-slider label="Disabled" disabled [value]="40" />\n<gog-slider label="Disabled · range" range disabled [rangeValue]="{ start: 20, end: 70 }" />\n<gog-slider label="Error" errorMessage="Too loud" [value]="40" />\n<gog-slider\n  label="Error · range"\n  range\n  errorMessage="Too wide"\n  [rangeValue]="{ start: 20, end: 70 }"\n/>',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { SliderComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [SliderComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class SliderStatesExample {}",
-    css: '',
   },
   sliderSteps: {
     html: '<!-- The readout reserves the widest number these can print, so it never shifts. -->\n<gog-slider label="0 to 100, step 1" [value]="40" />\n<gog-slider label="0 to 1, step 0.05" [min]="0" [max]="1" [step]="0.05" [value]="0.35" />\n<gog-slider label="-40 to 40, step 5" [min]="-40" [max]="40" [step]="5" [value]="-15" />\n<gog-slider\n  label="Budget, € (0 to 10 000, step 250)"\n  [min]="0"\n  [max]="10000"\n  [step]="250"\n  [value]="2750"\n/>',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { SliderComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [SliderComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class SliderStepsExample {}",
-    css: '',
   },
   sliderThumbsMeet: {
     html: '<div>\n  <!-- In range mode the form control carries the { start, end } pair. -->\n  <gog-slider label="Price" range [min]="0" [max]="200" [formControl]="control" />\n  <code>value: {{ control.value.start }}–{{ control.value.end }}</code>\n</div>',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { FormControl, ReactiveFormsModule } from '@angular/forms';\nimport { SliderComponent, type GogSliderRange } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ReactiveFormsModule, SliderComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class SliderThumbsMeetExample {\n  /** Both thumbs on top of each other at max: drag left and the start thumb comes away. */\n  protected readonly control = new FormControl<GogSliderRange>(\n    { start: 200, end: 200 },\n    { nonNullable: true },\n  );\n}",
-    css: '',
   },
   sliderVertical: {
     html: '<gog-slider label="Gain" orientation="vertical" [(value)]="gain" />\n<gog-slider label="Band" orientation="vertical" range [(rangeValue)]="band" />\n<gog-slider label="Level" orientation="vertical" [showThumb]="false" [value]="80" />',
     ts: "import { ChangeDetectionStrategy, Component, signal } from '@angular/core';\nimport { SliderComponent, type GogSliderRange } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [SliderComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class SliderVerticalExample {\n  protected readonly gain = signal(60);\n  protected readonly band = signal<GogSliderRange>({ start: 30, end: 70 });\n}",
-    css: '',
   },
   sliderWidth: {
     html: '<gog-slider label="fullWidth (default)" [value]="40" />\n<!-- Not shrink-wrapped: a track has no content, so it takes --gog-slider-auto-width. -->\n<gog-slider label=\'[fullWidth]="false"\' [fullWidth]="false" [value]="40" />',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { SliderComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [SliderComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class SliderWidthExample {}",
-    css: '',
   },
 } as const satisfies Record<string, ExampleSource>;

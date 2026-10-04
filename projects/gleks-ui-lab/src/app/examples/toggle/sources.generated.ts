@@ -6,46 +6,37 @@ export const TOGGLE_EXAMPLES = {
   toggleAriaLabel: {
     html: '<!-- No visible label: ariaLabel names the switch when the row around it already says what it is. -->\n<gog-toggle ariaLabel="Dark mode" [checked]="true" />\n<gog-toggle ariaLabel="Compact rows" />',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { ToggleComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ToggleComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class ToggleAriaLabelExample {}",
-    css: '',
   },
   toggleBinding: {
     html: '<gog-toggle\n  label="Dark mode"\n  onLabel="ON"\n  offLabel="OFF"\n  [(checked)]="dark"\n  (checkedChange)="changes.update((n) => n + 1)"\n/>\n<p>checked: {{ dark() }} · {{ changes() }} checkedChange</p>',
     ts: "import { ChangeDetectionStrategy, Component, signal } from '@angular/core';\nimport { ToggleComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ToggleComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class ToggleBindingExample {\n  protected readonly dark = signal(false);\n  protected readonly changes = signal(0);\n}",
-    css: '',
   },
   toggleConfig: {
     html: '<div>\n  <span>size unset</span>\n  <gog-toggle label="Takes lg from the config" [checked]="true" />\n</div>\n<div>\n  <span>size="sm"</span>\n  <gog-toggle size="sm" label="The instance wins" [checked]="true" />\n</div>',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { ToggleComponent, provideGogConfig } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ToggleComponent],\n  // Usually in app.config.ts; here on the component, so it reaches only its own toggles.\n  providers: [provideGogConfig({ control: { size: 'lg' } })],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class ToggleConfigExample {}",
-    css: '',
   },
   toggleForms: {
     html: '<div>\n  <gog-toggle label="Auto-update" [formControl]="control" />\n</div>\n\n<div>\n  <gog-button variant="outline" size="sm" (gogClick)="control.setValue(!control.value)">\n    setValue(!value)\n  </gog-button>\n  <gog-button variant="outline" size="sm" (gogClick)="toggleDisabled()">\n    {{ control.disabled ? \'enable()\' : \'disable()\' }}\n  </gog-button>\n</div>\n\n<p>\n  value: {{ control.value }} · touched: {{ control.touched }} · disabled: {{ control.disabled }}\n</p>',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { FormControl, ReactiveFormsModule } from '@angular/forms';\nimport { ToggleComponent, ButtonComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ToggleComponent, ButtonComponent, ReactiveFormsModule],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class ToggleFormsExample {\n  protected readonly control = new FormControl(true, { nonNullable: true });\n\n  protected toggleDisabled(): void {\n    if (this.control.disabled) {\n      this.control.enable();\n    } else {\n      this.control.disable();\n    }\n  }\n}",
-    css: '',
   },
   toggleLabelPosition: {
     html: '<div>\n  <span>end (default)</span>\n  <gog-toggle label="Notifications" [checked]="true" />\n</div>\n<div>\n  <span>start</span>\n  <gog-toggle labelPosition="start" label="Notifications" [checked]="true" />\n</div>',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { ToggleComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ToggleComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class ToggleLabelPositionExample {}",
-    css: '',
   },
   toggleOverview: {
     html: '<gog-toggle label="Notifications" [(checked)]="notifications" />\n<p>checked: {{ notifications() }}</p>',
     ts: "import { ChangeDetectionStrategy, Component, signal } from '@angular/core';\nimport { ToggleComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ToggleComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class ToggleOverviewExample {\n  protected readonly notifications = signal(true);\n}",
-    css: '',
   },
   toggleSettings: {
     html: '<!-- fullWidth + labelPosition="start": the label at one edge, the switch at the other. -->\n<gog-toggle fullWidth labelPosition="start" label="Email notifications" [(checked)]="email" />\n<gog-toggle\n  fullWidth\n  labelPosition="start"\n  label="Share anonymous usage data"\n  [(checked)]="telemetry"\n/>\n<gog-toggle fullWidth labelPosition="start" label="Beta features" disabled />',
     ts: "import { ChangeDetectionStrategy, Component, signal } from '@angular/core';\nimport { ToggleComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ToggleComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class ToggleSettingsExample {\n  protected readonly email = signal(true);\n  protected readonly telemetry = signal(false);\n}",
-    css: '',
   },
   toggleStates: {
     html: '@for (size of sizes; track size) {\n  <div>\n    <span>{{ size }}</span>\n    <gog-toggle [size]="size" label="Off" />\n    <gog-toggle [size]="size" label="On" [checked]="true" />\n    <gog-toggle [size]="size" label="Disabled" disabled />\n    <gog-toggle [size]="size" label="Disabled, on" disabled [checked]="true" />\n  </div>\n}',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { ToggleComponent, GogSize } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ToggleComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class ToggleStatesExample {\n  protected readonly sizes: readonly GogSize[] = ['xsm', 'sm', 'md', 'lg', 'slg'];\n}",
-    css: '',
   },
   toggleTrackLabels: {
     html: '<!-- Both labels stay in the DOM, so the track is as wide as the wider one. -->\n<gog-toggle label="ON / OFF" onLabel="ON" offLabel="OFF" [checked]="true" />\n<gog-toggle label="YES / NO" onLabel="YES" offLabel="NO" />\n<gog-toggle label="Only one set" onLabel="LIVE" />\n<gog-toggle size="slg" label="slg" onLabel="ON" offLabel="OFF" [checked]="true" />',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { ToggleComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ToggleComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class ToggleTrackLabelsExample {}",
-    css: '',
   },
 } as const satisfies Record<string, ExampleSource>;

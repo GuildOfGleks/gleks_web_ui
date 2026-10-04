@@ -6,36 +6,29 @@ export const BADGE_EXAMPLES = {
   badgeContent: {
     html: '@for (content of contents; track content.label) {\n  <div>\n    <span>{{ content.label }}</span>\n    @for (variant of variants; track variant) {\n      <gog-button\n        variant="outline"\n        [gogBadge]="content.value"\n        [badgeDot]="content.dot"\n        [badgeVariant]="variant"\n      >\n        {{ variant }}\n      </gog-button>\n    }\n  </div>\n}',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { ButtonComponent, GogBadgeDirective, GogTagVariant } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ButtonComponent, GogBadgeDirective],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class BadgeContentExample {\n  protected readonly variants: GogTagVariant[] = ['danger', 'warning', 'success', 'info'];\n  protected readonly contents: { label: string; value: string | number | null; dot: boolean }[] = [\n    { label: 'gogBadge=\"3\"', value: 3, dot: false },\n    { label: 'gogBadge=\"42\"', value: 42, dot: false },\n    { label: 'gogBadge=\"150\"', value: 150, dot: false },\n    { label: 'gogBadge=\"NEW\"', value: 'NEW', dot: false },\n    { label: 'badgeDot', value: null, dot: true },\n  ];\n}",
-    css: '',
   },
   badgeDot: {
     html: '<!-- On the button, not on its icon: a gog-icon is aria-hidden, and so is a badge inside it. -->\n<gog-button\n  variant="ghost"\n  ariaLabel="Notifications"\n  gogBadge\n  badgeDot\n  badgeAriaLabel="Unread updates"\n>\n  <gog-icon name="info" />\n</gog-button>\n<gog-button gogBadge badgeDot badgeVariant="success">Synced</gog-button>',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { ButtonComponent, GogBadgeDirective, IconComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ButtonComponent, GogBadgeDirective, IconComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class BadgeDotExample {}",
-    css: '',
   },
   badgeHosts: {
     html: '<gog-button gogBadge="12">gog-button</gog-button>\n<button type="button" style="padding: 4px 12px; font: inherit" gogBadge="4">native button</button>\n<a gogButton href="#overview" gogBadge="NEW" badgeVariant="success">a[gogButton]</a>\n<!-- An inline element made a box, so the badge\'s corner is its corner. -->\n<span style="display: inline-flex; padding: 8px" gogBadge badgeDot badgeVariant="success">GG</span>',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { ButtonComponent, GogBadgeDirective, GogButtonDirective } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ButtonComponent, GogBadgeDirective, GogButtonDirective],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class BadgeHostsExample {}",
-    css: '',
   },
   badgeMax: {
     html: '<gog-button variant="outline" [gogBadge]="128">default badgeMax</gog-button>\n<gog-button variant="outline" [gogBadge]="128" [badgeMax]="999">badgeMax=999</gog-button>\n<gog-button variant="outline" [gogBadge]="1280" [badgeMax]="999">badgeMax=999</gog-button>\n<gog-button variant="outline" gogBadge="beta" badgeVariant="info">a word</gog-button>',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { ButtonComponent, GogBadgeDirective } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ButtonComponent, GogBadgeDirective],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class BadgeMaxExample {}",
-    css: '',
   },
   badgeOverview: {
     html: '<gog-button gogBadge="12" badgeAriaLabel="12 unread messages">Inbox</gog-button>',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { ButtonComponent, GogBadgeDirective } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ButtonComponent, GogBadgeDirective],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class BadgeOverviewExample {}",
-    css: '',
   },
   badgePositions: {
     html: '@for (position of positions; track position) {\n  <gog-button variant="outline" gogBadge="9" [badgePosition]="position">\n    {{ position }}\n  </gog-button>\n}',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { ButtonComponent, GogBadgeDirective, GogBadgePosition } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ButtonComponent, GogBadgeDirective],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class BadgePositionsExample {\n  protected readonly positions: GogBadgePosition[] = [\n    'top-end',\n    'top-start',\n    'bottom-end',\n    'bottom-start',\n  ];\n}",
-    css: '',
   },
   badgeZero: {
     html: '<!-- Bind the count straight from state: 0, null and \'\' render no badge at all. -->\n<gog-button [gogBadge]="count()" [badgeHidden]="hidden()" badgeAriaLabel="{{ count() }} unread">\n  Notifications\n</gog-button>\n<gog-button variant="outline" (gogClick)="remove()">−1</gog-button>\n<gog-button variant="outline" (gogClick)="add()">+1</gog-button>\n<gog-button variant="outline" (gogClick)="count.set(150)">Set 150</gog-button>\n<gog-button variant="outline" (gogClick)="hidden.set(!hidden())">\n  badgeHidden: {{ hidden() }}\n</gog-button>\n\n<p>count: {{ count() }}</p>',
     ts: "import { ChangeDetectionStrategy, Component, signal } from '@angular/core';\nimport { ButtonComponent, GogBadgeDirective } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [ButtonComponent, GogBadgeDirective],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class BadgeZeroExample {\n  protected readonly count = signal(3);\n  protected readonly hidden = signal(false);\n\n  protected add(): void {\n    this.count.update((value) => value + 1);\n  }\n\n  protected remove(): void {\n    this.count.update((value) => Math.max(0, value - 1));\n  }\n}",
-    css: '',
   },
 } as const satisfies Record<string, ExampleSource>;
