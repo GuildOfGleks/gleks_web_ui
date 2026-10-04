@@ -1,0 +1,12 @@
+<gog-progressbar [value]="value()" showValue ariaLabel="Uploading" />
+<div>
+  <gog-button variant="outline" size="sm" (gogClick)="value.set(value() - 25)">−25</gog-button>
+  <gog-button variant="outline" size="sm" (gogClick)="value.set(value() + 25)">+25</gog-button>
+</div>
+<p>value: {{ value() }}</p>
+
+<!-- Clamped to 0–100 rather than trusted; NaN reads as 0. -->
+@for (fixed of fixedValues; track $index) {
+  <p>[value]="{{ fixed }}"</p>
+  <gog-progressbar [value]="fixed" showValue ariaLabel="Uploading" />
+}

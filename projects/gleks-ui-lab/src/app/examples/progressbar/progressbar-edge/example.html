@@ -1,0 +1,15 @@
+@for (variant of variants; track variant) {
+  <div>
+    <gog-progressbar [variant]="variant" [value]="62" ariaLabel="Uploading" />
+    <p>{{ variant }}</p>
+  </div>
+  <!-- The same bar with hue taken away: is the end of the fill still visible? -->
+  <div style="filter: grayscale(1)">
+    <gog-progressbar [variant]="variant" [value]="62" ariaLabel="Uploading" />
+    <p>{{ variant }}, grayscale</p>
+  </div>
+  <div style="filter: grayscale(1); --gog-progressbar-edge-width: 1px">
+    <gog-progressbar [variant]="variant" [value]="62" ariaLabel="Uploading" />
+    <p>{{ variant }}, grayscale, edge 1px</p>
+  </div>
+}

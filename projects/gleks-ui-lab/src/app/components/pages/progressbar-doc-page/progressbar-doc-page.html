@@ -13,12 +13,13 @@
     <p class="doc-section__intro">Import the component and drop it into a template.</p>
     <app-markdown [markdown]="importSnippet" />
 
-    <p class="doc-section__intro">Basic usage:</p>
+    <p class="doc-section__intro">Basic usage — a determinate bar, named for what it measures:</p>
     <div class="demo-card">
-      <div class="demo-card__preview">
-        <gog-progressbar [value]="42" ariaLabel="Upload progress" />
-      </div>
-      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
+      <app-demo
+        [component]="examples.overview"
+        [source]="sources.progressbarOverview"
+        layout="wide"
+      />
     </div>
   </section>
 
@@ -26,172 +27,124 @@
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Modes</h3>
+      <h3 class="demo-card__title">Modes and sizes</h3>
       <p class="demo-card__meta">
-        <code>determinate</code> reflects <code>value</code>. <code>indeterminate</code> is work of
-        unknown length. <code>buffer</code> draws a second, lighter level ahead of the fill — a
-        streaming or preload position.
+        <code>determinate</code> fills to <code>value</code>; <code>buffer</code> adds a lighter
+        tier behind it for what has been fetched but not reached — a streaming or preload position;
+        <code>indeterminate</code> sweeps a segment for work whose length is not known. Under
+        <code>prefers-reduced-motion</code> the sweep stops and the bar is drawn striped instead,
+        which still reads as "working". Five thickness steps, from a hairline to a chunky bar.
       </p>
-      <div class="demo-card__preview progressbar-demo__stack">
-        <div>
-          <p class="doc-section__meta">determinate</p>
-          <gog-progressbar [value]="42" ariaLabel="Upload" />
-        </div>
-        <div>
-          <p class="doc-section__meta">indeterminate</p>
-          <gog-progressbar mode="indeterminate" ariaLabel="Loading" />
-        </div>
-        <div>
-          <p class="doc-section__meta">buffer</p>
-          <gog-progressbar mode="buffer" [value]="42" [buffer]="70" ariaLabel="Playback" />
-        </div>
-      </div>
-      <app-code-tabs [html]="modesHtml" [ts]="modesTs" />
+      <app-demo [component]="examples.sizes" [source]="sources.progressbarSizes" layout="fields" />
     </article>
 
     <article class="demo-card">
       <h3 class="demo-card__title">Variants</h3>
       <p class="demo-card__meta">
         <code>accent</code> is the default — progress is usually just "the app is working", which is
-        not one of the four status hues.
+        not one of the four status hues. <code>GogProgressbarVariant</code> is an alias of
+        <code>GogSeverity</code>, so these are the same five names
+        <a routerLink="/components/button">gog-button</a>'s <code>severity</code> takes.
       </p>
-      <p class="demo-card__meta">
-        This vocabulary is shared: since 21.9.0 it is exported as <code>GogSeverity</code> and
-        <code>GogProgressbarVariant</code> is an alias of it, so the five names here are the same
-        five <a routerLink="/components/button">gog-button</a>'s <code>severity</code> takes. Both
-        spellings keep working.
-      </p>
-      <div class="demo-card__preview progressbar-demo__stack">
-        @for (variantOption of variants; track variantOption) {
-          <div>
-            <p class="doc-section__meta">{{ variantOption }}</p>
-            <gog-progressbar [variant]="variantOption" [value]="65" [ariaLabel]="variantOption" />
-          </div>
-        }
-      </div>
-      <app-code-tabs [html]="variantsHtml" [ts]="variantsTs" />
+      <app-demo
+        [component]="examples.variants"
+        [source]="sources.progressbarVariants"
+        layout="fields"
+      />
     </article>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Sizes</h3>
-      <p class="demo-card__meta">Five thickness steps, from a hairline to a chunky bar.</p>
-      <div class="demo-card__preview progressbar-demo__stack">
-        @for (sizeOption of sizes; track sizeOption) {
-          <div>
-            <p class="doc-section__meta">{{ sizeOption }}</p>
-            <gog-progressbar [size]="sizeOption" [value]="65" [ariaLabel]="sizeOption" />
-          </div>
-        }
-      </div>
-      <app-code-tabs [html]="sizesHtml" [ts]="sizesTs" />
+      <h3 class="demo-card__title">Showing the value</h3>
+      <p class="demo-card__meta">
+        Off by default, because a bar usually sits under a label that already says what it measures.
+        On, the percentage prints beside the track in tabular figures, so the bar does not shift as
+        the number changes. It is never shown in <code>indeterminate</code> mode, which has no
+        number.
+      </p>
+      <app-demo
+        [component]="examples.showValue"
+        [source]="sources.progressbarShowValue"
+        layout="wide"
+      />
     </article>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Showing the value, and clamping</h3>
+      <h3 class="demo-card__title">A value that moves, and one that overshoots</h3>
       <p class="demo-card__meta">
-        <code>showValue</code> renders the rounded percentage beside the bar. Push the value past
-        either end below: it is clamped to 0–100 rather than trusted, so a bar driven straight from
-        <code>loaded / total</code> cannot break the layout when the last chunk overshoots.
+        <code>value</code> and <code>buffer</code> are percentages, clamped to 0–100 rather than
+        trusted: a bar driven straight from <code>loaded / total</code> overshoots on the last chunk
+        often enough. Step past either end — the bar stops, and <code>aria-valuenow</code> with it,
+        while the number you passed is kept as you passed it. The fill moves with a short
+        transition, which reduced motion turns off.
       </p>
-      <div class="demo-card__preview progressbar-demo__stack">
-        <gog-progressbar [value]="uploaded()" [showValue]="true" ariaLabel="Upload progress" />
-        <div class="action-row">
-          <gog-button variant="outline" (gogClick)="step(-25)">−25</gog-button>
-          <gog-button variant="outline" (gogClick)="step(25)">+25</gog-button>
-          <span class="doc-section__meta">value = {{ uploaded() }}</span>
-        </div>
-      </div>
-      <app-code-tabs [html]="showValueHtml" [ts]="showValueTs" />
+      <app-demo [component]="examples.clamp" [source]="sources.progressbarClamp" layout="wide" />
+    </article>
+  </section>
+
+  <section class="doc-section">
+    <h2 id="edge" class="doc-section__title font-heading">Where the fill ends</h2>
+    <p class="doc-section__intro">
+      With <code>showValue</code> off, the boundary between fill and track <em>is</em> the value,
+      and WCAG 1.4.11 asks 3:1 of the part of a graphic that carries its meaning. Colour alone
+      cannot always carry it: 51 of the 55 shipped fill/track combinations are below 3:1, because
+      the five fills straddle mid-luminance and no single track colour clears all of them in any
+      theme but <code>primeng</code>.
+    </p>
+    <article class="demo-card">
+      <h3 class="demo-card__title">The edge marker</h3>
+      <p class="demo-card__meta">
+        <code>--gog-progressbar-edge-width</code> is <code>0px</code> by default
+        <app-since version="21.15.0" />. Set it to <code>1px</code> — on <code>:root</code>, or on
+        one bar — and two hairlines mark where the fill ends, and in <code>buffer</code> mode where
+        the buffer ends: the theme's ink outermost against the track, the surface colour just inside
+        the fill. Whichever tone a fill sits close to, the other one reads; the worst case across
+        the eleven themes is 3.25:1. The grayscale columns are the same bars with hue taken away.
+        The tones are <code>--gog-progressbar-edge-color</code> / <code>-edge-backing-color</code>,
+        and they flip end under <code>dir="rtl"</code>. Where the value has to be readable without
+        colour, this or <code>showValue</code> is the consumer's call.
+      </p>
+      <app-demo [component]="examples.edge" [source]="sources.progressbarEdge" layout="fields" />
     </article>
   </section>
 
   <section class="doc-section">
     <h2 id="accessibility" class="doc-section__title font-heading">Accessibility</h2>
     <p class="doc-section__intro">
-      The host carries <code>role="progressbar"</code> with <code>aria-valuemin</code> /
-      <code>aria-valuemax</code> and, in determinate and buffer mode,
-      <code>aria-valuenow</code> plus a readable <code>aria-valuetext</code>.
+      <code>role="progressbar"</code> on the host, with the value stated as a number and as text,
+      and no number at all when there is none.
     </p>
-    <p class="doc-section__intro">
-      In indeterminate mode it reports <strong>no</strong> <code>aria-valuenow</code> at all — that
-      omission is precisely what marks it indeterminate. Reporting <code>0</code> instead would
-      announce "0 percent" forever. Its animation is also replaced by a static stripe under
-      <code>prefers-reduced-motion</code>.
-    </p>
-    <p class="doc-section__intro">
-      <strong>An edge marker you can turn on.</strong> With <code>showValue</code> off — the default
-      — the boundary between fill and track is the only thing stating the value, and WCAG 1.4.11
-      asks 3:1 of the part of a graphic that carries its meaning. Fill against track cannot always
-      carry it: 51 of the 55 shipped fill/track combinations are below 3:1, because the five fills
-      straddle mid-luminance and no single track colour clears all of them in any theme but
-      <code>primeng</code>. So the bar can mark where the fill ends — and, in <code>buffer</code>
-      mode, where the buffer ends — with two hairlines: the theme's ink outermost against the track,
-      the surface colour just inside the fill. Whichever tone a fill sits close to, the other one
-      reads, and the worst case across the eleven themes is 3.25:1.
-    </p>
-    <p class="doc-section__intro">
-      <strong>The marker is off by default</strong> <app-since version="21.15.0" /> —
-      <code>--gog-progressbar-edge-width</code> is <code>0px</code>. It was drawn on every bar from
-      21.10.0, and in use the light line read as an outline at the end of the bar rather than as the
-      value, most of all on a dark fill. Set the width to <code>1px</code>, on <code>:root</code> or
-      on one bar, where the value has to be readable without colour — or turn on
-      <code>showValue</code> instead. The tones are <code>--gog-progressbar-edge-color</code> /
-      <code>-edge-backing-color</code>, and they flip end under <code>dir="rtl"</code>.
-    </p>
-    <div class="demo-card">
-      <div class="demo-card__preview progressbar-demo__stack">
-        <div>
-          <p class="doc-section__meta">default — no marker</p>
-          <gog-progressbar variant="info" [value]="65" ariaLabel="Without marker" />
-        </div>
-        <div style="--gog-progressbar-edge-width: 1px">
-          <p class="doc-section__meta">--gog-progressbar-edge-width: 1px</p>
-          <gog-progressbar variant="info" [value]="65" ariaLabel="With marker" />
-          <gog-progressbar
-            mode="buffer"
-            variant="info"
-            [value]="40"
-            [buffer]="70"
-            ariaLabel="Buffer with marker"
-          />
-        </div>
-      </div>
-      <app-code-tabs [html]="edgeHtml" [ts]="edgeTs" [css]="edgeCss" />
-    </div>
+    <ul class="doc-section__intro">
+      <li>
+        <strong>Value</strong> — <code>aria-valuemin</code> / <code>aria-valuemax</code>, and in
+        determinate and buffer mode <code>aria-valuenow</code> plus a readable
+        <code>aria-valuetext</code>. <code>buffer</code> reports only <code>value</code>: the
+        buffered tier is a picture, not a second number anyone needs read out.
+      </li>
+      <li>
+        <strong>Indeterminate</strong> leaves <code>aria-valuenow</code> out — that absence is what
+        tells a screen reader the length is unknown; reporting 0 would announce "0 percent" for as
+        long as it ran.
+      </li>
+      <li><strong>Keyboard</strong> — none. A progress bar is not focusable.</li>
+    </ul>
+    <article class="demo-card">
+      <h3 class="demo-card__title">Every bar needs a name</h3>
+      <p class="demo-card__meta">
+        <code>ariaLabel</code> is empty by default, and a bar with no name is announced as "progress
+        bar, 62 percent" — of what, nobody says. Pass <code>ariaLabel</code>, or, when a visible
+        label already sits beside the bar, point at it with <code>aria-labelledby</code> written on
+        the host: the component binds none of its own, so yours reaches the element with the role. A
+        <code>&lt;label for&gt;</code> cannot do it — a progress bar is not a form field.
+      </p>
+      <app-demo [component]="examples.naming" [source]="sources.progressbarNaming" layout="wide" />
+    </article>
   </section>
 
   <section class="doc-section">
     <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
 
     <h3 class="doc-section__subtitle">Inputs</h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Default</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of apiInputs; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-              </td>
-              <td>
-                <code>{{ row.type }}</code>
-              </td>
-              <td>
-                <code>{{ row.default }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="apiInputs" kind="inputs" />
   </section>
 
   <app-global-config-note component="progressbar" />
@@ -204,25 +157,6 @@
       <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
       <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
     </p>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Token</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of styleTokens; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="styleTokens" kind="tokens" />
   </section>
 </div>

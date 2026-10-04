@@ -1,0 +1,14 @@
+@for (size of sizes; track size) {
+  @for (mode of modes; track mode) {
+    <div>
+      <gog-progressbar
+        [size]="size"
+        [mode]="mode"
+        [value]="40"
+        [buffer]="70"
+        ariaLabel="Uploading"
+      />
+      <p>{{ size }} · {{ mode }}</p>
+    </div>
+  }
+}

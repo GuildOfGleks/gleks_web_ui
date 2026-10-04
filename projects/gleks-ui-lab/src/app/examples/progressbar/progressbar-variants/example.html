@@ -1,0 +1,14 @@
+@for (variant of variants; track variant) {
+  @for (mode of modes; track mode) {
+    <div>
+      <gog-progressbar
+        [variant]="variant"
+        [mode]="mode"
+        [value]="40"
+        [buffer]="70"
+        ariaLabel="Uploading"
+      />
+      <p>{{ variant }} · {{ mode }}</p>
+    </div>
+  }
+}
