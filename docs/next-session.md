@@ -1,20 +1,12 @@
 # Where to start
 
-**21.15.1 is released and the lab is caught up with it** (2026-10-04). Defects left in
-`docs/backlog.md` are the two that need a real screen reader (the table's row announcement and
-`gog-alert`'s live-region copy) — the owner's to check, not an agent's.
+**21.16.0 is released and the lab is caught up with it** (2026-10-04). It is the release the 21
+line is stable from: semantic versioning from here (README, _Versioning_), `GOG_DEPRECATIONS`
+empty. A change that would remove or rename public API now waits for 22.0.0 behind a deprecation.
 
-**21.16.0 is built and `planned`, waiting for the owner to publish it** (2026-10-04). It is the
-release the 21 line is declared stable from: `gog-autocomplete`'s four panel-filter inputs are
-removed (the search box moved into `GogFilterableDropdownBase`), `GOG_DEPRECATIONS` is `[]`, and
-the README's _Versioning_ section, the changelog preamble and `docs/branching-and-support.md` all
-state the rule — patches fix, minors add (new components are minors), only a major breaks.
-`check:install` is not triggered (no export removed, no entry point or package file changed), and
-was run anyway on 2026-10-04 at the owner's request: passed — 45 files (+0/-0 against 21.15.1),
-one export added to the root and one to `/shared` (`GogFilterableDropdownBase`), initial bundle
-113.00 kB, lazy chunks 9010 / 4010 / 8200 bytes for datepicker / dialog / table. Once it is on
-npm, `docs/lab-after-publish.md`'s 21.16.0 section has three lab items (FAQ, Autocomplete page,
-Releases page).
+**Next: `docs/backlog.md`.** The two Defects left need a real screen reader (the table's row
+announcement and `gog-alert`'s live-region copy) — the owner's to check, not an agent's. After
+them come Gaps (the unbuilt components lead it), each one a minor.
 
 **Deferred by the owner on 2026-09-13 — do not start these without asking:**
 
