@@ -1,0 +1,25 @@
+<!-- aria-busy on the container is what tells a screen reader the area is changing. -->
+<gog-card [attr.aria-busy]="loading()">
+  @if (loading()) {
+    <div style="display: flex; align-items: center; gap: 12px">
+      <gog-skeleton shape="circle" size="lg" ariaLabel="Loading profile" />
+      <gog-skeleton shape="text" size="lg" width="10rem" />
+    </div>
+    <!-- The paragraph wraps to three lines, so its bone has three. -->
+    <gog-skeleton shape="text" [lines]="3" />
+    <gog-skeleton shape="rect" height="8rem" />
+  } @else {
+    <div style="display: flex; align-items: center; gap: 12px">
+      <img [src]="avatar" alt="" width="48" height="48" />
+      <strong>Ada Lovelace</strong>
+    </div>
+    <p>
+      Wrote the first published algorithm for a machine that had not yet been built, and argued it
+      could do more than arithmetic.
+    </p>
+    <gog-panel variant="outlined" style="height: 8rem">Analytical Engine, Note G</gog-panel>
+  }
+</gog-card>
+<gog-button variant="outline" size="sm" [disabled]="loading()" (gogClick)="reload()">
+  Reload for 2s
+</gog-button>

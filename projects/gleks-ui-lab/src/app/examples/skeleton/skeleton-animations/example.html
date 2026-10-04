@@ -1,0 +1,8 @@
+@for (animation of animations; track animation) {
+  @for (shape of shapes; track shape) {
+    <div>
+      <gog-skeleton [shape]="shape" [animation]="animation" [lines]="2" />
+      <p>{{ animation }} · {{ shape }}</p>
+    </div>
+  }
+}

@@ -1,0 +1,9 @@
+<!-- text and rect fill their container's width; each cell here is one. -->
+@for (size of sizes; track size) {
+  @for (shape of shapes; track shape) {
+    <div>
+      <gog-skeleton [shape]="shape" [size]="size" />
+      <p>{{ size }} · {{ shape }}</p>
+    </div>
+  }
+}
