@@ -4,12 +4,14 @@
 line is stable from: semantic versioning from here (README, _Versioning_), `GOG_DEPRECATIONS`
 empty. A change that would remove or rename public API now waits for 22.0.0 behind a deprecation.
 
-**21.17.0 is built and `planned`, waiting for the owner to publish it** (2026-10-04):
-`gog-avatar` and `gog-avatar-group`, both iterations of `docs/avatar.md`, plus the two `gogBadge`
-refinements the avatar needed. Additive only, so `check:install` is not triggered. Once it is on
-npm, `docs/lab-after-publish.md`'s 21.17.0 section is the lab's work. After that, the rest of Gaps:
-`breadcrumbs`, `stepper`, `file upload`, `rating`, `empty state`, each a minor. The two Defects
-left need a real screen reader — the owner's to check.
+**21.17.0 is released and the lab is caught up with it** (2026-10-04): `gog-avatar` and
+`gog-avatar-group` have a lab page, the Badge page documents the two badge changes, and the
+comparison page's own column was re-measured against 21.17.0 (131.9 KB gzipped for the whole
+library; Material and PrimeNG still at their 2026-09-13 figures).
+
+**Next: the rest of Gaps** — `breadcrumbs`, `stepper`, `file upload`, `rating`, `empty state`, each a
+minor with a plan of its own first, in the shape of `docs/avatar.md`. The two Defects left need a
+real screen reader — the owner's to check.
 
 **Deferred by the owner on 2026-09-13 — do not start these without asking:**
 
