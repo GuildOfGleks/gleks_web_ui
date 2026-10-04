@@ -1,5 +1,9 @@
 @for (severity of severities; track severity) {
-  <gog-alert [severity]="severity" [heading]="severity" live="off">
-    The severity picks the edge colour and the glyph.
+  <gog-alert [severity]="severity" live="off">The card issuer declined the charge.</gog-alert>
+  <gog-alert [severity]="severity" heading="Payment failed" live="off">
+    The card issuer declined the charge.
+  </gog-alert>
+  <gog-alert [severity]="severity" heading="Payment failed" dismissible live="off">
+    The card issuer declined the charge.
   </gog-alert>
 }

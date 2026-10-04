@@ -5,7 +5,6 @@ import { AlertComponent, ButtonComponent } from '@guildofgleks/ui';
   selector: 'app-example',
   imports: [AlertComponent, ButtonComponent],
   templateUrl: './example.html',
-  styleUrl: './example.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AlertLiveExample {

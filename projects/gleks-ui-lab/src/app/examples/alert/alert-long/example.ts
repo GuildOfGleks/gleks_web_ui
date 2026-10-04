@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { AlertComponent, GogAlertIconDirective, IconComponent } from '@guildofgleks/ui';
+import { AlertComponent } from '@guildofgleks/ui';
 
 @Component({
   selector: 'app-example',
-  imports: [AlertComponent, GogAlertIconDirective, IconComponent],
+  imports: [AlertComponent],
   templateUrl: './example.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AlertIconsExample {}
+export class AlertLongExample {}

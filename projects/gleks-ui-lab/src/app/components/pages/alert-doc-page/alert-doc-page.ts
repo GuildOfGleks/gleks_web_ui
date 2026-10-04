@@ -1,30 +1,19 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { ApiTableComponent, type ApiRow } from '../../shared/api-table/api-table';
 import { DemoComponent } from '../../shared/demo/demo';
 import { GlobalConfigNote } from '../../shared/global-config-note/global-config-note';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
-
 import { ALERT_EXAMPLES } from '../../../examples/alert/sources.generated';
+import { AlertConfigExample } from '../../../examples/alert/alert-config/example';
 import { AlertDismissibleExample } from '../../../examples/alert/alert-dismissible/example';
 import { AlertIconsExample } from '../../../examples/alert/alert-icons/example';
 import { AlertLiveExample } from '../../../examples/alert/alert-live/example';
+import { AlertLongExample } from '../../../examples/alert/alert-long/example';
 import { AlertOverviewExample } from '../../../examples/alert/alert-overview/example';
 import { AlertSeveritiesExample } from '../../../examples/alert/alert-severities/example';
-
-interface ApiRow {
-  readonly name: string;
-  readonly type: string;
-  readonly default: string;
-  readonly description: string;
-}
-
-interface OutputRow {
-  readonly name: string;
-  readonly type: string;
-  readonly description: string;
-}
 
 const API_INPUTS: readonly ApiRow[] = [
   {
@@ -63,7 +52,7 @@ const API_INPUTS: readonly ApiRow[] = [
   },
 ];
 
-const API_OUTPUTS: readonly OutputRow[] = [
+const API_OUTPUTS: readonly ApiRow[] = [
   {
     name: 'dismissed',
     type: 'void',
@@ -72,9 +61,28 @@ const API_OUTPUTS: readonly OutputRow[] = [
   },
 ];
 
+const API_SLOTS: readonly ApiRow[] = [
+  {
+    name: '(content)',
+    description: 'The message body. Its text is also what the live region announces.',
+  },
+  {
+    name: 'gogAlertIcon',
+    type: 'none',
+    description: 'An <ng-template> whose markup replaces the leading icon.',
+  },
+];
+
 @Component({
   selector: 'app-alert-doc-page',
-  imports: [DemoComponent, GlobalConfigNote, MarkdownComponent, RouterLink, SinceBadgeComponent],
+  imports: [
+    ApiTableComponent,
+    DemoComponent,
+    GlobalConfigNote,
+    MarkdownComponent,
+    RouterLink,
+    SinceBadgeComponent,
+  ],
   templateUrl: './alert-doc-page.html',
   styleUrl: './alert-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -82,8 +90,20 @@ const API_OUTPUTS: readonly OutputRow[] = [
 export class AlertDocPage {
   protected readonly apiInputs = API_INPUTS;
   protected readonly apiOutputs = API_OUTPUTS;
+  protected readonly apiSlots = API_SLOTS;
   protected readonly styleTokens =
     TOKEN_SECTIONS.find((section) => section.id === 'alert')?.tokens ?? [];
+
+  protected readonly sources = ALERT_EXAMPLES;
+  protected readonly examples = {
+    overview: AlertOverviewExample,
+    severities: AlertSeveritiesExample,
+    dismissible: AlertDismissibleExample,
+    icons: AlertIconsExample,
+    long: AlertLongExample,
+    config: AlertConfigExample,
+    live: AlertLiveExample,
+  };
 
   protected readonly importSnippet = [
     '```typescript',
@@ -95,13 +115,4 @@ export class AlertDocPage {
     '})',
     '```',
   ].join('\n');
-
-  protected readonly sources = ALERT_EXAMPLES;
-  protected readonly examples = {
-    overview: AlertOverviewExample,
-    severities: AlertSeveritiesExample,
-    dismissible: AlertDismissibleExample,
-    icons: AlertIconsExample,
-    live: AlertLiveExample,
-  };
 }

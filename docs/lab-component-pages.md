@@ -172,7 +172,7 @@ template.
 | toast         | legacy   | 6     | 6   | ✅       |
 | toggle        | legacy   | 6     | 6   | ✅       |
 | tooltip       | legacy   | 4     | 4   | ✅       |
-| alert         | examples | 5     | 0   |          |
+| alert         | examples | 5     | 0   | ✅       |
 | card          | examples | 6     | 0   |          |
 | menu          | examples | 5     | 0   | ✅       |
 | panel         | examples | 6     | 0   |          |

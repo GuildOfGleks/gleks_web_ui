@@ -5,7 +5,6 @@ import { AlertComponent, GogSeverity } from '@guildofgleks/ui';
   selector: 'app-example',
   imports: [AlertComponent],
   templateUrl: './example.html',
-  styleUrl: './example.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AlertSeveritiesExample {

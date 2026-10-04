@@ -19,8 +19,11 @@
     </p>
     <app-markdown [markdown]="importSnippet" />
 
+    <p class="doc-section__intro">
+      Basic usage — a notice and an error, both already on the page when it loads:
+    </p>
     <div class="demo-card">
-      <app-demo [component]="examples.overview" [source]="sources.alertOverview" />
+      <app-demo [component]="examples.overview" [source]="sources.alertOverview" layout="wide" />
     </div>
   </section>
 
@@ -28,31 +31,37 @@
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Severities</h3>
+      <h3 class="demo-card__title">Severities and shapes</h3>
       <p class="demo-card__meta">
-        The severity is carried by a thicker leading edge and the icon, over the ordinary surface —
-        not by a tinted fill. <code>accent</code> is the library's own colour and claims nothing,
-        which is the default. The edge is logical, so it moves to the right under
-        <code>dir="rtl"</code> without a second rule.
+        Five severities, each as a body only, with a <code>heading</code>, and with
+        <code>dismissible</code>. The severity is carried by a thicker leading edge and the icon
+        over the ordinary surface — not by a tinted fill. <code>accent</code> is the default and
+        claims nothing: the library's own colour, for a notice that is neither good news nor bad.
+        The edge is logical, so it moves to the right under <code>dir="rtl"</code>. An alert has no
+        interactive states of its own — only its close button does.
       </p>
-      <app-demo [component]="examples.severities" [source]="sources.alertSeverities" />
+      <app-demo
+        [component]="examples.severities"
+        [source]="sources.alertSeverities"
+        layout="fields"
+      />
     </article>
 
     <article class="demo-card">
       <h3 class="demo-card__title">Dismissible — pressed, not removed</h3>
       <p class="demo-card__meta">
         <strong><code>dismissed</code> means the close button was pressed.</strong> The alert stays
-        in the DOM and your app decides what happens — hide it, retry, navigate. That reads like an
-        omission and is deliberate: the handler runs while the alert is still mounted and its close
-        button still has focus, so there is somewhere to move focus <em>from</em>. A component that
-        deleted itself would destroy the focused element first and drop a keyboard reader back onto
-        <code>&lt;body&gt;</code>.
+        in the DOM and your app decides what happens — hide it, retry, navigate. The handler runs
+        while the close button still has focus, so there is somewhere to move focus <em>from</em>; a
+        component that deleted itself would drop a keyboard reader back onto
+        <code>&lt;body&gt;</code>. This example moves focus to the button that takes the alert's
+        place — press the close button with the keyboard.
       </p>
-      <p class="demo-card__meta">
-        Only your app knows what replaces the message, so this example moves focus to the button
-        that takes its place. Press the close button with the keyboard and focus lands there.
-      </p>
-      <app-demo [component]="examples.dismissible" [source]="sources.alertDismissible" />
+      <app-demo
+        [component]="examples.dismissible"
+        [source]="sources.alertDismissible"
+        layout="wide"
+      />
     </article>
 
     <article class="demo-card">
@@ -63,7 +72,27 @@
         <code>[iconName]="null"</code> removes it, and a projected
         <code>&lt;ng-template gogAlertIcon&gt;</code> replaces it with your own markup.
       </p>
-      <app-demo [component]="examples.icons" [source]="sources.alertIcons" />
+      <app-demo [component]="examples.icons" [source]="sources.alertIcons" layout="wide" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Long content</h3>
+      <p class="demo-card__meta">
+        The body is projected, so it can hold a list or a link. It wraps, and the icon stays at the
+        top rather than centring against the middle of a paragraph.
+      </p>
+      <app-demo [component]="examples.long" [source]="sources.alertLong" layout="wide" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">App-wide label — <code>GOG_CONFIG</code></h3>
+      <p class="demo-card__meta">
+        The close button's name is the one thing an alert reads from <code>GOG_CONFIG</code>:
+        <code>labels.closeAlert</code>, "Dismiss message" by default. In an app the provider goes in
+        <code>app.config.ts</code> — see
+        <a routerLink="/general/global-config">Global Configuration</a>.
+      </p>
+      <app-demo [component]="examples.config" [source]="sources.alertConfig" layout="wide" />
     </article>
   </section>
 
@@ -83,7 +112,7 @@
       cases apart for you, so set <code>'off'</code> yourself.
     </p>
     <div class="demo-card">
-      <app-demo [component]="examples.live" [source]="sources.alertLive" />
+      <app-demo [component]="examples.live" [source]="sources.alertLive" layout="wide" />
     </div>
     <p class="doc-section__intro">
       <strong
@@ -98,110 +127,57 @@
   </section>
 
   <section class="doc-section">
+    <h2 id="accessibility" class="doc-section__title font-heading">Accessibility</h2>
+    <p class="doc-section__intro">
+      The visible alert is plain content with no role; the announcement is a separate region, and
+      the icon is decorative.
+    </p>
+    <ul class="doc-section__intro">
+      <li>
+        <strong>Reading</strong> — the alert is not a landmark and needs no name: it is read where
+        it stands, like any paragraph.
+      </li>
+      <li>
+        <strong>Icon</strong> — <code>aria-hidden</code>, so the severity has to be in the words as
+        well: "Payment failed", not a red edge on "Payment".
+      </li>
+      <li>
+        <strong>Keyboard</strong> — the close button is a <code>gog-button</code>, named from
+        <code>GOG_CONFIG.labels.closeAlert</code>. An alert never takes focus and never traps it;
+        for a message that has to stop the reader until they answer it, use a
+        <a routerLink="/components/dialog">dialog</a>.
+      </li>
+      <li>
+        <strong>Announcing</strong> — see <a href="#announcing">How it announces</a>:
+        <code>live</code> defaults from the severity, and an alert on the page from the start should
+        set <code>live="off"</code>.
+      </li>
+    </ul>
+  </section>
+
+  <section class="doc-section">
     <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
 
     <h3 class="doc-section__subtitle">Inputs</h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Default</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of apiInputs; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-              </td>
-              <td>
-                <code>{{ row.type }}</code>
-              </td>
-              <td>
-                <code>{{ row.default }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="apiInputs" kind="inputs" />
 
     <h3 class="doc-section__subtitle">Outputs</h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of apiOutputs; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-              </td>
-              <td>
-                <code>{{ row.type }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="apiOutputs" kind="outputs" />
 
     <h3 class="doc-section__subtitle">Slots</h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>gogAlertIcon</code></td>
-            <td>An <code>&lt;ng-template&gt;</code> whose markup replaces the leading icon.</td>
-          </tr>
-          <tr>
-            <td>(content)</td>
-            <td>The message body. Its text is also what the live region announces.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="apiSlots" kind="slots" />
   </section>
 
   <app-global-config-note component="alert" />
 
   <section class="doc-section">
-    <h2 id="tokens" class="doc-section__title font-heading">Style tokens</h2>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Token</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (token of styleTokens; track token.name) {
-            <tr>
-              <td>
-                <code>{{ token.name }}</code>
-              </td>
-              <td>{{ token.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <h2 id="styling" class="doc-section__title font-heading">Styling Tokens</h2>
+    <p class="doc-section__intro">
+      Every CSS custom property the alert paints with. Override any of them — on a single instance,
+      a subtree, or a theme — to restyle it. See the
+      <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
+      <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
+    </p>
+    <app-api-table [rows]="styleTokens" kind="tokens" />
   </section>
 </div>
