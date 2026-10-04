@@ -9,7 +9,10 @@ release the 21 line is declared stable from: `gog-autocomplete`'s four panel-fil
 removed (the search box moved into `GogFilterableDropdownBase`), `GOG_DEPRECATIONS` is `[]`, and
 the README's _Versioning_ section, the changelog preamble and `docs/branching-and-support.md` all
 state the rule — patches fix, minors add (new components are minors), only a major breaks.
-`check:install` is not triggered: no export, entry point or package file changed. Once it is on
+`check:install` is not triggered (no export removed, no entry point or package file changed), and
+was run anyway on 2026-10-04 at the owner's request: passed — 45 files (+0/-0 against 21.15.1),
+one export added to the root and one to `/shared` (`GogFilterableDropdownBase`), initial bundle
+113.00 kB, lazy chunks 9010 / 4010 / 8200 bytes for datepicker / dialog / table. Once it is on
 npm, `docs/lab-after-publish.md`'s 21.16.0 section has three lab items (FAQ, Autocomplete page,
 Releases page).
 
