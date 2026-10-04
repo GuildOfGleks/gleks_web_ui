@@ -380,6 +380,40 @@ h3[id] {
   gap: 12px;
 }
 
+/* `overhang` — `row` with twice the spacing, for a decoration drawn outside its host's box: a
+   badge overhangs its corner by `--gog-badge-offset`, so at 12px a "99+" ends 4px from the next
+   button. A `<div>` is a row of its own, and its leading `<span>` the row's label. */
+.demo-preview--overhang > * {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding-block-start: 8px;
+}
+
+.demo-preview--overhang > * > div {
+  display: flex;
+  flex-basis: 100%;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+
+.demo-preview--overhang > * > div > span:first-child {
+  min-width: 160px;
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-sm);
+  font-family: var(--gog-font-mono);
+}
+
+.demo-preview--overhang > * > p {
+  flex-basis: 100%;
+  margin: 0;
+  text-align: center;
+}
+
 /* `rows` — each top-level element a wrapping row; the rows form one block, centred, so a
    leading label column stays aligned while the whole example sits in the middle of the card. */
 .demo-preview--rows > * {

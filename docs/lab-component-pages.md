@@ -140,7 +140,7 @@ template.
 | button        | legacy   | 12    | 12  | ✅ pilot |
 | accordion     | legacy   | 8     | 8   | ✅       |
 | autocomplete  | legacy   | 6     | 6   | ✅       |
-| badge         | legacy   | 5     | 5   |          |
+| badge         | legacy   | 5     | 5   | ✅       |
 | button-toggle | legacy   | 6     | 6   | ✅       |
 | calendar      | legacy   | 5     | 5   | ✅       |
 | checkbox      | legacy   | 8     | 8   | ✅       |

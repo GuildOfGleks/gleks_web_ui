@@ -1,0 +1,15 @@
+@for (content of contents; track content.label) {
+  <div>
+    <span>{{ content.label }}</span>
+    @for (variant of variants; track variant) {
+      <gog-button
+        variant="outline"
+        [gogBadge]="content.value"
+        [badgeDot]="content.dot"
+        [badgeVariant]="variant"
+      >
+        {{ variant }}
+      </gog-button>
+    }
+  </div>
+}

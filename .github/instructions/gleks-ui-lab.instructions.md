@@ -33,7 +33,7 @@ status, is `docs/lab-component-pages.md`; the rules are stated here because they
 
 ## Demo layout
 
-`<app-demo layout>` is one of `block` (default), `row`, `rows`, `fields`, `wide`, `frame` — defined once in
+`<app-demo layout>` is one of `block` (default), `row`, `rows`, `fields`, `wide`, `overhang`, `frame` — defined once in
 `src/styles.scss`. A new arrangement is added there, never as CSS in an example. Every layout keeps
 three rules, and a new one must too:
 
@@ -48,7 +48,9 @@ In `block`, a `<div>` (and a `<div>` inside it) stacks its contents left-aligned
 checkbox and its children. In `row`, a `<div>` is a captioned cell and a `<p>` takes its own line.
 In `rows`, a leading `<span>` in a row is its label, drawn in a fixed-width column so the rows
 line up. In `wide`, each top-level element spans the card, a `<p>` is a centred caption and a
-`<div>` is a centred row of the controls that drive the component. Form fields use `fields`: each top-level element is one cell (220–280px) in centred, wrapping rows,
+`<div>` is a centred row of the controls that drive the component. `overhang` is `row` with 24px
+gaps, for a decoration drawn outside its host (a badge); a `<div>` in it is a row with a `<span>`
+label. Form fields use `fields`: each top-level element is one cell (220–280px) in centred, wrapping rows,
 so a field does not stretch across the card; a `<div>` cell stacks a field with a line under it.
 
 ## Component page outline

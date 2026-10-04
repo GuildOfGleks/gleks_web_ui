@@ -17,12 +17,15 @@ import type { ExampleSource } from '../example-source';
  * - `fields` — form fields in centred rows of equal cells; a `<div>` cell stacks a field with
  *   the line under it.
  * - `wide` — each top-level element as wide as the card (centred if it caps itself), for an
- *   example about filling a block container.
+ *   example about filling a block container; a `<div>` is a centred row of the controls that
+ *   drive it.
+ * - `overhang` — `row` with twice the spacing, for a decoration drawn outside its host's box (a
+ *   badge); a `<div>` is a row of its own, with a leading `<span>` as its label.
  * - `frame` — a narrow dashed box, for an example whose point is how it fills its container.
  *
  * A new arrangement is added here, never as CSS in an example.
  */
-export type DemoLayout = 'block' | 'row' | 'rows' | 'fields' | 'wide' | 'frame';
+export type DemoLayout = 'block' | 'row' | 'rows' | 'fields' | 'wide' | 'overhang' | 'frame';
 
 /**
  * One documentation example: the live component, then its three files behind the tab strip.

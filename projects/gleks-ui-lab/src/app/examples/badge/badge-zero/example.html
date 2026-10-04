@@ -1,0 +1,12 @@
+<!-- Bind the count straight from state: 0, null and '' render no badge at all. -->
+<gog-button [gogBadge]="count()" [badgeHidden]="hidden()" badgeAriaLabel="{{ count() }} unread">
+  Notifications
+</gog-button>
+<gog-button variant="outline" (gogClick)="remove()">−1</gog-button>
+<gog-button variant="outline" (gogClick)="add()">+1</gog-button>
+<gog-button variant="outline" (gogClick)="count.set(150)">Set 150</gog-button>
+<gog-button variant="outline" (gogClick)="hidden.set(!hidden())">
+  badgeHidden: {{ hidden() }}
+</gog-button>
+
+<p>count: {{ count() }}</p>
