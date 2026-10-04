@@ -15,7 +15,7 @@ with a lab page, and the comparison re-measured (142.2 KB gzipped for the whole 
 smaller than four Material components; the gap keeps narrowing as the catalogue grows, and the page
 says so). **21.19.0 is open (`planned`)** and empties the backlog's Gaps and rough edges, except two
 Defects that wait for the owner's screen-reader run (Orca on Fedora needs Chrome started after
-Orca, with `--force-renderer-accessibility` and `toolkit-accessibility` on, or it hears no page at all). Gaps' unbuilt-component list is done; one follow-up from it is filed in `docs/backlog.md` (`gog-table`'s empty row taking a `gog-empty-state`). The two
+Orca, with `--force-renderer-accessibility` and `toolkit-accessibility` on, or it hears no page at all). Gaps' unbuilt-component list is done, and its follow-up (`gogTableEmpty`) shipped in 21.19.0. The two
 Defects left need a real screen reader — the owner's to check.
 
 **Deferred by the owner on 2026-09-13 — do not start these without asking:**
