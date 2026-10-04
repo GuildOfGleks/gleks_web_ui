@@ -1,0 +1,8 @@
+<!-- A long message wraps; the actions go under it. -->
+@for (generation of [generation()]; track generation) {
+  <gog-toast [toast]="long" />
+}
+<gog-button variant="outline" (gogClick)="withIconName()">iconName</gog-button>
+<gog-button variant="outline" (gogClick)="withIconTemplate()">iconTemplate</gog-button>
+<gog-button variant="ghost" (gogClick)="generation.set(generation() + 1)">Reset</gog-button>
+<ng-template #star><gog-icon name="star-filled" /></ng-template>

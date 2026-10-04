@@ -163,7 +163,7 @@ template.
 | tabs          | legacy   | 4     | 4   | ✅       |
 | tag           | legacy   | 6     | 6   | ✅       |
 | textarea      | legacy   | 10    | 10  | ✅       |
-| toast         | legacy   | 6     | 6   |          |
+| toast         | legacy   | 6     | 6   | ✅       |
 | toggle        | legacy   | 6     | 6   | ✅       |
 | tooltip       | legacy   | 4     | 4   | ✅       |
 | alert         | examples | 5     | 0   |          |

@@ -13,20 +13,14 @@
     <h2 id="overview" class="doc-section__title font-heading">Overview</h2>
     <p class="doc-section__intro">
       Import <code>ToastContainerComponent</code> and mount
-      <code>&lt;gog-toast-container /&gt;</code> once — typically near the root of your app. Every
-      <code>ToastService</code> call renders through that single outlet, so it only needs to exist
-      once no matter how many places call it.
+      <code>&lt;gog-toast-container /&gt;</code> once, near the root of the app. Every
+      <code>ToastService</code> call renders through that one outlet, however many places call it.
     </p>
     <app-markdown [markdown]="importSnippet" />
 
-    <p class="doc-section__intro">Basic usage — inject the service, call a shorthand method:</p>
+    <p class="doc-section__intro">Basic usage — inject the service and call a shorthand:</p>
     <div class="demo-card">
-      <div class="demo-card__preview action-row">
-        <gog-button variant="primary" type="button" (gogClick)="showToast()"
-          >Preview toast</gog-button
-        >
-      </div>
-      <app-code-tabs [html]="overviewHtml" [ts]="overviewTs" />
+      <app-demo [component]="examples.overview" [source]="sources.toastOverview" layout="row" />
     </div>
   </section>
 
@@ -34,213 +28,140 @@
     <h2 id="examples" class="doc-section__title font-heading">Examples</h2>
 
     <article class="demo-card">
+      <h3 class="demo-card__title">Types and states</h3>
+      <p class="demo-card__meta">
+        The type picks the edge colour and the glyph. A timed toast carries a progress bar counting
+        down its <code>duration</code>; one queued behind the front of its stack
+        (<code>[isFront]="false"</code>, the third in each type) keeps the bar full and still. These
+        are placed directly to show every state at once — an app never places a
+        <code>gog-toast</code> itself; the container renders one per <code>show()</code>.
+      </p>
+      <app-demo [component]="examples.states" [source]="sources.toastStates" layout="row" />
+    </article>
+
+    <article class="demo-card">
+      <h3 class="demo-card__title">Long messages and icons</h3>
+      <p class="demo-card__meta">
+        The toast is at least <code>--gog-toast-min-width</code> wide and caps itself in
+        <code>ch</code> of its own message font, against the viewport too; the message wraps and the
+        actions go under it. <code>iconName</code> replaces the type's glyph — any built-in, or a
+        name registered with <code>provideGogIcons</code>; <code>iconTemplate</code> takes any
+        markup. The colour stays the type's.
+      </p>
+      <app-demo [component]="examples.content" [source]="sources.toastContent" layout="row" />
+    </article>
+
+    <article class="demo-card">
       <h3 class="demo-card__title">Fully configurable</h3>
       <p class="demo-card__meta">
-        Every field below feeds a single <code>show()</code> call — message, type, and position are
-        all consumer-controlled.
+        Every field feeds one <code>show()</code> call — message, type and position are all the
+        caller's.
       </p>
-      <div class="demo-card__preview field-grid">
-        <gog-inputfield label="Message" inputId="toast-message" [(value)]="toastMessage" />
-        <gog-select
-          label="Type"
-          inputId="toast-type"
-          [options]="toastTypes"
-          [(value)]="toastType"
-        />
-        <gog-select
-          label="Position"
-          inputId="toast-position"
-          [options]="positions"
-          [(value)]="toastPosition"
-        />
-      </div>
-      <div class="demo-card__preview action-row">
-        <gog-button variant="primary" type="button" (gogClick)="showConfigured()">
-          Preview toast
-        </gog-button>
-        <gog-button variant="ghost" type="button" (gogClick)="showBurst()">
-          Queue 7 toasts
-        </gog-button>
-      </div>
-      <app-code-tabs [html]="configurableHtml" [ts]="configurableTs" />
+      <app-demo
+        [component]="examples.configurable"
+        [source]="sources.toastConfigurable"
+        layout="fields"
+      />
     </article>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Types</h3>
+      <h3 class="demo-card__title">Types, positions and the stack</h3>
       <p class="demo-card__meta">
-        Each type gets a default icon (success/error/warning/info) unless <code>iconName</code> or
-        <code>iconTemplate</code> overrides it.
+        Each corner is its own stack, oldest in front. Only the front toast counts down; the ones
+        behind wait with a full bar and fan out on hover. Past the container's
+        <code>maxVisiblePerPosition</code> (5 on this site) the rest queue out of sight and are not
+        announced until they are shown.
       </p>
-      <div class="demo-card__preview action-row">
-        <gog-button variant="outline" type="button" (gogClick)="showOneOfEach()">
-          Fire one of each type
-        </gog-button>
-      </div>
-      <app-code-tabs [html]="typesHtml" [ts]="typesTs" />
+      <app-demo [component]="examples.types" [source]="sources.toastTypes" layout="row" />
     </article>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Action buttons</h3>
+      <h3 class="demo-card__title">Duration and sticky</h3>
       <p class="demo-card__meta">
-        <code>actions</code> renders buttons inside the toast — each gets the full
-        <code>Toast</code> object in its <code>onClick</code>, so it can read back the message,
-        type, or id it belongs to.
+        <code>duration</code> overrides the 4000 ms default; <code>isSticky</code> disables
+        auto-dismiss entirely. <code>dismissAll()</code> clears every corner.
       </p>
-      <div class="demo-card__preview action-row">
-        <gog-button variant="outline" type="button" (gogClick)="showWithAction()">
-          Delete file
-        </gog-button>
-      </div>
-      <app-code-tabs [html]="actionsHtml" [ts]="actionsTs" />
+      <app-demo [component]="examples.duration" [source]="sources.toastDuration" layout="row" />
     </article>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Sticky &amp; duration</h3>
+      <h3 class="demo-card__title">Actions, show() and dismiss()</h3>
       <p class="demo-card__meta">
-        <code>isSticky</code> disables auto-dismiss entirely; <code>duration</code> overrides the 4s
-        default.
+        An action's <code>onClick</code> gets the toast; pressing one does not close it, so an Undo
+        calls <code>dismiss(toast.id)</code> itself. <code>show()</code> and the four shorthands
+        return that id.
       </p>
-      <div class="demo-card__preview action-row">
-        <gog-button variant="outline" type="button" (gogClick)="showSticky()"
-          >Sticky toast</gog-button
-        >
-        <gog-button variant="outline" type="button" (gogClick)="showLongDuration()">
-          10s duration
-        </gog-button>
-        <gog-button variant="ghost" type="button" (gogClick)="dismissAll()">Dismiss all</gog-button>
-      </div>
-      <app-code-tabs [html]="stickyHtml" [ts]="stickyTs" />
+      <app-demo [component]="examples.actions" [source]="sources.toastActions" layout="row" />
     </article>
 
     <article class="demo-card">
-      <h3 class="demo-card__title">Queueing &amp; stacking</h3>
+      <h3 class="demo-card__title">dedupeKey</h3>
       <p class="demo-card__meta">
-        Only the front toast in a corner counts down — the rest wait behind it with a frozen
-        progress bar, so a burst of notifications never all expire at once.
-        <code>maxVisiblePerPosition</code> on the container caps how many stack visibly at a time.
+        A <code>show()</code> whose <code>dedupeKey</code> matches a toast still open replaces it in
+        place — new message, timer restarted, announced again — instead of stacking another. Unset,
+        the key is derived from the message, type, icon, position and action labels, so the same
+        toast fired twice is one toast; this button changes its message each time, so it names a
+        key.
       </p>
-      <div class="demo-card__preview action-row">
-        <gog-button variant="outline" type="button" (gogClick)="showBurst()"
-          >Queue 7 toasts</gog-button
-        >
-      </div>
-      <app-code-tabs [html]="burstHtml" [ts]="burstTs" />
+      <app-demo [component]="examples.dedupe" [source]="sources.toastDedupe" layout="row" />
     </article>
   </section>
 
   <section class="doc-section">
     <h2 id="global-config" class="doc-section__title font-heading">App-wide defaults</h2>
     <p class="doc-section__intro">
-      The corner toasts appear in and how long they stay up were constants until 21.3.0; both are
-      now settable once, app-wide. An individual <code>show()</code> call still overrides them. See
-      <a routerLink="/general/global-config">Global Configuration</a> for the full set of keys.
+      <code>GOG_CONFIG.toast.position</code> and <code>.duration</code> set the corner and the time
+      for every toast; a <code>show()</code> call still overrides them. They are read once, by the
+      root <code>ToastService</code>, so they belong in <code>app.config.ts</code> — a
+      <code>provideGogConfig</code> lower down never reaches them.
+      <code>labels.closeToast</code> names the close button. See
+      <a routerLink="/general/global-config">Global Configuration</a>.
     </p>
     <app-markdown [markdown]="configSnippet" />
   </section>
 
   <section class="doc-section">
-    <h2 id="announcements" class="doc-section__title font-heading">
-      How a toast is announced <app-since version="21.3.2" />
-    </h2>
+    <h2 id="accessibility" class="doc-section__title font-heading">Accessibility</h2>
     <p class="doc-section__intro">
-      Announcements come from <strong>two permanently-mounted live regions</strong> on
-      <code>gog-toast-container</code> — one <code>polite</code>, one <code>assertive</code> — and
-      the toast's <code>type</code> decides which one its text is written into (assertive for
-      <code>error</code> and <code>warning</code>, polite otherwise).
+      A toast carries no <code>role</code> or <code>aria-live</code>. The container owns two live
+      regions, mounted before any toast exists, and copies each shown toast's message into one.
     </p>
-    <p class="doc-section__intro">
-      Individual toasts therefore carry no <code>role</code> or <code>aria-live</code> of their own.
-      A live region has to exist <em>before</em> the text lands in it to be announced at all; one
-      created together with the toast is a region the screen reader has not been watching. This only
-      matters to you if you were styling or querying those attributes on a toast element.
-    </p>
+    <ul class="doc-section__intro">
+      <li>
+        <strong>Announcements</strong> — one region is <code>polite</code>, one
+        <code>assertive</code>; the toast's <code>type</code> picks which (assertive for
+        <code>error</code> and <code>warning</code>, polite otherwise). A live region has to exist
+        <em>before</em> the text lands in it to be announced at all, which is why the toasts do not
+        carry their own. The message leaves the region when the toast does.
+      </li>
+      <li>
+        <strong>Queued toasts</strong> past <code>maxVisiblePerPosition</code> are not announced
+        until they are shown.
+      </li>
+      <li>
+        <strong>Keyboard</strong> — the close button and the actions are real buttons in the tab
+        order. The close button is named by <code>GOG_CONFIG.labels.closeToast</code>.
+      </li>
+      <li>
+        <strong>Timing</strong> — hovering a toast pauses its countdown. Under
+        <code>prefers-reduced-motion</code> the progress bar still reports the time left, in twenty
+        discrete steps rather than a slide. Put anything a user must act on in a sticky toast or
+        somewhere that does not expire.
+      </li>
+    </ul>
   </section>
 
   <section class="doc-section">
     <h2 id="api" class="doc-section__title font-heading">API Reference</h2>
 
     <h3 class="doc-section__subtitle">ToastConfig</h3>
-    <p class="doc-section__intro">Passed to <code>ToastService.show(config)</code>.</p>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Default</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of configOptions; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-              </td>
-              <td>
-                <code>{{ row.type }}</code>
-              </td>
-              <td>
-                <code>{{ row.default }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="configOptions" kind="inputs" />
 
     <h3 class="doc-section__subtitle">ToastService methods</h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Signature</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of serviceMethods; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="serviceMethods" kind="methods" />
 
     <h3 class="doc-section__subtitle">gog-toast-container — Inputs</h3>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Default</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of containerInputs; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-              </td>
-              <td>
-                <code>{{ row.type }}</code>
-              </td>
-              <td>
-                <code>{{ row.default }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="containerInputs" kind="inputs" />
   </section>
 
   <app-global-config-note component="toast" />
@@ -253,25 +174,6 @@
       <a routerLink="/general/theming">Theming</a> guide for the full token-layering model, or the
       <a routerLink="/general/theme-generator">Theme Generator</a> to tweak these live.
     </p>
-    <div class="api-table-scroll">
-      <table class="api-table">
-        <thead>
-          <tr>
-            <th>Token</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of styleTokens; track row.name) {
-            <tr>
-              <td>
-                <code>{{ row.name }}</code>
-              </td>
-              <td>{{ row.description }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-api-table [rows]="styleTokens" kind="tokens" />
   </section>
 </div>

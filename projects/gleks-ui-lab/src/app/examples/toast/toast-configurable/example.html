@@ -1,0 +1,6 @@
+<gog-inputfield label="Message" [(value)]="message" />
+<gog-select label="Type" [options]="types" [(value)]="type" />
+<gog-select label="Position" [options]="positions" [(value)]="position" />
+<div>
+  <gog-button (gogClick)="preview()">Preview toast</gog-button>
+</div>

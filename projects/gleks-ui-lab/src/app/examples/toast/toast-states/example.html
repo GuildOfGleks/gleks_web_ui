@@ -1,0 +1,11 @@
+<!-- Placed directly only to show every state at once; an app lets the container do it. -->
+@for (generation of [generation()]; track generation) {
+  @for (cell of cells; track cell.toast.id) {
+    <gog-toast [toast]="cell.toast" [isFront]="cell.isFront" />
+  }
+}
+<p>
+  <gog-button variant="ghost" size="sm" (gogClick)="generation.set(generation() + 1)">
+    Bring closed toasts back
+  </gog-button>
+</p>

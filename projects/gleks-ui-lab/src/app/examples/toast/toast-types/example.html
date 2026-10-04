@@ -1,0 +1,6 @@
+<gog-button variant="outline" (gogClick)="oneOfEach()">One of each type</gog-button>
+@for (position of positions; track position) {
+  <gog-button variant="outline" (gogClick)="at(position)">{{ position }}</gog-button>
+}
+<!-- Each corner is its own stack; only its front toast counts down. -->
+<gog-button variant="outline" (gogClick)="burst()">Queue 7 at top-right</gog-button>

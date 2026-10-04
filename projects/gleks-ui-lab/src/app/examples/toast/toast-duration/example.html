@@ -1,0 +1,5 @@
+@for (duration of durations; track duration) {
+  <gog-button variant="outline" (gogClick)="timed(duration)">{{ duration }} ms</gog-button>
+}
+<gog-button variant="outline" (gogClick)="sticky()">isSticky</gog-button>
+<gog-button variant="ghost" (gogClick)="dismissAll()">dismissAll()</gog-button>
