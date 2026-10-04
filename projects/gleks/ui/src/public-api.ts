@@ -9,6 +9,7 @@ export * from './lib/components/alert/alert.component';
 export * from './lib/components/avatar/avatar.component';
 export * from './lib/components/avatar/avatar-group.component';
 export * from './lib/components/breadcrumbs/breadcrumbs.component';
+export * from './lib/components/stepper/stepper.component';
 export * from './lib/components/collapsible/collapsible.component';
 export * from './lib/components/collapsible/collapsible-trigger.directive';
 export * from './lib/components/collapsible/collapsible-content.directive';

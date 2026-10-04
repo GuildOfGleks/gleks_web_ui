@@ -11,6 +11,7 @@ import {
   AvatarComponent,
   AvatarGroupComponent,
   BreadcrumbsComponent,
+  StepperComponent,
   GogBreadcrumbDirective,
   ChipComponent,
   CollapsibleComponent,
@@ -123,6 +124,7 @@ import {
     AvatarComponent,
     AvatarGroupComponent,
     BreadcrumbsComponent,
+    StepperComponent,
     GogBreadcrumbDirective,
     ChipComponent,
     CollapsibleComponent,
@@ -206,6 +208,19 @@ export class SpecimenPage {
 
   protected readonly fullName = signal('Mila Kovacs');
   protected readonly buyers = ['Ana Petrova', 'Jonas Berg', 'Lea Novak', 'Tomas Ruiz', 'Yuki Sato'];
+  protected readonly setupSteps = [
+    { label: 'Profile', state: 'complete' as const },
+    { label: 'Team' },
+    { label: 'Billing' },
+  ];
+  protected readonly setupStep = signal(1);
+  protected readonly fulfilmentSteps = [
+    { label: 'Paid', description: 'Card ending 4242', state: 'complete' as const },
+    { label: 'Packed', state: 'complete' as const },
+    { label: 'Shipped', description: 'Carrier rejected the label', state: 'error' as const },
+    { label: 'Delivered' },
+  ];
+  protected readonly fulfilmentStep = signal(2);
   protected readonly email = signal('mila@');
   protected readonly website = signal('gleks.example');
   protected readonly bio = signal('Runs the finance team. Prefers spreadsheets to meetings.');

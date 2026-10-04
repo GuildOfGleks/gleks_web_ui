@@ -1,0 +1,100 @@
+<app-doc-page unit="stepper">
+  <app-doc-section
+    id="states"
+    title="States"
+    lead="Complete, error, current, optional, disabled and not started — the indicator draws each, and a hidden word after the label says it."
+  >
+    <h3>every state × orientation</h3>
+    <p class="stepper-page__note">
+      The current step is Address. Account is complete and Card has an error; Newsletter is
+      optional, Gift wrap disabled. With <code>linear</code> on, a press reaches back to Account and
+      Card, and no further forward than Address, because Address is not complete.
+    </p>
+    <app-doc-matrix rowAxis="orientation" colAxis="">
+      <ng-template appDocCell [rows]="orientations" [cols]="stepperColumn" let-orientation>
+        <div class="stepper-page__cell">
+          <gog-stepper [steps]="allStates" [activeIndex]="2" [orientation]="orientation.value" />
+        </div>
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>size</h3>
+    <app-doc-matrix rowAxis="size" colAxis="">
+      <ng-template appDocCell [rows]="sizes" [cols]="stepperColumn" let-size>
+        <div class="stepper-page__cell">
+          <gog-stepper [steps]="allStates.slice(0, 4)" [activeIndex]="2" [size]="size" />
+        </div>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section
+    id="behaviour"
+    title="Behaviour"
+    lead="The stepper never decides a step is done: the app marks it, and the way forward opens."
+  >
+    <h3>a flow to walk</h3>
+    <p class="stepper-page__note">
+      The two buttons stand in for the app's own form. "Complete" marks the current step done and
+      moves on; "Fail" marks it with an error. With <code>linear</code> on, a step ahead becomes a
+      button only once every step before it is complete; switch it off and every step is reachable.
+    </p>
+    <div class="stepper-page__flow">
+      <gog-stepper [steps]="flow()" [linear]="flowLinear()" [(activeIndex)]="flowIndex" />
+      <p class="stepper-page__panel">
+        Step {{ flowIndex() + 1 }}: <strong>{{ flowCurrent().label }}</strong> — the app renders
+        this from <code>activeIndex</code>.
+      </p>
+      <div class="stepper-page__row">
+        <button type="button" (click)="completeCurrent()">complete</button>
+        <button type="button" (click)="failCurrent()">fail</button>
+        <button type="button" (click)="resetFlow()">reset</button>
+        <label>
+          <input
+            type="checkbox"
+            [checked]="flowLinear()"
+            (change)="flowLinear.set(!flowLinear())"
+          />
+          linear
+        </label>
+      </div>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="content"
+    title="Content & layout"
+    lead="Descriptions wrap under the label; the connector between two steps turns accent once the first is done. RTL mirrors the row."
+  >
+    <h3>dir="rtl"</h3>
+    <div class="stepper-page__cell" dir="rtl">
+      <gog-stepper [steps]="allStates.slice(0, 4)" [activeIndex]="2" />
+    </div>
+
+    <h3>a narrow container</h3>
+    <p class="stepper-page__note">
+      Horizontal steps share the row, the connectors give way first and labels wrap at their spaces
+      — but a label never breaks inside a word, so a row has a minimum width, and four steps do not
+      fit in 22rem. That is the case for <code>orientation="vertical"</code>, which fits any width:
+    </p>
+    <div class="stepper-page__narrow">
+      <gog-stepper [steps]="allStates.slice(0, 4)" [activeIndex]="1" orientation="vertical" />
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="A named ordered list; aria-current='step'; each state as words; reachable steps are buttons and the rest are not tab stops."
+  >
+    <h3>what assistive tech gets</h3>
+    <div class="stepper-page__stack">
+      <app-doc-attrs target="ol">
+        <gog-stepper [steps]="allStates.slice(0, 3)" [activeIndex]="2" />
+      </app-doc-attrs>
+      <app-doc-attrs target="[aria-current]">
+        <gog-stepper [steps]="allStates.slice(0, 3)" [activeIndex]="2" />
+      </app-doc-attrs>
+    </div>
+  </app-doc-section>
+</app-doc-page>

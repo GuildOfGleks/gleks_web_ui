@@ -353,7 +353,7 @@ parent's config**, one level deep per key — it does not replace it.
 | `paginator`    | `showPageSizeSelect`, `pageSizeOptions`                                               | `gog-paginator`, and through it `gog-table`'s built-in pagination.                                                                                                                                                                                                                                                                                                                                                                         |
 | `toast`        | `position`, `duration`                                                                | `ToastService`.                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | `theme`        | `storageKey`, `defaultTheme`, `followSystem`, `lightTheme`, `darkTheme`               | `ThemeService`. All off/neutral by default — see below.                                                                                                                                                                                                                                                                                                                                                                                    |
-| `labels`       | every fixed string the library renders — see below                                    | inputfield, textarea, select, multiselect, autocomplete, datepicker, calendar, paginator, table, avatar-group, breadcrumbs, `DialogService`, `ToastService`.                                                                                                                                                                                                                                                                               |
+| `labels`       | every fixed string the library renders — see below                                    | inputfield, textarea, select, multiselect, autocomplete, datepicker, calendar, paginator, table, avatar-group, breadcrumbs, stepper, `DialogService`, `ToastService`.                                                                                                                                                                                                                                                                      |
 
 Anything visual does **not** belong here — override the `--gog-*` token instead.
 
@@ -404,6 +404,10 @@ provideGogConfig({
     moreAvatars: (count) => `${count} weitere`, // gog-avatar-group's +N avatar
     breadcrumbs: 'Brotkrumen', // gog-breadcrumbs' landmark
     showBreadcrumbs: 'Ganzen Pfad zeigen', // its collapsed-trail button
+    stepper: 'Fortschritt', // gog-stepper's list
+    stepCompleted: 'erledigt', // hidden words after a step's label
+    stepError: 'fehlerhaft',
+    stepOptional: 'Optional',
   },
 });
 ```
@@ -1875,6 +1879,47 @@ router dependency, so a link keeps its own `routerLink` or `href` — marked wit
   template with two root elements breaks `aria-current`.
 - The items' link, hover, focus and current-page styles live in the baseline stylesheet
   (`utilities.css`), since they are your elements: `--gog-breadcrumbs-*` tokens restyle them.
+
+#### `gog-stepper`
+
+Where a reader is in a multi-step task. **An indicator, not a wizard**: it shows the steps and moves
+between them; your app renders each step's content from `activeIndex` and marks a step complete
+in its own data — the stepper never decides a step is done.
+
+```html
+<gog-stepper [steps]="steps()" [(activeIndex)]="step" /> @switch (step()) { @case (0) {
+<app-account-form (done)="complete(0)" /> } @case (1) { <app-address-form (done)="complete(1)" /> }
+}
+```
+
+```ts
+interface GogStep {
+  label: string;
+  description?: string;
+  state?: 'complete' | 'error'; // unset: not started
+  disabled?: boolean; // never reachable
+  optional?: boolean; // shows "Optional"; a linear stepper does not wait for it
+}
+```
+
+| Input / model | Type                  | Default        |
+| ------------- | --------------------- | -------------- |
+| `steps`       | `readonly GogStep[]`  | `[]`           |
+| `activeIndex` | `number` (model)      | `0`            |
+| `linear`      | `boolean`             | `true`         |
+| `orientation` | `GogOrientation`      | `'horizontal'` |
+| `size`        | `GogSize`             | `'md'`         |
+| `ariaLabel`   | `string \| undefined` | `'Progress'`   |
+
+- **Reachability**: a press can always go back; forward, when `linear`, only as far as every step
+  before is `complete` or `optional`. A reachable step is a `<button>`; the current one and the
+  unreachable ones are plain text, not disabled buttons — no tab stops to walk past.
+- **What it says**: `aria-current="step"` on the current step, and each step's state as hidden
+  words after its label ("Account, completed", "Card, has an error"), from
+  `GOG_CONFIG.labels.stepCompleted` / `stepError`; `stepOptional` and `stepper` (the list's name)
+  too. Change the state in your data to change what is said.
+- **Width**: a horizontal step is never narrower than its longest word, so a horizontal row has a
+  minimum width; in a narrow container use `orientation="vertical"`.
 
 #### `gog-paginator`
 

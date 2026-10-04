@@ -6,6 +6,7 @@ import { ALERT_API } from './alert/alert.api';
 import { AUTOCOMPLETE_API } from './autocomplete/autocomplete.api';
 import { AVATAR_API } from './avatar/avatar.api';
 import { BREADCRUMBS_API } from './breadcrumbs/breadcrumbs.api';
+import { STEPPER_API } from './stepper/stepper.api';
 import { BADGE_API } from './badge/badge.api';
 import { BUTTON_API } from './button/button.api';
 import { BUTTON_TOGGLE_API } from './button-toggle/button-toggle.api';
@@ -126,6 +127,11 @@ export const PAGES: Readonly<Record<string, DocPageEntry>> = {
     load: () => import('./icon/icon-page').then((m) => m.IconPage),
     api: ICON_API,
     tokens: ['Icon & spinner', 'Icon'],
+  },
+  stepper: {
+    load: () => import('./stepper/stepper-page').then((m) => m.StepperPage),
+    api: STEPPER_API,
+    tokens: ['Stepper'],
   },
   breadcrumbs: {
     load: () => import('./breadcrumbs/breadcrumbs-page').then((m) => m.BreadcrumbsPage),

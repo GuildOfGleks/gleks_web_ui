@@ -329,6 +329,14 @@ export interface GogGlobalConfig {
     /** `gog-breadcrumbs`: the landmark's name, and the button that expands a collapsed trail. */
     breadcrumbs?: string;
     showBreadcrumbs?: string;
+    /**
+     * `gog-stepper`: the list's name, and the hidden words after a step's label that say what the
+     * indicator shows ("Account, completed").
+     */
+    stepper?: string;
+    stepCompleted?: string;
+    stepError?: string;
+    stepOptional?: string;
     /** `gog-datepicker`'s button that opens the calendar panel. */
     openCalendar?: string;
     /**

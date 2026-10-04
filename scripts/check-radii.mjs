@@ -66,6 +66,7 @@ const OUTERMOST = new Map([
     'the trail’s own button and its links’ focus corner; inline in the consumer’s flow',
   ],
   ['button', 'sits in the consumer layout'],
+  ['stepper-trigger', 'a step’s hover and focus corner, in the consumer’s flow'],
   ['button-toggle', 'its own component — it shares a name prefix with the button, not a box'],
   ['card', 'the outermost surface'],
   ['checkbox', 'the box is the control'],

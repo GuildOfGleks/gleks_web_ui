@@ -1,0 +1,207 @@
+/*
+ * Token layering (see styles/theme.css):
+ *   --gog-stepper-size-font-size   internal, set by the size classes below.
+ *   --gog-stepper-<name>           the actual values, all in styles/theme.css.
+ *
+ * Every length is drawn from the step's font size: the indicator is a ratio of it, so the five
+ * sizes are five text steps and nothing else.
+ */
+:host {
+  display: block;
+  font-family: var(--gog-stepper-font-family);
+  font-size: var(--gog-stepper-size-font-size, var(--gog-stepper-md-font-size));
+  line-height: var(--gog-stepper-line-height);
+}
+
+.gog-stepper__list {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.gog-stepper__step {
+  display: flex;
+  min-width: 0;
+}
+
+.gog-stepper__trigger {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gog-stepper-gap);
+  min-width: 0;
+  padding: var(--gog-stepper-trigger-padding-y) var(--gog-stepper-trigger-padding-x);
+  border: 0;
+  border-radius: var(--gog-stepper-trigger-radius);
+  background: transparent;
+  color: var(--gog-stepper-label-color);
+  font: inherit;
+  text-align: start;
+}
+
+button.gog-stepper__trigger {
+  cursor: pointer;
+}
+
+button.gog-stepper__trigger:hover {
+  background-color: var(--gog-stepper-trigger-hover-bg);
+}
+
+button.gog-stepper__trigger:active {
+  background-color: var(--gog-stepper-trigger-press-bg);
+}
+
+button.gog-stepper__trigger:focus-visible {
+  outline: var(--gog-stepper-focus-ring-width) solid var(--gog-stepper-focus-ring-color);
+  outline-offset: var(--gog-stepper-focus-ring-offset);
+}
+
+/* A box for one or two digits or a glyph: the number at the label's size, half an em clear. */
+.gog-stepper__indicator {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: calc(1em * var(--gog-stepper-indicator-ratio));
+  height: calc(1em * var(--gog-stepper-indicator-ratio));
+  border: var(--gog-stepper-indicator-border-width) solid var(--gog-stepper-indicator-border-color);
+  border-radius: 50%;
+  background-color: var(--gog-stepper-indicator-bg);
+  color: var(--gog-stepper-indicator-color);
+  font-weight: var(--gog-stepper-indicator-font-weight);
+  line-height: var(--gog-line-height-none);
+}
+
+.gog-stepper__text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.gog-stepper__label {
+  /* A long word may break only when it cannot fit at all; ordinary labels wrap at their spaces. */
+  overflow-wrap: break-word;
+}
+
+.gog-stepper__description {
+  color: var(--gog-stepper-description-color);
+  font-size: var(--gog-stepper-description-font-size);
+  line-height: var(--gog-stepper-description-line-height);
+}
+
+.gog-stepper__connector {
+  flex: 1 1 auto;
+  align-self: center;
+  min-width: var(--gog-stepper-connector-min-length);
+  height: var(--gog-stepper-connector-thickness);
+  margin-inline: var(--gog-stepper-gap);
+  background-color: var(--gog-stepper-connector-color);
+}
+
+/* === States === */
+
+.gog-stepper__step--current .gog-stepper__indicator {
+  border-color: var(--gog-stepper-current-color);
+  color: var(--gog-stepper-current-color);
+}
+
+.gog-stepper__step--current .gog-stepper__trigger {
+  color: var(--gog-stepper-current-label-color);
+  font-weight: var(--gog-stepper-current-font-weight);
+}
+
+.gog-stepper__step--complete .gog-stepper__indicator {
+  border-color: var(--gog-stepper-complete-bg);
+  background-color: var(--gog-stepper-complete-bg);
+  color: var(--gog-stepper-complete-color);
+}
+
+.gog-stepper__step--complete .gog-stepper__connector {
+  background-color: var(--gog-stepper-connector-done-color);
+}
+
+.gog-stepper__step--error .gog-stepper__indicator {
+  border-color: var(--gog-stepper-error-bg);
+  background-color: var(--gog-stepper-error-bg);
+  color: var(--gog-stepper-error-color);
+}
+
+.gog-stepper__step--error .gog-stepper__label {
+  color: var(--gog-stepper-error-label-color);
+}
+
+.gog-stepper__step--unreachable .gog-stepper__trigger {
+  color: var(--gog-stepper-unreachable-color);
+}
+
+/* === Orientation === */
+
+:host(.gog-stepper--horizontal) .gog-stepper__step {
+  flex: 1 1 0;
+  align-items: center;
+  /* The connector gives way, never a label: a step is never narrower than its longest word. When
+     the row cannot fit that, it is a row for orientation="vertical". */
+  min-width: min-content;
+}
+
+:host(.gog-stepper--horizontal) .gog-stepper__trigger {
+  flex: 0 1 auto;
+  min-width: min-content;
+}
+
+/* The last step needs no room for a connector after it. */
+:host(.gog-stepper--horizontal) .gog-stepper__step:last-child {
+  flex: 0 0 auto;
+}
+
+:host(.gog-stepper--vertical) .gog-stepper__list {
+  flex-direction: column;
+}
+
+:host(.gog-stepper--vertical) .gog-stepper__step {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* Under the indicator's centre: half the indicator in from the trigger's own padding. */
+:host(.gog-stepper--vertical) .gog-stepper__connector {
+  flex: 0 0 auto;
+  align-self: flex-start;
+  width: var(--gog-stepper-connector-thickness);
+  min-width: 0;
+  height: auto;
+  min-height: var(--gog-stepper-connector-min-length);
+  margin-block: 0;
+  margin-inline: calc(
+      var(--gog-stepper-trigger-padding-x) + 1em * var(--gog-stepper-indicator-ratio) /
+        2 - var(--gog-stepper-connector-thickness) / 2
+    )
+    0;
+}
+
+/* === Sizes ===
+   `md` needs no block: it is what the chain above falls back to. */
+
+:host(.gog-stepper--xsm) {
+  --gog-stepper-size-font-size: var(--gog-stepper-xsm-font-size);
+}
+
+:host(.gog-stepper--sm) {
+  --gog-stepper-size-font-size: var(--gog-stepper-sm-font-size);
+}
+
+:host(.gog-stepper--lg) {
+  --gog-stepper-size-font-size: var(--gog-stepper-lg-font-size);
+}
+
+:host(.gog-stepper--slg) {
+  --gog-stepper-size-font-size: var(--gog-stepper-slg-font-size);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gog-stepper__trigger {
+    transition: none;
+  }
+}

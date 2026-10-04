@@ -42,6 +42,13 @@
     <gog-panel [size]="size()">
       <h3 gogPanelHeader>Account</h3>
 
+      <gog-stepper
+        ariaLabel="Account setup"
+        [steps]="setupSteps"
+        [size]="size()"
+        [(activeIndex)]="setupStep"
+      />
+
       <gog-tabs ariaLabel="Settings" [size]="size()" [(activeIndex)]="settingsTab">
         <ng-template gogTabHeader let-tab let-active="active">
           <gog-icon [name]="tab.iconName() ?? 'settings'" />
@@ -436,6 +443,14 @@
     <span *gogBreadcrumb>Orders</span>
   </gog-breadcrumbs>
   <h2 id="specimen-orders" class="specimen__scene-title">Orders</h2>
+  <gog-stepper
+    ariaLabel="Fulfilment"
+    orientation="vertical"
+    [steps]="fulfilmentSteps"
+    [size]="size()"
+    [linear]="false"
+    [(activeIndex)]="fulfilmentStep"
+  />
 
   <div class="specimen__cards">
     <gog-card [size]="size()">

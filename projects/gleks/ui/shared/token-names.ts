@@ -1354,6 +1354,45 @@ export type GogTokenName =
   | '--gog-spinner-ticks-duration'
   | '--gog-spinner-track-color'
   | '--gog-spinner-track-opacity'
+  | '--gog-stepper-complete-bg'
+  | '--gog-stepper-complete-color'
+  | '--gog-stepper-connector-color'
+  | '--gog-stepper-connector-done-color'
+  | '--gog-stepper-connector-min-length'
+  | '--gog-stepper-connector-thickness'
+  | '--gog-stepper-current-color'
+  | '--gog-stepper-current-font-weight'
+  | '--gog-stepper-current-label-color'
+  | '--gog-stepper-description-color'
+  | '--gog-stepper-description-font-size'
+  | '--gog-stepper-description-line-height'
+  | '--gog-stepper-error-bg'
+  | '--gog-stepper-error-color'
+  | '--gog-stepper-error-label-color'
+  | '--gog-stepper-focus-ring-color'
+  | '--gog-stepper-focus-ring-offset'
+  | '--gog-stepper-focus-ring-width'
+  | '--gog-stepper-font-family'
+  | '--gog-stepper-gap'
+  | '--gog-stepper-indicator-bg'
+  | '--gog-stepper-indicator-border-color'
+  | '--gog-stepper-indicator-border-width'
+  | '--gog-stepper-indicator-color'
+  | '--gog-stepper-indicator-font-weight'
+  | '--gog-stepper-indicator-ratio'
+  | '--gog-stepper-label-color'
+  | '--gog-stepper-lg-font-size'
+  | '--gog-stepper-line-height'
+  | '--gog-stepper-md-font-size'
+  | '--gog-stepper-slg-font-size'
+  | '--gog-stepper-sm-font-size'
+  | '--gog-stepper-trigger-hover-bg'
+  | '--gog-stepper-trigger-padding-x'
+  | '--gog-stepper-trigger-padding-y'
+  | '--gog-stepper-trigger-press-bg'
+  | '--gog-stepper-trigger-radius'
+  | '--gog-stepper-unreachable-color'
+  | '--gog-stepper-xsm-font-size'
   | '--gog-success-color'
   | '--gog-success-shade'
   | '--gog-success-text-color'
@@ -2113,6 +2152,51 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-breadcrumbs-slg-font-size',
       '--gog-breadcrumbs-sm-font-size',
       '--gog-breadcrumbs-xsm-font-size',
+    ],
+  },
+  {
+    section: 'Stepper',
+    layer: 'component',
+    tokens: [
+      '--gog-stepper-complete-bg',
+      '--gog-stepper-complete-color',
+      '--gog-stepper-connector-color',
+      '--gog-stepper-connector-done-color',
+      '--gog-stepper-connector-min-length',
+      '--gog-stepper-connector-thickness',
+      '--gog-stepper-current-color',
+      '--gog-stepper-current-font-weight',
+      '--gog-stepper-current-label-color',
+      '--gog-stepper-description-color',
+      '--gog-stepper-description-font-size',
+      '--gog-stepper-description-line-height',
+      '--gog-stepper-error-bg',
+      '--gog-stepper-error-color',
+      '--gog-stepper-error-label-color',
+      '--gog-stepper-focus-ring-color',
+      '--gog-stepper-focus-ring-offset',
+      '--gog-stepper-focus-ring-width',
+      '--gog-stepper-font-family',
+      '--gog-stepper-gap',
+      '--gog-stepper-indicator-bg',
+      '--gog-stepper-indicator-border-color',
+      '--gog-stepper-indicator-border-width',
+      '--gog-stepper-indicator-color',
+      '--gog-stepper-indicator-font-weight',
+      '--gog-stepper-indicator-ratio',
+      '--gog-stepper-label-color',
+      '--gog-stepper-lg-font-size',
+      '--gog-stepper-line-height',
+      '--gog-stepper-md-font-size',
+      '--gog-stepper-slg-font-size',
+      '--gog-stepper-sm-font-size',
+      '--gog-stepper-trigger-hover-bg',
+      '--gog-stepper-trigger-padding-x',
+      '--gog-stepper-trigger-padding-y',
+      '--gog-stepper-trigger-press-bg',
+      '--gog-stepper-trigger-radius',
+      '--gog-stepper-unreachable-color',
+      '--gog-stepper-xsm-font-size',
     ],
   },
   {

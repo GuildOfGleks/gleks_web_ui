@@ -6,6 +6,7 @@ import {
   AvatarComponent,
   AvatarGroupComponent,
   BreadcrumbsComponent,
+  StepperComponent,
   ButtonComponent,
   ButtonToggleGroupComponent,
   CardComponent,
@@ -381,6 +382,13 @@ export const UNITS: readonly GogUnit[] = [
     group: 'layout',
     entry: 'root',
     parts: [cmp(BreadcrumbsComponent), dir(GogBreadcrumbDirective, '[gogBreadcrumb]')],
+  },
+  {
+    id: 'stepper',
+    name: 'Stepper',
+    group: 'layout',
+    entry: 'root',
+    parts: [cmp(StepperComponent)],
   },
   {
     id: 'table',

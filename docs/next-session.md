@@ -10,9 +10,9 @@ comparison page's own column was re-measured against 21.17.0 (131.9 KB gzipped f
 library; Material and PrimeNG still at their 2026-09-13 figures).
 
 **21.18.0 is built and `planned`, waiting for the owner to publish it** (2026-10-04):
-`gog-breadcrumbs` and `*gogBreadcrumb`, one iteration (`docs/breadcrumbs.md`). Additive only, so
+`gog-breadcrumbs` with `*gogBreadcrumb`, and `gog-stepper` (`docs/breadcrumbs.md`, `docs/stepper.md`). Additive only, so
 `check:install` is not triggered. Once it is on npm, `docs/lab-after-publish.md`'s 21.18.0 section
-is the lab's work. Then the rest of Gaps: `stepper`, `file upload`, `rating`, `empty state`. The two
+is the lab's work. Then the rest of Gaps: `file upload`, `rating`, `empty state`. The two
 Defects left need a real screen reader — the owner's to check.
 
 **Deferred by the owner on 2026-09-13 — do not start these without asking:**

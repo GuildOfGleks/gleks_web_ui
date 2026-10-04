@@ -1,0 +1,57 @@
+<ol class="gog-stepper__list" [attr.aria-label]="resolvedLabels().list">
+  @for (step of steps(); track $index; let i = $index; let last = $last) {
+    <li
+      class="gog-stepper__step"
+      [class.gog-stepper__step--current]="i === activeIndex()"
+      [class.gog-stepper__step--complete]="step.state === 'complete'"
+      [class.gog-stepper__step--error]="step.state === 'error'"
+      [class.gog-stepper__step--unreachable]="!reachable()[i]"
+    >
+      <ng-template #content>
+        <span class="gog-stepper__indicator" aria-hidden="true">
+          @switch (step.state) {
+            @case ('complete') {
+              <gog-icon name="check" />
+            }
+            @case ('error') {
+              <gog-icon name="error" />
+            }
+            @default {
+              {{ i + 1 }}
+            }
+          }
+        </span>
+        <span class="gog-stepper__text">
+          <span class="gog-stepper__label">{{ step.label }}</span>
+          @if (step.description) {
+            <span class="gog-stepper__description">{{ step.description }}</span>
+          }
+          @if (step.optional) {
+            <span class="gog-stepper__description">{{ resolvedLabels().optional }}</span>
+          }
+          @if (stateText(step); as said) {
+            <span class="gog-visually-hidden">, {{ said }}</span>
+          }
+        </span>
+      </ng-template>
+
+      <!--
+        A step that can be reached is a button; the current one and the unreachable ones are not.
+        An unreachable step as a disabled button would still be a tab stop to walk past.
+      -->
+      @if (reachable()[i] && i !== activeIndex()) {
+        <button type="button" class="gog-stepper__trigger" (click)="select(i)">
+          <ng-container [ngTemplateOutlet]="content" />
+        </button>
+      } @else {
+        <div class="gog-stepper__trigger" [attr.aria-current]="i === activeIndex() ? 'step' : null">
+          <ng-container [ngTemplateOutlet]="content" />
+        </div>
+      }
+
+      @if (!last) {
+        <span class="gog-stepper__connector" aria-hidden="true"></span>
+      }
+    </li>
+  }
+</ol>

@@ -691,6 +691,54 @@
   --gog-breadcrumbs-lg-font-size: var(--gog-text-md);
   --gog-breadcrumbs-slg-font-size: var(--gog-text-lg);
 
+  /* ── Stepper ───────────────────────────────────────────────────────────────
+     An indicator per step, drawn from the step's font size. Done is the accent fill, the current
+     step the accent ring, an error the danger fill; a step not yet reachable is muted. */
+  --gog-stepper-font-family: var(--gog-font-body);
+  /* Label and description are one short block: the tight end of the leading scale. */
+  --gog-stepper-line-height: var(--gog-line-height-snug);
+  --gog-stepper-gap: var(--gog-space-8);
+  --gog-stepper-trigger-padding-y: var(--gog-space-4);
+  --gog-stepper-trigger-padding-x: var(--gog-space-8);
+  --gog-stepper-trigger-radius: var(--gog-radius);
+  --gog-stepper-trigger-hover-bg: var(--gog-hover-color);
+  --gog-stepper-trigger-press-bg: var(--gog-border-color);
+  --gog-stepper-focus-ring-width: var(--gog-focus-ring-width);
+  --gog-stepper-focus-ring-offset: var(--gog-focus-ring-offset);
+  --gog-stepper-focus-ring-color: var(--gog-accent-color);
+  /* The number at the label's size with half an em clear on every side. */
+  --gog-stepper-indicator-ratio: 2;
+  --gog-stepper-indicator-border-width: var(--gog-control-border-width);
+  --gog-stepper-indicator-border-color: var(--gog-control-boundary-color);
+  --gog-stepper-indicator-bg: transparent;
+  --gog-stepper-indicator-color: var(--gog-muted-text-color);
+  --gog-stepper-indicator-font-weight: var(--gog-font-weight-semibold);
+  --gog-stepper-label-color: var(--gog-text-color);
+  --gog-stepper-description-color: var(--gog-muted-text-color);
+  /* One step down the type scale from the label at md (--gog-text-xs / --gog-text-sm), as a ratio so
+     it follows every size. */
+  --gog-stepper-description-font-size: 0.857em;
+  /* A short note under a label: single-line in practice, so the label's own tight step. */
+  --gog-stepper-description-line-height: var(--gog-line-height-snug);
+  --gog-stepper-current-color: var(--gog-accent-color);
+  --gog-stepper-current-label-color: var(--gog-text-color);
+  --gog-stepper-current-font-weight: var(--gog-font-weight-semibold);
+  --gog-stepper-complete-bg: var(--gog-accent-color);
+  --gog-stepper-complete-color: var(--gog-accent-text-color, var(--gog-primary-color));
+  --gog-stepper-error-bg: var(--gog-danger-color);
+  --gog-stepper-error-color: var(--gog-danger-text-color);
+  --gog-stepper-error-label-color: var(--gog-danger-color);
+  --gog-stepper-unreachable-color: var(--gog-muted-text-color);
+  --gog-stepper-connector-thickness: var(--gog-control-border-width);
+  --gog-stepper-connector-min-length: var(--gog-space-24);
+  --gog-stepper-connector-color: var(--gog-control-boundary-color);
+  --gog-stepper-connector-done-color: var(--gog-accent-color);
+  --gog-stepper-xsm-font-size: var(--gog-text-xs);
+  --gog-stepper-sm-font-size: var(--gog-text-sm);
+  --gog-stepper-md-font-size: var(--gog-text-sm);
+  --gog-stepper-lg-font-size: var(--gog-text-md);
+  --gog-stepper-slg-font-size: var(--gog-text-lg);
+
   /* ── Collapsible ───────────────────────────────────────────────────────────
      No owned markup: the `.gog-collapsible__*` rules live in utilities.css, because they style content
      the consumer projects, which a scoped stylesheet cannot reach. */

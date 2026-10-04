@@ -42,7 +42,14 @@ build.
   navigation (Layout & Navigation), SEO, sitemap, Global Config note and labels list
   (`breadcrumbs`, `showBreadcrumbs`), theme generator catalogue and gallery, and a Breadcrumbs
   section in the token reference; regenerate `theme-starter.css`.
+- **A new Stepper page**, in the D6 shape: every state at once in both orientations, the sizes, a
+  flow a reader can walk (the app marking steps complete, with `linear` on and off), RTL, and the
+  narrow-container case answered by `orientation="vertical"`. Accessibility: `aria-current="step"`,
+  the state words and their labels (`stepCompleted`, `stepError`, `stepOptional`, `stepper`), and
+  why an unreachable step is text rather than a disabled button. Route, navigation (Layout &
+  Navigation), SEO, sitemap, Global Config note and labels list, generator catalogue and gallery,
+  token reference; `theme-starter.css` regenerated.
 - **Consider using it in the lab itself**: a doc page under `/components/` is two levels deep and
   has no trail. Not required — decide by looking.
-- **Counts**: 33 components becomes 34 on the comparison page, the FAQ and `nav-data.ts`; the
+- **Counts**: 33 components becomes 35 on the comparison page, the FAQ and `nav-data.ts`; the
   whole-library bundle row is a re-measurement, not an edit.

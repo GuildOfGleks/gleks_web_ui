@@ -19,6 +19,15 @@ _Versioning_ section. Before 21.16.0 a minor could carry a breaking change, and 
   place and moves focus to the first item it revealed. Links get a 24x24 pointer target. New
   labels: `GOG_CONFIG.labels.breadcrumbs` and `showBreadcrumbs`. New tokens: `--gog-breadcrumbs-*`.
   Plan in `docs/breadcrumbs.md`.
+- **`gog-stepper`** — where a reader is in a multi-step task: an indicator that shows the steps and
+  moves between them, while the app renders each step's content from `[(activeIndex)]` and marks a
+  step complete in its own data. Each step's state is said, not only drawn — `aria-current="step"`
+  on the current one, and "completed" or "has an error" as hidden words after the label — and only
+  a step a press may reach is a button: always backwards, and forwards, with `linear` on (the
+  default), only past steps that are complete or optional. Horizontal and vertical, five sizes,
+  RTL. New exports: `StepperComponent`, `GogStep`. New labels: `GOG_CONFIG.labels.stepper`,
+  `stepCompleted`, `stepError`, `stepOptional`. New tokens: `--gog-stepper-*`. Plan in
+  `docs/stepper.md`.
 
 ## [21.17.0] - 04.10.2026
 
