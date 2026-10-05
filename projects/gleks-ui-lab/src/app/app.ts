@@ -14,6 +14,7 @@ import { ScrollComponent, ToastContainerComponent } from '@guildofgleks/ui';
 import { DialogComponent } from '@guildofgleks/ui/dialog';
 import { AppHeader } from './components/shared/app-header/app-header';
 import { DirectionPreference } from './components/shared/direction-preference';
+import { ReducedMotionNotice } from './components/shared/reduced-motion-notice/reduced-motion-notice';
 import { SidebarLeftComponent } from './components/shared/sidebar-left/sidebar-left';
 import { TocComponent } from './components/shared/toc/toc';
 import { SeoService } from './components/shared/seo';
@@ -40,6 +41,7 @@ const FOOTER_LINKS: readonly FooterLink[] = [
   imports: [
     RouterOutlet,
     AppHeader,
+    ReducedMotionNotice,
     ScrollComponent,
     SidebarLeftComponent,
     TocComponent,

@@ -1,0 +1,13 @@
+@if (visible()) {
+  <!-- live="off": it describes the page the reader just arrived at, and is not an event. -->
+  <gog-alert
+    severity="info"
+    heading="Reduced motion is on"
+    live="off"
+    dismissible
+    (dismissed)="dismiss()"
+  >
+    Your system asks for less motion, and the library honours it, so the demos here show their
+    reduced versions. Turn the setting off to see the full animations.
+  </gog-alert>
+}

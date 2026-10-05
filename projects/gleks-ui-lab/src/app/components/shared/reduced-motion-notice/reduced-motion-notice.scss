@@ -1,0 +1,15 @@
+// Lined up with the footer under it: the same side inset, and no gap of its own when hidden.
+:host {
+  display: block;
+  padding: 12px 48px 0;
+
+  &:empty {
+    display: none;
+  }
+}
+
+@media (max-width: 560px) {
+  :host {
+    padding: 12px 14px 0;
+  }
+}
