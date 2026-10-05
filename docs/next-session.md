@@ -30,9 +30,8 @@ undecodable data URL for the image, a code snippet quoting the warning for the i
 
 **Deferred by the owner on 2026-10-05:**
 
-- **The lab's bundle budget** (`docs/backlog.md`, Rough edges) — 1097.7 kB against a 1.1 MB error,
-  left until after the next batch of about 20 components, which will move it far more than any fix
-  made now would measure.
+- **The lab's bundle budget** — dealt with the same day instead: FontAwesome removed (−100.7 kB
+  initial) and the limits raised to 1.1 MB / 1.3 MB (`docs/backlog.md`, Rough edges).
 - **The two screen-reader Defects** — NVDA, JAWS and VoiceOver are unchecked; Orca, the owner's,
   hears neither problem (Orca on Fedora needs Chrome started after Orca, with
   `--force-renderer-accessibility` and `toolkit-accessibility` on, or it hears no page at all).

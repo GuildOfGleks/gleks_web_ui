@@ -832,18 +832,19 @@ reason may stop holding.
   without the Angular linker, fair between the three libraries and not what one component costs in
   a real app.
 
-- **The lab's bundle budget is down to about 2 kB of headroom.** `gleks-ui-lab`'s initial bundle
-  is **1097.7 kB** on 21.19.0 against a `maximumError` of 1.1MB (measured 2026-10-05 with
-  `npm run build:lab`) — 37.4 kB more than on 21.18.0 (1060.3 kB), most of it the 95 icons
-  21.19.0 added, since the registry ships whole and the shell renders icons. The history: 1003.85 kB when the error had to go up from 1MB, 1028.48 kB on
-  21.12.0, 1053.79 kB on 21.13.0, 981.69 kB on 21.14.0 (the table and datepicker left the shell's
-  chunk when the root stopped exporting them), and back up through 21.15.0–21.18.0 as the root grew
-  by eight components. Not a release concern — the lab is not published — but **the next release
-  that grows the root will fail `build:lab`**. **Deferred by the owner on 2026-10-05** until after
-  the next batch of about 20 components, which will move the figure far more than anything measured
-  now; raise the error then, or take one of the fixes below. The fix is unchanged: lazy-load the syntax highlighter, or
-  move the docs renderer off the initial route. The dialog stays in the shell either way, because
-  the shell mounts `gog-dialog`.
+- **The lab's bundle budget: about 100 kB of room again, and the limits raised.** On 2026-10-05
+  the initial bundle had reached 1099.8 kB against a 1.1 MB error. Two changes, the same day:
+  the site's own FontAwesome went (the header's and the overview's seven icons are `gog-icon`
+  now, the four missing ones registered from Lucide in `lab-icons.ts`), which took **100.7 kB
+  raw, 23 kB transferred** out of the shell — it is about 1000 kB now; and the owner raised the
+  budget to a 1.1 MB warning and a 1.3 MB error, since the next batch of about 20 components
+  will grow the root past any figure worth defending. The history: 1003.85 kB when the error
+  went up from 1 MB, 1028.48 kB on 21.12.0, 1053.79 kB on 21.13.0, 981.69 kB on 21.14.0 (the
+  table and datepicker left the shell's chunk), up through 21.15.0–21.19.0 as the root grew.
+  **What is left in the shell is mostly the library itself** — a 474 kB chunk of
+  `@guildofgleks/ui`'s root, Angular at about 243 kB, the router at 76 kB. The syntax
+  highlighter this entry used to name as the next fix is not in the initial bundle at all. The
+  next real saving is the root library's own tree-shaking: what the shell keeps of it, and why.
 
 - **The lab's header is its own component now, and that entry is closed.** `app.scss` was
   6.20 kB against a 4 kB warning and an 8 kB error, two thirds of it belonging to one row of the
