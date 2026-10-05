@@ -13,10 +13,29 @@ library; Material and PrimeNG still at their 2026-09-13 figures).
 minor — `gog-breadcrumbs`, `gog-stepper`, `gog-file-upload`, `gog-rating`, `gog-empty-state` — each
 with a lab page, and the comparison re-measured (142.2 KB gzipped for the whole library, 1.08×
 smaller than four Material components; the gap keeps narrowing as the catalogue grows, and the page
-says so). **21.19.0 is open (`planned`)** and empties the backlog's Gaps and rough edges, except two
-Defects that wait for the owner's screen-reader run (Orca on Fedora needs Chrome started after
-Orca, with `--force-renderer-accessibility` and `toolkit-accessibility` on, or it hears no page at all). Gaps' unbuilt-component list is done, and its follow-up (`gogTableEmpty`) shipped in 21.19.0. The two
-Defects left need a real screen reader — the owner's to check.
+says so).
+
+**21.19.0 is released and the lab is caught up with it** (2026-10-05): it emptied the backlog's
+Gaps and rough edges, and the lab documents each item — `gogTableEmpty` and `ariaLabel` on the
+Table page, `valueFormat`, the radio group's accessors, the chip's avatar fallback, the skeleton's
+`progressbar` role, the dev-mode name warning on four pages, and the 136-icon gallery grouped as
+`AGENTS.md` groups it. Every lab table, progress bar, tablist and scroll region carries a name, so
+the site's console has no name warning at any width. The comparison was re-measured (148.3 KB
+gzipped, 1.04× smaller than four Material components).
+
+**The lab's console is clean** (2026-10-05): no warning, error or 404 on any of its 52 routes, at
+1280 and 390px wide, in dev mode. Keep it that way — an example that demonstrates a failure
+(a broken image, an unknown icon) does it without a network error or a library warning: an
+undecodable data URL for the image, a code snippet quoting the warning for the icon.
+
+**Deferred by the owner on 2026-10-05:**
+
+- **The lab's bundle budget** (`docs/backlog.md`, Rough edges) — 1097.7 kB against a 1.1 MB error,
+  left until after the next batch of about 20 components, which will move it far more than any fix
+  made now would measure.
+- **The two screen-reader Defects** — NVDA, JAWS and VoiceOver are unchecked; Orca, the owner's,
+  hears neither problem (Orca on Fedora needs Chrome started after Orca, with
+  `--force-renderer-accessibility` and `toolkit-accessibility` on, or it hears no page at all).
 
 **Deferred by the owner on 2026-09-13 — do not start these without asking:**
 

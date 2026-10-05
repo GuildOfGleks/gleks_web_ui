@@ -832,13 +832,16 @@ reason may stop holding.
   without the Angular linker, fair between the three libraries and not what one component costs in
   a real app.
 
-- **The lab's bundle budget is down to about 40 kB of headroom.** `gleks-ui-lab`'s initial bundle
-  is **1060.3 kB** on 21.18.0 against a `maximumError` of 1.1MB (measured 2026-10-04 with
-  `npm run build:lab`). The history: 1003.85 kB when the error had to go up from 1MB, 1028.48 kB on
+- **The lab's bundle budget is down to about 2 kB of headroom.** `gleks-ui-lab`'s initial bundle
+  is **1097.7 kB** on 21.19.0 against a `maximumError` of 1.1MB (measured 2026-10-05 with
+  `npm run build:lab`) — 37.4 kB more than on 21.18.0 (1060.3 kB), most of it the 95 icons
+  21.19.0 added, since the registry ships whole and the shell renders icons. The history: 1003.85 kB when the error had to go up from 1MB, 1028.48 kB on
   21.12.0, 1053.79 kB on 21.13.0, 981.69 kB on 21.14.0 (the table and datepicker left the shell's
   chunk when the root stopped exporting them), and back up through 21.15.0–21.18.0 as the root grew
-  by eight components. Not a release concern — the lab is not published — but the next root
-  component or two will reach the error. The fix is unchanged: lazy-load the syntax highlighter, or
+  by eight components. Not a release concern — the lab is not published — but **the next release
+  that grows the root will fail `build:lab`**. **Deferred by the owner on 2026-10-05** until after
+  the next batch of about 20 components, which will move the figure far more than anything measured
+  now; raise the error then, or take one of the fixes below. The fix is unchanged: lazy-load the syntax highlighter, or
   move the docs renderer off the initial route. The dialog stays in the shell either way, because
   the shell mounts `gog-dialog`.
 
