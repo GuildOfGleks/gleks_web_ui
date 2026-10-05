@@ -12,6 +12,11 @@ hljs.registerLanguage('typescript', typescript);
 hljs.registerLanguage('html', xml);
 
 export function highlightCode(code: string, lang?: string): string {
+  // Plain text — a console message, say — is not code, and auto-detection would colour its words
+  // as keywords.
+  if (lang === 'text') {
+    return code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
   const language = lang && hljs.getLanguage(lang) ? lang : undefined;
   return language ? hljs.highlight(code, { language }).value : hljs.highlightAuto(code).value;
 }

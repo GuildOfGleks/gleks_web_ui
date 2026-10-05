@@ -16,7 +16,6 @@ import { IconOverviewExample } from '../../../examples/icon/icon-overview/exampl
 import { IconRegistryExample } from '../../../examples/icon/icon-registry/example';
 import { IconSizeExample } from '../../../examples/icon/icon-size/example';
 import { IconTemplateExample } from '../../../examples/icon/icon-template/example';
-import { IconUnknownExample } from '../../../examples/icon/icon-unknown/example';
 
 const API_INPUTS: readonly ApiRow[] = [
   {
@@ -96,13 +95,25 @@ export class IconDocPage {
     colour: IconColourExample,
     named: IconNamedExample,
     template: IconTemplateExample,
-    unknown: IconUnknownExample,
     registry: IconRegistryExample,
     override: IconOverrideExample,
   };
 
   protected readonly importSnippet =
     "```typescript\nimport { IconComponent } from '@guildofgleks/ui';\n\n@Component({\n  // ...\n  imports: [IconComponent],\n})\n```";
+
+  // Shown as code rather than as a live example: rendering the typo would put the very warning it
+  // describes into this site's own console.
+  protected readonly unknownSnippet = [
+    '```html',
+    '<span>[<gog-icon name="rokcet" />] rendered here</span>',
+    '<!-- renders: [] rendered here — an empty host, no glyph -->',
+    '```',
+    '',
+    '```text',
+    "[gog-icon] No icon named \"rokcet\". Register it with provideGogIcons({ 'rokcet': '<svg…>' }), or use one of the built-ins.",
+    '```',
+  ].join('\n');
 
   protected readonly registerTs = [
     '```typescript',

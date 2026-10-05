@@ -21,4 +21,6 @@ function portrait(from: string, to: string): string {
 })
 export class AvatarFallbackExample {
   protected readonly photo = portrait('%23c9a227', '%237a4f1d');
+  /** Stands in for a URL that 404s: bytes no browser can decode, so it fails with no request. */
+  protected readonly broken = 'data:image/png;base64,AAAA';
 }

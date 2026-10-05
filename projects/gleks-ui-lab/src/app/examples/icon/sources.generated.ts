@@ -39,8 +39,4 @@ export const ICON_EXAMPLES = {
     html: '<gog-icon name="user" style="--gog-icon-size: 40px" />\n<!-- template wins over name outright; the registry is never consulted. -->\n<gog-icon name="user" [template]="initials" style="--gog-icon-size: 40px" />\n<ng-template #initials><strong>GG</strong></ng-template>',
     ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { IconComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [IconComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class IconTemplateExample {}",
   },
-  iconUnknown: {
-    html: '<!-- A typo renders an empty host and, in dev mode, one console warning per name. -->\n<span>[<gog-icon name="rokcet" />] rendered here</span>',
-    ts: "import { ChangeDetectionStrategy, Component } from '@angular/core';\nimport { IconComponent } from '@guildofgleks/ui';\n\n@Component({\n  selector: 'app-example',\n  imports: [IconComponent],\n  templateUrl: './example.html',\n  changeDetection: ChangeDetectionStrategy.OnPush,\n})\nexport class IconUnknownExample {}",
-  },
 } as const satisfies Record<string, ExampleSource>;

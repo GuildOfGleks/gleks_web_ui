@@ -7,8 +7,8 @@
   <span>no src</span>
 </div>
 <div>
-  <!-- A URL that 404s. On this server-rendered page it fails before the app hydrates. -->
-  <gog-avatar name="Ada Lovelace" src="/no-such-avatar.png" size="lg" />
+  <!-- An image that cannot load. On this server-rendered page it fails before the app hydrates. -->
+  <gog-avatar name="Ada Lovelace" [src]="broken" size="lg" />
   <span>src fails</span>
 </div>
 <div>

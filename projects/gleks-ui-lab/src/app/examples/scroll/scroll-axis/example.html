@@ -20,13 +20,15 @@
 <div>
   <gog-scroll style="height: 160px" axis="both" [autoHide]="false" ariaLabel="Both">
     <table>
-      @for (row of items; track row) {
-        <tr>
-          @for (column of items.slice(0, 8); track column) {
-            <td style="white-space: nowrap">{{ row }} · {{ column }}</td>
-          }
-        </tr>
-      }
+      <tbody>
+        @for (row of items; track row) {
+          <tr>
+            @for (column of items.slice(0, 8); track column) {
+              <td style="white-space: nowrap">{{ row }} · {{ column }}</td>
+            }
+          </tr>
+        }
+      </tbody>
     </table>
   </gog-scroll>
   <p>axis="both"</p>

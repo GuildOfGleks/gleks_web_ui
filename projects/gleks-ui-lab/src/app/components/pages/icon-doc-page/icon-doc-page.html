@@ -102,12 +102,12 @@
     <article class="demo-card">
       <h3 class="demo-card__title">An unknown name</h3>
       <p class="demo-card__meta">
-        The icon asks for <code>rokcet</code>. It renders an empty host and, in dev mode, logs one
-        console warning per name — not one per instance, so a typo inside an
+        The icon asks for <code>rokcet</code>. It renders an empty host and, in dev mode, logs the
+        one console warning below per name — not one per instance, so a typo inside an
         <code>&#64;for</code> of a thousand rows is one line. It never throws: an icon is
         decoration, and taking a page down over a misspelt glyph would be the worse failure.
       </p>
-      <app-demo [component]="examples.unknown" [source]="sources.iconUnknown" layout="row" />
+      <app-markdown [markdown]="unknownSnippet" />
     </article>
   </section>
 
