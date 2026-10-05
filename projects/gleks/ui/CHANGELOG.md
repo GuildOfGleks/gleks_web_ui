@@ -5,7 +5,7 @@ All notable changes to `@guildofgleks/ui` are documented here. Format follows
 semantic versioning**: a patch fixes, a minor adds, and only a major breaks — see the README's
 _Versioning_ section. Before 21.16.0 a minor could carry a breaking change, and its entry said so.
 
-## [21.19.0] - planned
+## [21.19.0] - 05.10.2026
 
 ### Changed
 
