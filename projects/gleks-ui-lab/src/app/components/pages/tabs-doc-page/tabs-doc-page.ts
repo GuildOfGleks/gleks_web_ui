@@ -4,6 +4,7 @@ import { ApiTableComponent, type ApiRow } from '../../shared/api-table/api-table
 import { DemoComponent } from '../../shared/demo/demo';
 import { GlobalConfigNote } from '../../shared/global-config-note/global-config-note';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
+import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 import { TABS_EXAMPLES } from '../../../examples/tabs/sources.generated';
 import { TabsAlignExample } from '../../../examples/tabs/tabs-align/example';
@@ -68,7 +69,8 @@ const TABS_INPUTS: readonly ApiRow[] = [
     name: 'ariaLabel',
     type: 'string',
     default: "''",
-    description: 'Accessible name for the tablist.',
+    description:
+      'Names the tablist: what the tabs switch between ("Account settings"). Unset, it warns in dev mode (since 21.19.0).',
   },
   {
     name: 'ripple',
@@ -131,7 +133,14 @@ const API_SLOTS: readonly ApiRow[] = [
 
 @Component({
   selector: 'app-tabs-doc-page',
-  imports: [ApiTableComponent, DemoComponent, GlobalConfigNote, MarkdownComponent, RouterLink],
+  imports: [
+    ApiTableComponent,
+    DemoComponent,
+    GlobalConfigNote,
+    MarkdownComponent,
+    RouterLink,
+    SinceBadgeComponent,
+  ],
   templateUrl: './tabs-doc-page.html',
   styleUrl: './tabs-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

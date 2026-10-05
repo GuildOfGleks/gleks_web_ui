@@ -27,7 +27,7 @@
 
   <gog-slider [(value)]="progress" [min]="0" [max]="100" ariaLabel="Completion" />
 
-  <gog-progressbar [value]="progress()" />
+  <gog-progressbar [value]="progress()" ariaLabel="Completion" />
 
   <div style="display: flex; align-items: center; gap: 12px">
     <gog-tag iconName="check" variant="success">Passing</gog-tag>

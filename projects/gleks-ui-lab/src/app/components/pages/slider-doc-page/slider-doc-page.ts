@@ -10,6 +10,7 @@ import { SLIDER_EXAMPLES } from '../../../examples/slider/sources.generated';
 import { SliderAriaLabelExample } from '../../../examples/slider/slider-aria-label/example';
 import { SliderClampExample } from '../../../examples/slider/slider-clamp/example';
 import { SliderConfigExample } from '../../../examples/slider/slider-config/example';
+import { SliderFormatExample } from '../../../examples/slider/slider-format/example';
 import { SliderFormsExample } from '../../../examples/slider/slider-forms/example';
 import { SliderOverviewExample } from '../../../examples/slider/slider-overview/example';
 import { SliderPinnedExample } from '../../../examples/slider/slider-pinned/example';
@@ -114,6 +115,14 @@ const API_INPUTS: readonly ApiRow[] = [
     description: 'Accessible name for the field when there is no visible label.',
   },
   {
+    name: 'valueFormat',
+    type: '((value: number) => string) | null',
+    default: 'null',
+    description:
+      "Writes the readout, the min and max labels and each thumb's aria-valuetext — so a unit reaches a screen reader as well as the screen. Unset, the number is printed as is and no aria-valuetext is added.",
+    since: '21.19.0',
+  },
+  {
     name: 'disabled',
     type: 'boolean',
     default: 'false',
@@ -179,6 +188,7 @@ export class SliderDocPage {
     width: SliderWidthExample,
     ariaLabel: SliderAriaLabelExample,
     range: SliderRangeExample,
+    format: SliderFormatExample,
     thumbsMeet: SliderThumbsMeetExample,
     pinned: SliderPinnedExample,
     clamp: SliderClampExample,

@@ -154,8 +154,11 @@
         one.
       </li>
       <li>
-        <strong>Name</strong> — <code>ariaLabel</code> names that region; give one when there is no
-        visible label.
+        <strong>Name</strong> — <code>ariaLabel</code> names that region. A region that scrolls with
+        no name logs one <code>console.warn</code> per page in dev mode
+        <app-since version="21.19.0" />, never in production — checked when the region appears, so a
+        viewport that never overflows never warns. A <code>gog-table</code> names its own scroll
+        through its <code>ariaLabel</code>.
       </li>
       <li>
         <strong>Nested</strong> — set <code>focusable</code> to <code>false</code> inside a

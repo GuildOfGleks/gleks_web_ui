@@ -8,6 +8,7 @@ import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 import { CHIP_EXAMPLES } from '../../../examples/chip/sources.generated';
 import { ChipConfigExample } from '../../../examples/chip/chip-config/example';
+import { ChipAvatarFallbackExample } from '../../../examples/chip/chip-avatar-fallback/example';
 import { ChipContentExample } from '../../../examples/chip/chip-content/example';
 import { ChipFilterExample } from '../../../examples/chip/chip-filter/example';
 import { ChipOverviewExample } from '../../../examples/chip/chip-overview/example';
@@ -79,13 +80,15 @@ const API_INPUTS: readonly ApiRow[] = [
     name: 'avatarUrl',
     type: 'string | null',
     default: 'null',
-    description: 'Leading avatar image URL.',
+    description:
+      'Leading avatar image, drawn by a gog-avatar at the chip’s own size (since 21.19.0). A URL that fails falls back to the initials of avatarAlt, or to the person icon.',
   },
   {
     name: 'avatarAlt',
     type: 'string',
     default: "''",
-    description: 'Alt text for the avatar image.',
+    description:
+      'Names the avatar, and gives the initials it falls back to. Empty, the avatar is decorative.',
   },
   {
     name: 'iconName',
@@ -149,6 +152,7 @@ export class ChipDocPage {
     overview: ChipOverviewExample,
     states: ChipStatesExample,
     content: ChipContentExample,
+    avatarFallback: ChipAvatarFallbackExample,
     shapes: ChipShapesExample,
     filter: ChipFilterExample,
     removable: ChipRemovableExample,

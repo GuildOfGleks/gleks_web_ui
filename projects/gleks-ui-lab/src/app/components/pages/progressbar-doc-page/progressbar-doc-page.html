@@ -134,7 +134,9 @@
         bar, 62 percent" — of what, nobody says. Pass <code>ariaLabel</code>, or, when a visible
         label already sits beside the bar, point at it with <code>aria-labelledby</code> written on
         the host: the component binds none of its own, so yours reaches the element with the role. A
-        <code>&lt;label for&gt;</code> cannot do it — a progress bar is not a form field.
+        <code>&lt;label for&gt;</code> cannot do it — a progress bar is not a form field. A bar with
+        neither logs one <code>console.warn</code> per page in dev mode
+        <app-since version="21.19.0" />, never in production.
       </p>
       <app-demo [component]="examples.naming" [source]="sources.progressbarNaming" layout="wide" />
     </article>

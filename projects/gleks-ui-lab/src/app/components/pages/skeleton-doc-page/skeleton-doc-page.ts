@@ -4,6 +4,7 @@ import { ApiTableComponent, type ApiRow } from '../../shared/api-table/api-table
 import { DemoComponent } from '../../shared/demo/demo';
 import { GlobalConfigNote } from '../../shared/global-config-note/global-config-note';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
+import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 import { SKELETON_EXAMPLES } from '../../../examples/skeleton/sources.generated';
 import { SkeletonAnimationsExample } from '../../../examples/skeleton/skeleton-animations/example';
@@ -64,13 +65,20 @@ const API_INPUTS: readonly ApiRow[] = [
     type: 'string | null',
     default: 'null',
     description:
-      'Decorative (aria-hidden) by default, since a page can carry dozens of these while loading. Set on the one instance that should actually announce the loading state — it then gets role="status".',
+      'Decorative (aria-hidden) by default, since a page can carry dozens of these while loading. Set on the one instance that stands for the whole loading area — it then becomes an indeterminate role="progressbar" with that name, as gog-spinner does (role="status" before 21.19.0).',
   },
 ];
 
 @Component({
   selector: 'app-skeleton-doc-page',
-  imports: [ApiTableComponent, DemoComponent, GlobalConfigNote, MarkdownComponent, RouterLink],
+  imports: [
+    ApiTableComponent,
+    DemoComponent,
+    GlobalConfigNote,
+    MarkdownComponent,
+    RouterLink,
+    SinceBadgeComponent,
+  ],
   templateUrl: './skeleton-doc-page.html',
   styleUrl: './skeleton-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

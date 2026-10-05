@@ -275,11 +275,11 @@ own custom CSS can use to follow the same rule.
       'How much does it add to my bundle?',
       `
 The whole library — 38 components plus the \`gogBadge\`, \`gogTooltip\` and \`gogRipple\`
-directives — is **142.2 KB gzipped** of JavaScript, plus a 33.0 KB gzipped stylesheet that
+directives — is **148.3 KB gzipped** of JavaScript, plus a 33.0 KB gzipped stylesheet that
 carries every theming token. An app using a handful
 of components pays a fraction of the first number, since the rest is tree-shaken; the stylesheet
 is loaded whole either way. For context, four Angular Material components gzip to 153.6 KB and
-the same four from PrimeNG to 332.7 KB — measured on 21.18.0 (2026-10-04) against Material's and
+the same four from PrimeNG to 332.7 KB — measured on 21.19.0 (2026-10-05) against Material's and
 PrimeNG's figures from 2026-09-13, with the commands to re-measure
 all of it on the [full technical comparison](/general/compare-full).
 `,

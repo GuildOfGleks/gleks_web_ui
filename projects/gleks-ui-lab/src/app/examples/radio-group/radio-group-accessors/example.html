@@ -1,0 +1,15 @@
+<!-- Your own objects: a property path for the label, functions for the value and disabled. -->
+<div>
+  <gog-radio-group
+    label="Plan"
+    [options]="plans"
+    optionLabel="title"
+    [optionValue]="planCode"
+    [optionDisabled]="isRetired"
+    [(value)]="plan"
+  />
+  <code>value: {{ plan() }}</code>
+</div>
+
+<!-- A dot-path reaches into a nested object. -->
+<gog-radio-group label="Ship to" [options]="addresses" optionLabel="place.city" optionValue="key" />

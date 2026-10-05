@@ -132,15 +132,32 @@
   </section>
 
   <section class="doc-section">
-    <h2 id="options" class="doc-section__title font-heading">Options — a fixed shape</h2>
+    <h2 id="options" class="doc-section__title font-heading">Options — your own objects</h2>
     <p class="doc-section__intro">
-      Each option is a <code>GogRadioOption</code>. <code>value</code> holds the selected option's
-      <code>id</code> rather than the object itself, since a radio group is a single-value control
-      bound straight to a form field. There is no <code>optionLabel</code> /
-      <code>optionValue</code> accessor as on <a routerLink="/components/select">Select</a>: a
-      domain list is mapped into this shape first.
+      By default each option is a <code>GogRadioOption</code>, and <code>value</code> holds the
+      selected option's <code>id</code> rather than the object itself, since a radio group is a
+      single-value control bound straight to a form field.
     </p>
     <app-markdown [markdown]="optionInterface" />
+    <p class="doc-section__intro">
+      <code>optionLabel</code>, <code>optionValue</code> and <code>optionDisabled</code>
+      <app-since version="21.19.0" /> read any other shape, as on every other collection control (<a
+        routerLink="/components/select"
+        >Select</a
+      >, Multiselect, Autocomplete, Button Toggle): each is a property path — dot-paths included —
+      or a function. Their defaults are <code>'label'</code>, <code>'id'</code> and
+      <code>'disabled'</code>, which is the shape above, so a list that already has it needs none of
+      them. <code>optionValue</code> must give a string or a number, because that is what
+      <code>value</code> holds; there is no <code>[optionValue]="null"</code> to bind whole objects,
+      as Select has.
+    </p>
+    <div class="demo-card">
+      <app-demo
+        [component]="examples.accessors"
+        [source]="sources.radioGroupAccessors"
+        layout="fields"
+      />
+    </div>
   </section>
 
   <section class="doc-section">

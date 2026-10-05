@@ -2,7 +2,14 @@
   <gog-checkbox label="virtualize" [(checked)]="virtualize" />
 </div>
 <!-- Needs maxHeight (a viewport to window against) and fullWidth (fixed column layout). -->
-<gog-table [value]="rows" [virtualize]="virtualize()" maxHeight="420px" stickyHeader size="sm">
+<gog-table
+  ariaLabel="Components"
+  [value]="rows"
+  [virtualize]="virtualize()"
+  maxHeight="420px"
+  stickyHeader
+  size="sm"
+>
   <gog-column field="component" header="Component" width="320px" />
   <gog-column field="status" header="Status" width="120px" />
   <gog-column field="owner" header="Owner" width="140px" />

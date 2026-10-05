@@ -61,7 +61,8 @@ const API_INPUTS: readonly ApiRow[] = [
     name: 'ariaLabel',
     type: 'string',
     default: "''",
-    description: 'Accessible name for the bar.',
+    description:
+      'What the bar measures ("Upload", "Storage used"). Unset, the host needs an aria-labelledby of your own; a bar with neither warns in dev mode (since 21.19.0).',
   },
 ];
 

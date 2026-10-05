@@ -1,6 +1,11 @@
 @for (size of sizes; track size) {
   <p>size: {{ size }}</p>
-  <gog-table [value]="rows.slice(0, 2)" [size]="size" [showRowNumbers]="false">
+  <gog-table
+    ariaLabel="Components"
+    [value]="rows.slice(0, 2)"
+    [size]="size"
+    [showRowNumbers]="false"
+  >
     <gog-column field="component" header="Component" sortable />
     <gog-column field="status" header="Status" />
   </gog-table>

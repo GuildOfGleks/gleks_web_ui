@@ -1,5 +1,6 @@
 <!-- The total's word, the empty message and the checkbox names all come from the config. -->
 <gog-table
+  ariaLabel="Komponenten"
   [value]="rows"
   size="sm"
   selectionMode="multiple"
@@ -9,6 +10,6 @@
 >
   <gog-column field="component" header="Komponente" />
 </gog-table>
-<gog-table [value]="[]" size="sm" [showRowNumbers]="false">
+<gog-table ariaLabel="Komponenten" [value]="[]" size="sm" [showRowNumbers]="false">
   <gog-column field="component" header="Komponente" />
 </gog-table>

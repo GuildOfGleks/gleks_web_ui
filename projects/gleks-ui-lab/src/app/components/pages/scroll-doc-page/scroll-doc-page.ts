@@ -4,6 +4,7 @@ import { ApiTableComponent, type ApiRow } from '../../shared/api-table/api-table
 import { DemoComponent } from '../../shared/demo/demo';
 import { GlobalConfigNote } from '../../shared/global-config-note/global-config-note';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
+import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 import { SCROLL_EXAMPLES } from '../../../examples/scroll/sources.generated';
 import { ScrollAxisExample } from '../../../examples/scroll/scroll-axis/example';
@@ -61,7 +62,7 @@ const API_INPUTS: readonly ApiRow[] = [
     type: 'string',
     default: "''",
     description:
-      'Accessible name for the viewport when it is a tab stop (focusable, and its content overflows) and there is no visible label.',
+      'Names the viewport while it is a scrolling region (focusable, and its content overflows). A scrolling region with no name warns in dev mode (since 21.19.0); a gog-table passes its own ariaLabel here.',
   },
   {
     name: 'horizontalWheel',
@@ -121,7 +122,14 @@ const API_METHODS: readonly ApiRow[] = [
 
 @Component({
   selector: 'app-scroll-doc-page',
-  imports: [ApiTableComponent, DemoComponent, GlobalConfigNote, MarkdownComponent, RouterLink],
+  imports: [
+    ApiTableComponent,
+    DemoComponent,
+    GlobalConfigNote,
+    MarkdownComponent,
+    RouterLink,
+    SinceBadgeComponent,
+  ],
   templateUrl: './scroll-doc-page.html',
   styleUrl: './scroll-doc-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

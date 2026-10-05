@@ -1,0 +1,18 @@
+<div>
+  <gog-inputfield label="Search invoices" [(value)]="query" />
+</div>
+<gog-table [value]="matches()" size="sm" ariaLabel="Invoices" [showRowNumbers]="false">
+  <gog-column field="id" header="Invoice" />
+  <gog-column field="customer" header="Customer" />
+  <gog-column field="total" header="Total" />
+  <ng-template gogTableEmpty>
+    <gog-empty-state iconName="search" heading="No invoices found" size="sm">
+      Nothing matches "{{ query() }}".
+      <div gogEmptyStateActions>
+        <gog-button variant="secondary" size="sm" (gogClick)="query.set('')"
+          >Clear search</gog-button
+        >
+      </div>
+    </gog-empty-state>
+  </ng-template>
+</gog-table>

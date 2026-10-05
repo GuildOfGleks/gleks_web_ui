@@ -20,8 +20,8 @@ npm packages.
 
 |                                      |                                                                                              |
 | ------------------------------------ | -------------------------------------------------------------------------------------------- |
-| Date                                 | **2026-10-04** for `@guildofgleks/ui`, **2026-09-13** for the other two                      |
-| `@guildofgleks/ui`                   | 21.18.0                                                                                      |
+| Date                                 | **2026-10-05** for `@guildofgleks/ui`, **2026-09-13** for the other two                      |
+| `@guildofgleks/ui`                   | 21.19.0                                                                                      |
 | `@angular/material` / `@angular/cdk` | 22.1.6                                                                                       |
 | `primeng`                            | 22.1.1                                                                                       |
 | Bundler                              | `esbuild` 0.28.2, `--bundle --minify --format=esm`                                           |
@@ -31,28 +31,29 @@ npm packages.
 Sizes are reported in bytes and in KB, where **1 KB = 1024 bytes** and 1 MB = 1024 KB.
 The one exception is `dist.unpackedSize`, quoted straight from the registry in bytes.
 
-**This library's column was re-measured against 21.18.0 on 2026-10-04 (against 21.17.0 earlier
-the same day, and against 21.15.0 on 2026-10-03); Material's and PrimeNG's are
+**This library's column was re-measured against 21.19.0 on 2026-10-05 (against 21.18.0 and 21.17.0
+on 2026-10-04, and against 21.15.0 on 2026-10-03); Material's and PrimeNG's are
 the full pass of 2026-09-13**, which re-measured all three against 21.14.0 — the pass before that was
 2026-09-02 against 21.7.2. Material and PrimeNG had each moved one patch by then and barely moved at
 all. Three things on this side did, and they are worth stating before the tables rather than leaving
 as unexplained deltas:
 
-- **`@guildofgleks/ui`'s whole-library bundle grew from 112.8 KB to 142.2 KB gzipped** between
-  21.7.2 and 21.18.0 — 123.1 KB of that by 21.14.0, across seven minors of component work
+- **`@guildofgleks/ui`'s whole-library bundle grew from 112.8 KB to 148.3 KB gzipped** between
+  21.7.2 and 21.19.0 — 123.1 KB of that by 21.14.0, across seven minors of component work
   (virtualization in four collection components and `gog-alert` among it), 6.7 KB more in 21.15.0,
   2.1 KB more by 21.17.0, which added `gog-avatar` and `gog-avatar-group`, and 10.3 KB more
   in 21.18.0, which added five components (`gog-breadcrumbs`, `gog-stepper`, `gog-file-upload`,
-  `gog-rating`, `gog-empty-state`). This page measures
+  `gog-rating`, `gog-empty-state`), and 6.1 KB more in 21.19.0, which added no component — 4.5 KB
+  of it is 95 more built-in icons, since the icon registry ships whole. This page measures
   the total and does not attribute it. It is still smaller than four Material components
-  (153.6 KB), but the gap narrowed from 1.36× to 1.08×, and the page says so rather than keeping
+  (153.6 KB), but the gap narrowed from 1.36× to 1.04×, and the page says so rather than keeping
   the old ratio.
 - **Its stylesheet went up and then came back down.** `index.css`, which is what `README.md` tells
   you to include, went from 29.8 KB gzipped at 21.7.2 to 51.4 KB at 21.14.0, and most of that growth
   was prose — `theme.css`'s comments carried the library's design record and were about three
   quarters of its gzipped size. 21.15.0 rewrote every comment in `styles/` to say why a value is what
   it is in a line or two, moving the history to the changelog, and changed no declaration:
-  `index.css` was 29.4 KB gzipped at 21.15.0 and is **33.0 KB** at 21.18.0, `theme.css` 25.4 KB —
+  `index.css` was 29.4 KB gzipped at 21.15.0 and is **33.0 KB** at 21.19.0, `theme.css` 25.4 KB —
   the growth since is the new components' tokens, not prose.
 - **The whole-library recipe changed shape.** Since 21.14.0 the table, datepicker and dialog are
   exported only from `@guildofgleks/ui/table`, `/datepicker` and `/dialog`, so "everything" is four
@@ -81,7 +82,7 @@ separate for the measurement, not for the installer.)
 mkdir bench && cd bench
 mkdir gleks material primeng
 
-(cd gleks    && npm init -y && npm install @guildofgleks/ui@21.18.0 esbuild)
+(cd gleks    && npm init -y && npm install @guildofgleks/ui@21.19.0 esbuild)
 (cd material && npm init -y && npm install @angular/material@22.1.6 @angular/cdk@22.1.6 esbuild)
 (cd primeng  && npm init -y && npm install primeng@22.1.1 esbuild)
 ```
@@ -158,9 +159,9 @@ component counts — is one command each, listed in its own section below:
 | Documented components                     | 38                                         | ~35                                                    | 90+                                   |
 | Packages installed beyond Angular         | **0**                                      | 3                                                      | 11                                    |
 | Runtime `dependencies` in package.json    | 1 (`tslib`)                                | 1 (`tslib`) + required `@angular/cdk` peer             | 6 + `tslib`                           |
-| npm package, unpacked                     | 4 346 949 B (4.15 MB)                      | 7 681 586 B (7.33 MB) + CDK 3 572 735 B (3.41 MB)      | 14 089 483 B (13.44 MB)               |
+| npm package, unpacked                     | 4 469 943 B (4.26 MB)                      | 7 681 586 B (7.33 MB) + CDK 3 572 735 B (3.41 MB)      | 14 089 483 B (13.44 MB)               |
 | Button + Select + Dialog + Table, gzipped | _(not per component — see below)_          | 157 237 B (**153.6 KB**)                               | 340 718 B (**332.7 KB**)              |
-| **Entire library, gzipped**               | 145 563 B (**142.2 KB**)                   | _(no combined entry point)_                            | _(no combined entry point)_           |
+| **Entire library, gzipped**               | 151 850 B (**148.3 KB**)                   | _(no combined entry point)_                            | _(no combined entry point)_           |
 | Required stylesheet, gzipped              | 33 824 B (33.0 KB)                         | 1 296 B (1.3 KB, M3 prebuilt theme)                    | 0 — injected at runtime from JS       |
 | `@deprecated` symbols in the package      | **0**                                      | 36                                                     | 34                                    |
 | …that name a removal version              | — (nothing to remove)                      | 42 `@breaking-change` tags, 40 of them already overdue | 0 of 34                               |
@@ -168,7 +169,7 @@ component counts — is one command each, listed in its own section below:
 | Theming                                   | Plain CSS custom properties, no build step | Sass mixins / M3 system tokens                         | JS preset system (`@primeuix/styled`) |
 
 The row worth re-reading is the pair in the middle: the **whole** Guild of Gleks UI
-library, gzipped, is **1.08× smaller** than four Material components and **2.34× smaller**
+library, gzipped, is **1.04× smaller** than four Material components and **2.24× smaller**
 than the same four from PrimeNG — both ratios down from 1.36× and 2.95× at 21.7.2, because this
 library grew and the other two did not.
 
@@ -213,7 +214,7 @@ Guild of Gleks UI can be imported whole — the root and its three split entry p
 
 | Library                                                             | Minified                    | Gzipped                     |
 | ------------------------------------------------------------------- | --------------------------- | --------------------------- |
-| **@guildofgleks/ui** — all 43 components, 3 services, 36 directives | 1 012 324 B (988.6 KB)      | **145 563 B (142.2 KB)**    |
+| **@guildofgleks/ui** — all 43 components, 3 services, 37 directives | 1 053 476 B (1028.8 KB)     | **151 850 B (148.3 KB)**    |
 | @angular/material                                                   | _(no combined entry point)_ | _(no combined entry point)_ |
 | primeng                                                             | _(no combined entry point)_ | _(no combined entry point)_ |
 
@@ -229,8 +230,8 @@ so "the whole library" is not a thing you can import from either, by design.
 
 For reference on the same bench: 21.3.0 measured 92.8 KB gzipped, 21.4.1 103.8 KB, 21.6.0
 107.6 KB, 21.6.1 113.6 KB, 21.7.2 112.8 KB — the first decrease this table recorded — 21.14.0
-123.1 KB, 21.15.0 129.8 KB, 21.17.0 — with `gog-avatar` and `gog-avatar-group` — 131.9 KB, and 21.18.0 —
-with five more components — is **142.2 KB**. The 21.7.2 decrease, for the record: `gog-card`, `gog-panel` and `gogRipple` (21.6.1) are still in the bundle; what left
+123.1 KB, 21.15.0 129.8 KB, 21.17.0 — with `gog-avatar` and `gog-avatar-group` — 131.9 KB, 21.18.0 — with five more components —
+142.2 KB, and 21.19.0 — with 136 built-in icons where there were 41 — is **148.3 KB**. The 21.7.2 decrease, for the record: `gog-card`, `gog-panel` and `gogRipple` (21.6.1) are still in the bundle; what left
 is the **154-entry `GOG_DEPRECATIONS` manifest**, emptied to `[]` when 21.7.0 removed the three
 abbreviated token prefixes it existed to track. 21.7.0's other headline work — the character
 layer, six new theme presets — added nothing here because it is entirely `theme.css`, a
@@ -266,7 +267,7 @@ route, so this is a saving on the three heaviest components' own code, not a gen
 What npm actually stores and unpacks, straight from the registry:
 
 ```sh
-npm view @guildofgleks/ui@21.18.0 dist.unpackedSize  # 4346949
+npm view @guildofgleks/ui@21.19.0 dist.unpackedSize  # 4469943
 npm view @angular/material@22.1.6 dist.unpackedSize  # 7681586
 npm view @angular/cdk@22.1.6 dist.unpackedSize       # 3572735
 npm view primeng@22.1.1 dist.unpackedSize            # 14089483
@@ -453,7 +454,7 @@ console.log(Object.keys(e).filter(k=>k!=='.'&&!k.includes('*')&&!k.endsWith('.cs
 | ------------------------------------------- | ----------------- | ---------------- | ------- |
 | Documented components (pages on this site)  | 38                | ~35              | 90+     |
 | Component selectors in the type definitions | 43                | 90               | 240     |
-| Directive selectors                         | 34                | 99               | 69      |
+| Directive selectors                         | 35                | 99               | 69      |
 | Code entry points                           | 4                 | 36               | 282     |
 
 The selector counts are the honest raw numbers and they flatter nobody: 43 for this

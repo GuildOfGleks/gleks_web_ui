@@ -48,6 +48,22 @@
     </article>
 
     <article class="demo-card">
+      <h3 class="demo-card__title">When the picture fails <app-since version="21.19.0" /></h3>
+      <p class="demo-card__meta">
+        The avatar is a <a routerLink="/components/avatar">gog-avatar</a> at the chip's own size, so
+        a URL that fails falls back the way an avatar does: to the initials of
+        <code>avatarAlt</code>, or to the person icon without one — never the browser's broken-image
+        glyph. With no <code>avatarAlt</code> the avatar stays decorative, as <code>alt=""</code>
+        did; with one it is named by it, as before.
+      </p>
+      <app-demo
+        [component]="examples.avatarFallback"
+        [source]="sources.chipAvatarFallback"
+        layout="row"
+      />
+    </article>
+
+    <article class="demo-card">
       <h3 class="demo-card__title">Shapes</h3>
       <p class="demo-card__meta">
         <code>rounded</code> (the default) or a fully rounded <code>pill</code>, with and without an

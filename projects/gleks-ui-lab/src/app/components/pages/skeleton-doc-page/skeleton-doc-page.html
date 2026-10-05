@@ -105,9 +105,13 @@
       <li><strong>Default</strong> — a bone is <code>aria-hidden</code>.</li>
       <li>
         <strong>One named bone</strong> — give <code>ariaLabel</code> to the one that stands for the
-        whole loading area, and it becomes <code>role="status"</code> with that name. That makes the
-        area findable while reading; it does not announce anything when it appears, because a live
-        region speaks its text and a bone has none.
+        whole loading area, and it becomes an indeterminate <code>role="progressbar"</code> with
+        that name <app-since version="21.19.0" /> — the role a
+        <a routerLink="/components/spinner">spinner</a> takes, so a loading area reads "progress
+        bar, Loading profile" whichever of the two draws it. That makes the area findable while
+        reading; it does not announce anything when it appears. Before 21.19.0 it was
+        <code>role="status"</code>, a live region with no text to speak, so nothing that used to be
+        said is lost.
       </li>
       <li>
         <strong>The container</strong> — what tells a screen reader the area is changing is

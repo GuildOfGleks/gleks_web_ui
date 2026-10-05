@@ -10,6 +10,7 @@ import { TABLE_EXAMPLES } from '../../../examples/table/sources.generated';
 import { TableColumnsExample } from '../../../examples/table/table-columns/example';
 import { TableConfigExample } from '../../../examples/table/table-config/example';
 import { TableCustomCellsExample } from '../../../examples/table/table-custom-cells/example';
+import { TableEmptyExample } from '../../../examples/table/table-empty/example';
 import { TableEventsExample } from '../../../examples/table/table-events/example';
 import { TableLazyExample } from '../../../examples/table/table-lazy/example';
 import { TableOverviewExample } from '../../../examples/table/table-overview/example';
@@ -151,6 +152,14 @@ const TABLE_INPUTS: readonly ApiRow[] = [
     since: '21.15.0',
   },
   {
+    name: 'ariaLabel',
+    type: 'string | undefined',
+    default: 'undefined',
+    description:
+      'Names the table ("Orders"), and its scrolling region whenever the columns overflow — an overflowing table is a Tab stop, and one without a name warns in dev mode.',
+    since: '21.19.0',
+  },
+  {
     name: 'paginatorPosition',
     type: "'left' | 'center' | 'right'",
     default: "'center'",
@@ -243,6 +252,16 @@ const TABLE_OUTPUTS: readonly ApiRow[] = [
   },
 ];
 
+const TABLE_SLOTS: readonly ApiRow[] = [
+  {
+    name: 'gogTableEmpty',
+    type: 'none',
+    description:
+      'What the table shows when it has no rows, in place of emptyMessage. A gog-empty-state here is announced when a filter empties the table; the plain text cell is not. Import GogTableEmptyDirective from @guildofgleks/ui/table.',
+    since: '21.19.0',
+  },
+];
+
 const COLUMN_INPUTS: readonly ApiRow[] = [
   {
     name: 'field',
@@ -312,6 +331,7 @@ const COLUMN_SLOTS: readonly ApiRow[] = [
 export class TableDocPage {
   protected readonly tableInputs = TABLE_INPUTS;
   protected readonly tableOutputs = TABLE_OUTPUTS;
+  protected readonly tableSlots = TABLE_SLOTS;
   protected readonly columnInputs = COLUMN_INPUTS;
   protected readonly columnSlots = COLUMN_SLOTS;
   protected readonly styleTokens =
@@ -322,6 +342,7 @@ export class TableDocPage {
     overview: TableOverviewExample,
     sizes: TableSizesExample,
     states: TableStatesExample,
+    empty: TableEmptyExample,
     customCells: TableCustomCellsExample,
     columns: TableColumnsExample,
     width: TableWidthExample,
@@ -337,5 +358,5 @@ export class TableDocPage {
   };
 
   protected readonly importSnippet =
-    "```typescript\nimport { GogColumn, TableComponent } from '@guildofgleks/ui/table';\n\n@Component({\n  // ...\n  imports: [TableComponent, GogColumn],\n})\n```";
+    "```typescript\nimport { GogColumn, GogTableEmptyDirective, TableComponent } from '@guildofgleks/ui/table';\n\n@Component({\n  // ...\n  imports: [TableComponent, GogColumn, GogTableEmptyDirective],\n})\n```";
 }

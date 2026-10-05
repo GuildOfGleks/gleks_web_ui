@@ -97,6 +97,20 @@
     </article>
 
     <article class="demo-card">
+      <h3 class="demo-card__title">
+        Units in the value — <code>valueFormat</code> <app-since version="21.19.0" />
+      </h3>
+      <p class="demo-card__meta">
+        One function, <code>(value: number) =&gt; string</code>, writes the readout, the min and max
+        labels and each thumb's <code>aria-valuetext</code>. The price range reads "€40 – €120" on
+        screen and "€40" to a screen reader, where without it the reader hears "40" and the unit
+        lives only in the label. The readout's width is reserved from the formatted endpoints, so a
+        longer string still does not shift the track while you drag.
+      </p>
+      <app-demo [component]="examples.format" [source]="sources.sliderFormat" layout="fields" />
+    </article>
+
+    <article class="demo-card">
       <h3 class="demo-card__title">Thumbs that meet</h3>
       <p class="demo-card__meta">
         Both thumbs start at 200, on top of each other at the end of the track. Drag left: the start
@@ -185,7 +199,9 @@
           >now</code
         >
         follow the value as it moves. On a range thumb the bounds narrow to the other thumb, since
-        that is as far as it can go.
+        that is as far as it can go. With <code>valueFormat</code>
+        <app-since version="21.19.0" /> each thumb also carries an <code>aria-valuetext</code> in
+        the same words as the readout, so "€40" is heard rather than "40".
       </li>
       <li>
         <strong>Error</strong> — <code>aria-invalid</code> and an <code>aria-describedby</code>

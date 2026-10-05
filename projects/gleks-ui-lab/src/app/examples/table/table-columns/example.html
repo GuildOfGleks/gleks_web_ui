@@ -1,11 +1,12 @@
 <p>defaults — row numbers on, "-" for a missing value</p>
-<gog-table [value]="rows" size="sm">
+<gog-table ariaLabel="Components" [value]="rows" size="sm">
   <gog-column field="component" header="Component" />
   <gog-column field="owner" header="Owner" />
 </gog-table>
 
 <p>showColumnBorders, emptyPlaceholder="n/a", column widths</p>
 <gog-table
+  ariaLabel="Components"
   [value]="rows"
   size="sm"
   showColumnBorders

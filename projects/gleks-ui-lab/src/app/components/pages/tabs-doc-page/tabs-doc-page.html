@@ -131,8 +131,10 @@
     </p>
     <ul class="doc-section__intro">
       <li>
-        <strong>Name</strong> — set <code>ariaLabel</code> on <code>&lt;gog-tabs&gt;</code> to name
-        the set; each tab is named by its label.
+        <strong>Name</strong> — set <code>ariaLabel</code> on <code>&lt;gog-tabs&gt;</code> to say
+        what the tabs switch between ("Account settings"); each tab is named by its label. Only the
+        app knows that name, so an unnamed tablist logs one <code>console.warn</code> per page in
+        dev mode <app-since version="21.19.0" />, never in production.
       </li>
       <li>
         <strong>Keyboard</strong> — one tab stop for the whole row. The arrow keys move between tabs

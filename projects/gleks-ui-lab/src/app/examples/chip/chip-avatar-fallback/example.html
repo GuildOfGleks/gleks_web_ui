@@ -1,0 +1,13 @@
+<div>
+  <gog-chip [avatarUrl]="ada" avatarAlt="Ada Lovelace">Ada Lovelace</gog-chip>
+  <span>picture</span>
+</div>
+<div>
+  <!-- An image that cannot load. On this server-rendered page it fails before the app hydrates. -->
+  <gog-chip [avatarUrl]="broken" avatarAlt="Grace Hopper">Grace Hopper</gog-chip>
+  <span>fails, with avatarAlt</span>
+</div>
+<div>
+  <gog-chip [avatarUrl]="broken">Guest</gog-chip>
+  <span>fails, no avatarAlt</span>
+</div>

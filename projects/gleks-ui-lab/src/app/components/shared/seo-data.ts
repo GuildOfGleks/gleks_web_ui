@@ -226,7 +226,7 @@ export const PAGE_SEO: Readonly<Record<string, PageSeo>> = {
   ),
   'components/icon': component(
     'Icon',
-    '41 built-in outline icons plus provideGogIcons to register your own set by name — sized and ' +
+    '136 built-in outline icons plus provideGogIcons to register your own set by name — sized and ' +
       'coloured from CSS variables, so icons inherit from wherever they are used.',
   ),
   'components/inputfield': component(

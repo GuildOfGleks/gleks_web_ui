@@ -61,6 +61,20 @@
     </article>
 
     <article class="demo-card">
+      <h3 class="demo-card__title">
+        An empty state of your own — <code>gogTableEmpty</code> <app-since version="21.19.0" />
+      </h3>
+      <p class="demo-card__meta">
+        An <code>&lt;ng-template gogTableEmpty&gt;</code> inside the table replaces
+        <code>emptyMessage</code> when there are no rows. Put a
+        <a routerLink="/components/empty-state">gog-empty-state</a> in it and a table emptied by a
+        filter is announced: the plain message is text in a cell, which changes on screen without a
+        word to a screen reader. Clear the search, then type something that matches nothing.
+      </p>
+      <app-demo [component]="examples.empty" [source]="sources.tableEmpty" layout="wide" />
+    </article>
+
+    <article class="demo-card">
       <h3 class="demo-card__title">Custom cell and header markup</h3>
       <p class="demo-card__meta">
         A column swaps its default text for a <code>gogColumnBody</code> or
@@ -376,6 +390,12 @@
     </p>
     <ul class="doc-section__intro">
       <li>
+        <strong>Name</strong> — <code>ariaLabel</code> <app-since version="21.19.0" /> names the
+        table ("Orders") and, whenever its columns overflow, the scrolling region around it. An
+        overflowing table is a <kbd>Tab</kbd> stop, so it needs a name to be told apart from the
+        page; without one it warns in dev mode, once per page.
+      </li>
+      <li>
         <strong>Sorting</strong> — a sortable header holds a real <code>&lt;button&gt;</code>, named
         by the header text; <code>aria-sort</code> on the cell states the order.
       </li>
@@ -393,8 +413,10 @@
       </li>
       <li>
         <strong>State</strong> — <code>aria-busy</code> while loading; an empty table says so in a
-        row of its own. A virtualized table keeps <code>aria-rowcount</code> and
-        <code>aria-rowindex</code> honest about the rows it is not rendering.
+        row of its own, which a screen reader is not told about — a
+        <code>gogTableEmpty</code> holding a <code>gog-empty-state</code> is. A virtualized table
+        keeps <code>aria-rowcount</code> and <code>aria-rowindex</code> honest about the rows it is
+        not rendering.
       </li>
     </ul>
   </section>
@@ -407,6 +429,9 @@
 
     <h3 class="doc-section__subtitle">gog-table — Outputs</h3>
     <app-api-table [rows]="tableOutputs" kind="outputs" />
+
+    <h3 class="doc-section__subtitle">gog-table — Templates</h3>
+    <app-api-table [rows]="tableSlots" kind="slots" />
 
     <h3 class="doc-section__subtitle">gog-column — Inputs</h3>
     <app-api-table [rows]="columnInputs" kind="inputs" />

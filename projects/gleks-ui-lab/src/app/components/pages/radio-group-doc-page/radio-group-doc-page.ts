@@ -7,6 +7,7 @@ import { MarkdownComponent } from '../../shared/markdown/markdown';
 import { SinceBadgeComponent } from '../../shared/since-badge/since-badge';
 import { TOKEN_SECTIONS } from '../theming-page/token-reference-data';
 import { RADIO_GROUP_EXAMPLES } from '../../../examples/radio-group/sources.generated';
+import { RadioGroupAccessorsExample } from '../../../examples/radio-group/radio-group-accessors/example';
 import { RadioGroupAriaLabelExample } from '../../../examples/radio-group/radio-group-aria-label/example';
 import { RadioGroupBindingExample } from '../../../examples/radio-group/radio-group-binding/example';
 import { RadioGroupConfigExample } from '../../../examples/radio-group/radio-group-config/example';
@@ -20,15 +21,40 @@ import { RadioGroupStatesExample } from '../../../examples/radio-group/radio-gro
 const API_INPUTS: readonly ApiRow[] = [
   {
     name: 'options',
-    type: 'readonly GogRadioOption[]',
+    type: 'readonly TOption[]',
     default: '[]',
-    description: 'The choices: { id, label, disabled? }. Rendered as native <input type="radio">s.',
+    description:
+      'The choices, rendered as native <input type="radio">s. GogRadioOption ({ id, label, disabled? }) by default; any other shape through the three accessors below.',
+  },
+  {
+    name: 'optionLabel',
+    type: 'string | ((o: TOption) => string)',
+    default: "'label'",
+    description:
+      'How an option turns into its visible text: a property path (dot-paths included, "place.city") or a function.',
+    since: '21.19.0',
+  },
+  {
+    name: 'optionValue',
+    type: 'string | ((o: TOption) => string | number)',
+    default: "'id'",
+    description:
+      'What value holds for an option: a property path or a function. It must give a string or a number, as value does.',
+    since: '21.19.0',
+  },
+  {
+    name: 'optionDisabled',
+    type: 'string | ((o: TOption) => boolean)',
+    default: "'disabled'",
+    description: 'Which options are disabled: a property path or a function.',
+    since: '21.19.0',
   },
   {
     name: 'value',
     type: 'string | number | null',
     default: 'null',
-    description: 'The selected option’s id. Two-way bindable with [(value)].',
+    description:
+      'What optionValue gives for the selected option — its id by default. Two-way bindable with [(value)].',
   },
   {
     name: 'label',
@@ -120,6 +146,7 @@ export class RadioGroupDocPage {
 
   protected readonly sources = RADIO_GROUP_EXAMPLES;
   protected readonly examples = {
+    accessors: RadioGroupAccessorsExample,
     overview: RadioGroupOverviewExample,
     states: RadioGroupStatesExample,
     sizes: RadioGroupSizesExample,
