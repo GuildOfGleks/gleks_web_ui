@@ -28,6 +28,7 @@
     <footer class="lab-footer">
       <div class="footer-copy">© 2026 Guild of Gleks UI. Apache License 2.0.</div>
       <div class="footer-links">
+        <button type="button" class="footer-tour" (click)="siteTour.open()">Site tour</button>
         @for (link of footerLinks; track link.href) {
           <a [href]="link.href" target="_blank" rel="noopener">{{ link.label }}</a>
         }

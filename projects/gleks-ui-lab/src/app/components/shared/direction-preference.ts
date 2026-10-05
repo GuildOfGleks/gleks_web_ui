@@ -26,4 +26,8 @@ export class DirectionPreference {
   toggle(): void {
     this.state.update((rtl) => !rtl);
   }
+
+  set(rtl: boolean): void {
+    this.state.set(rtl);
+  }
 }

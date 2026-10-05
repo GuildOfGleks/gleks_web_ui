@@ -1,0 +1,122 @@
+.tour {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.tour__title {
+  margin: 0 0 6px;
+  font-size: var(--gog-text-xl);
+}
+
+.tour__lead {
+  margin: 0;
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-sm);
+  line-height: 1.5;
+}
+
+.tour__body {
+  display: grid;
+  grid-template-columns: minmax(0, 220px) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+  // Tall enough for the longest step, so Next does not move under the pointer between steps.
+  min-height: 220px;
+}
+
+.tour__text {
+  font-size: var(--gog-text-sm);
+  line-height: 1.6;
+
+  p {
+    margin: 0 0 8px;
+  }
+}
+
+.tour__step-title {
+  margin: 0 0 8px;
+  font-size: var(--gog-text-md);
+}
+
+.tour__narrow {
+  color: var(--gog-muted-text-color);
+}
+
+.tour__settings {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.tour__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  // Stays in reach when the dialog has to scroll — on a phone, the vertical stepper and a long
+  // step can be taller than the screen, and Next was below the fold.
+  position: sticky;
+  bottom: 0;
+  padding-block: 12px;
+  margin-block: -12px;
+  background-color: var(--gog-surface-color);
+}
+
+.tour__spacer {
+  flex: 1;
+}
+
+// The layout drawing, in the theme's own tokens like the Components page's drawings.
+.tour__map {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.map-frame {
+  fill: var(--gog-background-color);
+  stroke: var(--gog-border-color);
+}
+
+.map-region {
+  fill: var(--gog-surface-color);
+  stroke: var(--gog-border-color);
+  transition:
+    fill var(--gog-duration-fast),
+    stroke var(--gog-duration-fast);
+}
+
+.map-region--on {
+  fill: color-mix(in srgb, var(--gog-accent-color) 18%, transparent);
+  stroke: var(--gog-accent-color);
+  stroke-width: 1.5;
+}
+
+.map-bar {
+  fill: var(--gog-muted-text-color);
+  opacity: 0.45;
+}
+
+.map-bar--strong {
+  fill: var(--gog-text-color);
+  opacity: 0.8;
+}
+
+.map-dot {
+  fill: var(--gog-muted-text-color);
+}
+
+// One column on a phone, where the drawing is not rendered at all.
+@media (max-width: 560px) {
+  .tour__body {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .map-region {
+    transition: none;
+  }
+}

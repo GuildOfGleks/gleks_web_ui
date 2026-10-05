@@ -1,0 +1,128 @@
+<div class="tour">
+  <header class="tour__intro">
+    <h2 [id]="titleId" class="tour__title font-heading">Welcome to Guild of Gleks UI</h2>
+    <p class="tour__lead">
+      Four things worth knowing about this site. Once you finish or skip the tour it will not come
+      back — the footer's "Site tour" opens it again.
+    </p>
+  </header>
+
+  <gog-stepper
+    class="tour__stepper"
+    size="sm"
+    ariaLabel="Site tour"
+    [orientation]="narrow() ? 'vertical' : 'horizontal'"
+    [steps]="steps()"
+    [(activeIndex)]="active"
+  />
+
+  <div class="tour__body">
+    <!-- The site's layout, with the part this step describes marked in the accent colour. -->
+    @if (!narrow()) {
+      <svg class="tour__map" viewBox="0 0 200 124" aria-hidden="true" focusable="false">
+        <rect class="map-frame" x="1" y="1" width="198" height="122" rx="6" />
+        <!-- header -->
+        <rect class="map-region" x="1" y="1" width="198" height="16" rx="6" />
+        <rect class="map-bar" x="8" y="7" width="34" height="4" rx="2" />
+        <rect
+          class="map-region"
+          [class.map-region--on]="active() === 3"
+          x="146"
+          y="4"
+          width="48"
+          height="10"
+          rx="3"
+        />
+        <circle class="map-dot" cx="154" cy="9" r="2" />
+        <circle class="map-dot" cx="164" cy="9" r="2" />
+        <circle class="map-dot" cx="174" cy="9" r="2" />
+        <circle class="map-dot" cx="184" cy="9" r="2" />
+        <!-- left sidebar: the guides, then the components -->
+        <rect
+          class="map-region"
+          [class.map-region--on]="active() === 0"
+          x="5"
+          y="21"
+          width="38"
+          height="30"
+          rx="3"
+        />
+        <rect class="map-bar" x="9" y="26" width="24" height="3" rx="1.5" />
+        <rect class="map-bar" x="9" y="33" width="28" height="3" rx="1.5" />
+        <rect class="map-bar" x="9" y="40" width="20" height="3" rx="1.5" />
+        <rect
+          class="map-region"
+          [class.map-region--on]="active() === 1"
+          x="5"
+          y="55"
+          width="38"
+          height="64"
+          rx="3"
+        />
+        <rect class="map-bar map-bar--strong" x="9" y="60" width="22" height="3" rx="1.5" />
+        @for (y of [68, 75, 82, 89, 96, 103, 110]; track y) {
+          <rect class="map-bar" x="9" [attr.y]="y" width="26" height="3" rx="1.5" />
+        }
+        <!-- the page -->
+        <rect class="map-bar map-bar--strong" x="54" y="26" width="56" height="6" rx="3" />
+        @for (row of contentRows; track row.y) {
+          <rect class="map-bar" x="54" [attr.y]="row.y" [attr.width]="row.w" height="3" rx="1.5" />
+        }
+        <!-- right sidebar: on this page -->
+        <rect
+          class="map-region"
+          [class.map-region--on]="active() === 2"
+          x="157"
+          y="21"
+          width="38"
+          height="44"
+          rx="3"
+        />
+        <rect class="map-bar map-bar--strong" x="161" y="26" width="22" height="3" rx="1.5" />
+        @for (y of [34, 41, 48, 55]; track y) {
+          <rect class="map-bar" x="161" [attr.y]="y" width="26" height="3" rx="1.5" />
+        }
+      </svg>
+    }
+
+    <div class="tour__text">
+      <!-- Polite: a press of Next is heard as the new step's words, not as silence. -->
+      <div aria-live="polite">
+        <h3 class="tour__step-title">{{ step().heading }}</h3>
+        <p>{{ step().text }}</p>
+        @if (step().narrow; as narrow) {
+          <p class="tour__narrow">{{ narrow }}</p>
+        }
+      </div>
+
+      @if (isLast()) {
+        <div class="tour__settings">
+          <gog-toggle
+            label="Press ripple"
+            [checked]="rippleOn()"
+            (checkedChange)="setRipple($event)"
+          />
+          <gog-toggle label="Right-to-left" [checked]="rtl()" (checkedChange)="setRtl($event)" />
+          <gog-select
+            label="Theme"
+            size="sm"
+            [options]="themeOptions"
+            optionLabel="label"
+            optionValue="value"
+            [value]="theme()"
+            (valueChange)="setTheme($event)"
+          />
+        </div>
+      }
+    </div>
+  </div>
+
+  <footer class="tour__actions">
+    <gog-button variant="ghost" size="sm" (gogClick)="skip()">Skip tour</gog-button>
+    <span class="tour__spacer"></span>
+    @if (active() > 0) {
+      <gog-button variant="secondary" size="sm" (gogClick)="back()">Back</gog-button>
+    }
+    <gog-button size="sm" (gogClick)="next()">{{ isLast() ? 'Finish' : 'Next' }}</gog-button>
+  </footer>
+</div>

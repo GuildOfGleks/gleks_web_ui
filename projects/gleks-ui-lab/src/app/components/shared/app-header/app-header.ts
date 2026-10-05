@@ -23,11 +23,7 @@ import { DirectionPreference } from '../direction-preference';
 import { LIBRARY_VERSION } from '../library-version';
 import { RipplePreference } from '../ripple-preference';
 import { SearchEntry, searchNav } from '../search-index';
-
-interface ThemeMenuOption {
-  value: string;
-  label: string;
-}
+import { THEME_OPTIONS } from '../theme-options';
 
 /**
  * The site's header: the logo and version badge, the component search, the three controls that
@@ -63,21 +59,7 @@ export class AppHeader {
 
   protected readonly libraryVersion = LIBRARY_VERSION;
 
-  // `light` and `dark` are built into `theme.css`; the other nine are the package's presets,
-  // each loaded as its own stylesheet (see angular.json).
-  protected readonly themeOptions: ThemeMenuOption[] = [
-    { value: 'light', label: 'Classic' },
-    { value: 'dark', label: 'Dark' },
-    { value: 'slate', label: 'Slate' },
-    { value: 'one-dark', label: 'One Dark' },
-    { value: 'one-light', label: 'One Light' },
-    { value: 'ledger', label: 'Ledger' },
-    { value: 'material', label: 'Material' },
-    { value: 'primeng', label: 'PrimeNG' },
-    { value: 'terminal', label: 'Terminal' },
-    { value: 'bevel', label: 'Bevel' },
-    { value: 'parchment', label: 'Parchment' },
-  ];
+  protected readonly themeOptions = THEME_OPTIONS;
   protected readonly activeTheme = computed(() => this.themeService.theme());
   protected readonly isThemeMenuOpen = signal(false);
 

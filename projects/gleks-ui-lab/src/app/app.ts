@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   PLATFORM_ID,
+  afterNextRender,
   inject,
   signal,
   viewChild,
@@ -16,6 +17,7 @@ import { AppHeader } from './components/shared/app-header/app-header';
 import { DirectionPreference } from './components/shared/direction-preference';
 import { ReducedMotionNotice } from './components/shared/reduced-motion-notice/reduced-motion-notice';
 import { SidebarLeftComponent } from './components/shared/sidebar-left/sidebar-left';
+import { SiteTour } from './components/shared/site-tour/site-tour';
 import { TocComponent } from './components/shared/toc/toc';
 import { SeoService } from './components/shared/seo';
 
@@ -66,6 +68,7 @@ export class App {
   private readonly header = viewChild.required(AppHeader);
 
   protected readonly footerLinks = FOOTER_LINKS;
+  protected readonly siteTour = inject(SiteTour);
 
   // The page does not scroll — `.lab-layout` is pinned to 100dvh and this `gog-scroll` owns the
   // content's scroll position (app.scss). Angular's own `withInMemoryScrolling` only ever moves
@@ -76,6 +79,10 @@ export class App {
     // Per-page title, description, canonical and social tags. Started here because nothing else
     // injects it, and it must run on the server too — see the service's own header.
     inject(SeoService).init();
+
+    // A first-time reader gets the four-step tour once the page is up; the service decides
+    // whether this device has already answered it.
+    afterNextRender(() => this.siteTour.showIfNew());
 
     // Without this, switching from halfway down one component page to another lands the reader
     // mid-page on content they have not seen — the scroller keeps its offset because the routed

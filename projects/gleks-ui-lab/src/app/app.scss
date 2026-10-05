@@ -86,6 +86,18 @@
   .footer-links {
     display: flex;
     gap: 16px;
+    /* Opens the site tour rather than leaving the site, so a button — drawn like its neighbours. */
+    .footer-tour {
+      padding: 0;
+      border: 0;
+      background: none;
+      font: inherit;
+      color: var(--gog-muted-text-color);
+      cursor: pointer;
+      &:hover {
+        color: var(--gog-accent-color);
+      }
+    }
     a {
       color: var(--gog-muted-text-color);
       text-decoration: none;
