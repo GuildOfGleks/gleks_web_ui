@@ -71,7 +71,8 @@ const NEXT_LINKS: readonly NextLink[] = [
   },
   {
     title: 'Components',
-    text: 'Browse every component the library ships with — see the sidebar.',
+    text: 'Every component the library ships with on one page, each with a drawing.',
+    path: '/components',
   },
 ];
 

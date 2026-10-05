@@ -153,21 +153,36 @@
   padding: 0 10px;
 }
 
-/* The "Components" title as a link to the card grid: still reads as a section title, and says it
-   goes somewhere with an arrow rather than by turning into a nav row. The label stays muted text;
-   hover and the active page take the body colour, which clears AA on the sidebar in every theme
-   where the accent would not. */
-.nav-title-link {
+/* The "Components" title as a link to the card grid. At rest it reads as a section title, with an
+   arrow to say it goes somewhere; on its own page it takes the same active treatment as a nav row
+   above it — tint, accent edge, accent-mixed label — so the sidebar marks where the reader is the
+   same way wherever they are. The padding and the transparent edge are there at rest too, so
+   going active moves nothing, and the label starts 22px in — 10px margin, 3px edge, 9px padding —
+   where the nav rows' labels do. */
+.sidebar-title.nav-title-link {
   display: flex;
   align-items: center;
   gap: 6px;
-  text-decoration: none;
+  margin-inline: 10px;
+  padding: 8px 12px 8px 9px;
+  border-left: 3px solid transparent;
   border-radius: var(--gog-radius);
-  transition: color var(--gog-duration-fast);
+  text-decoration: none;
+  transition:
+    color var(--gog-duration-fast),
+    background-color var(--gog-duration-fast);
 
-  &:hover,
-  &.active {
+  &:hover {
     color: var(--gog-text-color);
+    background-color: var(--gog-hover-color);
+  }
+
+  /* The same pair as `.nav-item.active`, measured there: AA in every theme. */
+  &.active {
+    background-color: color-mix(in srgb, var(--gog-accent-color) 15%, transparent);
+    color: color-mix(in srgb, var(--gog-accent-color) 60%, var(--gog-text-color));
+    font-weight: 600;
+    border-left-color: var(--gog-accent-color);
   }
 
   &:focus-visible {
