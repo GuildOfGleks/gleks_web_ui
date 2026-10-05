@@ -11,7 +11,7 @@ import { ActivatedRoute } from '@angular/router';
 import { httpResource } from '@angular/common/http';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
-import { GENERAL_NAV_ITEMS } from '../../shared/nav-data';
+import { ALL_GENERAL_NAV_ITEMS } from '../../shared/nav-data';
 import { MarkdownComponent } from '../../shared/markdown/markdown';
 
 // `faq` used to be here; it is a routed component now (`faq-page`), so the router never
@@ -38,7 +38,7 @@ export class GeneralPage {
 
   protected readonly title = computed(
     () =>
-      GENERAL_NAV_ITEMS.find((item) => item.path === `general/${this.slug()}`)?.label ??
+      ALL_GENERAL_NAV_ITEMS.find((item) => item.path === `general/${this.slug()}`)?.label ??
       this.slug(),
   );
 

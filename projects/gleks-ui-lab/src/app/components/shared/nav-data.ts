@@ -1,23 +1,38 @@
 import { NavGroup, NavItem, NavSection } from '../types/nav-item';
 
+// Four top-level entries, everything else one level under the page it belongs to, so the fixed
+// block stays short and the component list below it gets the height.
 export const GENERAL_NAV_ITEMS: readonly NavItem[] = [
-  { label: 'Overview', path: 'general/overview' },
+  {
+    label: 'Overview',
+    path: 'general/overview',
+    children: [
+      { label: 'Compare with Material and PrimeNG', path: 'general/compare' },
+      { label: 'Full Technical Comparison', path: 'general/compare-full' },
+      { label: 'Releases', path: 'general/releases' },
+    ],
+  },
   {
     label: 'Getting Started',
     path: 'general/getting-started',
-    children: [{ label: 'Global Configuration', path: 'general/global-config' }],
+    children: [
+      { label: 'Global Configuration', path: 'general/global-config' },
+      { label: 'AGENTS.md', path: 'general/agents' },
+    ],
   },
-  { label: 'Theming', path: 'general/theming' },
-  { label: 'Right-to-left', path: 'general/rtl' },
   {
-    label: 'Compare with Material and PrimeNG',
-    path: 'general/compare',
-    children: [{ label: 'Full Technical Comparison', path: 'general/compare-full' }],
+    label: 'Theming',
+    path: 'general/theming',
+    children: [{ label: 'Right-to-left', path: 'general/rtl' }],
   },
   { label: 'FAQ', path: 'general/faq' },
-  { label: 'Releases', path: 'general/releases' },
-  { label: 'AGENTS.md', path: 'general/agents' },
 ];
+
+/** Every general page, children included — for anything that looks a page up by its path. */
+export const ALL_GENERAL_NAV_ITEMS: readonly NavItem[] = GENERAL_NAV_ITEMS.flatMap((item) => [
+  item,
+  ...(item.children ?? []),
+]);
 
 // 41 entries — 38 components and the three directives (gogBadge, gogTooltip, gogRipple) — grouped by what they're for rather
 // than one long alphabetical run —
