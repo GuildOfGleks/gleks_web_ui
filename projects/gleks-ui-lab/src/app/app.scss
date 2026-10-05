@@ -1,6 +1,9 @@
 .lab-layout {
   display: grid;
-  grid-template-columns: 208px 1fr 208px; /* Sidebar | content | table of contents */
+  /* Sidebar | content | table of contents. `minmax(0, 1fr)`, not `1fr`: a bare `1fr` has the
+     content's min-content width as its floor, so one long unbreakable line widened the column past
+     a phone's viewport and clipped the right edge of every page. */
+  grid-template-columns: 208px minmax(0, 1fr) 208px;
   grid-template-rows: 60px 1fr;
   grid-template-areas:
     'header  header  header'
@@ -110,7 +113,7 @@
  */
 @media (max-width: 1100px) {
   .lab-layout {
-    grid-template-columns: 208px 1fr;
+    grid-template-columns: 208px minmax(0, 1fr);
     grid-template-areas:
       'header  header'
       'sidebar main';
@@ -122,7 +125,7 @@
 
 @media (max-width: 900px) {
   .lab-layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
       'header'
       'main';

@@ -238,10 +238,31 @@
       min-width: 0;
     }
 
+    /* Four icon buttons at 16px apart did not fit beside the menu button, the logo and the
+       version badge at 390px: the header ran 50px wider than the screen, and once the page column
+       stopped overflowing with it the search button landed on the badge. */
+    .header-controls {
+      gap: 4px;
+      /* Square buttons: the icon with 8px all round instead of 16px either side. */
+      --gog-button-sm-padding: var(--gog-space-8);
+    }
+
+    .nav-toggle {
+      flex-shrink: 0;
+    }
+
     /* The full name does not fit beside the version badge and the menu button — the logo stays,
        and it already links to the site's home page. */
     .logo-title {
       display: none;
     }
+  }
+}
+
+/* Under 360px even square buttons leave no room for the version badge; the version is one tap
+   away in the Releases page, and the header's job at that width is the menu and the controls. */
+@media (max-width: 359px) {
+  .lab-header .header-left .version-tag {
+    display: none;
   }
 }
