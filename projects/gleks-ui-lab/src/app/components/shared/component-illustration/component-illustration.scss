@@ -1,0 +1,142 @@
+// The drawing vocabulary: a fill class (`f-*`) and a stroke class (`s-*`) per role, each a theme
+// token, so a drawing says "a control boundary" or "body text" rather than a colour.
+:host {
+  display: block;
+}
+
+.ill {
+  display: block;
+  width: 100%;
+  // A card in a one-column grid (a phone) is as wide as the screen; past this the drawing only
+  // gets taller, not clearer.
+  max-width: 240px;
+  margin-inline: auto;
+  height: auto;
+  // Drawn in source order like any SVG; the defaults keep lines crisp and unfilled.
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+// A status fill is the status colour over the ground, not the theme's `*-shade`, which is a light
+// tint in every theme and reads as a cream slab on a dark one.
+
+// Placeholders for text: a bar, not a glyph. Muted bars are the body copy, text bars the label
+// that matters.
+.f-text {
+  fill: var(--gog-text-color);
+}
+.f-muted {
+  fill: var(--gog-muted-text-color);
+  opacity: 0.45;
+}
+.f-muted-solid {
+  fill: var(--gog-muted-text-color);
+}
+.f-surface {
+  fill: var(--gog-surface-color);
+}
+.f-hover {
+  fill: var(--gog-hover-color);
+}
+.f-track {
+  fill: var(--gog-hover-color);
+}
+.f-accent {
+  fill: var(--gog-accent-color);
+}
+.f-accent-soft {
+  fill: color-mix(in srgb, var(--gog-accent-color) 15%, transparent);
+}
+.f-on-accent {
+  fill: var(--gog-accent-text-color);
+}
+.f-on-danger {
+  fill: var(--gog-danger-text-color);
+}
+.f-none {
+  fill: none;
+}
+.f-backdrop {
+  fill: var(--gog-text-color);
+  opacity: 0.12;
+}
+.f-tip {
+  fill: var(--gog-text-color);
+}
+.f-tip-text {
+  fill: var(--gog-surface-color);
+  opacity: 0.8;
+}
+
+.f-success {
+  fill: var(--gog-success-color);
+}
+.f-success-soft {
+  fill: color-mix(in srgb, var(--gog-success-color) 18%, transparent);
+}
+.f-warning {
+  fill: var(--gog-warning-color);
+}
+.f-warning-soft {
+  fill: color-mix(in srgb, var(--gog-warning-color) 18%, transparent);
+}
+.f-info {
+  fill: var(--gog-info-color);
+}
+.f-info-soft {
+  fill: color-mix(in srgb, var(--gog-info-color) 18%, transparent);
+}
+.f-danger {
+  fill: var(--gog-danger-color);
+}
+
+.s-border {
+  stroke: var(--gog-border-color);
+}
+.s-boundary {
+  stroke: var(--gog-control-boundary-color);
+}
+.s-accent {
+  stroke: var(--gog-accent-color);
+}
+.s-text {
+  stroke: var(--gog-text-color);
+}
+.s-muted {
+  stroke: var(--gog-muted-text-color);
+}
+.s-surface {
+  stroke: var(--gog-surface-color);
+}
+.s-on-accent {
+  stroke: var(--gog-accent-text-color);
+  stroke-width: 2;
+}
+.s-info {
+  stroke: var(--gog-info-color);
+}
+.s-track {
+  stroke: var(--gog-hover-color);
+}
+
+.thick {
+  stroke-width: 3;
+}
+.dashed {
+  stroke-dasharray: 5 4;
+}
+.shadow {
+  filter: drop-shadow(0 2px 4px rgb(0 0 0 / 0.12));
+}
+
+.o-1 {
+  opacity: 0.12;
+}
+.o-2 {
+  opacity: 0.22;
+}
+.o-3 {
+  opacity: 0.45;
+}

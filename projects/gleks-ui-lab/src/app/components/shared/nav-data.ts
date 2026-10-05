@@ -93,5 +93,5 @@ const COMPONENT_NAV_GROUPS: readonly NavGroup[] = [
 
 export const NAV_SECTIONS: readonly NavSection[] = [
   { title: 'General', items: GENERAL_NAV_ITEMS },
-  { title: 'Components', groups: COMPONENT_NAV_GROUPS },
+  { title: 'Components', path: 'components', groups: COMPONENT_NAV_GROUPS },
 ];

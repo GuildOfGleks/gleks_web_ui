@@ -22,6 +22,12 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Server,
   },
   {
+    // `components/:name` needs a segment after the slash, so without this the card grid would
+    // fall through to `**` and answer 404.
+    path: 'components',
+    renderMode: RenderMode.Server,
+  },
+  {
     path: 'components/:name',
     renderMode: RenderMode.Server,
   },

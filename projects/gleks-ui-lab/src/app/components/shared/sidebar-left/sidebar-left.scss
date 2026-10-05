@@ -152,3 +152,38 @@
 .nav-section {
   padding: 0 10px;
 }
+
+/* The "Components" title as a link to the card grid: still reads as a section title, and says it
+   goes somewhere with an arrow rather than by turning into a nav row. The label stays muted text;
+   hover and the active page take the body colour, which clears AA on the sidebar in every theme
+   where the accent would not. */
+.nav-title-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  border-radius: var(--gog-radius);
+  transition: color var(--gog-duration-fast);
+
+  &:hover,
+  &.active {
+    color: var(--gog-text-color);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--gog-accent-color);
+    outline-offset: 2px;
+  }
+}
+
+/* Points the way the page reads: the library's `--gog-direction-sign` is -1 under `dir="rtl"`. */
+.nav-title-link__arrow {
+  --gog-icon-size: 12px;
+  transform: scaleX(var(--gog-direction-sign, 1));
+  transition: transform var(--gog-duration-fast);
+}
+
+.nav-title-link:hover .nav-title-link__arrow {
+  transform: translateX(calc(2px * var(--gog-direction-sign, 1)))
+    scaleX(var(--gog-direction-sign, 1));
+}

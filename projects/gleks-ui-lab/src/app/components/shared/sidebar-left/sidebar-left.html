@@ -40,12 +40,25 @@
   }
 
   <!-- "Components" title stays pinned with the rest of nav-fixed — only the list of groups
-       below it (inside nav-scroll) actually scrolls. -->
+       below it (inside nav-scroll) actually scrolls. It is a link to the section's own page, the
+       card grid of every component. -->
   @for (section of sections; track section.title) {
     @if (section.groups) {
-      <div class="sidebar-title font-heading nav-fixed__components-title">
-        {{ section.title }}
-      </div>
+      @if (section.path; as path) {
+        <a
+          [routerLink]="'/' + path"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="sidebar-title font-heading nav-fixed__components-title nav-title-link"
+        >
+          {{ section.title }}
+          <gog-icon name="arrow-right" class="nav-title-link__arrow" />
+        </a>
+      } @else {
+        <div class="sidebar-title font-heading nav-fixed__components-title">
+          {{ section.title }}
+        </div>
+      }
     }
   }
 </div>

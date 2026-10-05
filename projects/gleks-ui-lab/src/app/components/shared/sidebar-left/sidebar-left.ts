@@ -20,6 +20,8 @@ interface SidebarNavItem extends NavItem {
 
 interface SidebarNavSection {
   readonly title: string;
+  /** The section's own page, which its title links to. */
+  readonly path?: string;
   /** Flat section (e.g. "General") — mutually exclusive with `groups`. */
   readonly items?: readonly SidebarNavItem[];
   /**
@@ -55,6 +57,7 @@ export class SidebarLeftComponent {
 
   protected readonly sections: readonly SidebarNavSection[] = NAV_SECTIONS.map((section) => ({
     title: section.title,
+    path: section.path,
     items: section.items?.map(toSidebarItem),
     groups: section.groups,
   }));

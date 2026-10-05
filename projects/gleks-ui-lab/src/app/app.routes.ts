@@ -66,6 +66,12 @@ export const routes: Routes = [
       import('./components/pages/general-page/general-page').then((m) => m.GeneralPage),
   },
   {
+    // The card grid of every component; the sidebar's "Components" title links here.
+    path: 'components',
+    loadComponent: () =>
+      import('./components/pages/components-page/components-page').then((m) => m.ComponentsPage),
+  },
+  {
     path: 'components/accordion',
     loadComponent: () =>
       import('./components/pages/accordion-doc-page/accordion-doc-page').then(

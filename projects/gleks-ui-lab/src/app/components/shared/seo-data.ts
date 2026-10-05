@@ -60,8 +60,14 @@ export const PAGE_SEO: Readonly<Record<string, PageSeo>> = {
   [HOME_PATH]: {
     title: `${SITE_NAME} — Angular UI Component Library`,
     description:
-      'A lightweight Angular UI component library: 32 standalone, signal-based, OnPush components ' +
+      'A lightweight Angular UI component library: 38 standalone, signal-based, OnPush components ' +
       'themed with plain CSS variables. No CDK, no Material, no Sass build step.',
+  },
+  components: {
+    title: `Angular UI Components — ${SITE_NAME}`,
+    description:
+      'Every component in @guildofgleks/ui on one page, grouped by what it is for: buttons, form ' +
+      'controls, tables, overlays and layout, each with a drawing and a one-line summary.',
   },
   'general/getting-started': {
     title: `Getting Started — Angular UI Library Setup`,

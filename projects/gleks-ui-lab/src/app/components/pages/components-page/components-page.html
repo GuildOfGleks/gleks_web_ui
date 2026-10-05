@@ -1,0 +1,34 @@
+<div class="components-doc">
+  <header class="components-doc__hero">
+    <p class="components-doc__eyebrow">&#64;guildofgleks/ui</p>
+    <h1 class="components-doc__title font-heading">Components</h1>
+    <p class="components-doc__lead">
+      All {{ count }} pages — components and the three directives, <code>gogBadge</code>,
+      <code>gogTooltip</code> and <code>gogRipple</code> — grouped by what they are for. Every
+      drawing is in the current theme's colours; switch the theme and they follow.
+    </p>
+  </header>
+
+  @for (group of groups; track group.id) {
+    <section class="doc-section">
+      <h2 [id]="group.id" class="doc-section__title font-heading">{{ group.title }}</h2>
+      <ul class="components-doc__grid">
+        @for (card of group.cards; track card.slug) {
+          <li>
+            <gog-card class="components-doc__card">
+              <app-component-illustration
+                gogCardMedia
+                class="components-doc__media"
+                [name]="card.slug"
+              />
+              <h3 gogCardHeader class="components-doc__name">
+                <a gogCardLink [routerLink]="'/' + card.path">{{ card.label }}</a>
+              </h3>
+              <p class="components-doc__blurb">{{ card.blurb }}</p>
+            </gog-card>
+          </li>
+        }
+      </ul>
+    </section>
+  }
+</div>

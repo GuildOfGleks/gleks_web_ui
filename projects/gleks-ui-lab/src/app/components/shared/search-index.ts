@@ -26,9 +26,12 @@ function flattenItems(items: readonly NavItem[]): SearchEntry[] {
 }
 
 function flattenSection(section: NavSection): SearchEntry[] {
-  if (section.items) return flattenItems(section.items);
-  if (section.groups) return section.groups.flatMap((group) => flattenItems(group.items));
-  return [];
+  const own = section.path ? [toEntry({ label: section.title, path: section.path })] : [];
+  if (section.items) return [...own, ...flattenItems(section.items)];
+  if (section.groups) {
+    return [...own, ...section.groups.flatMap((group) => flattenItems(group.items))];
+  }
+  return own;
 }
 
 export const SEARCH_INDEX: readonly SearchEntry[] = NAV_SECTIONS.flatMap(flattenSection);
