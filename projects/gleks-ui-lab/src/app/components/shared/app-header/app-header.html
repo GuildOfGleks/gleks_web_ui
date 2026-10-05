@@ -10,7 +10,7 @@
       aria-label="Navigation"
       (click)="navToggle.emit()"
     >
-      <fa-icon [icon]="faBars" />
+      <gog-icon name="menu" />
     </button>
     <img src="/gleks_ui_logo.svg" alt="" class="logo-icon" width="28" height="32" />
     <span class="logo-title font-heading">GUILD OF GLEKS UI</span>
@@ -49,7 +49,7 @@
         [ariaControls]="searchPanelId()"
         (gogClick)="toggleSearch()"
       >
-        <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
+        <gog-icon name="search" />
       </gog-button>
 
       @if (isSearchOpen()) {
@@ -119,7 +119,7 @@
       [class.ripple-toggle--active]="isRippleOn()"
       (gogClick)="toggleRipple()"
     >
-      <fa-icon [icon]="rippleIcon()"></fa-icon>
+      <gog-icon [name]="rippleIcon()" />
     </gog-button>
 
     <gog-button
@@ -133,7 +133,7 @@
       [class.direction-toggle--active]="isRtl()"
       (gogClick)="toggleDirection()"
     >
-      <fa-icon [icon]="directionIcon()"></fa-icon>
+      <gog-icon [name]="directionIcon()" />
     </gog-button>
 
     <div class="theme-switcher">
@@ -146,7 +146,7 @@
         [gogTooltipDisabled]="isThemeMenuOpen()"
         (gogClick)="toggleThemeMenu()"
       >
-        <fa-icon [icon]="faPalette"></fa-icon>
+        <gog-icon name="palette" />
       </gog-button>
 
       @if (isThemeMenuOpen()) {

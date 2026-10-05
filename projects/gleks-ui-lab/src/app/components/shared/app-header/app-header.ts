@@ -12,17 +12,12 @@ import {
   viewChild,
 } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { ButtonComponent, GogTooltipDirective, ThemeService } from '@guildofgleks/ui';
-import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import {
-  faAlignLeft,
-  faAlignRight,
-  faBars,
-  faDroplet,
-  faDropletSlash,
-  faMagnifyingGlass,
-  faPalette,
-} from '@fortawesome/free-solid-svg-icons';
+  ButtonComponent,
+  GogTooltipDirective,
+  IconComponent,
+  ThemeService,
+} from '@guildofgleks/ui';
 
 import { DirectionPreference } from '../direction-preference';
 import { LIBRARY_VERSION } from '../library-version';
@@ -46,7 +41,7 @@ interface ThemeMenuOption {
  */
 @Component({
   selector: 'app-header',
-  imports: [RouterLink, FaIconComponent, ButtonComponent, GogTooltipDirective],
+  imports: [RouterLink, ButtonComponent, GogTooltipDirective, IconComponent],
   templateUrl: './app-header.html',
   styleUrl: './app-header.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -140,12 +135,8 @@ export class AppHeader {
    * same reading as the `aria-pressed` beside it, so the two cannot contradict each other. The
    * accessible name stays constant for the same reason it did when it was written.
    */
-  protected readonly rippleIcon = computed(() => (this.isRippleOn() ? faDroplet : faDropletSlash));
-  protected readonly directionIcon = computed(() => (this.isRtl() ? faAlignRight : faAlignLeft));
-
-  protected readonly faBars = faBars;
-  protected readonly faPalette = faPalette;
-  protected readonly faMagnifyingGlass = faMagnifyingGlass;
+  protected readonly rippleIcon = computed(() => (this.isRippleOn() ? 'droplet' : 'droplet-off'));
+  protected readonly directionIcon = computed(() => (this.isRtl() ? 'align-right' : 'align-left'));
 
   /**
    * Closes whichever of this header's overlays is open, innermost first, and says whether it

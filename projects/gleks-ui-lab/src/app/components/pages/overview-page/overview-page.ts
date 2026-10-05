@@ -1,50 +1,47 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import {
-  faBoxOpen,
-  faCircleHalfStroke,
-  faLayerGroup,
-  faPalette,
-  faSliders,
-  faUniversalAccess,
-} from '@fortawesome/free-solid-svg-icons';
-import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
+import { IconComponent, type GogIconName } from '@guildofgleks/ui';
+import { NAV_SECTIONS } from '../../shared/nav-data';
+
+/** Every component and directive page in the sidebar, counted rather than typed. */
+const PAGE_COUNT = (
+  NAV_SECTIONS.find((section) => section.path === 'components')?.groups ?? []
+).reduce((sum, group) => sum + group.items.length, 0);
 
 interface FeatureCard {
-  readonly icon: IconDefinition;
+  readonly icon: GogIconName;
   readonly title: string;
   readonly text: string;
 }
 
 const FEATURES: readonly FeatureCard[] = [
   {
-    icon: faLayerGroup,
-    title: '31 building blocks',
+    icon: 'layers',
+    title: `${PAGE_COUNT} building blocks`,
     text: 'Buttons, form controls, date pickers, dialogs, tables, tabs, menus, navigation and feedback components — ready-made.',
   },
   {
-    icon: faPalette,
+    icon: 'palette',
     title: 'One visual language',
     text: 'A consistent look across your whole product, out of the box — not assembled component-by-component.',
   },
   {
-    icon: faCircleHalfStroke,
+    icon: 'contrast',
     title: 'Effortless theming',
     text: 'Light/dark theming that adapts to your brand, plus nine ready-made presets you can drop in as-is.',
   },
   {
-    icon: faSliders,
+    icon: 'sliders',
     title: 'App-wide defaults',
     text: "Set a size, an error timing, a date format once — a house style isn't repeated on every instance.",
   },
   {
-    icon: faUniversalAccess,
+    icon: 'accessibility',
     title: 'Accessible by default',
     text: 'Keyboard navigation, focus states, screen-reader support and right-to-left layouts are built in, not bolted on.',
   },
   {
-    icon: faBoxOpen,
+    icon: 'package',
     title: 'Zero dependencies',
     text: 'Native Date, no CDK, no date library, no theming engine to learn — just the components.',
   },
@@ -80,7 +77,7 @@ const NEXT_LINKS: readonly NextLink[] = [
 
 @Component({
   selector: 'app-overview-page',
-  imports: [FaIconComponent, RouterLink],
+  imports: [IconComponent, RouterLink],
   templateUrl: './overview-page.html',
   styleUrl: './overview-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

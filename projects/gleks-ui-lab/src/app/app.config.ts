@@ -2,6 +2,7 @@ import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { routes } from './app.routes';
+import { provideLabIcons } from './components/shared/lab-icons';
 import { provideLabGogConfig } from './components/shared/ripple-preference';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 
@@ -34,5 +35,6 @@ export const appConfig: ApplicationConfig = {
      * value wants the helper, and that is what the site's own code samples show.
      */
     provideLabGogConfig(),
+    provideLabIcons(),
   ],
 };
