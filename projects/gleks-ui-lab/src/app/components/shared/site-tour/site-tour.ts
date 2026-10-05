@@ -39,7 +39,7 @@ export class SiteTour {
         ariaLabelledBy: SITE_TOUR_TITLE_ID,
         closable: true,
         draggable: false,
-        width: '640px',
+        width: '720px',
         maxWidth: 'calc(100vw - 32px)',
       });
       const result = await handle.afterClosed;

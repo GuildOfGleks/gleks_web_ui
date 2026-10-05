@@ -21,8 +21,9 @@
   grid-template-columns: minmax(0, 220px) minmax(0, 1fr);
   gap: 20px;
   align-items: start;
-  // Tall enough for the longest step, so Next does not move under the pointer between steps.
-  min-height: 220px;
+  // Tall enough for the longest step — the last, with its three controls — so the dialog keeps one
+  // height and Next does not move under the pointer between steps.
+  min-height: 300px;
 }
 
 .tour__text {
@@ -56,10 +57,12 @@
   gap: 8px;
   // Stays in reach when the dialog has to scroll — on a phone, the vertical stepper and a long
   // step can be taller than the screen, and Next was below the fold.
+  // The padding gives the pinned bar a strip of surface above it; the matching negative margin
+  // keeps it out of the layout, so the bar never makes the dialog scroll on its own.
   position: sticky;
   bottom: 0;
-  padding-block: 12px;
-  margin-block: -12px;
+  padding-block-start: 12px;
+  margin-block-start: -12px;
   background-color: var(--gog-surface-color);
 }
 
@@ -107,11 +110,16 @@
   fill: var(--gog-muted-text-color);
 }
 
-// One column on a phone, where the drawing is not rendered at all.
+// One column on a phone, where the drawing is not rendered at all. The dialog scrolls there, and
+// its scrollbar is drawn over the right edge — the buttons keep clear of it.
 @media (max-width: 560px) {
   .tour__body {
     grid-template-columns: minmax(0, 1fr);
     min-height: 0;
+  }
+
+  .tour__actions {
+    padding-inline-end: 12px;
   }
 }
 
