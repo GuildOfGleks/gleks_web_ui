@@ -128,6 +128,36 @@ describe('ProgressbarComponent', () => {
     expect(host().classList.contains('gog-progressbar--accent')).toBe(false);
   });
 
+  it('should draw no animation by default', () => {
+    expect(host().classList.contains('gog-progressbar--stripes')).toBe(false);
+    expect(host().classList.contains('gog-progressbar--shimmer')).toBe(false);
+  });
+
+  it('should mark the host with the chosen animation', () => {
+    fixture.componentRef.setInput('animation', 'stripes');
+    fixture.detectChanges();
+    expect(host().classList.contains('gog-progressbar--stripes')).toBe(true);
+
+    fixture.componentRef.setInput('animation', 'shimmer');
+    fixture.detectChanges();
+    expect(host().classList.contains('gog-progressbar--stripes')).toBe(false);
+    expect(host().classList.contains('gog-progressbar--shimmer')).toBe(true);
+  });
+
+  it('should keep the animation in buffer mode', () => {
+    fixture.componentRef.setInput('mode', 'buffer');
+    fixture.componentRef.setInput('animation', 'stripes');
+    fixture.detectChanges();
+    expect(host().classList.contains('gog-progressbar--stripes')).toBe(true);
+  });
+
+  it('should ignore the animation in indeterminate mode, which already moves', () => {
+    fixture.componentRef.setInput('mode', 'indeterminate');
+    fixture.componentRef.setInput('animation', 'shimmer');
+    fixture.detectChanges();
+    expect(host().classList.contains('gog-progressbar--shimmer')).toBe(false);
+  });
+
   it('should pass the accessible name through', () => {
     fixture.componentRef.setInput('ariaLabel', 'File upload');
     fixture.detectChanges();

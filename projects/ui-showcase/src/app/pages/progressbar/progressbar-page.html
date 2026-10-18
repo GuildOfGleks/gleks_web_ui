@@ -39,6 +39,45 @@
         </div>
       </ng-template>
     </app-doc-matrix>
+
+    <h3>animation × mode</h3>
+    <p class="progressbar-page__note">
+      <code>animation</code> puts motion on a fill that reports a value, for a bar whose number
+      holds still between updates: <code>stripes</code> travel toward the end the fill grows to, and
+      <code>shimmer</code> sweeps a highlight across it. Both are ignored in
+      <code>indeterminate</code> mode, which already moves. Under
+      <code>prefers-reduced-motion</code> the stripes stay and stop, and the shimmer goes — neither
+      carries the value, which the fill's width still states.
+    </p>
+    <app-doc-matrix rowAxis="animation" colAxis="mode">
+      <ng-template appDocCell [rows]="animations" [cols]="modes" let-animation let-mode="col">
+        <div class="progressbar-page__cell">
+          <gog-progressbar
+            size="lg"
+            [animation]="animation"
+            [mode]="mode"
+            [value]="62"
+            [buffer]="80"
+            ariaLabel="Uploading"
+          />
+        </div>
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>animation × variant</h3>
+    <app-doc-matrix rowAxis="variant" colAxis="animation">
+      <ng-template appDocCell [rows]="variants" [cols]="animations" let-variant let-animation="col">
+        <div class="progressbar-page__cell">
+          <gog-progressbar
+            size="slg"
+            [variant]="variant"
+            [animation]="animation"
+            [value]="62"
+            ariaLabel="Uploading"
+          />
+        </div>
+      </ng-template>
+    </app-doc-matrix>
   </app-doc-section>
 
   <app-doc-section id="content" title="Content & layout">

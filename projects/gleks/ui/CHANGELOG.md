@@ -5,6 +5,18 @@ All notable changes to `@guildofgleks/ui` are documented here. Format follows
 semantic versioning**: a patch fixes, a minor adds, and only a major breaks — see the README's
 _Versioning_ section. Before 21.16.0 a minor could carry a breaking change, and its entry said so.
 
+## [21.20.0] - planned
+
+### Added
+
+- **`gog-progressbar`'s `animation`** — `'none'` (the default), `'stripes'` or `'shimmer'`: motion
+  on a fill that reports a value, for a bar whose number holds still between updates. Stripes
+  travel toward the end the fill grows to, and stay but stop under `prefers-reduced-motion`; the
+  shimmer is a highlight swept across the fill, and is removed there. Ignored in `'indeterminate'`
+  mode, which already moves. New type `GogProgressbarAnimation`, and five tokens:
+  `--gog-progressbar-stripes-tile`, `-stripes-duration`, `-shimmer-color`, `-shimmer-duration` and
+  `-shimmer-easing`.
+
 ## [21.19.0] - 05.10.2026
 
 ### Changed

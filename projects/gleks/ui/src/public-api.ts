@@ -95,6 +95,7 @@ export type {
   GogInputType,
   GogOrientation,
   GogPaginatorRangeMode,
+  GogProgressbarAnimation,
   GogProgressbarMode,
   GogProgressbarVariant,
   GogScrollAxis,

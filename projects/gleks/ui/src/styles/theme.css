@@ -1849,9 +1849,18 @@
   --gog-progressbar-value-line-height: var(--gog-line-height-none);
   --gog-progressbar-indeterminate-duration: 1.6s;
   --gog-progressbar-indeterminate-easing: cubic-bezier(0.65, 0.05, 0.36, 1);
-  /* Stands in for the indeterminate animation under reduced motion. */
+  /* The stripe pattern: what the indeterminate sweep becomes under reduced motion, and what
+     `animation="stripes"` draws on the fill. */
   --gog-progressbar-stripe-size: 6px;
   --gog-progressbar-stripe-color: var(--gog-surface-color);
+  /* `animation="stripes"`: a square tile holding two stripe periods, each twice the stripe size. */
+  --gog-progressbar-stripes-tile: calc(var(--gog-progressbar-stripe-size) * 2.8284);
+  --gog-progressbar-stripes-duration: 1s;
+  /* A highlight is lighter than the fill in every theme, and the fills are all mid-tone colours, so
+     it is translucent white rather than a palette colour that turns dark on a dark theme. */
+  --gog-progressbar-shimmer-color: rgb(255 255 255 / 0.45);
+  --gog-progressbar-shimmer-duration: 2s;
+  --gog-progressbar-shimmer-easing: ease-in-out;
   /* Two hairlines that mark where the fill ends, off by default (width 0). On, they make that
      boundary clear 3:1 in every theme, which the fill and track colours alone do not — but a light
      line on a dark fill reads as an outline, not as the value. Set the width to 1px to opt in. */

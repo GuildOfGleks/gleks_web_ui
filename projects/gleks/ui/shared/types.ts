@@ -101,6 +101,15 @@ export type GogProgressbarMode = 'determinate' | 'indeterminate' | 'buffer';
 export type GogProgressbarVariant = GogSeverity;
 
 /**
+ * Motion drawn on `gog-progressbar`'s fill while it reports a value. Ignored in `'indeterminate'`
+ * mode, which already moves.
+ * - `'none'` — a flat fill.
+ * - `'stripes'` — diagonal stripes travelling along the fill; static stripes under reduced motion.
+ * - `'shimmer'` — a highlight sweeping across the fill; removed under reduced motion.
+ */
+export type GogProgressbarAnimation = 'none' | 'stripes' | 'shimmer';
+
+/**
  * What an action or a reading *means*, as opposed to how loudly it is drawn. `'accent'` is the
  * absence of a claim — the library's own colour, and the default everywhere this appears — and
  * the four status names are the exception, so nothing has to opt out of a severity it does not

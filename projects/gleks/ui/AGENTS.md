@@ -5,8 +5,8 @@ an app that **consumes** the published `@guildofgleks/ui` npm package. It is not
 authoring the library — if you are working inside the `gleks_web_ui` monorepo itself, read
 `.github/instructions/*.md` instead.
 
-Everything below reflects the library's actual source as of **`21.15.0`** (in progress — the
-released version is 21.14.0; see `CHANGELOG.md` for what 21.15.0 adds). 21.7.0 removed the three
+Everything below reflects the library's actual source as of **`21.20.0`** (in progress — the
+released version is 21.19.0; see `CHANGELOG.md` for what 21.20.0 adds). 21.7.0 removed the three
 abbreviated token prefixes and 21.5.0 removed a batch of deprecated API — see **Removed in 21.7.0**
 and **Removed in 21.5.0** near the end of this file, which exist so code written against an older
 version can be migrated — and `CHANGELOG.md` has the rest. `README.md` covers the same ground at a
@@ -1698,13 +1698,24 @@ on `<body>`. You do not need to disable the controls inside yourself.
 | `mode`            | `GogProgressbarMode` (`'determinate'\|'indeterminate'\|'buffer'`)            | `'determinate'` |
 | `variant`         | `GogProgressbarVariant` (`'accent'\|'success'\|'danger'\|'warning'\|'info'`) | `'accent'`      |
 | `size`            | `GogSize`                                                                    | `'md'`          |
+| `animation`       | `GogProgressbarAnimation` (`'none'\|'stripes'\|'shimmer'`)                   | `'none'`        |
 | `showValue`       | `boolean`                                                                    | `false`         |
 | `ariaLabel`       | `string`                                                                     | `''`            |
 
 ```html
 <gog-progressbar mode="indeterminate" ariaLabel="Loading" />
 <gog-progressbar mode="buffer" [value]="42" [buffer]="70" />
+<gog-progressbar [value]="42" animation="stripes" ariaLabel="Uploading" />
 ```
+
+**`animation`** (21.20.0) puts motion on a fill that reports a value — for a bar whose number holds
+still between updates and should still look busy. `'stripes'` travel toward the end the fill grows
+to; `'shimmer'` sweeps a highlight across it. Ignored in `'indeterminate'` mode, which already
+moves. Under `prefers-reduced-motion` the stripes stay and stop and the shimmer is removed. Neither
+says anything a screen reader hears — set it back to `'none'` when the work is done, since a full
+bar that still moves reads as "not finished". Tokens: `--gog-progressbar-stripes-tile`,
+`-stripes-duration`, `-shimmer-color`, `-shimmer-duration`, `-shimmer-easing`; the stripes reuse
+`--gog-progressbar-stripe-size` and `-stripe-color`.
 
 **The fill's end can be marked by two hairlines**, off by default since 21.15.0:
 `--gog-progressbar-edge-color` over `--gog-progressbar-edge-backing-color`, each

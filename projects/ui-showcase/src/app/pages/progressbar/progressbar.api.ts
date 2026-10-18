@@ -11,6 +11,7 @@ export const PROGRESSBAR_API: readonly DocApi[] = [
       { name: 'mode', type: 'GogProgressbarMode', default: "'determinate'" },
       { name: 'variant', type: 'GogProgressbarVariant', default: "'accent'" },
       { name: 'size', type: 'GogSize', default: "'md'" },
+      { name: 'animation', type: 'GogProgressbarAnimation', default: "'none'" },
       { name: 'showValue', type: 'boolean', default: 'false' },
       { name: 'ariaLabel', type: 'string', default: "''" },
     ],

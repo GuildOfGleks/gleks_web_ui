@@ -95,6 +95,62 @@
   }
 }
 
+/* === Animation ===
+   Motion on a fill that reports a value, for a bar whose number holds still between updates. The
+   component never sets these classes in indeterminate mode, so the sweep above has the fill alone. */
+
+/* Stripes travel toward the inline end, the way the fill grows. The tile is square and holds two
+   stripe periods along its diagonal, so it repeats seamlessly at any fill width. */
+:host(.gog-progressbar--stripes) .gog-progressbar__fill {
+  background-image: linear-gradient(
+    45deg,
+    var(--gog-progressbar-stripe-color) 25%,
+    transparent 25% 50%,
+    var(--gog-progressbar-stripe-color) 50% 75%,
+    transparent 75%
+  );
+  background-size: var(--gog-progressbar-stripes-tile) var(--gog-progressbar-stripes-tile);
+  animation: gog-progressbar-stripes var(--gog-progressbar-stripes-duration) linear infinite;
+}
+
+@keyframes gog-progressbar-stripes {
+  from {
+    background-position-x: 0;
+  }
+  to {
+    background-position-x: calc(var(--gog-progressbar-stripes-tile) * var(--gog-direction-sign));
+  }
+}
+
+/* The highlight is a layer over the fill, clipped to it, so it never spills onto the track. */
+:host(.gog-progressbar--shimmer) .gog-progressbar__fill {
+  overflow: hidden;
+}
+
+:host(.gog-progressbar--shimmer) .gog-progressbar__fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(
+    90deg,
+    transparent,
+    var(--gog-progressbar-shimmer-color),
+    transparent
+  );
+  transform: translateX(calc(-100% * var(--gog-direction-sign)));
+  animation: gog-progressbar-shimmer var(--gog-progressbar-shimmer-duration)
+    var(--gog-progressbar-shimmer-easing) infinite;
+}
+
+@keyframes gog-progressbar-shimmer {
+  from {
+    transform: translateX(calc(-100% * var(--gog-direction-sign)));
+  }
+  to {
+    transform: translateX(calc(100% * var(--gog-direction-sign)));
+  }
+}
+
 /*
  * A bar that never stops moving is exactly what this media query exists for. The static
  * striped fill still reads as "in progress" without the motion.
@@ -114,6 +170,16 @@
   .gog-progressbar__fill,
   .gog-progressbar__buffer {
     transition: none;
+  }
+
+  /* Stripes keep their pattern and stop moving; the shimmer is only motion, so it goes. Neither
+     carries the value, which the fill's width still states. */
+  :host(.gog-progressbar--stripes) .gog-progressbar__fill {
+    animation: none;
+  }
+
+  :host(.gog-progressbar--shimmer) .gog-progressbar__fill::after {
+    content: none;
   }
 }
 

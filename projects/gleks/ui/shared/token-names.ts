@@ -1164,10 +1164,15 @@ export type GogTokenName =
   | '--gog-progressbar-lg-height'
   | '--gog-progressbar-md-height'
   | '--gog-progressbar-radius'
+  | '--gog-progressbar-shimmer-color'
+  | '--gog-progressbar-shimmer-duration'
+  | '--gog-progressbar-shimmer-easing'
   | '--gog-progressbar-slg-height'
   | '--gog-progressbar-sm-height'
   | '--gog-progressbar-stripe-color'
   | '--gog-progressbar-stripe-size'
+  | '--gog-progressbar-stripes-duration'
+  | '--gog-progressbar-stripes-tile'
   | '--gog-progressbar-success-bg'
   | '--gog-progressbar-success-buffer-bg'
   | '--gog-progressbar-track-base-bg'
@@ -3310,10 +3315,15 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-progressbar-lg-height',
       '--gog-progressbar-md-height',
       '--gog-progressbar-radius',
+      '--gog-progressbar-shimmer-color',
+      '--gog-progressbar-shimmer-duration',
+      '--gog-progressbar-shimmer-easing',
       '--gog-progressbar-slg-height',
       '--gog-progressbar-sm-height',
       '--gog-progressbar-stripe-color',
       '--gog-progressbar-stripe-size',
+      '--gog-progressbar-stripes-duration',
+      '--gog-progressbar-stripes-tile',
       '--gog-progressbar-success-bg',
       '--gog-progressbar-success-buffer-bg',
       '--gog-progressbar-track-base-bg',

@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 
 import {
+  GogProgressbarAnimation,
   GogProgressbarMode,
   GogProgressbarVariant,
   GogSize,
@@ -31,6 +32,7 @@ function clamp(value: number): number {
  * <gog-progressbar [value]="42" />
  * <gog-progressbar mode="indeterminate" ariaLabel="Loading" />
  * <gog-progressbar mode="buffer" [value]="42" [buffer]="70" />
+ * <gog-progressbar [value]="42" animation="stripes" />
  * ```
  *
  * `value` and `buffer` are percentages and are clamped to 0–100 rather than trusted: a bar
@@ -66,6 +68,11 @@ export class ProgressbarComponent {
   readonly mode = input<GogProgressbarMode>('determinate');
   readonly variant = input<GogProgressbarVariant>('accent');
   readonly size = input<GogSize>('md');
+  /**
+   * Motion on the fill, for a bar that should look busy while its value holds still between
+   * updates. Ignored in `'indeterminate'` mode, which already moves.
+   */
+  readonly animation = input<GogProgressbarAnimation>('none');
   /** Renders the percentage next to the bar. Off by default — most bars sit under a label. */
   readonly showValue = input(false, { transform: booleanAttribute });
   /**
@@ -94,6 +101,11 @@ export class ProgressbarComponent {
     this.isIndeterminate() ? MAX : this.clampedValue(),
   );
 
+  /** Indeterminate already sweeps; stripes or a shimmer on top would be two motions at once. */
+  protected readonly resolvedAnimation = computed<GogProgressbarAnimation>(() =>
+    this.isIndeterminate() ? 'none' : this.animation(),
+  );
+
   protected readonly hostClasses = computed(() =>
     [
       'gog-progressbar',
@@ -101,6 +113,7 @@ export class ProgressbarComponent {
       `gog-progressbar--${this.variant()}`,
       `gog-progressbar--${this.size()}`,
       this.showValue() ? 'gog-progressbar--with-value' : null,
+      this.resolvedAnimation() === 'none' ? null : `gog-progressbar--${this.resolvedAnimation()}`,
     ]
       .filter((className): className is string => className !== null)
       .join(' '),
