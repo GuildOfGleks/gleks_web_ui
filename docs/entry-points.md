@@ -252,5 +252,11 @@ measured it on a four-route app: at best about 28 kB of a 114 kB initial transfe
 any app whose first page already renders a field or a select. Not worth another break to every
 consumer's imports.
 
+**Amended 2026-10-18: a _new_ heavy component may start in its own entry point.** That decision
+was about moving components that already shipped, where every move breaks an import. `gog-scheduler`
+(21.20.0) had no import to break, is large, and usually lives on one route — so it was born as
+`@guildofgleks/ui/scheduler`, by the owner's decision, and the root never exported it. Nothing
+already in the root moves; the rule for the existing split is unchanged.
+
 **1a before 1b, and not in the same commit** — 1a changes nothing a consumer can see and touches 61
 files, 1b changes the public surface and touches four.

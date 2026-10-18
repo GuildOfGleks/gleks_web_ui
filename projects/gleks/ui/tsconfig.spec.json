@@ -17,7 +17,8 @@
       "@guildofgleks/ui/shared": ["./shared/public-api.ts"],
       "@guildofgleks/ui/table": ["./table/public-api.ts"],
       "@guildofgleks/ui/datepicker": ["./datepicker/public-api.ts"],
-      "@guildofgleks/ui/dialog": ["./dialog/public-api.ts"]
+      "@guildofgleks/ui/dialog": ["./dialog/public-api.ts"],
+      "@guildofgleks/ui/scheduler": ["./scheduler/public-api.ts"]
     }
   },
   "include": [
@@ -26,6 +27,7 @@
     "shared/**/*.spec.ts",
     "table/**/*.spec.ts",
     "datepicker/**/*.spec.ts",
-    "dialog/**/*.spec.ts"
+    "dialog/**/*.spec.ts",
+    "scheduler/**/*.spec.ts"
   ]
 }

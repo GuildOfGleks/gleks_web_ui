@@ -1913,6 +1913,75 @@
   --gog-ripple-exit-duration: var(--gog-duration-slow);
   --gog-ripple-easing: var(--gog-easing);
 
+  /* ── Scheduler ─────────────────────────────────────────────────────────────
+     An event carries its severity as a leading edge over the ordinary surface, as `gog-alert`
+     does: the palette has no per-status tint, and the label stays the body text on every event. */
+  --gog-scheduler-bg: var(--gog-surface-color);
+  --gog-scheduler-color: var(--gog-text-color);
+  --gog-scheduler-font-family: var(--gog-font-body);
+  --gog-scheduler-line-color: var(--gog-border-color);
+  --gog-scheduler-line-width: var(--gog-border-width);
+  --gog-scheduler-slot-line-style: dotted;
+  --gog-scheduler-toolbar-gap: var(--gog-space-12);
+  --gog-scheduler-toolbar-padding-block: var(--gog-space-12);
+  --gog-scheduler-title-font-size: var(--gog-text-lg);
+  --gog-scheduler-title-font-weight: var(--gog-font-weight-semibold);
+  --gog-scheduler-title-line-height: var(--gog-line-height-tight);
+  --gog-scheduler-weekday-color: var(--gog-muted-text-color);
+  --gog-scheduler-weekday-font-size: var(--gog-text-xs);
+  --gog-scheduler-weekday-font-weight: var(--gog-font-weight-semibold);
+  --gog-scheduler-weekday-line-height: var(--gog-line-height-none);
+  --gog-scheduler-weekday-text-transform: var(--gog-text-transform);
+  --gog-scheduler-weekday-padding-block: var(--gog-space-8);
+  --gog-scheduler-cell-padding: var(--gog-space-4);
+  --gog-scheduler-cell-gap: var(--gog-space-4);
+  --gog-scheduler-outside-color: var(--gog-muted-text-color);
+  --gog-scheduler-day-hover-bg: var(--gog-hover-color);
+  --gog-scheduler-day-press-bg: var(--gog-border-color);
+  --gog-scheduler-day-number-size: var(--gog-space-24);
+  --gog-scheduler-day-number-font-size: var(--gog-text-sm);
+  --gog-scheduler-day-number-line-height: var(--gog-line-height-none);
+  /* Today is the one filled mark on the grid: the accent fill and the text gated against it. */
+  --gog-scheduler-today-bg: var(--gog-accent-dim);
+  --gog-scheduler-today-color: var(--gog-accent-text-color);
+  --gog-scheduler-today-font-weight: var(--gog-font-weight-bold);
+  --gog-scheduler-event-bg: var(--gog-surface-color);
+  --gog-scheduler-event-color: var(--gog-text-color);
+  --gog-scheduler-event-time-color: var(--gog-muted-text-color);
+  --gog-scheduler-event-border-color: var(--gog-border-color);
+  --gog-scheduler-event-hover-bg: var(--gog-hover-color);
+  --gog-scheduler-event-press-bg: var(--gog-border-color);
+  --gog-scheduler-event-shadow: var(--gog-elevation-1);
+  /* Twice the control border, as `gog-alert`'s edge, so it reads as a mark rather than a border. */
+  --gog-scheduler-event-edge-width: calc(var(--gog-control-border-width) * 2);
+  --gog-scheduler-event-radius: var(--gog-radius);
+  --gog-scheduler-event-min-height: var(--gog-space-24);
+  --gog-scheduler-event-padding-y: var(--gog-space-4);
+  --gog-scheduler-event-padding-x: var(--gog-space-8);
+  --gog-scheduler-event-gap: var(--gog-space-4);
+  --gog-scheduler-event-font-size: var(--gog-text-xs);
+  --gog-scheduler-event-line-height: var(--gog-line-height-snug);
+  --gog-scheduler-event-title-font-weight: var(--gog-font-weight-semibold);
+  --gog-scheduler-event-accent-color: var(--gog-accent-color);
+  --gog-scheduler-event-success-color: var(--gog-success-color);
+  --gog-scheduler-event-danger-color: var(--gog-danger-color);
+  --gog-scheduler-event-warning-color: var(--gog-warning-color);
+  --gog-scheduler-event-info-color: var(--gog-info-color);
+  --gog-scheduler-more-color: var(--gog-muted-text-color);
+  --gog-scheduler-gutter-width: calc(var(--gog-space-32) * 2);
+  /* One slot of the hour grid is one pointer target tall. */
+  --gog-scheduler-slot-height: var(--gog-space-24);
+  --gog-scheduler-hour-label-color: var(--gog-muted-text-color);
+  --gog-scheduler-hour-label-font-size: var(--gog-text-xs);
+  --gog-scheduler-hour-label-line-height: var(--gog-line-height-none);
+  --gog-scheduler-body-max-height: calc(var(--gog-space-48) * 12);
+  --gog-scheduler-now-color: var(--gog-danger-color);
+  --gog-scheduler-now-width: calc(var(--gog-control-border-width) * 2);
+  --gog-scheduler-focus-ring-width: var(--gog-focus-ring-width);
+  /* Inset: a cell's ring drawn outside it would be hidden under its neighbours. */
+  --gog-scheduler-focus-ring-offset: calc(var(--gog-focus-ring-width) * -1);
+  --gog-scheduler-focus-ring-color: var(--gog-accent-color);
+
   /* ── Scroll ────────────────────────────────────────────────────────────────── */
   --gog-scroll-track-bg: transparent;
   --gog-scroll-track-radius: var(--gog-radius);

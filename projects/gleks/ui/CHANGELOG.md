@@ -9,6 +9,37 @@ _Versioning_ section. Before 21.16.0 a minor could carry a breaking change, and 
 
 ### Added
 
+- **`gog-scheduler`**, from the new entry point **`@guildofgleks/ui/scheduler`** — a month, week
+  or day of the app's own events. `events` is the consumer's array, read through accessors
+  (`eventStart`, `eventEnd`, `eventTitle`, `eventAllDay`, `eventVariant`), and every press goes back
+  out: `gogEventClick` with the event, `gogSlotClick` with an empty slot of the hour grid or a whole
+  day, and `gogRangeChange` with the period drawn — on first render and after every move, the moment
+  to load that period's events. `view` and `date` are two-way.
+  - **Layout.** All-day and day-long events are bars that keep one row across the week, so a
+    multi-day event reads as one bar with its title at its start; rows go all-day/multi-day first,
+    then timed events by start. Timed events sit in the hour grid by start and length, overlapping
+    ones side by side; a line marks now. `gogSchedulerEvent` draws an event's insides.
+  - **"+N more".** A month cell draws `monthEventLimit` rows (3 by default) and is as tall as them;
+    a fuller day ends in "+N more", which lists the day in a `gog-popover` or, with
+    `moreEventsAction: 'day'`, opens the day view.
+  - **Editing**, with `readonly` off (it is on by default): a right-click, the ContextMenu key or
+    Shift+F10 opens a `gog-context-menu` — New event on a slot or day, Move, Change end and Delete on
+    an event. Move and Change end wait for the next slot or day pressed, and Escape cancels. Each
+    comes out as `gogEventCreate`, `gogEventDelete` or `gogEventChange`; `events` is never changed.
+  - **Keyboard.** The focused day carries the tab stops, and the arrows, Home/End and
+    PageUp/PageDown move it, moving the view past what is drawn.
+  - **Configuration.** A new `GOG_CONFIG.scheduler` key (`monthEventLimit`, `moreEventsAction`,
+    `readonly`); `locale`, `firstDayOfWeek` and `timeZone` fall back to `GOG_CONFIG.datepicker`'s.
+    Sixteen new `GOG_CONFIG.labels` fields — `previousPeriod`, `nextPeriod`, `schedulerViews`,
+    `monthView`, `weekView`, `dayView`, `allDay`, `moreEvents`, `eventActions`, `newEvent`,
+    `moveEvent`, `resizeEvent`, `deleteEvent`, `movingEvent`, `resizingEvent`, `cancel` (`today` is
+    shared with `gog-calendar`). Types `GogSchedulerView`, `GogSchedulerMoreAction` and
+    `GogSchedulerEventChange`, and `--gog-scheduler-*` tokens.
+
+  No drag-and-drop, recurring events or resource columns. Its own entry point because it is large
+  and usually lives on one route: the root does not export it, so a lazy route keeps it out of an
+  app's initial bundle.
+
 - **`gog-popover`** and **`[gogPopoverTrigger]`** — a panel of anything anchored to the element
   that opened it: a non-modal dialog that takes focus, follows its trigger on scroll and closes on
   Escape, a press outside or focus leaving it. Rendered into `<body>`, so nothing clips it; its width

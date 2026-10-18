@@ -14,7 +14,7 @@ import {
 import type { GogErrorDisplay } from './error-state';
 import type { GogDropdownDirection } from './dropdown-position';
 import type { GogDropdownFilterPosition } from './types';
-import type { ToastPosition } from './types';
+import type { GogSchedulerMoreAction, GogSchedulerView, ToastPosition } from './types';
 
 /**
  * App-wide defaults for the handful of component inputs where that actually makes sense —
@@ -201,9 +201,10 @@ export interface GogGlobalConfig {
     virtualize?: boolean;
   };
   /**
-   * Applies to `gog-datepicker` and `gog-calendar`. Every field here is something an app sets
-   * once rather than per field — a locale and a date format repeated on every date input is
-   * exactly the boilerplate this config exists to remove.
+   * Applies to `gog-datepicker` and `gog-calendar`, and `locale`, `firstDayOfWeek` and `timeZone`
+   * to `gog-scheduler` as well — they are the app's calendar, not one widget's. Every field here is
+   * something an app sets once rather than per field — a locale and a date format repeated on every
+   * date input is exactly the boilerplate this config exists to remove.
    */
   datepicker?: {
     /** BCP-47 tag driving month and weekday names. */
@@ -218,6 +219,21 @@ export interface GogGlobalConfig {
      * the chosen clock time means in this zone, and "today", `min` and `max` are read there too.
      */
     timeZone?: string;
+  };
+  /**
+   * Applies to `gog-scheduler`. Each is something an app decides once for all its calendars: how
+   * full a month cell gets, what "+N more" opens, and whether the calendars can be edited at all.
+   */
+  scheduler?: {
+    /** Rows a month cell draws, "+N more" included when the day has more. Default `3`. */
+    monthEventLimit?: number;
+    /** What "+N more" opens: the day's events in a popover, or the day view. Default `'popover'`. */
+    moreEventsAction?: GogSchedulerMoreAction;
+    /**
+     * `true` (the default) draws events and reports presses, nothing more. `false` adds a context
+     * menu — right-click, or the ContextMenu key — to create, move, extend and delete events.
+     */
+    readonly?: boolean;
   };
   /**
    * Applies to `gog-paginator`, and through it to `gog-table`'s built-in pagination.
@@ -381,7 +397,7 @@ export interface GogGlobalConfig {
     tableRowSelected?: string;
     /** `gog-table`'s message when there are no rows; an instance's `emptyMessage` wins. */
     tableEmpty?: string;
-    /** `gog-calendar` navigation and shortcuts. */
+    /** `gog-calendar` navigation and shortcuts; `today` is also `gog-scheduler`'s Today button. */
     today?: string;
     thisMonth?: string;
     previousMonth?: string;
@@ -392,6 +408,36 @@ export interface GogGlobalConfig {
     hours?: string;
     minutes?: string;
     seconds?: string;
+    /**
+     * `gog-scheduler`'s toolbar: the step buttons, named for the period they step by — formatters
+     * taking the view, so a language can inflect the noun — the view switch's name and its three
+     * options, the all-day row's heading, and the "+N more" button a full month cell ends with.
+     * Defaults: `` (view) => `Previous ${view}` ``, `` (view) => `Next ${view}` ``, `'View'`,
+     * `'Month'`, `'Week'`, `'Day'`, `'All day'`, `` (count) => `+${count} more` ``.
+     */
+    previousPeriod?: (view: GogSchedulerView) => string;
+    nextPeriod?: (view: GogSchedulerView) => string;
+    schedulerViews?: string;
+    monthView?: string;
+    weekView?: string;
+    dayView?: string;
+    allDay?: string;
+    moreEvents?: (count: number) => string;
+    /**
+     * `gog-scheduler` when it is editable (`readonly` off): the context menu's name and items, the
+     * status line while a new place is being chosen, and its cancel button. Defaults: `'Event
+     * actions'`, `'New event'`, `'Move'`, `'Change end'`, `'Delete'`, `` (title) => `Moving
+     * "${title}": choose a new start` ``, `` (title) => `Changing the end of "${title}": choose
+     * where it ends` ``, `'Cancel'`.
+     */
+    eventActions?: string;
+    newEvent?: string;
+    moveEvent?: string;
+    resizeEvent?: string;
+    deleteEvent?: string;
+    movingEvent?: (title: string) => string;
+    resizingEvent?: (title: string) => string;
+    cancel?: string;
   };
   /**
    * Applies to `ThemeService`. Every field is off/neutral by default, so an app that configures

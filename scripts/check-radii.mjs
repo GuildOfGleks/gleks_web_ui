@@ -70,6 +70,10 @@ const OUTERMOST = new Map([
   ['file-upload-remove', 'a button in a list row, not inside a rounded box'],
   ['stepper-trigger', 'a step’s hover and focus corner, in the consumer’s flow'],
   ['rating-star', 'a star’s focus corner, in the consumer’s flow'],
+  [
+    'scheduler-event',
+    'an event sits in a grid cell or an hour column, whose corners are square; nothing round frames it',
+  ],
   ['button-toggle', 'its own component — it shares a name prefix with the button, not a box'],
   ['card', 'the outermost surface'],
   ['checkbox', 'the box is the control'],

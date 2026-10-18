@@ -20,10 +20,10 @@
  *                          the other. Only `@guildofgleks/ui/shared` keeps it one.
  *   D. root-never-imports-a-split
  *                          Nothing in `src/` or `shared/` may import `@guildofgleks/ui/table`,
- *                          `/datepicker` or `/dialog` — by package name or by relative path. The
- *                          whole benefit of splitting them rests on it: a root that imports a split
- *                          entry point pulls it back into the initial bundle of every app, silently,
- *                          with every build green.
+ *                          `/datepicker`, `/dialog` or `/scheduler` — by package name or by
+ *                          relative path. The whole benefit of splitting them rests on it: a root
+ *                          that imports a split entry point pulls it back into the initial bundle
+ *                          of every app, silently, with every build green.
  *   E. split-imports-by-package
  *                          A split entry point's directory may not reach into `src/` or another
  *                          split directory by relative path. ng-packagr refuses an entry point that

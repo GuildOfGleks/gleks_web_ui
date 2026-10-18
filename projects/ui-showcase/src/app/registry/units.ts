@@ -89,9 +89,10 @@ import {
   GogColumnHeaderDirective,
   TableComponent,
 } from '@guildofgleks/ui/table';
+import { GogSchedulerEventDirective, SchedulerComponent } from '@guildofgleks/ui/scheduler';
 
 export type GogUnitGroup = 'actions' | 'form' | 'display' | 'layout' | 'overlay';
-export type GogEntryPoint = 'root' | 'table' | 'datepicker' | 'dialog';
+export type GogEntryPoint = 'root' | 'table' | 'datepicker' | 'dialog' | 'scheduler';
 
 export type GogPart =
   | { readonly kind: 'component'; readonly type: Type<unknown> }
@@ -246,6 +247,13 @@ export const UNITS: readonly GogUnit[] = [
     group: 'form',
     entry: 'datepicker',
     parts: [cmp(DatepickerComponent), cmp(CalendarComponent)],
+  },
+  {
+    id: 'scheduler',
+    name: 'Scheduler',
+    group: 'display',
+    entry: 'scheduler',
+    parts: [cmp(SchedulerComponent), dir(GogSchedulerEventDirective, '[gogSchedulerEvent]')],
   },
 
   // Display & feedback

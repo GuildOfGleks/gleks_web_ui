@@ -123,6 +123,18 @@ export type GogProgressbarAnimation = 'none' | 'stripes' | 'shimmer';
 export type GogSeverity = 'accent' | 'success' | 'danger' | 'warning' | 'info';
 
 /**
+ * Which period `gog-scheduler` draws: a six-week month grid, or a week or a single day as columns of
+ * hours. Lives here rather than beside the component because `GOG_CONFIG.labels` names it.
+ */
+export type GogSchedulerView = 'month' | 'week' | 'day';
+
+/**
+ * What `gog-scheduler`'s "+N more" opens: `'popover'` lists the day's events beside the cell,
+ * `'day'` switches to the day view.
+ */
+export type GogSchedulerMoreAction = 'popover' | 'day';
+
+/**
  * How `gog-alert` announces itself, and it is a decision the component cannot make for you.
  *
  * - `'assertive'` — interrupts whatever a screen reader is saying. For a message that *just

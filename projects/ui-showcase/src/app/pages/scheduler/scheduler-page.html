@@ -1,0 +1,176 @@
+<app-doc-page unit="scheduler">
+  <app-doc-section
+    id="states"
+    title="Views"
+    lead="A six-week month, or a week or a day as columns of hours. The toolbar steps by the period, returns to today and switches the view; all three are two-way, so the app hears every move."
+  >
+    <h3>[(view)] and [(date)], with every output</h3>
+    <p class="scheduler-page__note">
+      The bookings are placed around the current week. Press an event, an empty slot or a day, step
+      the period or switch the view: each output prints below, newest first.
+      <code>gogRangeChange</code> fires on the first render too — the moment to load the period's
+      events. <code>view: {{ view() }}</code>
+    </p>
+    <gog-scheduler
+      [events]="bookings"
+      [(view)]="view"
+      [(date)]="date"
+      (gogEventClick)="onEvent($event)"
+      (gogSlotClick)="onSlot($event)"
+      (gogRangeChange)="onRange($event)"
+    />
+    <ul class="scheduler-page__log" aria-label="Output log">
+      @for (line of log(); track $index) {
+        <li>{{ line }}</li>
+      }
+    </ul>
+
+    <h3>view="month": multi-day bars, and "+N more" in a popover</h3>
+    <p class="scheduler-page__note">
+      An event that spans days keeps one row across the week, so its pieces join into one bar; the
+      title is drawn where the bar starts and again where a week row begins. Rows are ordered:
+      all-day and multi-day events first, longest and earliest on top, then timed events by start —
+      and a timed event fills a row a bar left free. A cell draws <code>monthEventLimit</code> rows
+      (3 by default), and a fuller day ends in "+N more", which lists the whole day in a
+      <code>gog-popover</code> (<code>moreEventsAction="day"</code> opens the day view instead).
+    </p>
+    <gog-scheduler view="month" [views]="[]" [events]="bookings" />
+
+    <h3>[monthEventLimit]="5" — or GOG_CONFIG.scheduler.monthEventLimit for the whole app</h3>
+    <p class="scheduler-page__note">
+      The cell is as tall as its rows: five here, so a day with five events shows all of them and
+      only a sixth would end the cell in "+N more". The words come from
+      <code>GOG_CONFIG.labels.moreEvents</code>, a formatter, so a language can put the number where
+      its grammar wants it.
+    </p>
+    <gog-scheduler view="month" [views]="[]" [events]="bookings" [monthEventLimit]="5" />
+
+    <h3>view="day", dayStartHour="8", dayEndHour="18", slotDuration="15"</h3>
+    <p class="scheduler-page__note">
+      Overlapping events share the column; one that overlaps nothing takes all of it. An event
+      shorter than a slot is drawn a slot tall. The red line is now, in today's column only.
+    </p>
+    <gog-scheduler
+      view="day"
+      [views]="[]"
+      [date]="today"
+      [events]="bookings"
+      [dayStartHour]="8"
+      [dayEndHour]="18"
+      [slotDuration]="15"
+    />
+  </app-doc-section>
+
+  <app-doc-section
+    id="content"
+    title="Content"
+    lead="Events are the app's own objects, read through accessors, and drawn by the scheduler unless a gogSchedulerEvent template draws their insides."
+  >
+    <h3>gogSchedulerEvent</h3>
+    <p class="scheduler-page__note">
+      The template fills each event's button — its colour, name and keyboard handling stay the
+      scheduler's. It is handed the event, its title, its instants, the time on the scheduler's
+      clock as text, and the view drawing it.
+    </p>
+    <gog-scheduler view="week" [views]="['week', 'day']" [events]="bookings">
+      <ng-template
+        gogSchedulerEvent
+        let-booking
+        let-time="time"
+        let-view="view"
+        [gogSchedulerEventTypeOf]="bookings"
+      >
+        <span class="scheduler-page__custom">
+          <strong>{{ booking.title }}</strong>
+          @if (view !== 'month') {
+            <span class="scheduler-page__room"
+              >{{ booking.room }}{{ time ? ' · ' + time : '' }}</span
+            >
+          }
+        </span>
+      </ng-template>
+    </gog-scheduler>
+  </app-doc-section>
+
+  <app-doc-section
+    id="editing"
+    title="Editing"
+    lead="readonly is on by default. Off, a right-click — or the ContextMenu key, or Shift+F10 — opens a gog-context-menu with the scheduler's actions; each comes out as an output, and the app applies it."
+  >
+    <h3>[readonly]="false"</h3>
+    <p class="scheduler-page__note">
+      Right-click an empty slot or day for <strong>New event</strong>, or an event for
+      <strong>Move</strong>, <strong>Change end</strong> and <strong>Delete</strong>. Move and
+      Change end then wait for the place: press the slot or day it goes to — with the pointer, or
+      arrow to it and press Enter — and Escape cancels. A move keeps the event's length; dropped on
+      a day in the month view it keeps its time of day too. This page applies every output to its
+      own array, which is all the scheduler asks of an app.
+    </p>
+    <gog-scheduler
+      view="week"
+      [readonly]="false"
+      [events]="editable()"
+      (gogEventCreate)="create($event)"
+      (gogEventDelete)="remove($event)"
+      (gogEventChange)="change($event)"
+    />
+    <ul class="scheduler-page__log" aria-label="Editing log">
+      @for (line of editLog(); track $index) {
+        <li>{{ line }}</li>
+      }
+    </ul>
+  </app-doc-section>
+
+  <app-doc-section
+    id="behaviour"
+    title="Behaviour"
+    lead="Every Date in and out is an instant. timeZone — or GOG_CONFIG.datepicker.timeZone — sets the clock the scheduler is drawn on."
+  >
+    <h3>one event, timeZone="America/New_York" and timeZone="Asia/Tokyo"</h3>
+    <p class="scheduler-page__note">
+      The same instant, 13:00 UTC tomorrow, drawn in two zones: 09:00 in New York, 22:00 in Tokyo. A
+      slot pressed in either emits the instant that clock time means there.
+    </p>
+    <div class="scheduler-page__pair">
+      <gog-scheduler
+        view="day"
+        [views]="[]"
+        timeZone="America/New_York"
+        [date]="zoned[0].start"
+        [events]="zoned"
+        [scrollToHour]="8"
+        ariaLabel="New York"
+      />
+      <gog-scheduler
+        view="day"
+        [views]="[]"
+        timeZone="Asia/Tokyo"
+        [date]="zoned[0].start"
+        [events]="zoned"
+        [scrollToHour]="21"
+        ariaLabel="Tokyo"
+      />
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="A region named by its title, which also announces each new period. The focused day carries the tab stops; the arrows move it."
+  >
+    <h3>host attributes</h3>
+    <app-doc-attrs target="gog-scheduler">
+      <gog-scheduler view="month" [views]="[]" [events]="[]" />
+    </app-doc-attrs>
+
+    <h3>keyboard</h3>
+    <p class="scheduler-page__note">
+      One day holds the tab stops: its cell (month) or its header, all-day cell and one slot (week
+      and day), and its events. ←/→ move a day, ↑/↓ a week in the month and a slot in the hour grid,
+      Home/End go to the ends of the week (or of the day's slots), PageUp/PageDown change the
+      period. Moving past what is drawn moves the view. Enter or Space presses — a day, a slot or an
+      event — through each button's own click. Every slot and event is a button named in full
+      ("Design review, Monday, October 12, 10:00 – 11:30 AM").
+    </p>
+  </app-doc-section>
+</app-doc-page>

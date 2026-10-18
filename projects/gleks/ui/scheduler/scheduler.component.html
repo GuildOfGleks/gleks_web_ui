@@ -1,0 +1,329 @@
+<div class="gog-scheduler__toolbar">
+  <!-- No debounce: stepping is meant to be pressed repeatedly, and every press is one period. -->
+  <div class="gog-scheduler__nav">
+    <gog-button
+      class="gog-scheduler__step"
+      variant="ghost"
+      [debounce]="0"
+      [ariaLabel]="labels().previousPeriod(view())"
+      (gogClick)="step(-1)"
+    >
+      <gog-icon name="chevron-left" />
+    </gog-button>
+    <gog-button variant="outline" [debounce]="0" (gogClick)="goToToday()">{{
+      labels().today
+    }}</gog-button>
+    <gog-button
+      class="gog-scheduler__step"
+      variant="ghost"
+      [debounce]="0"
+      [ariaLabel]="labels().nextPeriod(view())"
+      (gogClick)="step(1)"
+    >
+      <gog-icon name="chevron-right" />
+    </gog-button>
+  </div>
+
+  <!-- Polite, so stepping to another period says which one it is now. -->
+  <div class="gog-scheduler__title" [id]="titleId" aria-live="polite">{{ title() }}</div>
+
+  @if (viewOptions().length > 1) {
+    <gog-button-toggle-group
+      class="gog-scheduler__views"
+      [options]="viewOptions()"
+      optionValue="id"
+      optionLabel="name"
+      [value]="view()"
+      [ariaLabel]="labels().schedulerViews"
+      (valueChange)="selectView($event)"
+    />
+  }
+</div>
+
+<!-- Always present, so what is put in it is announced: the move or new end waiting for a place. -->
+<div class="gog-scheduler__status" role="status">
+  @if (pending()) {
+    <span class="gog-scheduler__status-text">{{ pendingText() }}</span>
+    <gog-button variant="ghost" size="sm" [debounce]="0" (gogClick)="cancelPending()">{{
+      labels().cancel
+    }}</gog-button>
+  }
+</div>
+
+<ng-template #eventButton let-event let-timed="timed" let-inList="inList">
+  <button
+    type="button"
+    class="gog-scheduler__event"
+    [class.gog-scheduler__event--timed]="timed"
+    [class.gog-scheduler__event--all-day]="!timed && event.item.allDay"
+    [class.gog-scheduler__event--continues-before]="event.continuesBefore"
+    [class.gog-scheduler__event--continues-after]="event.continuesAfter"
+    [class.gog-scheduler__event--picked]="isPendingItem(event.item)"
+    [class.gog-scheduler__event--success]="event.item.variant === 'success'"
+    [class.gog-scheduler__event--danger]="event.item.variant === 'danger'"
+    [class.gog-scheduler__event--warning]="event.item.variant === 'warning'"
+    [class.gog-scheduler__event--info]="event.item.variant === 'info'"
+    [style.top]="timed ? 'calc(var(--gog-scheduler-slot-height) * ' + event.top + ')' : null"
+    [style.height]="timed ? 'calc(var(--gog-scheduler-slot-height) * ' + event.height + ')' : null"
+    [style.inset-inline-start.%]="timed ? event.inset : null"
+    [style.width.%]="timed ? event.width : null"
+    data-kind="event"
+    [attr.data-key]="event.key"
+    [attr.data-day]="event.day.getTime()"
+    [tabindex]="inList || isFocusedDay(event.day) ? 0 : -1"
+    [attr.aria-label]="event.name"
+    (click)="onEventClick(event, inList)"
+  >
+    @if (!event.showLabel) {
+      <!-- A bar's continuing piece: the bar alone, its name is still on the button. -->
+    } @else if (eventTemplate(); as custom) {
+      <ng-container *ngTemplateOutlet="custom.templateRef; context: event.context" />
+    } @else if (timed) {
+      <span class="gog-scheduler__event-title">{{ event.item.title }}</span>
+      <span class="gog-scheduler__event-time">{{ event.time }}</span>
+    } @else {
+      @if (event.startTime && !event.continuesBefore) {
+        <span class="gog-scheduler__event-time">{{ event.startTime }}</span>
+      }
+      <span class="gog-scheduler__event-title">{{ event.item.title }}</span>
+    }
+  </button>
+</ng-template>
+
+@if (view() === 'month') {
+  <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -- keydown and focusin are delegated here so the cells don't each carry them; the focusable targets are the buttons inside, which carry the roving tabindex. -->
+  <div
+    class="gog-scheduler__month"
+    [gogContextMenu]="actions"
+    [gogContextMenuResolve]="resolveMenuTarget"
+    [gogContextMenuDisabled]="isReadonly()"
+    (keydown)="onKeydown($event)"
+    (focusin)="onFocusIn($event)"
+  >
+    <table class="gog-scheduler__month-grid">
+      <thead>
+        <tr>
+          @for (weekday of weekdays(); track $index) {
+            <th class="gog-scheduler__weekday" scope="col" [attr.aria-label]="weekday.name">
+              {{ weekday.label }}
+            </th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (week of monthWeeks(); track week[0].key) {
+          <tr>
+            @for (cell of week; track cell.key) {
+              <td
+                class="gog-scheduler__cell"
+                [class.gog-scheduler__cell--outside]="cell.outside"
+                [class.gog-scheduler__cell--today]="cell.today"
+                [style.height]="cellHeight()"
+              >
+                <!-- The whole cell is this button, under the events: a press on its empty part is
+                     a press on the day. -->
+                <button
+                  type="button"
+                  class="gog-scheduler__day"
+                  data-kind="day"
+                  [attr.data-day]="cell.key"
+                  [tabindex]="isFocusedDay(cell.date) ? 0 : -1"
+                  [attr.aria-label]="cell.name"
+                  [attr.aria-current]="cell.today ? 'date' : null"
+                  (click)="onDayClick(cell.date)"
+                >
+                  <span class="gog-scheduler__day-number">{{ cell.label }}</span>
+                </button>
+                <div class="gog-scheduler__cell-events">
+                  @for (event of cell.rows; track $index) {
+                    @if (event) {
+                      <ng-container
+                        *ngTemplateOutlet="eventButton; context: { $implicit: event, timed: false }"
+                      />
+                    } @else {
+                      <span class="gog-scheduler__spacer" aria-hidden="true"></span>
+                    }
+                  }
+                  @if (cell.more) {
+                    <button
+                      type="button"
+                      class="gog-scheduler__more"
+                      data-kind="more"
+                      [attr.data-day]="cell.key"
+                      [tabindex]="isFocusedDay(cell.date) ? 0 : -1"
+                      aria-haspopup="dialog"
+                      (click)="openMore(cell.date, $event)"
+                    >
+                      {{ labels().moreEvents(cell.more) }}
+                    </button>
+                  }
+                </div>
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+} @else {
+  <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -- delegated, as in the month view above. -->
+  <div
+    class="gog-scheduler__hours-view"
+    [gogContextMenu]="actions"
+    [gogContextMenuResolve]="resolveMenuTarget"
+    [gogContextMenuDisabled]="isReadonly()"
+    (keydown)="onKeydown($event)"
+    (focusin)="onFocusIn($event)"
+  >
+    <div class="gog-scheduler__head">
+      <div class="gog-scheduler__gutter"></div>
+      @for (column of columns(); track column.key) {
+        <div
+          class="gog-scheduler__column-head"
+          [class.gog-scheduler__column-head--today]="column.today"
+        >
+          @if (view() === 'week') {
+            <button
+              type="button"
+              class="gog-scheduler__column-day"
+              data-kind="header"
+              [attr.data-day]="column.key"
+              [tabindex]="isFocusedDay(column.date) ? 0 : -1"
+              [attr.aria-label]="column.name"
+              [attr.aria-current]="column.today ? 'date' : null"
+              (click)="openDay(column.date)"
+            >
+              <span class="gog-scheduler__column-weekday">{{ column.weekday }}</span>
+              <span class="gog-scheduler__column-number">{{ column.label }}</span>
+            </button>
+          } @else {
+            <span class="gog-scheduler__column-day">
+              <span class="gog-scheduler__column-weekday">{{ column.weekday }}</span>
+              <span class="gog-scheduler__column-number">{{ column.label }}</span>
+            </span>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="gog-scheduler__all-day">
+      <div class="gog-scheduler__gutter gog-scheduler__all-day-label">{{ labels().allDay }}</div>
+      @for (column of columns(); track column.key) {
+        <div class="gog-scheduler__all-day-cell">
+          <button
+            type="button"
+            class="gog-scheduler__all-day-slot"
+            data-kind="allday"
+            [attr.data-day]="column.key"
+            [tabindex]="isFocusedDay(column.date) ? 0 : -1"
+            [attr.aria-label]="column.name + ', ' + labels().allDay"
+            (click)="onDayClick(column.date)"
+          ></button>
+          @for (event of column.allDay; track $index) {
+            @if (event) {
+              <ng-container
+                *ngTemplateOutlet="eventButton; context: { $implicit: event, timed: false }"
+              />
+            } @else {
+              <span class="gog-scheduler__spacer" aria-hidden="true"></span>
+            }
+          }
+        </div>
+      }
+    </div>
+
+    <gog-scroll class="gog-scheduler__body" [focusable]="false" overscrollBehavior="contain">
+      <div class="gog-scheduler__grid">
+        <div class="gog-scheduler__gutter gog-scheduler__hour-labels" aria-hidden="true">
+          @for (hour of hours(); track hour.minute) {
+            <div
+              class="gog-scheduler__hour-label"
+              [style.height]="'calc(var(--gog-scheduler-slot-height) * ' + 60 / slotMinutes() + ')'"
+            >
+              {{ hour.label }}
+            </div>
+          }
+        </div>
+
+        @for (column of columns(); track column.key) {
+          <div
+            class="gog-scheduler__column"
+            [class.gog-scheduler__column--today]="column.today"
+            role="group"
+            [attr.aria-label]="column.name"
+          >
+            @for (slot of column.slots; track slot.minute) {
+              <button
+                type="button"
+                class="gog-scheduler__slot"
+                [class.gog-scheduler__slot--hour]="slot.minute % 60 === 0"
+                data-kind="slot"
+                [attr.data-day]="column.key"
+                [attr.data-minute]="slot.minute"
+                [tabindex]="isFocusedDay(column.date) && slot.minute === focusedMinute() ? 0 : -1"
+                [attr.aria-label]="slot.name"
+                (click)="onSlotClick(column.date, slot.minute)"
+              ></button>
+            }
+
+            <div class="gog-scheduler__column-events">
+              @for (event of column.timed; track event.key) {
+                <ng-container
+                  *ngTemplateOutlet="eventButton; context: { $implicit: event, timed: true }"
+                />
+              }
+            </div>
+
+            @if (column.today && nowOffset() !== null) {
+              <div
+                class="gog-scheduler__now"
+                aria-hidden="true"
+                [style.top]="'calc(var(--gog-scheduler-slot-height) * ' + nowOffset() + ')'"
+              ></div>
+            }
+          </div>
+        }
+      </div>
+    </gog-scroll>
+  </div>
+}
+
+<!-- "+N more", set to 'popover': the day's events as a list beside the cell. -->
+<gog-popover #more [ariaLabel]="moreDayName()" (gogClosed)="onMoreClosed()">
+  <div
+    class="gog-scheduler__more-list"
+    [gogContextMenu]="actions"
+    [gogContextMenuResolve]="resolveMenuTarget"
+    [gogContextMenuDisabled]="isReadonly()"
+  >
+    <div class="gog-scheduler__more-heading" aria-hidden="true">{{ moreDayName() }}</div>
+    @for (event of moreDayEvents(); track event.key) {
+      <ng-container
+        *ngTemplateOutlet="eventButton; context: { $implicit: event, timed: false, inList: true }"
+      />
+    }
+  </div>
+</gog-popover>
+
+<!-- Editable only: what a right-click, the ContextMenu key or Shift+F10 opens. -->
+<gog-context-menu #actions [ariaLabel]="labels().eventActions">
+  <ng-template gogContextMenuContent let-target [gogContextMenuContentTypeOf]="menuTargets">
+    @if (target) {
+      @if (target.kind === 'event') {
+        <button gogMenuItem type="button" (click)="startPending(target, 'move')">
+          <gog-icon name="drag" /> {{ labels().moveEvent }}
+        </button>
+        <button gogMenuItem type="button" (click)="startPending(target, 'resize')">
+          <gog-icon name="clock" /> {{ labels().resizeEvent }}
+        </button>
+        <button gogMenuItem type="button" (click)="deleteEvent(target)">
+          <gog-icon name="trash" /> {{ labels().deleteEvent }}
+        </button>
+      } @else {
+        <button gogMenuItem type="button" (click)="createAt(target)">
+          <gog-icon name="plus" /> {{ labels().newEvent }}
+        </button>
+      }
+    }
+  </ng-template>
+</gog-context-menu>

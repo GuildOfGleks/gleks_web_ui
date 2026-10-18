@@ -78,6 +78,9 @@ import {
   ContextMenuComponent,
   GogContextMenuContentDirective,
   GogContextMenuTriggerDirective,
+  startOfDay,
+  type GogIconName,
+  type GogSeverity,
 } from '@guildofgleks/ui';
 import { CalendarComponent, DatepickerComponent } from '@guildofgleks/ui/datepicker';
 import {
@@ -92,6 +95,7 @@ import {
   GogColumnHeaderDirective,
   TableComponent,
 } from '@guildofgleks/ui/table';
+import { GogSchedulerEventDirective, SchedulerComponent } from '@guildofgleks/ui/scheduler';
 
 import {
   ACTIVITY,
@@ -163,6 +167,8 @@ import {
     GogColumn,
     GogColumnBodyDirective,
     GogTableEmptyDirective,
+    GogSchedulerEventDirective,
+    SchedulerComponent,
     PopoverComponent,
     GogPopoverTriggerDirective,
     ContextMenuComponent,
@@ -263,6 +269,10 @@ export class SpecimenPage {
   protected readonly advancedOpen = signal(false);
   protected readonly settingsTab = signal(0);
 
+  /** Today: the specimen's schedules sit around it, in whichever week the locale draws. */
+  private readonly today = startOfDay(new Date());
+  private readonly at = (day: number, hour = 0) =>
+    new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() + day, hour);
   protected readonly away = ['Mila Kovacs', 'Jonas Berg'];
   protected readonly tileNames = ['quick actions'];
   /** The colleague a right-click landed on; between names the browser's own menu opens. */
@@ -271,6 +281,70 @@ export class SpecimenPage {
   protected messageColleague(person: string | null): void {
     if (person) this.toasts.info(`Message to ${person}`);
   }
+
+  protected readonly timeOff: readonly {
+    title: string;
+    icon: GogIconName;
+    start: Date;
+    end: Date;
+    allDay: boolean;
+    variant: GogSeverity;
+  }[] = [
+    {
+      title: 'Mila — leave',
+      icon: 'sun',
+      start: this.at(1),
+      end: this.at(4),
+      allDay: true,
+      variant: 'info',
+    },
+    {
+      title: 'Jonas — sick',
+      icon: 'heart',
+      start: this.at(3),
+      end: this.at(4),
+      allDay: true,
+      variant: 'warning',
+    },
+    {
+      title: 'Team offsite',
+      icon: 'users',
+      start: this.at(9),
+      end: this.at(11),
+      allDay: true,
+      variant: 'success',
+    },
+  ];
+  protected readonly deliveries = [
+    {
+      carrier: 'DHL',
+      orders: 14,
+      start: this.at(0, 9),
+      end: this.at(0, 10),
+      variant: 'accent' as const,
+    },
+    {
+      carrier: 'UPS',
+      orders: 6,
+      start: this.at(0, 9),
+      end: this.at(0, 11),
+      variant: 'info' as const,
+    },
+    {
+      carrier: 'Nova Poshta',
+      orders: 22,
+      start: this.at(2, 14),
+      end: this.at(2, 16),
+      variant: 'success' as const,
+    },
+    {
+      carrier: 'DPD',
+      orders: 3,
+      start: this.at(4, 7),
+      end: this.at(4, 8),
+      variant: 'danger' as const,
+    },
+  ];
 
   protected readonly emailError = computed(() =>
     this.email().includes('.') ? '' : 'Enter a full address, like name@example.com',

@@ -468,6 +468,11 @@
 
   <gog-card [size]="size()">
     <h3 gogCardHeader>Time off</h3>
+    <gog-scheduler [events]="timeOff" [views]="['month', 'week']">
+      <ng-template gogSchedulerEvent let-entry [gogSchedulerEventTypeOf]="timeOff">
+        <gog-icon [name]="entry.icon" /> {{ entry.title }}
+      </ng-template>
+    </gog-scheduler>
     <div class="specimen__inline">
       <button
         type="button"
@@ -895,6 +900,28 @@
               <gog-icon name="refresh" /> Refund…
             </button>
           </gog-menu>
+        </gog-tab>
+
+        <gog-tab label="Deliveries">
+          <ng-template gogTabContent>
+            <gog-scheduler
+              view="week"
+              [views]="['week', 'day']"
+              [events]="deliveries"
+              [dayStartHour]="6"
+              [dayEndHour]="20"
+              eventTitle="carrier"
+            >
+              <ng-template
+                gogSchedulerEvent
+                let-delivery
+                let-time="time"
+                [gogSchedulerEventTypeOf]="deliveries"
+              >
+                <strong>{{ delivery.carrier }}</strong> {{ delivery.orders }} orders · {{ time }}
+              </ng-template>
+            </gog-scheduler>
+          </ng-template>
         </gog-tab>
 
         <gog-tab label="Activity">

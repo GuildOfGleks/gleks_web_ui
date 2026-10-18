@@ -348,7 +348,7 @@ parent's config**, one level deep per key — it does not replace it.
 | `control`      | `size`, `errorDisplay`, `clearable`                                                   | `size`: button, `[gogButton]`, button-toggle-group, checkbox, toggle, radio-group, inputfield, textarea, select, multiselect, autocomplete, datepicker. `errorDisplay`: inputfield, textarea, select, multiselect, autocomplete, datepicker, radio-group, slider. `clearable`: inputfield, textarea, select, multiselect, autocomplete, datepicker. Not table/accordion/paginator (density, not form size), not spinner/skeleton/tag/chip. |
 | `dropdown`     | `appendToBody`, `direction`, `filter`, `filterPosition`, `virtualize`                 | `gog-select`, `gog-multiselect`. `gog-datepicker`/`gog-autocomplete` honour `appendToBody`/`direction` too (autocomplete has no `filter` box — it filters via the trigger's own text). `virtualize` reaches all three dropdowns; not `gog-table`.                                                                                                                                                                                          |
 | `floatLabel`   | `variant`, `showPlaceholder`                                                          | inputfield, textarea, select, multiselect, autocomplete, datepicker.                                                                                                                                                                                                                                                                                                                                                                       |
-| `datepicker`   | `locale`, `firstDayOfWeek`, `format`, `timeZone`                                      | `gog-datepicker`, `gog-calendar`.                                                                                                                                                                                                                                                                                                                                          |
+| `datepicker`   | `locale`, `firstDayOfWeek`, `format`, `timeZone`                                      | `gog-datepicker`, `gog-calendar`; `locale`, `firstDayOfWeek` and `timeZone` also `gog-scheduler`.                                                                                                                                                                                                                                                                                                                                          |
 | `autocomplete` | `searchDebounce`, `minLength`, `openOnFocus`                                          | `gog-autocomplete`.                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | `tooltip`      | `position`, `showDelay`, `hideDelay`                                                  | the `gogTooltip` directive.                                                                                                                                                                                                                                                                                                                                                                                                                |
 | `spinner`      | `component`, `variant`                                                                | every spinner the library draws — `gog-spinner`, `gog-spinner-overlay`, and the ones inside `gog-button`, `gog-autocomplete` and `gog-table`, which have no input of their own. `component` takes **your** component and renders it in place of the built-in look. The overlay honoured neither key until 21.10.0, and `gog-table` was simply never listed.                                                                                |
@@ -358,9 +358,10 @@ parent's config**, one level deep per key — it does not replace it.
 | `inputfield`   | `showSpinButtons`                                                                     | `gog-inputfield`.                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | `textarea`     | `resize`                                                                              | `gog-textarea`.                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | `paginator`    | `showPageSizeSelect`, `pageSizeOptions`                                               | `gog-paginator`, and through it `gog-table`'s built-in pagination.                                                                                                                                                                                                                                                                                                                                                                         |
+| `scheduler`    | `monthEventLimit`, `moreEventsAction`, `readonly`                                     | `gog-scheduler` (since 21.20.0). Its `locale`, `firstDayOfWeek` and `timeZone` come from `datepicker`.                                                                                                                                                                                                                                                                                                                                     |
 | `toast`        | `position`, `duration`                                                                | `ToastService`.                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | `theme`        | `storageKey`, `defaultTheme`, `followSystem`, `lightTheme`, `darkTheme`               | `ThemeService`. All off/neutral by default — see below.                                                                                                                                                                                                                                                                                                                                                                                    |
-| `labels`       | every fixed string the library renders — see below                                    | inputfield, textarea, select, multiselect, autocomplete, datepicker, calendar, paginator, table, avatar-group, breadcrumbs, stepper, file-upload, rating, `DialogService`, `ToastService`.                                                                                                                                                                                                                                                 |
+| `labels`       | every fixed string the library renders — see below                                    | inputfield, textarea, select, multiselect, autocomplete, datepicker, calendar, paginator, table, avatar-group, breadcrumbs, stepper, file-upload, rating, scheduler, `DialogService`, `ToastService`.                                                                                                                                                                                                                                      |
 
 Anything visual does **not** belong here — override the `--gog-*` token instead.
 
@@ -422,6 +423,25 @@ provideGogConfig({
     fileRejected: (name, reason) => `${name} wurde nicht hinzugefügt (${reason})`,
     ratingStar: (value) => `${value} Sterne`, // gog-rating's star names
     ratingValue: (value, max) => (value === null ? 'Nicht bewertet' : `${value} von ${max}`),
+    // gog-scheduler's toolbar; `today` above is its Today button too
+    previousPeriod: (view) =>
+      ({ month: 'Vorheriger Monat', week: 'Vorherige Woche', day: 'Vorheriger Tag' })[view],
+    nextPeriod: (view) =>
+      ({ month: 'Nächster Monat', week: 'Nächste Woche', day: 'Nächster Tag' })[view],
+    schedulerViews: 'Ansicht',
+    monthView: 'Monat',
+    weekView: 'Woche',
+    dayView: 'Tag',
+    allDay: 'Ganztägig',
+    moreEvents: (count) => `+${count} weitere`,
+    eventActions: 'Termin', // the editable scheduler's context menu
+    newEvent: 'Neuer Termin',
+    moveEvent: 'Verschieben',
+    resizeEvent: 'Ende ändern',
+    deleteEvent: 'Löschen',
+    movingEvent: (title) => `„${title}“ verschieben: neuen Beginn wählen`,
+    resizingEvent: (title) => `Ende von „${title}“ ändern: wählen, wo er endet`,
+    cancel: 'Abbrechen',
   },
 });
 ```
@@ -580,11 +600,11 @@ export class EditDialogComponent {
 ## Component reference
 
 Every component below is exported from `@guildofgleks/ui`'s root — `import { X } from '@guildofgleks/ui'` —
-**except `gog-table`, `gog-datepicker`/`gog-calendar` and `gog-dialog` with `DialogService`**, which
-have their own entry points: `@guildofgleks/ui/table`, `/datepicker` and `/dialog`. They are the
-three components heavy enough to be worth keeping out of an app's initial bundle, and since
-21.14.0 their own entry point is the only place they are exported from — `import { TableComponent }
-from '@guildofgleks/ui'` does not compile.
+**except `gog-table`, `gog-datepicker`/`gog-calendar`, `gog-dialog` with `DialogService`, and
+`gog-scheduler`**, which have their own entry points: `@guildofgleks/ui/table`, `/datepicker`,
+`/dialog` and (since 21.20.0) `/scheduler`. They are the components heavy enough to be worth
+keeping out of an app's initial bundle, and their own entry point is the only place they are
+exported from — `import { TableComponent } from '@guildofgleks/ui'` does not compile.
 "CVA" = implements `ControlValueAccessor` (works with `[formControl]`/`formControlName`).
 
 ### Buttons & choices
@@ -1166,8 +1186,8 @@ renders). Native `Date` only — no date library, no adapter.
 
 **`gog-calendar` is a date picker's grid, not an event calendar.** It picks a day, a range or a
 time; it has no week or day view and nothing that places events on dates. A booking screen, a
-schedule or a month of appointments wants a scheduler (FullCalendar and the like), not this
-component bent into one.
+schedule or a month of appointments wants `gog-scheduler` (`@guildofgleks/ui/scheduler`, since
+21.20.0), not this component bent into one.
 
 | Input                                                 | Type                                         | Default                       | Notes                                                                        |
 | ----------------------------------------------------- | -------------------------------------------- | ----------------------------- | ---------------------------------------------------------------------------- |
@@ -1832,6 +1852,122 @@ description the host had whenever the tooltip was closed.
 ```html
 <button gogTooltip="Save changes">💾</button> <gog-chip [gogTooltip]="hintTemplate">Beta</gog-chip>
 ```
+
+#### `gog-scheduler<T>`
+
+**Import from `@guildofgleks/ui/scheduler`** (since 21.20.0) — `SchedulerComponent`,
+`GogSchedulerEventDirective` and the types below (`GogSchedulerEventChange`,
+`GogSchedulerMoreAction` among them). The root does not export it, so a route that
+loads it lazily keeps it out of the initial bundle.
+
+A month, week or day of the app's own events. **It draws events; it does not own them**: `events`
+is your array, read through accessors as `gog-select` reads options, and every press goes back out
+as an output — the app decides what pressing an empty slot means (open a form, create a booking).
+Moving and extending go through a context menu, not drag-and-drop; no recurring events or
+resource columns.
+
+| Input              | Type                                                                  | Default                    | Notes                                                                   |
+| ------------------ | --------------------------------------------------------------------- | -------------------------- | ----------------------------------------------------------------------- |
+| `events`           | `readonly T[]`                                                        | `[]`                       |                                                                         |
+| `eventStart`       | `GogOptionAccessor<T, Date \| string \| number \| null \| undefined>` | `'start'`                  | a `Date`, ISO string or timestamp; unreadable → the event is skipped    |
+| `eventEnd`         | same                                                                  | `'end'`                    | exclusive; missing → one `slotDuration` (timed) or its start day        |
+| `eventTitle`       | `GogOptionAccessor<T, string \| null \| undefined>`                   | `'title'`                  |                                                                         |
+| `eventAllDay`      | `GogOptionAccessor<T, boolean \| null \| undefined>`                  | `'allDay'`                 | only `true` counts                                                      |
+| `eventVariant`     | `GogOptionAccessor<T, GogSeverity \| null \| undefined>`              | `'variant'`                | the event's leading edge colour; anything else is `'accent'`            |
+| `view`             | `GogSchedulerView` (`'month'\|'week'\|'day'`), **model**              | `'month'`                  | `[(view)]`                                                              |
+| `views`            | `readonly GogSchedulerView[]`                                         | `['month', 'week', 'day']` | the toolbar's switch; one or none hides it                              |
+| `date`             | `Date \| null`, **model**                                             | `null` (today)             | any instant inside the period; navigation writes it                     |
+| `dayStartHour`     | `number`                                                              | `0`                        | first hour the week/day grid draws                                      |
+| `dayEndHour`       | `number`                                                              | `24`                       | last (exclusive)                                                        |
+| `slotDuration`     | `number` (minutes)                                                    | `30`                       | one row of the hour grid, and the length of a pressed slot              |
+| `scrollToHour`     | `number`                                                              | `8`                        | where the hour grid opens scrolled to                                   |
+| `monthEventLimit`  | `number \| undefined`                                                 | `3`                        | rows a month cell draws, "+N more" included; via `GOG_CONFIG.scheduler` |
+| `moreEventsAction` | `GogSchedulerMoreAction` (`'popover'\|'day'`)                         | `'popover'`                | what "+N more" opens; via `GOG_CONFIG.scheduler`                        |
+| `readonly`         | `boolean \| undefined`                                                | `true`                     | off adds the editing context menu; via `GOG_CONFIG.scheduler`           |
+| `locale`           | `string \| undefined`                                                 | `'en-US'`                  | via `GOG_CONFIG.datepicker.locale`                                      |
+| `firstDayOfWeek`   | `number \| undefined`                                                 | locale's own               | via `GOG_CONFIG.datepicker.firstDayOfWeek`                              |
+| `timeZone`         | `string \| undefined`                                                 | the browser's own          | via `GOG_CONFIG.datepicker.timeZone`; see the datepicker's time zones   |
+| `ariaLabel`        | `string`                                                              | `''`                       | names the region; unset, its title ("October 2026") does                |
+
+| Output           | Payload                                                       | When                                                                |
+| ---------------- | ------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `gogEventClick`  | `GogSchedulerEventClick<T>` — `{ event, start, end, allDay }` | an event was pressed; `start`/`end` are the instants it was read as |
+| `gogSlotClick`   | `GogSchedulerSlot` — `{ start, end, allDay }`                 | an empty slot of the hour grid, a month cell or an all-day cell     |
+| `gogRangeChange` | `GogSchedulerRange` — `{ start, end, view }`                  | the drawn period changed, **and once on first render** — load here  |
+| `gogEventCreate` | `GogSchedulerSlot`                                            | editable: "New event" chosen on a slot or day                       |
+| `gogEventDelete` | `GogSchedulerEventClick<T>`                                   | editable: "Delete" chosen on an event                               |
+| `gogEventChange` | `GogSchedulerEventChange<T>`                                  | editable: a move or a new end chosen, and its place pressed         |
+
+```html
+<gog-scheduler
+  [events]="bookings()"
+  eventStart="from"
+  eventEnd="to"
+  eventTitle="room"
+  [(view)]="view"
+  (gogRangeChange)="load($event.start, $event.end)"
+  (gogEventClick)="open($event.event)"
+  (gogSlotClick)="create($event.start, $event.end)"
+>
+  <ng-template gogSchedulerEvent let-booking let-time="time" [gogSchedulerEventTypeOf]="bookings()">
+    <strong>{{ booking.room }}</strong> {{ time }}
+  </ng-template>
+</gog-scheduler>
+```
+
+**The slot** `gogSchedulerEvent` fills each event's button; the button — colour, name, keyboard —
+stays the scheduler's, so put text and icons in it, not controls. Its context
+(`GogSchedulerEventContext<T>`): `$implicit`/`event`, `title`, `start`, `end` (instants), `allDay`,
+`time` (the range on the scheduler's clock and locale, `''` for all-day — use it rather than
+`start.getHours()`, which reads the browser's zone) and `view`.
+
+**Layout.** All-day events and timed ones a day long or more are bars — in the month grid and the
+week view's all-day row they **keep one row across the week**, so the pieces join into one bar, its
+title drawn where it starts and again where a week row begins. Rows are ordered all-day/multi-day
+first (earliest, then longest, on top), then timed events by start, which fill rows a bar left
+free. Shorter timed events sit in the hour grid by start and length, overlapping ones side by
+side. An event shorter than a slot is drawn a slot tall. A red line marks now in today's column.
+
+**"+N more".** A month cell draws `monthEventLimit` rows (3 by default — set 5 for five, app-wide
+with `GOG_CONFIG.scheduler.monthEventLimit`); the cell is as tall as its rows. A fuller day draws
+`limit − 1` rows and "+N more", worded by `GOG_CONFIG.labels.moreEvents(count)`. It opens the day's
+events in a `gog-popover` list, or — with `moreEventsAction: 'day'` — the day view.
+
+**Editing** (`readonly` off; it is on by default). A right-click — or the ContextMenu key, or
+Shift+F10 — opens a `gog-context-menu`: **New event** on an empty slot or day (`gogEventCreate`,
+the slot's range or the whole day), and **Move**, **Change end**, **Delete** on an event. Move and
+Change end then wait for the place, shown in a status line: the next slot or day pressed — pointer,
+or arrows and Enter — is where it goes (events let the pointer through meanwhile), and Escape
+cancels. A move keeps the length (and, dropped on a day, the time of day); a new end must come
+after the start. `gogEventChange` carries `{ event, change: 'move' | 'resize', start, end, allDay,
+previousStart, previousEnd }`. **The scheduler never changes `events`** — apply the change to your
+array (or don't), and it redraws:
+
+```ts
+change(e: GogSchedulerEventChange<Booking>) {
+  this.bookings.update((list) =>
+    list.map((b) => (b === e.event ? { ...b, from: e.start, to: e.end } : b)),
+  );
+}
+```
+
+**Keyboard.** The focused day carries the tab stops — its cell (month), or its header, all-day cell
+and one slot (week/day), plus its events. ←/→ move a day; ↑/↓ a week in the month and a slot in
+the hour grid; Home/End to the ends of the week (or of the day's slots); PageUp/PageDown change
+the period; moving past what is drawn moves the view. Enter/Space press. Every slot and event is a
+button named in full ("Design review, Monday, October 12, 10:00 – 11:30 AM"); the title is a
+polite live region, so stepping announces the new period.
+
+**Time zones.** With `timeZone` set, events are drawn on that zone's clock and every `Date` out
+(`gogSlotClick`, `gogRangeChange`, `date`) is the instant that clock time means there — the same
+rule as `gog-datepicker`.
+
+Labels (`GOG_CONFIG.labels`): `today`, `previousPeriod(view)`, `nextPeriod(view)`, `schedulerViews`,
+`monthView`, `weekView`, `dayView`, `allDay`, `moreEvents(count)`, and for editing `eventActions`,
+`newEvent`, `moveEvent`, `resizeEvent`, `deleteEvent`, `movingEvent(title)`, `resizingEvent(title)`,
+`cancel`. Tokens: `--gog-scheduler-*` —
+`-slot-height` (one row, default the 24px pointer target), `-body-max-height` (the
+hour grid scrolls inside it), `-gutter-width`, `-event-*`, `-today-*`, `-now-color`.
 
 ### Layout & navigation
 
