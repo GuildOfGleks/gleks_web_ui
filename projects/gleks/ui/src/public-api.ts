@@ -42,6 +42,8 @@ export {
   copyTimeOnto,
   daysInMonth,
   formatDate,
+  gogFromZonedTime,
+  gogToZonedTime,
   isAfterDay,
   isBeforeDay,
   isInRange,

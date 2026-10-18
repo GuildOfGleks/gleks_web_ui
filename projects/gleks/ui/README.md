@@ -376,7 +376,7 @@ instance — goes through one provider:
 provideGogConfig({
   control: { size: 'sm', errorDisplay: 'auto', clearable: true },
   dropdown: { appendToBody: true },
-  datepicker: { locale: 'de-DE', format: 'dd.MM.yyyy' },
+  datepicker: { locale: 'de-DE', format: 'dd.MM.yyyy', timeZone: 'Europe/Berlin' },
   ripple: { enabled: true }, // press feedback on every interactive surface at once
   labels: { clear: 'Löschen', selectAll: 'Alle auswählen' }, // translate the library once
 });

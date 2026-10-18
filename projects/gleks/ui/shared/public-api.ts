@@ -31,6 +31,7 @@ export * from './overlay-theme';
 export * from './ripple-state';
 export * from './roving-focus';
 export * from './scrolled-out-of-view';
+export * from './time-zone';
 export * from './token-names';
 export * from './token-values';
 export * from './tooltip-position';

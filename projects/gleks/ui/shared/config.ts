@@ -212,6 +212,12 @@ export interface GogGlobalConfig {
     firstDayOfWeek?: number;
     /** Display and parse pattern (`dd.MM.yyyy`, `yyyy-MM-dd`, …). */
     format?: string;
+    /**
+     * IANA zone (`'Europe/Berlin'`, `'UTC'`) the fields and the calendar read and write in. Unset,
+     * the browser's own. Every `Date` in or out stays a real instant: the one picked is the moment
+     * the chosen clock time means in this zone, and "today", `min` and `max` are read there too.
+     */
+    timeZone?: string;
   };
   /**
    * Applies to `gog-paginator`, and through it to `gog-table`'s built-in pagination.

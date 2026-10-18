@@ -16,6 +16,18 @@ _Versioning_ section. Before 21.16.0 a minor could carry a breaking change, and 
   mode, which already moves. New type `GogProgressbarAnimation`, and five tokens:
   `--gog-progressbar-stripes-tile`, `-stripes-duration`, `-shimmer-color`, `-shimmer-duration` and
   `-shimmer-easing`.
+- **A time zone for `gog-datepicker` and `gog-calendar`** — `timeZone` on either, or once as
+  `GOG_CONFIG.datepicker.timeZone`: an IANA name (`'Europe/Berlin'`, `'UTC'`) the field and the grid
+  read and write in. Every `Date` in or out stays a real instant — the field shows `value` on that
+  zone's clock, a pick or a typed time sets the moment that clock time means there, and "today",
+  `min`, `max` and `defaultMonth` are read there too; `disabledDates` is asked about the instant each
+  day starts in the zone. A time the zone skips moves forward by the gap and one it passes twice
+  takes the earlier instant, as `Temporal`'s `'compatible'` does. Unset, nothing changes: the
+  browser's own zone, as before. An unknown name warns once in dev mode and falls back to it.
+- **`gogToZonedTime(date, zone)` and `gogFromZonedTime(wall, zone)`**, the two conversions the
+  above is built on, exported beside the other date helpers — the first gives a `Date` whose local
+  fields read `date` on `zone`'s clock, which is how a `disabledDates` predicate reads a weekday in
+  the configured zone.
 
 ## [21.19.0] - 05.10.2026
 

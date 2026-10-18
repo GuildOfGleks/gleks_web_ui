@@ -26,6 +26,9 @@ import {
   buildMonthGrid,
   clampDate,
   copyTimeOnto,
+  gogFromZonedTime,
+  gogResolveTimeZone,
+  gogToZonedTime,
   isAfterDay,
   isBeforeDay,
   isInRange,
@@ -117,6 +120,12 @@ export class CalendarComponent {
    * then to the locale's own first day.
    */
   readonly firstDayOfWeek = input<number | null | undefined>(undefined);
+  /**
+   * IANA zone the grid, "today" and the time section read in. Unset, falls back to
+   * `GOG_CONFIG.datepicker.timeZone`, then to the browser's own. Every `Date` in and out is still
+   * an instant: `value`, `min`, `max`, `defaultMonth` and what `disabledDates` is asked about.
+   */
+  readonly timeZone = input<string | undefined>(undefined);
   /** Which month to open on when there is no selection yet. */
   readonly defaultMonth = input<Date | null>(null);
   /** How many months to show side by side. Two is what makes a range picker usable. */
@@ -204,10 +213,23 @@ export class CalendarComponent {
     };
   });
 
-  /** First of the leftmost visible month. */
-  private readonly viewMonth = signal<Date>(startOfDay(new Date()));
-  /** The cell the keyboard is on, and the only one carrying `tabindex="0"`. */
-  protected readonly focusedDate = signal<Date>(startOfDay(new Date()));
+  /**
+   * The zone everything below is read in, or `null` for the browser's own. Resolved before any
+   * other state, since "today" — where the view opens — depends on it.
+   */
+  protected readonly resolvedTimeZone = computed(() =>
+    gogResolveTimeZone(this.timeZone() ?? this.globalConfig.datepicker?.timeZone),
+  );
+
+  /**
+   * First of the leftmost visible month, and the cell the keyboard is on — the only one carrying
+   * `tabindex="0"`. Both `null` until something moves them, which reads as "today": "today" is
+   * only known once the zone input has arrived, so it cannot be a field initialiser.
+   */
+  private readonly viewMonthState = signal<Date | null>(null);
+  private readonly focusedDateState = signal<Date | null>(null);
+  private readonly viewMonth = computed(() => this.viewMonthState() ?? this.today());
+  protected readonly focusedDate = computed(() => this.focusedDateState() ?? this.today());
   /** Drives the range preview while the second end is still being chosen. */
   protected readonly hoverDate = signal<Date | null>(null);
   /** Whether a focus move should also pull the DOM focus over — only after a keypress. */
@@ -250,15 +272,25 @@ export class CalendarComponent {
   });
   private readonly months = computed(() => monthNames(this.resolvedLocale()));
 
+  /**
+   * `value` as the zone's clock reads it. Everything inside the calendar works on these "wall"
+   * dates, whose local fields spell the zone's time; `commit` turns them back into instants.
+   */
+  private readonly wallValue = computed<GogDatepickerValue>(() =>
+    this.mapValue(this.value(), 'in'),
+  );
+  private readonly wallMin = computed(() => this.toWall(this.min()));
+  private readonly wallMax = computed(() => this.toWall(this.max()));
+
   private readonly range = computed<GogDateRange>(() => {
-    const current = this.value();
+    const current = this.wallValue();
     if (this.selectionMode() !== 'range' || current === null || current instanceof Date) {
       return { start: null, end: null };
     }
     return current;
   });
   private readonly singleDate = computed<Date | null>(() => {
-    const current = this.value();
+    const current = this.wallValue();
     return current instanceof Date ? current : null;
   });
 
@@ -299,9 +331,7 @@ export class CalendarComponent {
    * a "Today" button that silently does nothing is worse than one that is visibly unavailable.
    * The signal reads inside `isDayDisabled` are what make this follow those inputs.
    */
-  protected readonly isTodaySelectable = computed(
-    () => !this.isDayDisabled(startOfDay(new Date())),
-  );
+  protected readonly isTodaySelectable = computed(() => !this.isDayDisabled(this.today()));
 
   // ── Time section ──────────────────────────────────────────────────────────────
   protected readonly timeSource = computed<Date | null>(() =>
@@ -327,14 +357,14 @@ export class CalendarComponent {
     // snap straight back — the next/previous buttons and PageUp/PageDown would all appear to
     // do nothing. It must react to the anchor changing, never to the view changing.
     effect(() => {
-      const anchor = this.selectionAnchor() ?? this.defaultMonth();
+      const anchor = this.selectionAnchor() ?? this.toWall(this.defaultMonth());
       if (!anchor) return;
 
       untracked(() => {
         const day = startOfDay(anchor);
-        this.focusedDate.set(day);
+        this.focusedDateState.set(day);
         if (!isSameMonth(day, this.viewMonth())) {
-          this.viewMonth.set(day);
+          this.viewMonthState.set(day);
         }
       });
     });
@@ -342,11 +372,11 @@ export class CalendarComponent {
 
   /** Steps the view by whole months or years. */
   protected shiftView(months: number): void {
-    this.viewMonth.set(addMonths(this.viewMonth(), months));
+    this.viewMonthState.set(addMonths(this.viewMonth(), months));
   }
 
   protected shiftViewYears(years: number): void {
-    this.viewMonth.set(addYears(this.viewMonth(), years));
+    this.viewMonthState.set(addYears(this.viewMonth(), years));
   }
 
   protected onDayClick(day: GogCalendarDay): void {
@@ -368,18 +398,18 @@ export class CalendarComponent {
    * opens on, so moving it there moves the month too.
    */
   protected selectToday(): void {
-    const today = startOfDay(new Date());
+    const today = this.today();
     if (this.isDayDisabled(today)) return;
 
     this.select(today);
-    this.focusedDate.set(today);
+    this.focusedDateState.set(today);
   }
 
   /** Moves the view back to the current month, leaving the selection untouched. */
   protected goToThisMonth(): void {
-    const today = startOfDay(new Date());
-    this.viewMonth.set(today);
-    this.focusedDate.set(today);
+    const today = this.today();
+    this.viewMonthState.set(today);
+    this.focusedDateState.set(today);
     this.pendingFocus = true;
     this.applyPendingFocus();
   }
@@ -429,10 +459,10 @@ export class CalendarComponent {
     }
 
     event.preventDefault();
-    const clamped = clampDate(next, this.min(), this.max());
-    this.focusedDate.set(clamped);
+    const clamped = clampDate(next, this.wallMin(), this.wallMax());
+    this.focusedDateState.set(clamped);
     if (!isSameMonth(clamped, this.viewMonth())) {
-      this.viewMonth.set(startOfDay(clamped));
+      this.viewMonthState.set(startOfDay(clamped));
     }
     this.pendingFocus = true;
     this.applyPendingFocus();
@@ -468,17 +498,41 @@ export class CalendarComponent {
 
   // ── Internals ─────────────────────────────────────────────────────────────────
 
+  /** Midnight of the current day, as the zone's clock reads it. */
+  private today(): Date {
+    return startOfDay(this.toWall(new Date()));
+  }
+
+  private toWall<T extends Date | null>(date: T): T {
+    const zone = this.resolvedTimeZone();
+    return (date && zone ? gogToZonedTime(date, zone) : date) as T;
+  }
+
+  private fromWall<T extends Date | null>(date: T): T {
+    const zone = this.resolvedTimeZone();
+    return (date && zone ? gogFromZonedTime(date, zone) : date) as T;
+  }
+
+  private mapValue(value: GogDatepickerValue, direction: 'in' | 'out'): GogDatepickerValue {
+    // No zone is the browser's own, and then the value passes through as the same object.
+    if (this.resolvedTimeZone() === null) return value;
+    const map = (date: Date | null) =>
+      direction === 'in' ? this.toWall(date) : this.fromWall(date);
+    if (value === null || value instanceof Date) return map(value);
+    return { start: map(value.start), end: map(value.end) };
+  }
+
   private selectionAnchor(): Date | null {
     return this.selectionMode() === 'range' ? this.range().start : this.singleDate();
   }
 
   private isDayDisabled(date: Date): boolean {
-    if (!isWithinBounds(date, this.min(), this.max())) return true;
-    return this.disabledDates()?.(date) ?? false;
+    if (!isWithinBounds(date, this.wallMin(), this.wallMax())) return true;
+    return this.disabledDates()?.(this.fromWall(date)) ?? false;
   }
 
   private buildWeeks(month: Date): GogCalendarDay[][] {
-    const today = new Date();
+    const today = this.today();
     const { start, end } = this.previewRange();
     const selected = this.singleDate();
     const isRange = this.selectionMode() === 'range';
@@ -525,14 +579,15 @@ export class CalendarComponent {
   }
 
   private commit(next: GogDatepickerValue, complete = true): void {
-    this.value.set(next);
+    const instant = this.mapValue(next, 'out');
+    this.value.set(instant);
     if (complete) {
-      this.gogDateSelect.emit(next);
+      this.gogDateSelect.emit(instant);
     }
   }
 
   private applyTime(hours: number, minutes: number, seconds: number): void {
-    const base = this.timeSource() ?? startOfDay(new Date());
+    const base = this.timeSource() ?? this.today();
     const updated = withTime(
       base,
       clampNumber(hours, 0, 23),

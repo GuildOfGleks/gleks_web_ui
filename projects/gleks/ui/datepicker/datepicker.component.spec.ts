@@ -255,6 +255,44 @@ describe('DatepickerComponent', () => {
     });
   });
 
+  describe('timeZone', () => {
+    it('shows the value on the zone clock', async () => {
+      fixture.componentRef.setInput('timeZone', 'Asia/Tokyo');
+      fixture.componentRef.setInput('format', 'dd.MM.yyyy HH:mm');
+      fixture.componentRef.setInput('value', new Date(Date.UTC(2026, 5, 10, 20, 0, 0)));
+      await fixture.whenStable();
+      fixture.detectChanges();
+
+      expect(field().value).toBe('11.06.2026 05:00');
+    });
+
+    it('reads typed text as a time in the zone', async () => {
+      fixture.componentRef.setInput('timeZone', 'America/New_York');
+      fixture.componentRef.setInput('format', 'dd.MM.yyyy HH:mm');
+      await fixture.whenStable();
+      fixture.detectChanges();
+
+      type('08.03.2026 09:00');
+
+      expect((component.value() as Date).toISOString()).toBe('2026-03-08T13:00:00.000Z');
+    });
+
+    it('takes the zone from the config when the input is unset', async () => {
+      TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [DatepickerComponent],
+        providers: [{ provide: GOG_CONFIG, useValue: { datepicker: { timeZone: 'UTC' } } }],
+      }).compileComponents();
+      fixture = TestBed.createComponent(DatepickerComponent);
+      fixture.componentRef.setInput('format', 'yyyy-MM-dd HH:mm');
+      fixture.componentRef.setInput('value', new Date(Date.UTC(2026, 0, 1, 23, 30, 0)));
+      await fixture.whenStable();
+      fixture.detectChanges();
+
+      expect(field().value).toBe('2026-01-01 23:30');
+    });
+  });
+
   describe('range mode', () => {
     beforeEach(() => {
       fixture.componentRef.setInput('selectionMode', 'range');

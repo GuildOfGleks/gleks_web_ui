@@ -348,7 +348,7 @@ parent's config**, one level deep per key — it does not replace it.
 | `control`      | `size`, `errorDisplay`, `clearable`                                                   | `size`: button, `[gogButton]`, button-toggle-group, checkbox, toggle, radio-group, inputfield, textarea, select, multiselect, autocomplete, datepicker. `errorDisplay`: inputfield, textarea, select, multiselect, autocomplete, datepicker, radio-group, slider. `clearable`: inputfield, textarea, select, multiselect, autocomplete, datepicker. Not table/accordion/paginator (density, not form size), not spinner/skeleton/tag/chip. |
 | `dropdown`     | `appendToBody`, `direction`, `filter`, `filterPosition`, `virtualize`                 | `gog-select`, `gog-multiselect`. `gog-datepicker`/`gog-autocomplete` honour `appendToBody`/`direction` too (autocomplete has no `filter` box — it filters via the trigger's own text). `virtualize` reaches all three dropdowns; not `gog-table`.                                                                                                                                                                                          |
 | `floatLabel`   | `variant`, `showPlaceholder`                                                          | inputfield, textarea, select, multiselect, autocomplete, datepicker.                                                                                                                                                                                                                                                                                                                                                                       |
-| `datepicker`   | `locale`, `firstDayOfWeek`, `format`                                                  | `gog-datepicker`, `gog-calendar`.                                                                                                                                                                                                                                                                                                                                                                                                          |
+| `datepicker`   | `locale`, `firstDayOfWeek`, `format`, `timeZone`                                      | `gog-datepicker`, `gog-calendar`.                                                                                                                                                                                                                                                                                                                                          |
 | `autocomplete` | `searchDebounce`, `minLength`, `openOnFocus`                                          | `gog-autocomplete`.                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | `tooltip`      | `position`, `showDelay`, `hideDelay`                                                  | the `gogTooltip` directive.                                                                                                                                                                                                                                                                                                                                                                                                                |
 | `spinner`      | `component`, `variant`                                                                | every spinner the library draws — `gog-spinner`, `gog-spinner-overlay`, and the ones inside `gog-button`, `gog-autocomplete` and `gog-table`, which have no input of their own. `component` takes **your** component and renders it in place of the built-in look. The overlay honoured neither key until 21.10.0, and `gog-table` was simply never listed.                                                                                |
@@ -1183,6 +1183,7 @@ component bent into one.
 | `format`                                              | `string \| null`                             | `null`                        | display/parse pattern (`'dd.MM.yyyy'`); derived from `showTime` when unset   |
 | `locale`                                              | `string \| undefined`                        | `'en-US'`                     | via `GOG_CONFIG.datepicker.locale`                                           |
 | `firstDayOfWeek`                                      | `number \| undefined`                        | locale's own                  | via `GOG_CONFIG.datepicker.firstDayOfWeek`                                   |
+| `timeZone`                                            | `string \| undefined`                        | the browser's own             | IANA name, via `GOG_CONFIG.datepicker.timeZone` — see below (21.20.0)        |
 | `allowTextInput`                                      | `boolean`                                    | `true`                        | typed text parsed against `format`; unparseable drafts don't clear the value |
 | `inline`                                              | `boolean`                                    | `false`                       | renders the calendar with no field/panel                                     |
 | `disabled`, `fullWidth`                               |                                              | `false`, `true`               |                                                                              |
@@ -1209,6 +1210,17 @@ honours an app-wide locale without being handed one; its navigation, shortcut an
 `nextYearLabel`, `hoursLabel`, `minutesLabel`, `secondsLabel`) resolve through
 `GOG_CONFIG.labels` the same way.
 
+**Time zone** (21.20.0). `timeZone` — on either component, or once as
+`GOG_CONFIG.datepicker.timeZone` — is an IANA name (`'Europe/Berlin'`, `'UTC'`) the field and the
+grid read and write in. Unset, it is the browser's own zone, exactly as before. **Every `Date` in
+or out is still a real instant**: the field shows `value` on that zone's clock, a pick or a typed
+time sets the moment that clock time means there, and "today", `min`, `max` and `defaultMonth` are
+read there too. `disabledDates` is asked about the instant each day _starts_ in the zone, so read
+its fields with `gogToZonedTime(date, zone)` rather than `date.getDay()`. A wall time the zone
+skips (02:30 on a spring-forward night) lands that far later; one it passes twice takes the
+earlier instant — `Temporal`'s `'compatible'`. An unknown name warns once in dev mode and falls
+back to the browser zone. A fixed zone also makes server and browser render the same "today".
+
 **Keyboard.** From the field, <kbd>↓</kbd> or <kbd>Enter</kbd> opens the panel and
 <kbd>Escape</kbd> closes it — from anywhere inside it, the calendar button and the day grid
 included, and focus returns to the field. In the grid the arrows move by a day and by a week,
@@ -1218,7 +1230,8 @@ picks. The 42 cells are one tab stop, not 42.
 
 Also exported for direct reuse: `formatDate(date, pattern)`, `parseDate(text, pattern)`, and a
 family of date-math helpers (`addDays`, `addMonths`, `isSameDay`, `isWithinBounds`, …) from
-`date-utils`.
+`date-utils`. Since 21.20.0, also `gogToZonedTime(date, zone)` — a `Date` whose local fields read
+`date` on `zone`'s clock — and its inverse `gogFromZonedTime(wall, zone)`.
 
 **Sizing.** `gog-calendar` caps itself at its own month grid — you do not need to give it a
 width. `--gog-calendar-max-width` (default `max-content`) is the cap, and it covers the size

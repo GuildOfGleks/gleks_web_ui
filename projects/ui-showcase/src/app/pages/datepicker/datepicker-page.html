@@ -238,6 +238,28 @@
       </div>
     </div>
 
+    <h3>timeZone</h3>
+    <p class="datepicker-page__note">
+      The three fields below are bound to <em>one</em> <code>Date</code>. Each reads it on its own
+      zone's clock, and a pick or a typed time in any of them sets the instant that clock time means
+      there — so the other two move with it. "Today", <code>min</code> and <code>max</code> are read
+      in the zone too. Unset, it is the browser's own zone, as before; set
+      <code>GOG_CONFIG.datepicker.timeZone</code> to give a whole app one.
+    </p>
+    <div class="datepicker-page__row">
+      @for (zone of zones; track zone.value) {
+        <div class="datepicker-page__field">
+          <gog-datepicker
+            [label]="zone.name"
+            [timeZone]="zone.value"
+            [showTime]="true"
+            [(value)]="zonedInstant"
+          />
+        </div>
+      }
+    </div>
+    <code>value: {{ zonedInstant()?.toISOString() ?? 'null' }}</code>
+
     <h3>the nine labels</h3>
     <p class="datepicker-page__note">
       <code>gog-calendar</code> takes an input for each of the strings it renders — the two footer

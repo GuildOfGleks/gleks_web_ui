@@ -95,6 +95,12 @@ export const DATEPICKER_API: readonly DocApi[] = [
         default: "the locale's own",
         config: 'GOG_CONFIG.datepicker.firstDayOfWeek',
       },
+      {
+        name: 'timeZone',
+        type: 'string | undefined',
+        default: "the browser's own",
+        config: 'GOG_CONFIG.datepicker.timeZone',
+      },
       { name: 'allowTextInput', type: 'boolean', default: 'true' },
       { name: 'inline', type: 'boolean', default: 'false' },
       {
@@ -188,6 +194,12 @@ export const DATEPICKER_API: readonly DocApi[] = [
         type: 'number | null | undefined',
         default: "the locale's own",
         config: 'GOG_CONFIG.datepicker.firstDayOfWeek',
+      },
+      {
+        name: 'timeZone',
+        type: 'string | undefined',
+        default: "the browser's own",
+        config: 'GOG_CONFIG.datepicker.timeZone',
       },
       { name: 'size', type: 'GogSize', default: "'md'" },
       {
