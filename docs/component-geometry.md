@@ -684,6 +684,17 @@ confirmation dialog) split two ways the plan had not separated:
   paints, rather than a second number that can drift from the first. Menu and tooltip have no such
   token today.
 
+### Added 2026-10-18: `gog-popover` takes both laws
+
+`gog-popover` (21.20.0) is the first overlay since the decision whose content is the consumer's
+prose — a description, a list of events. Both verdicts follow from the rules above without new
+argument: **its text wraps, so L9 applies and the cap is a measure**; **it floats against the
+viewport, so L8 applies and the cap is clamped** with the scale's margin, as the tooltip's and
+the menu's are. `--gog-popover-max-width: min(52ch, calc(100vw - var(--gog-space-16) * 2))`. 52ch
+because `.gog-popover` carries its own `--gog-text-sm`, which the `ch` resolves against (the trap
+the confirmation dialog's note above records) — ≈392px of the body stack, inside the 45–75 band
+with room for a list item's time beside its title. `scripts/check-measure.mjs` lists it.
+
 ### The three questions D7 has to answer
 
 **1. Which caps take the viewport clamp.** Three of the four named tokens — tooltip, menu and

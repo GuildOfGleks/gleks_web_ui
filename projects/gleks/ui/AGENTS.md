@@ -2497,7 +2497,10 @@ so there is no `gogRipple` to add.
 Output: `gogClosed` — fires after every close, whatever caused it.
 
 Public methods, for driving it yourself: `open(trigger, 'first' | 'last')`, `close(restoreFocus?)`,
-`toggle(trigger)`, and the `isOpen` signal.
+`toggle(trigger)`, and the `isOpen` signal. Since 21.20.0 also `openAt({ x, y }, returnFocusTo,
+'first' | 'last')`, which opens at a viewport point instead of under a trigger and closes when the
+page scrolls — what `gog-context-menu` is built on. Items are found in the rendered panel, so items
+stamped from a template work as well as items written between the tags.
 
 **Keyboard**, the WAI-ARIA menu button pattern: Enter/Space/ArrowDown open with the first item
 focused, ArrowUp opens with the last, arrows and Home/End move between items and step over
@@ -2526,6 +2529,77 @@ as an inline `max-height`, which beat it; fixed in 21.5.1.
 
 A closed menu renders nothing at all, so its commands are not in the accessibility tree until it
 opens.
+
+#### `gog-context-menu` + `[gogContextMenu]` / `gogContextMenuContent`
+
+Since 21.20.0. `gog-menu` opened where the pointer right-clicks — or, from the keyboard, under the
+focused element on the ContextMenu key or **Shift+F10** — and handed data about what was clicked.
+The panel, items, keyboard, styling and tokens are `gog-menu`'s (`gogMenuItem` buttons,
+`--gog-menu-*`).
+
+```html
+<ul [gogContextMenu]="fileMenu" [gogContextMenuResolve]="fileAt">
+  @for (file of files; track file.id) {
+  <li><button [attr.data-id]="file.id">{{ file.name }}</button></li>
+  }
+</ul>
+
+<gog-context-menu #fileMenu ariaLabel="File actions">
+  <ng-template gogContextMenuContent let-file [gogContextMenuContentTypeOf]="files">
+    <button gogMenuItem (click)="rename(file)">Rename</button>
+    <button gogMenuItem (click)="remove(file)">Delete</button>
+  </ng-template>
+</gog-context-menu>
+```
+
+```ts
+// One listener for the whole list; null leaves the browser's own menu for that spot.
+fileAt = (target: HTMLElement) =>
+  this.files.find((f) => f.id === target.closest<HTMLElement>('[data-id]')?.dataset['id']) ?? null;
+```
+
+| `[gogContextMenu]` input | Type                                                        | Default | Notes                                                             |
+| ------------------------ | ----------------------------------------------------------- | ------- | ----------------------------------------------------------------- |
+| `gogContextMenu`         | `ContextMenuComponent<T>` (required)                        |         | the menu this region opens                                        |
+| `gogContextMenuData`     | `T \| null`                                                 | `null`  | one value for the whole region                                    |
+| `gogContextMenuResolve`  | `((target: HTMLElement) => T \| null \| undefined) \| null` | `null`  | data from the clicked element; `null`/`undefined` = no menu there |
+| `gogContextMenuDisabled` | `boolean`                                                   | `false` | leaves the browser's own menu                                     |
+
+`gog-context-menu`: input `ariaLabel` (names the menu); outputs `gogOpened` (the data) and
+`gogClosed`; methods `openAt({ x, y }, source, data?)`, `openFor(element, data?)`, `close()`;
+signals `data` and `isOpen`. The items go in an `ng-template gogContextMenuContent` that receives the
+data as `let-x` (typed through `gogContextMenuContentTypeOf`), or straight between the tags when
+they do not depend on it. Focus goes to the first item and comes back to what was clicked; the menu
+closes on Escape, Tab, a press elsewhere, or a page scroll. **Make every action reachable another
+way as well** — a right-click is a shortcut, not the only door.
+
+#### `gog-popover` + `[gogPopoverTrigger]`
+
+Since 21.20.0. A panel of anything — text, a list, a small form — anchored to the element that
+opened it. **A non-modal dialog**: `role="dialog"`, focus moves to the first focusable element
+inside (or the panel), Tab moves through it, and focus leaving it, Escape (focus back to the
+trigger) or a press outside closes it. It does not trap focus or block the page — that is
+`gog-dialog`. Like `gog-menu`, it renders into `<body>`, follows its trigger on scroll, and takes
+the trigger's `--gog-dropdown-z`.
+
+```html
+<button gogButton variant="ghost" [gogPopoverTrigger]="details">Details</button>
+<gog-popover #details ariaLabel="Order details">
+  <p>Shipped on 3 October.</p>
+</gog-popover>
+```
+
+| Input            | Type                       | Default  | Notes                                     |
+| ---------------- | -------------------------- | -------- | ----------------------------------------- |
+| `direction`      | `'auto' \| 'up' \| 'down'` | `'auto'` | flips up only when there is no room below |
+| `ariaLabel`      | `string`                   | `''`     | the dialog's name                         |
+| `ariaLabelledby` | `string`                   | `''`     | or the id of a heading inside it          |
+
+Outputs `gogOpened`, `gogClosed`. Methods `open(trigger)`, `close(restoreFocus?)`,
+`toggle(trigger)`; signal `isOpen`. The trigger gets `aria-haspopup="dialog"`, `aria-expanded` and,
+while open, `aria-controls`. Tokens `--gog-popover-*`; the width is a measure,
+`min(52ch, calc(100vw - 32px))`, and the height caps at `--gog-popover-max-height` and the room
+beside the trigger, scrolling inside.
 
 #### `gog-dialog`
 

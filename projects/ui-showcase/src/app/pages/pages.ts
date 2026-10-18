@@ -24,6 +24,8 @@ import { DROPDOWN_TEMPLATES_API } from './dropdown-templates/dropdown-templates.
 import { ICON_API } from './icon/icon.api';
 import { INPUTFIELD_API } from './inputfield/inputfield.api';
 import { MENU_API } from './menu/menu.api';
+import { CONTEXT_MENU_API } from './context-menu/context-menu.api';
+import { POPOVER_API } from './popover/popover.api';
 import { MULTISELECT_API } from './multiselect/multiselect.api';
 import { PAGINATOR_API } from './paginator/paginator.api';
 import { PANEL_API } from './panel/panel.api';
@@ -250,6 +252,16 @@ export const PAGES: Readonly<Record<string, DocPageEntry>> = {
     load: () => import('./menu/menu-page').then((m) => m.MenuPage),
     api: MENU_API,
     tokens: ['Menu'],
+  },
+  'context-menu': {
+    load: () => import('./context-menu/context-menu-page').then((m) => m.ContextMenuPage),
+    api: CONTEXT_MENU_API,
+    tokens: ['Menu'],
+  },
+  popover: {
+    load: () => import('./popover/popover-page').then((m) => m.PopoverPage),
+    api: POPOVER_API,
+    tokens: ['Popover'],
   },
   tooltip: {
     load: () => import('./tooltip/tooltip-page').then((m) => m.TooltipPage),

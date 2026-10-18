@@ -1146,6 +1146,25 @@ export type GogTokenName =
   | '--gog-panel-xsm-gap'
   | '--gog-panel-xsm-padding-x'
   | '--gog-panel-xsm-padding-y'
+  | '--gog-popover-available-height'
+  | '--gog-popover-bg'
+  | '--gog-popover-border-color'
+  | '--gog-popover-border-style'
+  | '--gog-popover-border-width'
+  | '--gog-popover-color'
+  | '--gog-popover-focus-ring-color'
+  | '--gog-popover-focus-ring-width'
+  | '--gog-popover-font-family'
+  | '--gog-popover-font-size'
+  | '--gog-popover-line-height'
+  | '--gog-popover-max-height'
+  | '--gog-popover-max-width'
+  | '--gog-popover-min-width'
+  | '--gog-popover-padding'
+  | '--gog-popover-panel-gap'
+  | '--gog-popover-radius'
+  | '--gog-popover-shadow'
+  | '--gog-popover-z'
   | '--gog-primary-color'
   | '--gog-progressbar-accent-bg'
   | '--gog-progressbar-accent-buffer-bg'
@@ -3298,6 +3317,30 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
     ],
   },
   {
+    section: 'Popover',
+    layer: 'component',
+    tokens: [
+      '--gog-popover-bg',
+      '--gog-popover-border-color',
+      '--gog-popover-border-style',
+      '--gog-popover-border-width',
+      '--gog-popover-color',
+      '--gog-popover-focus-ring-color',
+      '--gog-popover-focus-ring-width',
+      '--gog-popover-font-family',
+      '--gog-popover-font-size',
+      '--gog-popover-line-height',
+      '--gog-popover-max-height',
+      '--gog-popover-max-width',
+      '--gog-popover-min-width',
+      '--gog-popover-padding',
+      '--gog-popover-panel-gap',
+      '--gog-popover-radius',
+      '--gog-popover-shadow',
+      '--gog-popover-z',
+    ],
+  },
+  {
     section: 'Progressbar',
     layer: 'component',
     tokens: [
@@ -3922,6 +3965,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-panel-gap',
       '--gog-panel-padding-x',
       '--gog-panel-padding-y',
+      '--gog-popover-available-height',
       '--gog-progressbar-buffer-bg',
       '--gog-progressbar-fill-bg',
       '--gog-progressbar-height',

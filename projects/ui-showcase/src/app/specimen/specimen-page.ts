@@ -73,6 +73,11 @@ import {
   ThemeService,
   ToastService,
   ToggleComponent,
+  PopoverComponent,
+  GogPopoverTriggerDirective,
+  ContextMenuComponent,
+  GogContextMenuContentDirective,
+  GogContextMenuTriggerDirective,
 } from '@guildofgleks/ui';
 import { CalendarComponent, DatepickerComponent } from '@guildofgleks/ui/datepicker';
 import {
@@ -158,6 +163,11 @@ import {
     GogColumn,
     GogColumnBodyDirective,
     GogTableEmptyDirective,
+    PopoverComponent,
+    GogPopoverTriggerDirective,
+    ContextMenuComponent,
+    GogContextMenuContentDirective,
+    GogContextMenuTriggerDirective,
     GogColumnHeaderDirective,
     GogDropdownChevronDirective,
     GogDropdownOptionDirective,
@@ -252,6 +262,15 @@ export class SpecimenPage {
   protected readonly sessionsPage = signal(1);
   protected readonly advancedOpen = signal(false);
   protected readonly settingsTab = signal(0);
+
+  protected readonly away = ['Mila Kovacs', 'Jonas Berg'];
+  protected readonly tileNames = ['quick actions'];
+  /** The colleague a right-click landed on; between names the browser's own menu opens. */
+  protected readonly personAt = (target: HTMLElement): string | null =>
+    target.closest<HTMLElement>('[data-person]')?.dataset['person'] ?? null;
+  protected messageColleague(person: string | null): void {
+    if (person) this.toasts.info(`Message to ${person}`);
+  }
 
   protected readonly emailError = computed(() =>
     this.email().includes('.') ? '' : 'Enter a full address, like name@example.com',

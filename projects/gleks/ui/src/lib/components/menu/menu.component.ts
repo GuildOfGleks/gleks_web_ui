@@ -12,7 +12,6 @@ import {
   PLATFORM_ID,
   TemplateRef,
   computed,
-  contentChildren,
   effect,
   inject,
   input,
@@ -147,10 +146,14 @@ export class MenuComponent {
   private readonly overlay = new GogDropdownOverlay(this.appRef, this.document);
 
   private readonly panelTemplate = viewChild.required<TemplateRef<unknown>>('panelTpl');
-  private readonly items = contentChildren(GogMenuItemDirective);
 
   private readonly openState = signal(false);
   private triggerEl: HTMLElement | null = null;
+  /**
+   * Where `openAt()` placed the menu, in viewport pixels; `null` when it hangs from `triggerEl`.
+   * A point has nothing to travel with on scroll, so a menu opened at one closes instead.
+   */
+  private anchorPoint: { x: number; y: number } | null = null;
   private pendingFocus: 'first' | 'last' | null = null;
 
   protected readonly placement = signal<GogMenuPlacement | null>(null);
@@ -186,8 +189,9 @@ export class MenuComponent {
 
       /*
        * Everything below is deliberately untracked. `attach()` re-creates the panel's view,
-       * which changes the content-query result this effect would otherwise depend on — read it
-       * as a dependency and the effect re-runs, re-attaches, and re-triggers itself. That loop
+       * which changes signals this effect would otherwise depend on (it once read a content
+       * query of the items) — read one as a dependency and the effect re-runs, re-attaches, and
+       * re-triggers itself. That loop
        * crashed the test worker rather than failing an assertion, which is the kind of bug an
        * `untracked` boundary exists to make impossible.
        */
@@ -218,8 +222,10 @@ export class MenuComponent {
       const onPointerDown = (event: Event) => {
         const target = event.target as Node | null;
         if (!target) return;
-        if (this.triggerEl?.contains(target)) return;
         if (this.panelElement()?.contains(target)) return;
+        // A press on the trigger toggles through its own click handler. A menu opened at a point
+        // has a whole region as its "trigger", and a press anywhere in it closes the menu.
+        if (!this.anchorPoint && this.triggerEl?.contains(target)) return;
         this.close(false);
       };
 
@@ -235,7 +241,14 @@ export class MenuComponent {
       if (!this.isBrowser || !this.openState()) return;
 
       let frame: number | null = null;
-      const reposition = () => {
+      const reposition = (event: Event) => {
+        if (this.anchorPoint) {
+          // Scrolling the menu's own list is not the page moving under it.
+          const target = event.target as Node | null;
+          if (target && this.panelElement()?.contains(target)) return;
+          this.close(false);
+          return;
+        }
         if (frame !== null) return;
         frame = requestAnimationFrame(() => {
           frame = null;
@@ -270,6 +283,7 @@ export class MenuComponent {
   open(trigger: HTMLElement, focus: 'first' | 'last' = 'first'): void {
     if (!this.isBrowser) return;
 
+    this.anchorPoint = null;
     this.triggerEl = trigger;
     this.pendingFocus = focus;
     this.measure(trigger, null);
@@ -294,12 +308,43 @@ export class MenuComponent {
     );
   }
 
+  /**
+   * Opens at a point in the viewport — where a pointer right-clicked — rather than under a trigger,
+   * the way a context menu opens. `returnFocusTo` is where focus goes back when it closes, and what
+   * its writing direction and stacking are read from. Opening again while open moves the menu.
+   */
+  openAt(
+    point: { x: number; y: number },
+    returnFocusTo: HTMLElement,
+    focus: 'first' | 'last' = 'first',
+  ): void {
+    if (!this.isBrowser) return;
+
+    this.anchorPoint = { x: point.x, y: point.y };
+    this.triggerEl = returnFocusTo;
+    this.pendingFocus = focus;
+    const wasOpen = this.openState();
+    this.measure(returnFocusTo, wasOpen ? this.panelElement() : null);
+    this.openState.set(true);
+    if (wasOpen) this.applyPendingFocus();
+
+    afterNextRender(
+      () => {
+        if (!this.openState()) return;
+        this.measure(returnFocusTo, this.panelElement());
+        this.applyPendingFocus();
+      },
+      { injector: this.injector },
+    );
+  }
+
   /** Closes and, unless told otherwise, returns focus to the trigger it was opened from. */
   close(restoreFocus = true): void {
     if (!this.openState()) return;
 
     this.openState.set(false);
     this.pendingFocus = null;
+    this.anchorPoint = null;
     const trigger = this.triggerEl;
     this.triggerEl = null;
     // The element that took focus, not the host: a `gog-button` host cannot hold it.
@@ -353,7 +398,7 @@ export class MenuComponent {
       event.key,
       currentIndex,
       elements.length,
-      (index) => !(this.items()[index]?.isDisabled ?? false),
+      (index) => !isDisabledItem(elements[index]),
     );
     const next = elements[nextIndex];
     if (next) this.focusElement(next);
@@ -381,8 +426,14 @@ export class MenuComponent {
     this.close();
   }
 
+  /**
+   * The items, read from the rendered panel rather than through a content query. A query sees only
+   * items written directly between `<gog-menu>` tags; items stamped from a template — which is how
+   * `gog-context-menu` hands its content in — are in the panel but not in the query.
+   */
   private itemElements(): HTMLElement[] {
-    return this.items().map((item) => item.elementRef.nativeElement);
+    const panel = this.panelElement();
+    return panel ? Array.from(panel.querySelectorAll<HTMLElement>('.gog-menu__item')) : [];
   }
 
   /**
@@ -392,11 +443,11 @@ export class MenuComponent {
   private applyPendingFocus(): void {
     if (!this.pendingFocus) return;
 
-    const enabled = this.items().filter((item) => !item.isDisabled);
+    const enabled = this.itemElements().filter((item) => !isDisabledItem(item));
     const item = this.pendingFocus === 'first' ? enabled.at(0) : enabled.at(-1);
     if (!item) return;
 
-    this.focusElement(item.elementRef.nativeElement);
+    this.focusElement(item);
     this.pendingFocus = null;
   }
 
@@ -415,7 +466,10 @@ export class MenuComponent {
   private measure(trigger: HTMLElement, panel: HTMLElement | null): void {
     if (!this.isBrowser) return;
 
-    const rect = trigger.getBoundingClientRect();
+    const point = this.anchorPoint;
+    const rect = point
+      ? { top: point.y, bottom: point.y, left: point.x, right: point.x, width: 0 }
+      : trigger.getBoundingClientRect();
     const styles = getComputedStyle(trigger);
     const written = scopedOverlayDirection(trigger, this.document.documentElement);
     const direction = written ?? (styles.direction === 'rtl' ? 'rtl' : 'ltr');
@@ -427,7 +481,7 @@ export class MenuComponent {
       ? { width: panel.offsetWidth, height: panel.scrollHeight }
       : {
           width: ESTIMATED_PANEL_WIDTH,
-          height: this.items().length * ESTIMATED_ITEM_HEIGHT + PANEL_PADDING,
+          height: ESTIMATED_ITEM_COUNT * ESTIMATED_ITEM_HEIGHT + PANEL_PADDING,
         };
 
     this.placement.set(
@@ -465,8 +519,19 @@ export class MenuComponent {
  * matches `--gog-menu-min-width`, which is the narrowest a panel can be.
  */
 const ESTIMATED_ITEM_HEIGHT = 36;
+/** The items are not in the DOM yet on the first pass, so their number is a guess too. */
+const ESTIMATED_ITEM_COUNT = 4;
 const ESTIMATED_PANEL_WIDTH = 180;
 const PANEL_PADDING = 8;
+
+/** A disabled item, by the same two signals `GogMenuItemDirective.isDisabled` reads. */
+function isDisabledItem(element: HTMLElement | undefined): boolean {
+  if (!element) return true;
+  return (
+    (element as HTMLElement & { disabled?: boolean }).disabled === true ||
+    element.getAttribute('aria-disabled') === 'true'
+  );
+}
 
 /**
  * Opens a `gog-menu` from the consumer's own button.

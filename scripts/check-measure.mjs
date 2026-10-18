@@ -44,6 +44,8 @@ const themeCssPath = path.join(root, 'projects/gleks/ui/src/styles/theme.css');
 const DECISIONS = [
   { token: '--gog-tooltip-max-width', wraps: true, clamp: true, edgeToken: 'scale' },
   { token: '--gog-menu-max-width', wraps: false, clamp: true, edgeToken: 'scale' },
+  // Its content is the consumer's prose, so it wraps; it floats over the viewport, so it clamps.
+  { token: '--gog-popover-max-width', wraps: true, clamp: true, edgeToken: 'scale' },
   {
     token: '--gog-toast-max-width',
     wraps: true,

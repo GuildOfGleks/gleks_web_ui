@@ -9,6 +9,18 @@ _Versioning_ section. Before 21.16.0 a minor could carry a breaking change, and 
 
 ### Added
 
+- **`gog-popover`** and **`[gogPopoverTrigger]`** — a panel of anything anchored to the element
+  that opened it: a non-modal dialog that takes focus, follows its trigger on scroll and closes on
+  Escape, a press outside or focus leaving it. Rendered into `<body>`, so nothing clips it; its width
+  is a measure (52ch) capped against the viewport. `--gog-popover-*` tokens.
+- **`gog-context-menu`**, **`[gogContextMenu]`** and **`gogContextMenuContent`** — `gog-menu` opened
+  where the pointer right-clicks, or under the focused element on the ContextMenu key or Shift+F10,
+  and handed what was clicked: one value (`gogContextMenuData`) or one worked out from the clicked
+  element (`gogContextMenuResolve`, where `null` leaves the browser's own menu). Its items are a
+  template that receives that data.
+- **`gog-menu`'s `openAt(point, returnFocusTo)`**, which opens it at a viewport point instead of
+  under a trigger. Its items are now found in the rendered panel rather than through a content
+  query, so items stamped from a template are arrowed between like the rest.
 - **`gog-progressbar`'s `animation`** — `'none'` (the default), `'stripes'` or `'shimmer'`: motion
   on a fill that reports a value, for a bar whose number holds still between updates. Stripes
   travel toward the end the fill grows to, and stay but stop under `prefers-reduced-motion`; the

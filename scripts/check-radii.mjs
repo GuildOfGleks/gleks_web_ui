@@ -97,6 +97,7 @@ const OUTERMOST = new Map([
     'an overlay placed against the trigger rect, and into <body> under appendToBody — the field’s sibling, never its child',
   ],
   ['menu', 'an overlay; it always renders into <body>'],
+  ['popover', 'an overlay; it always renders into <body>'],
   ['badge', 'it hangs outside its host box on purpose — the host is not its container'],
   ['progressbar', 'the track is the outermost box'],
   ['scroll-track', 'the track is the outermost box'],

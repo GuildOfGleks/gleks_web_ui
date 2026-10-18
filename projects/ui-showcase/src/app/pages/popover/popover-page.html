@@ -1,0 +1,72 @@
+<app-doc-page unit="popover">
+  <app-doc-section
+    id="content"
+    title="Content"
+    lead="Anything: text, a list, a small form. The popover frames it, anchors it to its trigger and dismisses it; what is inside is yours."
+  >
+    <h3>text</h3>
+    <p class="popover-page__note">
+      Opens under its trigger, or above it where there is no room below, and stays attached to it as
+      the page scrolls. The width is a measure — 52 characters, less on a narrow screen — so longer
+      text wraps at a readable length.
+    </p>
+    <div class="popover-page__row">
+      <button type="button" gogButton variant="outline" [gogPopoverTrigger]="shipping">
+        <gog-icon name="truck" /> Shipping
+      </button>
+      <gog-popover
+        #shipping
+        ariaLabel="Shipping"
+        (gogOpened)="record('gogOpened')"
+        (gogClosed)="record('gogClosed')"
+      >
+        <p class="popover-page__text">
+          Orders placed before 14:00 leave the warehouse the same day. Delivery takes two to four
+          working days inside the EU, and a tracking link arrives by email once the parcel is
+          scanned by the carrier.
+        </p>
+      </gog-popover>
+    </div>
+
+    <h3>a small form</h3>
+    <p class="popover-page__note">
+      Focus moves to the first field when it opens, Tab walks through what is inside, and Tab past
+      the last element — or a press outside — closes it. Escape closes it and focus returns to the
+      trigger.
+    </p>
+    <div class="popover-page__row">
+      <button type="button" gogButton variant="ghost" [gogPopoverTrigger]="noteEditor">
+        <gog-icon name="pencil" /> Delivery note
+      </button>
+      <span class="popover-page__value">{{ note() }}</span>
+      <gog-popover #noteEditor ariaLabel="Delivery note">
+        <div class="popover-page__form">
+          <gog-inputfield label="Note for the courier" [(value)]="note" />
+          <button type="button" gogButton size="sm" (click)="noteEditor.close()">Done</button>
+        </div>
+      </gog-popover>
+    </div>
+    <ul class="popover-page__log" aria-label="Output log">
+      @for (line of log(); track $index) {
+        <li>{{ line }}</li>
+      }
+    </ul>
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="A non-modal dialog: role='dialog' with a name, focus moved in on open and back to the trigger on Escape. It does not trap focus or block the page — that is gog-dialog."
+  >
+    <h3>trigger attributes</h3>
+    <app-doc-attrs target="button">
+      <button type="button" gogButton variant="outline" [gogPopoverTrigger]="attrs">Open</button>
+      <gog-popover #attrs ariaLabel="Example"><p class="popover-page__text">Hello.</p></gog-popover>
+    </app-doc-attrs>
+    <p class="popover-page__note">
+      The trigger states <code>aria-haspopup="dialog"</code> and <code>aria-expanded</code>, and
+      while open <code>aria-controls</code> points at the panel. Name the panel with
+      <code>ariaLabel</code>, or with <code>ariaLabelledby</code> pointing at a heading inside it.
+    </p>
+  </app-doc-section>
+</app-doc-page>

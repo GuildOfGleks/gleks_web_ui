@@ -1,0 +1,94 @@
+<app-doc-page unit="context-menu">
+  <app-doc-section
+    id="content"
+    title="Content"
+    lead="gog-menu, opened where the pointer right-clicks instead of under a button, and handed what was clicked. The items are a template that receives it."
+  >
+    <h3>one menu for every row, resolved from what was clicked</h3>
+    <p class="context-menu-page__note">
+      Right-click a file — or focus one and press the ContextMenu key or Shift+F10. One listener on
+      the list, <code>[gogContextMenuResolve]</code>, works out which file was clicked; between the
+      rows it returns <code>null</code> and the browser's own menu opens instead. The items are
+      ordinary <code>gogMenuItem</code> buttons, arrowed between and dismissed exactly as in
+      <code>gog-menu</code>.
+    </p>
+    <ul
+      class="context-menu-page__files"
+      aria-label="Files"
+      [gogContextMenu]="fileMenu"
+      [gogContextMenuResolve]="fileAt"
+    >
+      @for (file of files(); track file.name) {
+        <li>
+          <button type="button" class="context-menu-page__file" [attr.data-file]="file.name">
+            <gog-icon [name]="file.icon" />
+            <span>{{ file.name }}</span>
+            @if (file.pinned) {
+              <gog-icon name="pin" />
+            }
+            <span class="context-menu-page__size">{{ file.size }}</span>
+          </button>
+        </li>
+      }
+    </ul>
+
+    <gog-context-menu #fileMenu ariaLabel="File actions" (gogOpened)="record('gogOpened')">
+      <ng-template gogContextMenuContent let-file [gogContextMenuContentTypeOf]="files()">
+        <button gogMenuItem type="button" (click)="record('Open ' + file?.name)">
+          <gog-icon name="external-link" /> Open
+        </button>
+        <button gogMenuItem type="button" (click)="togglePin(file)">
+          <gog-icon name="pin" /> {{ file?.pinned ? 'Unpin' : 'Pin' }}
+        </button>
+        <button gogMenuItem type="button" disabled>
+          <gog-icon name="share" /> Share (no permission)
+        </button>
+        <button gogMenuItem type="button" (click)="remove(file)">
+          <gog-icon name="trash" /> Delete
+        </button>
+      </ng-template>
+    </gog-context-menu>
+
+    <h3>a fixed menu for one region, with gogContextMenuData</h3>
+    <div
+      class="context-menu-page__canvas"
+      tabindex="0"
+      role="img"
+      aria-label="Canvas"
+      [gogContextMenu]="canvasMenu"
+      gogContextMenuData="canvas"
+    >
+      Right-click anywhere here
+    </div>
+    <gog-context-menu #canvasMenu ariaLabel="Canvas">
+      <button gogMenuItem type="button" (click)="record('Paste')">
+        <gog-icon name="clipboard" /> Paste
+      </button>
+      <button gogMenuItem type="button" (click)="record('Select all')">Select all</button>
+    </gog-context-menu>
+    <ul class="context-menu-page__log" aria-label="Output log">
+      @for (line of log(); track $index) {
+        <li>{{ line }}</li>
+      }
+    </ul>
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="A right-click has a keyboard equivalent: the ContextMenu key, or Shift+F10, opens the menu under the focused element. Focus goes to the first item and comes back to what was clicked."
+  >
+    <h3>the region a menu listens on</h3>
+    <app-doc-attrs target="ul">
+      <ul [gogContextMenu]="fileMenu" [gogContextMenuResolve]="fileAt">
+        <li>row</li>
+      </ul>
+    </app-doc-attrs>
+    <p class="context-menu-page__note">
+      The region gets no role of its own — the menu is a convenience on top of what is already
+      there, so every action in it should also be reachable another way (a row's own buttons, a
+      toolbar). The panel is <code>gog-menu</code>'s: <code>role="menu"</code>, named by
+      <code>ariaLabel</code>, its items <code>menuitem</code>s.
+    </p>
+  </app-doc-section>
+</app-doc-page>

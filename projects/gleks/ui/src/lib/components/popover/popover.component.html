@@ -1,0 +1,33 @@
+<!--
+  Stamped into `<body>` by `GogDropdownOverlay`, as `gog-menu`'s panel is: a closed popover puts
+  nothing in the accessibility tree, and nothing around the trigger can clip an open one.
+-->
+<ng-template #panelTpl>
+  <div
+    [id]="popoverId"
+    class="gog-popover"
+    [class.gog-popover--up]="placement()?.direction === 'up'"
+    [style.top.px]="placement()?.top"
+    [style.bottom.px]="placement()?.bottom"
+    [style.left.px]="placement()?.left"
+    [style.--gog-popover-available-height]="availableHeight()"
+    [style.z-index]="panelZIndex()"
+    role="dialog"
+    tabindex="-1"
+    [attr.aria-label]="ariaLabel() || null"
+    [attr.aria-labelledby]="ariaLabelledby() || null"
+    (keydown)="onPanelKeydown($event)"
+    (focusout)="onPanelFocusOut($event)"
+  >
+    <gog-scroll
+      class="gog-popover__scroll"
+      size="thin"
+      [focusable]="false"
+      overscrollBehavior="contain"
+    >
+      <div class="gog-popover__body">
+        <ng-content />
+      </div>
+    </gog-scroll>
+  </div>
+</ng-template>

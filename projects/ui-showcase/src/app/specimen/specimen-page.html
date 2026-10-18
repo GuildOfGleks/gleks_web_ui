@@ -465,6 +465,49 @@
       </div>
     </aside>
   </div>
+
+  <gog-card [size]="size()">
+    <h3 gogCardHeader>Time off</h3>
+    <div class="specimen__inline">
+      <button
+        type="button"
+        gogButton
+        variant="ghost"
+        [size]="size()"
+        [gogPopoverTrigger]="leavePolicy"
+      >
+        <gog-icon name="help" /> Leave policy
+      </button>
+      <ul
+        class="specimen__away"
+        aria-label="Away this week"
+        [gogContextMenu]="awayMenu"
+        [gogContextMenuResolve]="personAt"
+      >
+        @for (person of away; track person) {
+          <li>
+            <button type="button" class="specimen__away-name" [attr.data-person]="person">
+              {{ person }}
+            </button>
+          </li>
+        }
+      </ul>
+    </div>
+    <gog-popover #leavePolicy ariaLabel="Leave policy">
+      <p class="specimen__muted">
+        Leave is booked at least two weeks ahead. Sick days need no booking — tell your lead the
+        same morning.
+      </p>
+    </gog-popover>
+    <gog-context-menu #awayMenu ariaLabel="Colleague">
+      <ng-template gogContextMenuContent let-person [gogContextMenuContentTypeOf]="away">
+        <button gogMenuItem type="button" (click)="messageColleague(person)">
+          <gog-icon name="message" /> Message {{ person }}
+        </button>
+        <button gogMenuItem type="button" disabled><gog-icon name="calendar" /> Edit leave</button>
+      </ng-template>
+    </gog-context-menu>
+  </gog-card>
 </section>
 
 <!-- Scene 2: orders -->
@@ -895,7 +938,28 @@
 
     <aside class="specimen__aside" aria-label="Orders sidebar">
       <gog-calendar selectionMode="range" [size]="size()" [(value)]="range" />
-      <div class="specimen__tiles">
+      <button
+        type="button"
+        gogButton
+        variant="outline"
+        [size]="size()"
+        [gogPopoverTrigger]="carriers"
+      >
+        <gog-icon name="truck" /> Carrier status
+      </button>
+      <gog-popover #carriers ariaLabel="Carrier status">
+        <ul class="specimen__muted">
+          <li>DHL — on time</li>
+          <li>DPD — label service down since 09:40</li>
+        </ul>
+      </gog-popover>
+      <gog-context-menu #tileMenu ariaLabel="Quick actions">
+        <ng-template gogContextMenuContent let-tile [gogContextMenuContentTypeOf]="tileNames">
+          <button gogMenuItem type="button"><gog-icon name="pin" /> Pin {{ tile }}</button>
+          <button gogMenuItem type="button"><gog-icon name="minus" /> Hide {{ tile }}</button>
+        </ng-template>
+      </gog-context-menu>
+      <div class="specimen__tiles" [gogContextMenu]="tileMenu" gogContextMenuData="quick actions">
         <button type="button" class="specimen__tile" gogRipple [disabled]="disabled()">
           <gog-icon name="plus" /> New order
         </button>

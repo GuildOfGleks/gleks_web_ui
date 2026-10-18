@@ -1832,6 +1832,29 @@
   --gog-panel-slg-padding-x: var(--gog-space-32);
   --gog-panel-slg-gap: var(--gog-space-20);
 
+  /* ── Popover ───────────────────────────────────────────────────────────────
+     The menu's surface — same border, radius, shadow and stacking — because the two float over the
+     page from a trigger in the same way; the popover holds content, so it pads like a panel. */
+  --gog-popover-z: var(--gog-dropdown-z);
+  --gog-popover-bg: var(--gog-surface-color);
+  --gog-popover-color: var(--gog-text-color);
+  --gog-popover-font-family: var(--gog-font-body);
+  --gog-popover-font-size: var(--gog-text-sm);
+  --gog-popover-line-height: var(--gog-line-height-normal);
+  --gog-popover-border-color: var(--gog-border-color);
+  --gog-popover-border-width: var(--gog-control-border-width);
+  --gog-popover-border-style: var(--gog-control-border-style);
+  --gog-popover-radius: var(--gog-panel-radius);
+  --gog-popover-shadow: var(--gog-panel-shadow);
+  --gog-popover-padding: var(--gog-space-12);
+  --gog-popover-panel-gap: var(--gog-space-4);
+  --gog-popover-min-width: 180px;
+  /* A measure, because its content wraps, and capped against the viewport so a phone keeps a margin. */
+  --gog-popover-max-width: min(52ch, calc(100vw - var(--gog-space-16) * 2));
+  --gog-popover-max-height: 400px;
+  --gog-popover-focus-ring-width: var(--gog-focus-ring-width);
+  --gog-popover-focus-ring-color: var(--gog-accent-color);
+
   /* ── Progressbar ──────────────────────────────────────────────────────────── */
   --gog-progressbar-track-base-bg: var(--gog-border-color);
   --gog-progressbar-radius: 999px;
