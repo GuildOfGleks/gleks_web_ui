@@ -122,6 +122,23 @@ const SMOKE = {
       await page.waitForSelector(`[aria-label="${LABELS.closeDialog}"]`, { timeout: 5000 });
     },
   },
+  // A fixed week in a fixed zone: the page is prerendered at build time and hydrated later, so a
+  // scheduler drawn around "now" in the machine's zone would hydrate a different week.
+  [`${PACKAGE}/scheduler`]: {
+    imports: { [`${PACKAGE}/scheduler`]: ['SchedulerComponent'] },
+    components: ['SchedulerComponent'],
+    fields: `protected readonly day = new Date(Date.UTC(2026, 0, 14, 12));
+  protected readonly events = [
+    { title: 'Check event', start: new Date(Date.UTC(2026, 0, 14, 9)), end: new Date(Date.UTC(2026, 0, 14, 10)) },
+  ];`,
+    template: `<gog-scheduler view="week" timeZone="UTC" [date]="day" [events]="events" />`,
+    expectHtml: [LABELS.today, 'Check event'],
+    minLazyBytes: 2048,
+    async interact(page) {
+      await page.click('.gog-scheduler__event');
+      await page.waitForSelector('.gog-scheduler__event:focus', { timeout: 5000 });
+    },
+  },
 };
 
 const problems = [];

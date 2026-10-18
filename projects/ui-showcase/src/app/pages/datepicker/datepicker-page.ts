@@ -135,6 +135,13 @@ export class DatepickerPage {
   protected readonly inlineDate = signal<Date | null>(null);
   protected readonly calendarDate = signal<Date | null>(TODAY);
   protected readonly lastSelect = signal<string>('none yet');
+  /** One instant, bound to three fields that read it in three zones. 09:30 UTC on a fixed day. */
+  protected readonly zonedInstant = signal<Date | null>(new Date(Date.UTC(2026, 9, 18, 9, 30)));
+  protected readonly zones: readonly Labelled<string>[] = [
+    { name: 'timeZone="UTC"', value: 'UTC' },
+    { name: 'timeZone="America/New_York"', value: 'America/New_York' },
+    { name: 'timeZone="Asia/Tokyo"', value: 'Asia/Tokyo' },
+  ];
 
   protected readonly formControl = new FormControl<GogDatepickerValue>(null, {
     validators: [Validators.required],

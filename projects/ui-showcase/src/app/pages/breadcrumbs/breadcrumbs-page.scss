@@ -20,3 +20,10 @@
   font-size: var(--gog-text-xs);
   max-width: 60rem;
 }
+
+.breadcrumbs-page__count {
+  padding: 0 var(--gog-space-4);
+  border-radius: var(--gog-radius);
+  background: var(--gog-hover-color);
+  font-size: var(--gog-text-xs);
+}

@@ -2,9 +2,34 @@
   <ol class="gog-breadcrumbs__list">
     @for (entry of entries(); track entry.key; let last = $last) {
       <li class="gog-breadcrumbs__item">
-        @if (entry.item; as item) {
+        @if (entry.template; as template) {
           <!-- Your element, stamped from your template: every directive on it keeps working. -->
-          <ng-container [ngTemplateOutlet]="item.templateRef" />
+          <ng-container [ngTemplateOutlet]="template.templateRef" />
+        } @else if (entry.data; as data) {
+          <!-- An item of `items`: the current page is text, a parent a link (or a button without
+               an href). -->
+          @if (last) {
+            <span class="gog-breadcrumbs__link" aria-current="page">
+              <ng-container
+                [ngTemplateOutlet]="itemContent"
+                [ngTemplateOutletContext]="{ $implicit: data, current: true }"
+              />
+            </span>
+          } @else if (data.href) {
+            <a class="gog-breadcrumbs__link" [href]="data.href" (click)="onItemClick(data, $event)">
+              <ng-container
+                [ngTemplateOutlet]="itemContent"
+                [ngTemplateOutletContext]="{ $implicit: data, current: false }"
+              />
+            </a>
+          } @else {
+            <button type="button" class="gog-breadcrumbs__link" (click)="onItemClick(data, $event)">
+              <ng-container
+                [ngTemplateOutlet]="itemContent"
+                [ngTemplateOutletContext]="{ $implicit: data, current: false }"
+              />
+            </button>
+          }
         } @else {
           <button
             type="button"
@@ -23,3 +48,17 @@
     }
   </ol>
 </nav>
+
+<ng-template #itemContent let-data let-current="current">
+  @if (itemTemplate(); as custom) {
+    <ng-container
+      [ngTemplateOutlet]="custom.templateRef"
+      [ngTemplateOutletContext]="contextFor(data, current)"
+    />
+  } @else {
+    @if (data.icon) {
+      <gog-icon class="gog-breadcrumbs__icon" [name]="data.icon" />
+    }
+    {{ data.label }}
+  }
+</ng-template>

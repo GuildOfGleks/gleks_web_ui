@@ -5,6 +5,79 @@ All notable changes to `@guildofgleks/ui` are documented here. Format follows
 semantic versioning**: a patch fixes, a minor adds, and only a major breaks — see the README's
 _Versioning_ section. Before 21.16.0 a minor could carry a breaking change, and its entry said so.
 
+## [21.20.0] - planned
+
+### Added
+
+- **`gog-scheduler`**, from the new entry point **`@guildofgleks/ui/scheduler`** — a month, week
+  or day of the app's own events. `events` is the consumer's array, read through accessors
+  (`eventStart`, `eventEnd`, `eventTitle`, `eventAllDay`, `eventVariant`), and every press goes back
+  out: `gogEventClick` with the event, `gogSlotClick` with an empty slot of the hour grid or a whole
+  day, and `gogRangeChange` with the period drawn — on first render and after every move, the moment
+  to load that period's events. `view` and `date` are two-way.
+  - **Layout.** All-day and day-long events are bars: one button across the days an event covers
+    in a week, placed by a CSS grid over the week's columns, so nothing breaks between days; rows
+    go all-day/multi-day first, then timed events by start. Timed events sit in the hour grid by start and length, overlapping
+    ones side by side; a line marks now. `gogSchedulerEvent` draws an event's insides.
+  - **"+N more".** A month cell draws `monthEventLimit` rows (3 by default) and is as tall as them;
+    a fuller day ends in "+N more", which lists the day in a `gog-popover` or, with
+    `moreEventsAction: 'day'`, opens the day view.
+  - **Editing**, with `readonly` off (it is on by default): a right-click, the ContextMenu key or
+    Shift+F10 opens a `gog-context-menu` — New event on a slot or day, Move, Change end and Delete on
+    an event. Move and Change end wait for the next slot or day pressed, and Escape cancels. Each
+    comes out as `gogEventCreate`, `gogEventDelete` or `gogEventChange`; `events` is never changed.
+  - **Keyboard.** The focused day carries the tab stops, and the arrows, Home/End and
+    PageUp/PageDown move it, moving the view past what is drawn.
+  - **Configuration.** A new `GOG_CONFIG.scheduler` key (`monthEventLimit`, `moreEventsAction`,
+    `readonly`); `locale`, `firstDayOfWeek` and `timeZone` fall back to `GOG_CONFIG.datepicker`'s.
+    Sixteen new `GOG_CONFIG.labels` fields — `previousPeriod`, `nextPeriod`, `schedulerViews`,
+    `monthView`, `weekView`, `dayView`, `allDay`, `moreEvents`, `eventActions`, `newEvent`,
+    `moveEvent`, `resizeEvent`, `deleteEvent`, `movingEvent`, `resizingEvent`, `cancel` (`today` is
+    shared with `gog-calendar`). Types `GogSchedulerView`, `GogSchedulerMoreAction` and
+    `GogSchedulerEventChange`, and `--gog-scheduler-*` tokens.
+
+  No drag-and-drop, recurring events or resource columns. Its own entry point because it is large
+  and usually lives on one route: the root does not export it, so a lazy route keeps it out of an
+  app's initial bundle.
+
+- **`gog-breadcrumbs` from an array** — `[items]`, read through `itemLabel`, `itemHref` and
+  `itemIcon` (`'label'`, `'href'`, `'icon'` by default): each parent a link from its `href` (a button
+  emitting `gogItemClick` without one), the last item the current page. `gogItemClick` carries the
+  item and the click, so an app with a router can `preventDefault()` and navigate itself. An
+  `ng-template gogBreadcrumbItem` draws an item's insides. `*gogBreadcrumb` elements work as before,
+  for anything the element itself must carry; `items` wins when it has entries.
+- **`gog-popover`** and **`[gogPopoverTrigger]`** — a panel of anything anchored to the element
+  that opened it: a non-modal dialog that takes focus, follows its trigger on scroll and closes on
+  Escape, a press outside or focus leaving it. Rendered into `<body>`, so nothing clips it; its width
+  is a measure (52ch) capped against the viewport. `--gog-popover-*` tokens.
+- **`gog-context-menu`**, **`[gogContextMenu]`** and **`gogContextMenuContent`** — `gog-menu` opened
+  where the pointer right-clicks, or under the focused element on the ContextMenu key or Shift+F10,
+  and handed what was clicked: one value (`gogContextMenuData`) or one worked out from the clicked
+  element (`gogContextMenuResolve`, where `null` leaves the browser's own menu). Its items are a
+  template that receives that data.
+- **`gog-menu`'s `openAt(point, returnFocusTo)`**, which opens it at a viewport point instead of
+  under a trigger. Its items are now found in the rendered panel rather than through a content
+  query, so items stamped from a template are arrowed between like the rest.
+- **`gog-progressbar`'s `animation`** — `'none'` (the default), `'stripes'` or `'shimmer'`: motion
+  on a fill that reports a value, for a bar whose number holds still between updates. Stripes
+  travel toward the end the fill grows to, and stay but stop under `prefers-reduced-motion`; the
+  shimmer is a highlight swept across the fill, and is removed there. Ignored in `'indeterminate'`
+  mode, which already moves. New type `GogProgressbarAnimation`, and five tokens:
+  `--gog-progressbar-stripes-tile`, `-stripes-duration`, `-shimmer-color`, `-shimmer-duration` and
+  `-shimmer-easing`.
+- **A time zone for `gog-datepicker` and `gog-calendar`** — `timeZone` on either, or once as
+  `GOG_CONFIG.datepicker.timeZone`: an IANA name (`'Europe/Berlin'`, `'UTC'`) the field and the grid
+  read and write in. Every `Date` in or out stays a real instant — the field shows `value` on that
+  zone's clock, a pick or a typed time sets the moment that clock time means there, and "today",
+  `min`, `max` and `defaultMonth` are read there too; `disabledDates` is asked about the instant each
+  day starts in the zone. A time the zone skips moves forward by the gap and one it passes twice
+  takes the earlier instant, as `Temporal`'s `'compatible'` does. Unset, nothing changes: the
+  browser's own zone, as before. An unknown name warns once in dev mode and falls back to it.
+- **`gogToZonedTime(date, zone)` and `gogFromZonedTime(wall, zone)`**, the two conversions the
+  above is built on, exported beside the other date helpers — the first gives a `Date` whose local
+  fields read `date` on `zone`'s clock, which is how a `disabledDates` predicate reads a weekday in
+  the configured zone.
+
 ## [21.19.0] - 05.10.2026
 
 ### Changed

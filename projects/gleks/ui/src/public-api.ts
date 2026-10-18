@@ -42,6 +42,8 @@ export {
   copyTimeOnto,
   daysInMonth,
   formatDate,
+  gogFromZonedTime,
+  gogToZonedTime,
   isAfterDay,
   isBeforeDay,
   isInRange,
@@ -58,6 +60,8 @@ export {
 export type { GogDateRange } from '@guildofgleks/ui/shared';
 export * from './lib/components/divider/divider.component';
 export * from './lib/components/progressbar/progressbar.component';
+export * from './lib/components/popover/popover.component';
+export * from './lib/components/context-menu/context-menu.component';
 export * from './lib/components/ripple/ripple.directive';
 export * from './lib/components/toggle/toggle.component';
 export * from './lib/components/radio-group/radio-group.component';
@@ -95,6 +99,7 @@ export type {
   GogInputType,
   GogOrientation,
   GogPaginatorRangeMode,
+  GogProgressbarAnimation,
   GogProgressbarMode,
   GogProgressbarVariant,
   GogScrollAxis,

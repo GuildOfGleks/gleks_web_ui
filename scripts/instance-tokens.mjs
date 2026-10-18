@@ -113,6 +113,8 @@ export const INSTANCE_TOKENS = new Set([
   // `--gog-menu-max-height`; before 21.5.1 the measurement was written straight onto the
   // panel's `max-height`, where it beat the token instead of combining with it.
   '--gog-menu-available-height',
+  // gog-popover — the same measured room, written the same way.
+  '--gog-popover-available-height',
   // gog-textarea — written as an inline style from the measured scrollbar width, not by a theme
   '--gog-textarea-scrollbar-width',
   // gog-toggle

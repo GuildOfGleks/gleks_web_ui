@@ -1,0 +1,7 @@
+/*
+ * Nothing of its own to draw: the panel is `gog-menu`'s, styled by `styles/menu.css`. The host adds
+ * no box where the menu is declared, as `gog-menu`'s does not.
+ */
+:host {
+  display: contents;
+}

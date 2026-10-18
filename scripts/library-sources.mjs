@@ -32,7 +32,7 @@ export const SHARED_DIR = path.join(UI_ROOT, 'shared');
  * Entry points split out of the root so a lazy route can keep them out of an app's initial
  * bundle. The root must never import one (`check:layering` rule D).
  */
-export const SPLIT_ENTRY_POINTS = ['table', 'datepicker', 'dialog'];
+export const SPLIT_ENTRY_POINTS = ['table', 'datepicker', 'dialog', 'scheduler'];
 
 /** Each split entry point's own directory, in the order above. */
 export const SPLIT_DIRS = SPLIT_ENTRY_POINTS.map((name) => path.join(UI_ROOT, name));

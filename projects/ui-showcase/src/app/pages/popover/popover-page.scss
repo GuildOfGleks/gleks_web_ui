@@ -1,0 +1,41 @@
+.popover-page__note {
+  margin-block: 0 var(--gog-space-8);
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-xs);
+  max-width: 60rem;
+}
+
+.popover-page__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--gog-space-12);
+  margin-block-end: var(--gog-space-16);
+}
+
+.popover-page__text {
+  margin: 0;
+}
+
+.popover-page__value {
+  color: var(--gog-muted-text-color);
+  font-size: var(--gog-text-sm);
+}
+
+.popover-page__form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--gog-space-12);
+}
+
+.popover-page__log {
+  min-height: 4lh;
+  margin: 0;
+  padding: var(--gog-space-8) var(--gog-space-12);
+  border: 1px solid var(--gog-border-color);
+  border-radius: var(--gog-radius);
+  font-family: var(--gog-font-mono);
+  font-size: var(--gog-text-xs);
+  list-style: none;
+}

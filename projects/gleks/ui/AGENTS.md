@@ -5,8 +5,8 @@ an app that **consumes** the published `@guildofgleks/ui` npm package. It is not
 authoring the library — if you are working inside the `gleks_web_ui` monorepo itself, read
 `.github/instructions/*.md` instead.
 
-Everything below reflects the library's actual source as of **`21.15.0`** (in progress — the
-released version is 21.14.0; see `CHANGELOG.md` for what 21.15.0 adds). 21.7.0 removed the three
+Everything below reflects the library's actual source as of **`21.20.0`** (in progress — the
+released version is 21.19.0; see `CHANGELOG.md` for what 21.20.0 adds). 21.7.0 removed the three
 abbreviated token prefixes and 21.5.0 removed a batch of deprecated API — see **Removed in 21.7.0**
 and **Removed in 21.5.0** near the end of this file, which exist so code written against an older
 version can be migrated — and `CHANGELOG.md` has the rest. `README.md` covers the same ground at a
@@ -348,7 +348,7 @@ parent's config**, one level deep per key — it does not replace it.
 | `control`      | `size`, `errorDisplay`, `clearable`                                                   | `size`: button, `[gogButton]`, button-toggle-group, checkbox, toggle, radio-group, inputfield, textarea, select, multiselect, autocomplete, datepicker. `errorDisplay`: inputfield, textarea, select, multiselect, autocomplete, datepicker, radio-group, slider. `clearable`: inputfield, textarea, select, multiselect, autocomplete, datepicker. Not table/accordion/paginator (density, not form size), not spinner/skeleton/tag/chip. |
 | `dropdown`     | `appendToBody`, `direction`, `filter`, `filterPosition`, `virtualize`                 | `gog-select`, `gog-multiselect`. `gog-datepicker`/`gog-autocomplete` honour `appendToBody`/`direction` too (autocomplete has no `filter` box — it filters via the trigger's own text). `virtualize` reaches all three dropdowns; not `gog-table`.                                                                                                                                                                                          |
 | `floatLabel`   | `variant`, `showPlaceholder`                                                          | inputfield, textarea, select, multiselect, autocomplete, datepicker.                                                                                                                                                                                                                                                                                                                                                                       |
-| `datepicker`   | `locale`, `firstDayOfWeek`, `format`                                                  | `gog-datepicker`, `gog-calendar`.                                                                                                                                                                                                                                                                                                                                                                                                          |
+| `datepicker`   | `locale`, `firstDayOfWeek`, `format`, `timeZone`                                      | `gog-datepicker`, `gog-calendar`; `locale`, `firstDayOfWeek` and `timeZone` also `gog-scheduler`.                                                                                                                                                                                                                                                                                                                                          |
 | `autocomplete` | `searchDebounce`, `minLength`, `openOnFocus`                                          | `gog-autocomplete`.                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | `tooltip`      | `position`, `showDelay`, `hideDelay`                                                  | the `gogTooltip` directive.                                                                                                                                                                                                                                                                                                                                                                                                                |
 | `spinner`      | `component`, `variant`                                                                | every spinner the library draws — `gog-spinner`, `gog-spinner-overlay`, and the ones inside `gog-button`, `gog-autocomplete` and `gog-table`, which have no input of their own. `component` takes **your** component and renders it in place of the built-in look. The overlay honoured neither key until 21.10.0, and `gog-table` was simply never listed.                                                                                |
@@ -358,9 +358,10 @@ parent's config**, one level deep per key — it does not replace it.
 | `inputfield`   | `showSpinButtons`                                                                     | `gog-inputfield`.                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | `textarea`     | `resize`                                                                              | `gog-textarea`.                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | `paginator`    | `showPageSizeSelect`, `pageSizeOptions`                                               | `gog-paginator`, and through it `gog-table`'s built-in pagination.                                                                                                                                                                                                                                                                                                                                                                         |
+| `scheduler`    | `monthEventLimit`, `moreEventsAction`, `readonly`                                     | `gog-scheduler` (since 21.20.0). Its `locale`, `firstDayOfWeek` and `timeZone` come from `datepicker`.                                                                                                                                                                                                                                                                                                                                     |
 | `toast`        | `position`, `duration`                                                                | `ToastService`.                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | `theme`        | `storageKey`, `defaultTheme`, `followSystem`, `lightTheme`, `darkTheme`               | `ThemeService`. All off/neutral by default — see below.                                                                                                                                                                                                                                                                                                                                                                                    |
-| `labels`       | every fixed string the library renders — see below                                    | inputfield, textarea, select, multiselect, autocomplete, datepicker, calendar, paginator, table, avatar-group, breadcrumbs, stepper, file-upload, rating, `DialogService`, `ToastService`.                                                                                                                                                                                                                                                 |
+| `labels`       | every fixed string the library renders — see below                                    | inputfield, textarea, select, multiselect, autocomplete, datepicker, calendar, paginator, table, avatar-group, breadcrumbs, stepper, file-upload, rating, scheduler, `DialogService`, `ToastService`.                                                                                                                                                                                                                                      |
 
 Anything visual does **not** belong here — override the `--gog-*` token instead.
 
@@ -422,6 +423,25 @@ provideGogConfig({
     fileRejected: (name, reason) => `${name} wurde nicht hinzugefügt (${reason})`,
     ratingStar: (value) => `${value} Sterne`, // gog-rating's star names
     ratingValue: (value, max) => (value === null ? 'Nicht bewertet' : `${value} von ${max}`),
+    // gog-scheduler's toolbar; `today` above is its Today button too
+    previousPeriod: (view) =>
+      ({ month: 'Vorheriger Monat', week: 'Vorherige Woche', day: 'Vorheriger Tag' })[view],
+    nextPeriod: (view) =>
+      ({ month: 'Nächster Monat', week: 'Nächste Woche', day: 'Nächster Tag' })[view],
+    schedulerViews: 'Ansicht',
+    monthView: 'Monat',
+    weekView: 'Woche',
+    dayView: 'Tag',
+    allDay: 'Ganztägig',
+    moreEvents: (count) => `+${count} weitere`,
+    eventActions: 'Termin', // the editable scheduler's context menu
+    newEvent: 'Neuer Termin',
+    moveEvent: 'Verschieben',
+    resizeEvent: 'Ende ändern',
+    deleteEvent: 'Löschen',
+    movingEvent: (title) => `„${title}“ verschieben: neuen Beginn wählen`,
+    resizingEvent: (title) => `Ende von „${title}“ ändern: wählen, wo er endet`,
+    cancel: 'Abbrechen',
   },
 });
 ```
@@ -580,11 +600,11 @@ export class EditDialogComponent {
 ## Component reference
 
 Every component below is exported from `@guildofgleks/ui`'s root — `import { X } from '@guildofgleks/ui'` —
-**except `gog-table`, `gog-datepicker`/`gog-calendar` and `gog-dialog` with `DialogService`**, which
-have their own entry points: `@guildofgleks/ui/table`, `/datepicker` and `/dialog`. They are the
-three components heavy enough to be worth keeping out of an app's initial bundle, and since
-21.14.0 their own entry point is the only place they are exported from — `import { TableComponent }
-from '@guildofgleks/ui'` does not compile.
+**except `gog-table`, `gog-datepicker`/`gog-calendar`, `gog-dialog` with `DialogService`, and
+`gog-scheduler`**, which have their own entry points: `@guildofgleks/ui/table`, `/datepicker`,
+`/dialog` and (since 21.20.0) `/scheduler`. They are the components heavy enough to be worth
+keeping out of an app's initial bundle, and their own entry point is the only place they are
+exported from — `import { TableComponent } from '@guildofgleks/ui'` does not compile.
 "CVA" = implements `ControlValueAccessor` (works with `[formControl]`/`formControlName`).
 
 ### Buttons & choices
@@ -1166,8 +1186,8 @@ renders). Native `Date` only — no date library, no adapter.
 
 **`gog-calendar` is a date picker's grid, not an event calendar.** It picks a day, a range or a
 time; it has no week or day view and nothing that places events on dates. A booking screen, a
-schedule or a month of appointments wants a scheduler (FullCalendar and the like), not this
-component bent into one.
+schedule or a month of appointments wants `gog-scheduler` (`@guildofgleks/ui/scheduler`, since
+21.20.0), not this component bent into one.
 
 | Input                                                 | Type                                         | Default                       | Notes                                                                        |
 | ----------------------------------------------------- | -------------------------------------------- | ----------------------------- | ---------------------------------------------------------------------------- |
@@ -1183,6 +1203,7 @@ component bent into one.
 | `format`                                              | `string \| null`                             | `null`                        | display/parse pattern (`'dd.MM.yyyy'`); derived from `showTime` when unset   |
 | `locale`                                              | `string \| undefined`                        | `'en-US'`                     | via `GOG_CONFIG.datepicker.locale`                                           |
 | `firstDayOfWeek`                                      | `number \| undefined`                        | locale's own                  | via `GOG_CONFIG.datepicker.firstDayOfWeek`                                   |
+| `timeZone`                                            | `string \| undefined`                        | the browser's own             | IANA name, via `GOG_CONFIG.datepicker.timeZone` — see below (21.20.0)        |
 | `allowTextInput`                                      | `boolean`                                    | `true`                        | typed text parsed against `format`; unparseable drafts don't clear the value |
 | `inline`                                              | `boolean`                                    | `false`                       | renders the calendar with no field/panel                                     |
 | `disabled`, `fullWidth`                               |                                              | `false`, `true`               |                                                                              |
@@ -1209,6 +1230,17 @@ honours an app-wide locale without being handed one; its navigation, shortcut an
 `nextYearLabel`, `hoursLabel`, `minutesLabel`, `secondsLabel`) resolve through
 `GOG_CONFIG.labels` the same way.
 
+**Time zone** (21.20.0). `timeZone` — on either component, or once as
+`GOG_CONFIG.datepicker.timeZone` — is an IANA name (`'Europe/Berlin'`, `'UTC'`) the field and the
+grid read and write in. Unset, it is the browser's own zone, exactly as before. **Every `Date` in
+or out is still a real instant**: the field shows `value` on that zone's clock, a pick or a typed
+time sets the moment that clock time means there, and "today", `min`, `max` and `defaultMonth` are
+read there too. `disabledDates` is asked about the instant each day _starts_ in the zone, so read
+its fields with `gogToZonedTime(date, zone)` rather than `date.getDay()`. A wall time the zone
+skips (02:30 on a spring-forward night) lands that far later; one it passes twice takes the
+earlier instant — `Temporal`'s `'compatible'`. An unknown name warns once in dev mode and falls
+back to the browser zone. A fixed zone also makes server and browser render the same "today".
+
 **Keyboard.** From the field, <kbd>↓</kbd> or <kbd>Enter</kbd> opens the panel and
 <kbd>Escape</kbd> closes it — from anywhere inside it, the calendar button and the day grid
 included, and focus returns to the field. In the grid the arrows move by a day and by a week,
@@ -1218,7 +1250,8 @@ picks. The 42 cells are one tab stop, not 42.
 
 Also exported for direct reuse: `formatDate(date, pattern)`, `parseDate(text, pattern)`, and a
 family of date-math helpers (`addDays`, `addMonths`, `isSameDay`, `isWithinBounds`, …) from
-`date-utils`.
+`date-utils`. Since 21.20.0, also `gogToZonedTime(date, zone)` — a `Date` whose local fields read
+`date` on `zone`'s clock — and its inverse `gogFromZonedTime(wall, zone)`.
 
 **Sizing.** `gog-calendar` caps itself at its own month grid — you do not need to give it a
 width. `--gog-calendar-max-width` (default `max-content`) is the cap, and it covers the size
@@ -1698,13 +1731,24 @@ on `<body>`. You do not need to disable the controls inside yourself.
 | `mode`            | `GogProgressbarMode` (`'determinate'\|'indeterminate'\|'buffer'`)            | `'determinate'` |
 | `variant`         | `GogProgressbarVariant` (`'accent'\|'success'\|'danger'\|'warning'\|'info'`) | `'accent'`      |
 | `size`            | `GogSize`                                                                    | `'md'`          |
+| `animation`       | `GogProgressbarAnimation` (`'none'\|'stripes'\|'shimmer'`)                   | `'none'`        |
 | `showValue`       | `boolean`                                                                    | `false`         |
 | `ariaLabel`       | `string`                                                                     | `''`            |
 
 ```html
 <gog-progressbar mode="indeterminate" ariaLabel="Loading" />
 <gog-progressbar mode="buffer" [value]="42" [buffer]="70" />
+<gog-progressbar [value]="42" animation="stripes" ariaLabel="Uploading" />
 ```
+
+**`animation`** (21.20.0) puts motion on a fill that reports a value — for a bar whose number holds
+still between updates and should still look busy. `'stripes'` travel toward the end the fill grows
+to; `'shimmer'` sweeps a highlight across it. Ignored in `'indeterminate'` mode, which already
+moves. Under `prefers-reduced-motion` the stripes stay and stop and the shimmer is removed. Neither
+says anything a screen reader hears — set it back to `'none'` when the work is done, since a full
+bar that still moves reads as "not finished". Tokens: `--gog-progressbar-stripes-tile`,
+`-stripes-duration`, `-shimmer-color`, `-shimmer-duration`, `-shimmer-easing`; the stripes reuse
+`--gog-progressbar-stripe-size` and `-stripe-color`.
 
 **The fill's end can be marked by two hairlines**, off by default since 21.15.0:
 `--gog-progressbar-edge-color` over `--gog-progressbar-edge-backing-color`, each
@@ -1808,6 +1852,123 @@ description the host had whenever the tooltip was closed.
 ```html
 <button gogTooltip="Save changes">💾</button> <gog-chip [gogTooltip]="hintTemplate">Beta</gog-chip>
 ```
+
+#### `gog-scheduler<T>`
+
+**Import from `@guildofgleks/ui/scheduler`** (since 21.20.0) — `SchedulerComponent`,
+`GogSchedulerEventDirective` and the types below (`GogSchedulerEventChange`,
+`GogSchedulerMoreAction` among them). The root does not export it, so a route that
+loads it lazily keeps it out of the initial bundle.
+
+A month, week or day of the app's own events. **It draws events; it does not own them**: `events`
+is your array, read through accessors as `gog-select` reads options, and every press goes back out
+as an output — the app decides what pressing an empty slot means (open a form, create a booking).
+Moving and extending go through a context menu, not drag-and-drop; no recurring events or
+resource columns.
+
+| Input              | Type                                                                  | Default                    | Notes                                                                   |
+| ------------------ | --------------------------------------------------------------------- | -------------------------- | ----------------------------------------------------------------------- |
+| `events`           | `readonly T[]`                                                        | `[]`                       |                                                                         |
+| `eventStart`       | `GogOptionAccessor<T, Date \| string \| number \| null \| undefined>` | `'start'`                  | a `Date`, ISO string or timestamp; unreadable → the event is skipped    |
+| `eventEnd`         | same                                                                  | `'end'`                    | exclusive; missing → one `slotDuration` (timed) or its start day        |
+| `eventTitle`       | `GogOptionAccessor<T, string \| null \| undefined>`                   | `'title'`                  |                                                                         |
+| `eventAllDay`      | `GogOptionAccessor<T, boolean \| null \| undefined>`                  | `'allDay'`                 | only `true` counts                                                      |
+| `eventVariant`     | `GogOptionAccessor<T, GogSeverity \| null \| undefined>`              | `'variant'`                | the event's leading edge colour; anything else is `'accent'`            |
+| `view`             | `GogSchedulerView` (`'month'\|'week'\|'day'`), **model**              | `'month'`                  | `[(view)]`                                                              |
+| `views`            | `readonly GogSchedulerView[]`                                         | `['month', 'week', 'day']` | the toolbar's switch; one or none hides it                              |
+| `date`             | `Date \| null`, **model**                                             | `null` (today)             | any instant inside the period; navigation writes it                     |
+| `dayStartHour`     | `number`                                                              | `0`                        | first hour the week/day grid draws                                      |
+| `dayEndHour`       | `number`                                                              | `24`                       | last (exclusive)                                                        |
+| `slotDuration`     | `number` (minutes)                                                    | `30`                       | one row of the hour grid, and the length of a pressed slot              |
+| `scrollToHour`     | `number`                                                              | `8`                        | where the hour grid opens scrolled to                                   |
+| `monthEventLimit`  | `number \| undefined`                                                 | `3`                        | rows a month cell draws, "+N more" included; via `GOG_CONFIG.scheduler` |
+| `moreEventsAction` | `GogSchedulerMoreAction` (`'popover'\|'day'`)                         | `'popover'`                | what "+N more" opens; via `GOG_CONFIG.scheduler`                        |
+| `readonly`         | `boolean \| undefined`                                                | `true`                     | off adds the editing context menu; via `GOG_CONFIG.scheduler`           |
+| `locale`           | `string \| undefined`                                                 | `'en-US'`                  | via `GOG_CONFIG.datepicker.locale`                                      |
+| `firstDayOfWeek`   | `number \| undefined`                                                 | locale's own               | via `GOG_CONFIG.datepicker.firstDayOfWeek`                              |
+| `timeZone`         | `string \| undefined`                                                 | the browser's own          | via `GOG_CONFIG.datepicker.timeZone`; see the datepicker's time zones   |
+| `ariaLabel`        | `string`                                                              | `''`                       | names the region; unset, its title ("October 2026") does                |
+
+| Output           | Payload                                                       | When                                                                |
+| ---------------- | ------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `gogEventClick`  | `GogSchedulerEventClick<T>` — `{ event, start, end, allDay }` | an event was pressed; `start`/`end` are the instants it was read as |
+| `gogSlotClick`   | `GogSchedulerSlot` — `{ start, end, allDay }`                 | an empty slot of the hour grid, a month cell or an all-day cell     |
+| `gogRangeChange` | `GogSchedulerRange` — `{ start, end, view }`                  | the drawn period changed, **and once on first render** — load here  |
+| `gogEventCreate` | `GogSchedulerSlot`                                            | editable: "New event" chosen on a slot or day                       |
+| `gogEventDelete` | `GogSchedulerEventClick<T>`                                   | editable: "Delete" chosen on an event                               |
+| `gogEventChange` | `GogSchedulerEventChange<T>`                                  | editable: a move or a new end chosen, and its place pressed         |
+
+```html
+<gog-scheduler
+  [events]="bookings()"
+  eventStart="from"
+  eventEnd="to"
+  eventTitle="room"
+  [(view)]="view"
+  (gogRangeChange)="load($event.start, $event.end)"
+  (gogEventClick)="open($event.event)"
+  (gogSlotClick)="create($event.start, $event.end)"
+>
+  <ng-template gogSchedulerEvent let-booking let-time="time" [gogSchedulerEventTypeOf]="bookings()">
+    <strong>{{ booking.room }}</strong> {{ time }}
+  </ng-template>
+</gog-scheduler>
+```
+
+**The slot** `gogSchedulerEvent` fills each event's button; the button — colour, name, keyboard —
+stays the scheduler's, so put text and icons in it, not controls. Its context
+(`GogSchedulerEventContext<T>`): `$implicit`/`event`, `title`, `start`, `end` (instants), `allDay`,
+`time` (the range on the scheduler's clock and locale, `''` for all-day — use it rather than
+`start.getHours()`, which reads the browser's zone) and `view`.
+
+**Layout.** All-day events and timed ones a day long or more are bars. In the month grid and the
+week view's all-day row a bar is **one button across the days it covers** in that week — a CSS grid
+places it over the columns, so nothing breaks where one day meets the next — starting a new bar
+only in the next week row, where it continues with a square corner. Rows are ordered
+all-day/multi-day first (earliest, then longest, on top), then timed events by start, which fill
+rows a bar left free. Shorter timed events sit in the hour grid by start and length, overlapping
+ones side by side. An event shorter than a slot is drawn a slot tall. A red line marks now in today's column.
+
+**"+N more".** A month cell draws `monthEventLimit` rows (3 by default — set 5 for five, app-wide
+with `GOG_CONFIG.scheduler.monthEventLimit`); the cell is as tall as its rows. A fuller day draws
+`limit − 1` rows and "+N more", worded by `GOG_CONFIG.labels.moreEvents(count)`. It opens the day's
+events in a `gog-popover` list, or — with `moreEventsAction: 'day'` — the day view.
+
+**Editing** (`readonly` off; it is on by default). A right-click — or the ContextMenu key, or
+Shift+F10 — opens a `gog-context-menu`: **New event** on an empty slot or day (`gogEventCreate`,
+the slot's range or the whole day), and **Move**, **Change end**, **Delete** on an event. Move and
+Change end then wait for the place, shown in a status line: the next slot or day pressed — pointer,
+or arrows and Enter — is where it goes (events let the pointer through meanwhile), and Escape
+cancels. A move keeps the length (and, dropped on a day, the time of day); a new end must come
+after the start. `gogEventChange` carries `{ event, change: 'move' | 'resize', start, end, allDay,
+previousStart, previousEnd }`. **The scheduler never changes `events`** — apply the change to your
+array (or don't), and it redraws:
+
+```ts
+change(e: GogSchedulerEventChange<Booking>) {
+  this.bookings.update((list) =>
+    list.map((b) => (b === e.event ? { ...b, from: e.start, to: e.end } : b)),
+  );
+}
+```
+
+**Keyboard.** The focused day carries the tab stops — its cell (month), or its header, all-day cell
+and one slot (week/day), plus its events. ←/→ move a day; ↑/↓ a week in the month and a slot in
+the hour grid; Home/End to the ends of the week (or of the day's slots); PageUp/PageDown change
+the period; moving past what is drawn moves the view. Enter/Space press. Every slot and event is a
+button named in full ("Design review, Monday, October 12, 10:00 – 11:30 AM"); the title is a
+polite live region, so stepping announces the new period.
+
+**Time zones.** With `timeZone` set, events are drawn on that zone's clock and every `Date` out
+(`gogSlotClick`, `gogRangeChange`, `date`) is the instant that clock time means there — the same
+rule as `gog-datepicker`.
+
+Labels (`GOG_CONFIG.labels`): `today`, `previousPeriod(view)`, `nextPeriod(view)`, `schedulerViews`,
+`monthView`, `weekView`, `dayView`, `allDay`, `moreEvents(count)`, and for editing `eventActions`,
+`newEvent`, `moveEvent`, `resizeEvent`, `deleteEvent`, `movingEvent(title)`, `resizingEvent(title)`,
+`cancel`. Tokens: `--gog-scheduler-*` —
+`-slot-height` (one row, default the 24px pointer target), `-body-max-height` (the
+hour grid scrolls inside it), `-gutter-width`, `-event-*`, `-today-*`, `-now-color`.
 
 ### Layout & navigation
 
@@ -2008,11 +2169,40 @@ Model: `open: boolean` (default `true`, ignored while `collapsible` is off). No 
 - **The surface is never itself a link** — there is no `gogPanelLink`. Controls live inside a
   panel, and a region that is a link cannot hold them. Use `gog-card` for that.
 
-#### `gog-breadcrumbs` + `*gogBreadcrumb`
+#### `gog-breadcrumbs` — from `[items]`, or from `*gogBreadcrumb` elements
 
-Where the current page sits, as a trail. **The items are your own elements** — the package has no
-router dependency, so a link keeps its own `routerLink` or `href` — marked with the structural
-`*gogBreadcrumb`, one element per item. The last item is the current page.
+Where the current page sits, as a trail. The last item is the current page. Two ways to write one.
+
+**From an array** (since 21.20.0) — the short way. Your objects, first item to current page, read
+through accessors as `gog-select` reads options:
+
+```html
+<gog-breadcrumbs [items]="trail" (gogItemClick)="go($event)" />
+```
+
+```ts
+trail = [
+  { label: 'Home', href: '/', icon: 'home' },
+  { label: 'Orders', href: '/orders' },
+  { label: '#1042' }, // the current page: drawn as text with aria-current="page"
+];
+
+// The package has no router dependency. With a router, take over the navigation:
+go({ item, event }: GogBreadcrumbClick<Crumb>) {
+  event.preventDefault();
+  this.router.navigateByUrl(item.href!);
+}
+```
+
+A parent with an `href` is an `<a href>`; one without is a button that only emits `gogItemClick`.
+`itemLabel`, `itemHref`, `itemIcon` (`'label'`, `'href'`, `'icon'` by default) take a property path
+or a function. An `ng-template gogBreadcrumbItem` (context: `$implicit`/`item`, `label`, `current`,
+`index`; typed with `gogBreadcrumbItemTypeOf`) replaces what is drawn **inside** each link — the
+link, `href` and `aria-current` stay the trail's.
+
+**From your own elements** — for anything the element itself must carry (`routerLink`, query
+params, a tooltip): mark one element per item with the structural `*gogBreadcrumb`. When `items`
+has entries, it wins.
 
 ```html
 <gog-breadcrumbs [maxItems]="4">
@@ -2022,14 +2212,20 @@ router dependency, so a link keeps its own `routerLink` or `href` — marked wit
 </gog-breadcrumbs>
 ```
 
-| Input           | Type                  | Default                      |
-| --------------- | --------------------- | ---------------------------- |
-| `maxItems`      | `number \| null`      | `null` — never collapse      |
-| `itemsBefore`   | `number`              | `1`                          |
-| `itemsAfter`    | `number`              | `2`                          |
-| `separatorIcon` | `GogIconName`         | `'chevron-right'`            |
-| `size`          | `GogSize`             | `'md'`                       |
-| `ariaLabel`     | `string \| undefined` | `undefined` — `'Breadcrumb'` |
+| Input           | Type                                                     | Default                      |
+| --------------- | -------------------------------------------------------- | ---------------------------- |
+| `items`         | `readonly T[]`                                           | `[]` — use `*gogBreadcrumb`  |
+| `itemLabel`     | `GogOptionAccessor<T, string>`                           | `'label'`                    |
+| `itemHref`      | `GogOptionAccessor<T, string \| null \| undefined>`      | `'href'`                     |
+| `itemIcon`      | `GogOptionAccessor<T, GogIconName \| null \| undefined>` | `'icon'`                     |
+| `maxItems`      | `number \| null`                                         | `null` — never collapse      |
+| `itemsBefore`   | `number`                                                 | `1`                          |
+| `itemsAfter`    | `number`                                                 | `2`                          |
+| `separatorIcon` | `GogIconName`                                            | `'chevron-right'`            |
+| `size`          | `GogSize`                                                | `'md'`                       |
+| `ariaLabel`     | `string \| undefined`                                    | `undefined` — `'Breadcrumb'` |
+
+Output: `gogItemClick` — `GogBreadcrumbClick<T>` `{ item, index, event }`, for a parent of `items`.
 
 - **It owns the semantics**: a `<nav>` named by `ariaLabel` (or `GOG_CONFIG.labels.breadcrumbs`),
   an `<ol>` with each item in its own `<li>`, `aria-current="page"` set on the last item's element,
@@ -2039,7 +2235,7 @@ router dependency, so a link keeps its own `routerLink` or `href` — marked wit
   (`GOG_CONFIG.labels.showBreadcrumbs`, "Show full path") and `itemsAfter` items. The button
   expands the trail in place and moves focus to the first item it revealed. A trail that would hide
   nothing does not collapse.
-- **Use `*gogBreadcrumb`, with the star** — the trail needs the template, not the element, to wrap
+- **With elements, use `*gogBreadcrumb`, with the star** — the trail needs the template, not the element, to wrap
   each item in a list item and to leave items out while collapsed. One element per item; a
   template with two root elements breaks `aria-current`.
 - The items' link, hover, focus and current-page styles live in the baseline stylesheet
@@ -2473,7 +2669,10 @@ so there is no `gogRipple` to add.
 Output: `gogClosed` — fires after every close, whatever caused it.
 
 Public methods, for driving it yourself: `open(trigger, 'first' | 'last')`, `close(restoreFocus?)`,
-`toggle(trigger)`, and the `isOpen` signal.
+`toggle(trigger)`, and the `isOpen` signal. Since 21.20.0 also `openAt({ x, y }, returnFocusTo,
+'first' | 'last')`, which opens at a viewport point instead of under a trigger and closes when the
+page scrolls — what `gog-context-menu` is built on. Items are found in the rendered panel, so items
+stamped from a template work as well as items written between the tags.
 
 **Keyboard**, the WAI-ARIA menu button pattern: Enter/Space/ArrowDown open with the first item
 focused, ArrowUp opens with the last, arrows and Home/End move between items and step over
@@ -2502,6 +2701,77 @@ as an inline `max-height`, which beat it; fixed in 21.5.1.
 
 A closed menu renders nothing at all, so its commands are not in the accessibility tree until it
 opens.
+
+#### `gog-context-menu` + `[gogContextMenu]` / `gogContextMenuContent`
+
+Since 21.20.0. `gog-menu` opened where the pointer right-clicks — or, from the keyboard, under the
+focused element on the ContextMenu key or **Shift+F10** — and handed data about what was clicked.
+The panel, items, keyboard, styling and tokens are `gog-menu`'s (`gogMenuItem` buttons,
+`--gog-menu-*`).
+
+```html
+<ul [gogContextMenu]="fileMenu" [gogContextMenuResolve]="fileAt">
+  @for (file of files; track file.id) {
+  <li><button [attr.data-id]="file.id">{{ file.name }}</button></li>
+  }
+</ul>
+
+<gog-context-menu #fileMenu ariaLabel="File actions">
+  <ng-template gogContextMenuContent let-file [gogContextMenuContentTypeOf]="files">
+    <button gogMenuItem (click)="rename(file)">Rename</button>
+    <button gogMenuItem (click)="remove(file)">Delete</button>
+  </ng-template>
+</gog-context-menu>
+```
+
+```ts
+// One listener for the whole list; null leaves the browser's own menu for that spot.
+fileAt = (target: HTMLElement) =>
+  this.files.find((f) => f.id === target.closest<HTMLElement>('[data-id]')?.dataset['id']) ?? null;
+```
+
+| `[gogContextMenu]` input | Type                                                        | Default | Notes                                                             |
+| ------------------------ | ----------------------------------------------------------- | ------- | ----------------------------------------------------------------- |
+| `gogContextMenu`         | `ContextMenuComponent<T>` (required)                        |         | the menu this region opens                                        |
+| `gogContextMenuData`     | `T \| null`                                                 | `null`  | one value for the whole region                                    |
+| `gogContextMenuResolve`  | `((target: HTMLElement) => T \| null \| undefined) \| null` | `null`  | data from the clicked element; `null`/`undefined` = no menu there |
+| `gogContextMenuDisabled` | `boolean`                                                   | `false` | leaves the browser's own menu                                     |
+
+`gog-context-menu`: input `ariaLabel` (names the menu); outputs `gogOpened` (the data) and
+`gogClosed`; methods `openAt({ x, y }, source, data?)`, `openFor(element, data?)`, `close()`;
+signals `data` and `isOpen`. The items go in an `ng-template gogContextMenuContent` that receives the
+data as `let-x` (typed through `gogContextMenuContentTypeOf`), or straight between the tags when
+they do not depend on it. Focus goes to the first item and comes back to what was clicked; the menu
+closes on Escape, Tab, a press elsewhere, or a page scroll. **Make every action reachable another
+way as well** — a right-click is a shortcut, not the only door.
+
+#### `gog-popover` + `[gogPopoverTrigger]`
+
+Since 21.20.0. A panel of anything — text, a list, a small form — anchored to the element that
+opened it. **A non-modal dialog**: `role="dialog"`, focus moves to the first focusable element
+inside (or the panel), Tab moves through it, and focus leaving it, Escape (focus back to the
+trigger) or a press outside closes it. It does not trap focus or block the page — that is
+`gog-dialog`. Like `gog-menu`, it renders into `<body>`, follows its trigger on scroll, and takes
+the trigger's `--gog-dropdown-z`.
+
+```html
+<button gogButton variant="ghost" [gogPopoverTrigger]="details">Details</button>
+<gog-popover #details ariaLabel="Order details">
+  <p>Shipped on 3 October.</p>
+</gog-popover>
+```
+
+| Input            | Type                       | Default  | Notes                                     |
+| ---------------- | -------------------------- | -------- | ----------------------------------------- |
+| `direction`      | `'auto' \| 'up' \| 'down'` | `'auto'` | flips up only when there is no room below |
+| `ariaLabel`      | `string`                   | `''`     | the dialog's name                         |
+| `ariaLabelledby` | `string`                   | `''`     | or the id of a heading inside it          |
+
+Outputs `gogOpened`, `gogClosed`. Methods `open(trigger)`, `close(restoreFocus?)`,
+`toggle(trigger)`; signal `isOpen`. The trigger gets `aria-haspopup="dialog"`, `aria-expanded` and,
+while open, `aria-controls`. Tokens `--gog-popover-*`; the width is a measure,
+`min(52ch, calc(100vw - 32px))`, and the height caps at `--gog-popover-max-height` and the room
+beside the trigger, scrolling inside.
 
 #### `gog-dialog`
 

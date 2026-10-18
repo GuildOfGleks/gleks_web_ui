@@ -9,6 +9,7 @@ import { BREADCRUMBS_API } from './breadcrumbs/breadcrumbs.api';
 import { STEPPER_API } from './stepper/stepper.api';
 import { FILE_UPLOAD_API } from './file-upload/file-upload.api';
 import { RATING_API } from './rating/rating.api';
+import { SCHEDULER_API } from './scheduler/scheduler.api';
 import { EMPTY_STATE_API } from './empty-state/empty-state.api';
 import { BADGE_API } from './badge/badge.api';
 import { BUTTON_API } from './button/button.api';
@@ -24,6 +25,8 @@ import { DROPDOWN_TEMPLATES_API } from './dropdown-templates/dropdown-templates.
 import { ICON_API } from './icon/icon.api';
 import { INPUTFIELD_API } from './inputfield/inputfield.api';
 import { MENU_API } from './menu/menu.api';
+import { CONTEXT_MENU_API } from './context-menu/context-menu.api';
+import { POPOVER_API } from './popover/popover.api';
 import { MULTISELECT_API } from './multiselect/multiselect.api';
 import { PAGINATOR_API } from './paginator/paginator.api';
 import { PANEL_API } from './panel/panel.api';
@@ -141,6 +144,11 @@ export const PAGES: Readonly<Record<string, DocPageEntry>> = {
     api: RATING_API,
     tokens: ['Rating', 'Field label'],
   },
+  scheduler: {
+    load: () => import('./scheduler/scheduler-page').then((m) => m.SchedulerPage),
+    api: SCHEDULER_API,
+    tokens: ['Scheduler'],
+  },
   'empty-state': {
     load: () => import('./empty-state/empty-state-page').then((m) => m.EmptyStatePage),
     api: EMPTY_STATE_API,
@@ -250,6 +258,16 @@ export const PAGES: Readonly<Record<string, DocPageEntry>> = {
     load: () => import('./menu/menu-page').then((m) => m.MenuPage),
     api: MENU_API,
     tokens: ['Menu'],
+  },
+  'context-menu': {
+    load: () => import('./context-menu/context-menu-page').then((m) => m.ContextMenuPage),
+    api: CONTEXT_MENU_API,
+    tokens: ['Menu'],
+  },
+  popover: {
+    load: () => import('./popover/popover-page').then((m) => m.PopoverPage),
+    api: POPOVER_API,
+    tokens: ['Popover'],
   },
   tooltip: {
     load: () => import('./tooltip/tooltip-page').then((m) => m.TooltipPage),

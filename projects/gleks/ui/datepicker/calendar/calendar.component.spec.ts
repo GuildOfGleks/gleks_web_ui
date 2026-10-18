@@ -507,6 +507,101 @@ describe('CalendarComponent', () => {
     });
   });
 
+  describe('timeZone', () => {
+    /** 20:00 UTC on 10 June 2026 is 05:00 on 11 June in Tokyo and 13:00 on 10 June in LA. */
+    const INSTANT = new Date(Date.UTC(2026, 5, 10, 20, 0, 0));
+
+    async function zoned(zone: string, value: GogDatepickerValue = null) {
+      fixture.componentRef.setInput('timeZone', zone);
+      fixture.componentRef.setInput('value', value);
+      await fixture.whenStable();
+      fixture.detectChanges();
+    }
+
+    it('selects the day the value falls on in the zone', async () => {
+      await zoned('Asia/Tokyo', INSTANT);
+      expect(day(11).classList.contains('gog-calendar__day--selected')).toBe(true);
+
+      await zoned('America/Los_Angeles', INSTANT);
+      expect(day(10).classList.contains('gog-calendar__day--selected')).toBe(true);
+    });
+
+    it('emits the instant the picked day means in the zone, keeping the zone time', async () => {
+      await zoned('Asia/Tokyo', INSTANT);
+      const seen: GogDatepickerValue[] = [];
+      component.gogDateSelect.subscribe((value) => seen.push(value));
+
+      day(15).click();
+      fixture.detectChanges();
+
+      // 15 June, 05:00 in Tokyo.
+      expect((component.value() as Date).toISOString()).toBe('2026-06-14T20:00:00.000Z');
+      expect((seen[0] as Date).toISOString()).toBe('2026-06-14T20:00:00.000Z');
+    });
+
+    it('converts both ends of a range', async () => {
+      fixture.componentRef.setInput('selectionMode', 'range');
+      await zoned('UTC');
+
+      day(3).click();
+      day(5).click();
+      fixture.detectChanges();
+
+      const range = component.value() as GogDateRange;
+      expect(range.start?.toISOString()).toBe('2026-06-03T00:00:00.000Z');
+      expect(range.end?.toISOString()).toBe('2026-06-05T00:00:00.000Z');
+    });
+
+    it('reads min and max in the zone', async () => {
+      // 01:00 on 10 June in Tokyo.
+      fixture.componentRef.setInput('min', new Date(Date.UTC(2026, 5, 9, 16, 0, 0)));
+      await zoned('Asia/Tokyo');
+
+      expect(day(9).disabled).toBe(true);
+      expect(day(10).disabled).toBe(false);
+    });
+
+    it('asks disabledDates about the instant the day starts in the zone', async () => {
+      const asked: Date[] = [];
+      fixture.componentRef.setInput('disabledDates', (date: Date) => {
+        asked.push(date);
+        return false;
+      });
+      await zoned('Asia/Tokyo');
+
+      // Midnight on 7 June in Tokyo is 15:00 UTC the day before.
+      expect(asked.map((date) => date.toISOString())).toContain('2026-06-06T15:00:00.000Z');
+    });
+
+    it("marks today as the zone's today", async () => {
+      vi.useFakeTimers({ toFake: ['Date'] });
+      vi.setSystemTime(INSTANT);
+      try {
+        await zoned('Asia/Tokyo');
+        expect(host().querySelector('.gog-calendar__day--today')?.textContent?.trim()).toBe('11');
+
+        await zoned('America/Los_Angeles');
+        expect(host().querySelector('.gog-calendar__day--today')?.textContent?.trim()).toBe('10');
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    it('takes the zone from the config when the input is unset', async () => {
+      TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [CalendarComponent],
+        providers: [{ provide: GOG_CONFIG, useValue: { datepicker: { timeZone: 'Asia/Tokyo' } } }],
+      }).compileComponents();
+      fixture = TestBed.createComponent(CalendarComponent);
+      fixture.componentRef.setInput('value', INSTANT);
+      await fixture.whenStable();
+      fixture.detectChanges();
+
+      expect(day(11).classList.contains('gog-calendar__day--selected')).toBe(true);
+    });
+  });
+
   describe('GOG_CONFIG.datepicker', () => {
     /**
      * `gog-calendar` is exported and usable standalone, and the config key has always been

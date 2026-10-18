@@ -250,6 +250,7 @@ export type GogTokenName =
   | '--gog-breadcrumbs-focus-ring-width'
   | '--gog-breadcrumbs-font-family'
   | '--gog-breadcrumbs-gap'
+  | '--gog-breadcrumbs-icon-gap'
   | '--gog-breadcrumbs-lg-font-size'
   | '--gog-breadcrumbs-line-height'
   | '--gog-breadcrumbs-link-color'
@@ -1146,6 +1147,25 @@ export type GogTokenName =
   | '--gog-panel-xsm-gap'
   | '--gog-panel-xsm-padding-x'
   | '--gog-panel-xsm-padding-y'
+  | '--gog-popover-available-height'
+  | '--gog-popover-bg'
+  | '--gog-popover-border-color'
+  | '--gog-popover-border-style'
+  | '--gog-popover-border-width'
+  | '--gog-popover-color'
+  | '--gog-popover-focus-ring-color'
+  | '--gog-popover-focus-ring-width'
+  | '--gog-popover-font-family'
+  | '--gog-popover-font-size'
+  | '--gog-popover-line-height'
+  | '--gog-popover-max-height'
+  | '--gog-popover-max-width'
+  | '--gog-popover-min-width'
+  | '--gog-popover-padding'
+  | '--gog-popover-panel-gap'
+  | '--gog-popover-radius'
+  | '--gog-popover-shadow'
+  | '--gog-popover-z'
   | '--gog-primary-color'
   | '--gog-progressbar-accent-bg'
   | '--gog-progressbar-accent-buffer-bg'
@@ -1164,10 +1184,15 @@ export type GogTokenName =
   | '--gog-progressbar-lg-height'
   | '--gog-progressbar-md-height'
   | '--gog-progressbar-radius'
+  | '--gog-progressbar-shimmer-color'
+  | '--gog-progressbar-shimmer-duration'
+  | '--gog-progressbar-shimmer-easing'
   | '--gog-progressbar-slg-height'
   | '--gog-progressbar-sm-height'
   | '--gog-progressbar-stripe-color'
   | '--gog-progressbar-stripe-size'
+  | '--gog-progressbar-stripes-duration'
+  | '--gog-progressbar-stripes-tile'
   | '--gog-progressbar-success-bg'
   | '--gog-progressbar-success-buffer-bg'
   | '--gog-progressbar-track-base-bg'
@@ -1248,6 +1273,67 @@ export type GogTokenName =
   | '--gog-ripple-enter-duration'
   | '--gog-ripple-exit-duration'
   | '--gog-ripple-opacity'
+  | '--gog-scheduler-bg'
+  | '--gog-scheduler-body-max-height'
+  | '--gog-scheduler-cell-gap'
+  | '--gog-scheduler-cell-padding'
+  | '--gog-scheduler-color'
+  | '--gog-scheduler-day-hover-bg'
+  | '--gog-scheduler-day-number-font-size'
+  | '--gog-scheduler-day-number-line-height'
+  | '--gog-scheduler-day-number-size'
+  | '--gog-scheduler-day-press-bg'
+  | '--gog-scheduler-event-accent-color'
+  | '--gog-scheduler-event-bg'
+  | '--gog-scheduler-event-border-color'
+  | '--gog-scheduler-event-color'
+  | '--gog-scheduler-event-danger-color'
+  | '--gog-scheduler-event-edge-width'
+  | '--gog-scheduler-event-font-size'
+  | '--gog-scheduler-event-gap'
+  | '--gog-scheduler-event-hover-bg'
+  | '--gog-scheduler-event-info-color'
+  | '--gog-scheduler-event-line-height'
+  | '--gog-scheduler-event-min-height'
+  | '--gog-scheduler-event-padding-x'
+  | '--gog-scheduler-event-padding-y'
+  | '--gog-scheduler-event-press-bg'
+  | '--gog-scheduler-event-radius'
+  | '--gog-scheduler-event-shadow'
+  | '--gog-scheduler-event-success-color'
+  | '--gog-scheduler-event-time-color'
+  | '--gog-scheduler-event-title-font-weight'
+  | '--gog-scheduler-event-warning-color'
+  | '--gog-scheduler-focus-ring-color'
+  | '--gog-scheduler-focus-ring-offset'
+  | '--gog-scheduler-focus-ring-width'
+  | '--gog-scheduler-font-family'
+  | '--gog-scheduler-gutter-width'
+  | '--gog-scheduler-hour-label-color'
+  | '--gog-scheduler-hour-label-font-size'
+  | '--gog-scheduler-hour-label-line-height'
+  | '--gog-scheduler-line-color'
+  | '--gog-scheduler-line-width'
+  | '--gog-scheduler-more-color'
+  | '--gog-scheduler-now-color'
+  | '--gog-scheduler-now-width'
+  | '--gog-scheduler-outside-color'
+  | '--gog-scheduler-slot-height'
+  | '--gog-scheduler-slot-line-style'
+  | '--gog-scheduler-title-font-size'
+  | '--gog-scheduler-title-font-weight'
+  | '--gog-scheduler-title-line-height'
+  | '--gog-scheduler-today-bg'
+  | '--gog-scheduler-today-color'
+  | '--gog-scheduler-today-font-weight'
+  | '--gog-scheduler-toolbar-gap'
+  | '--gog-scheduler-toolbar-padding-block'
+  | '--gog-scheduler-weekday-color'
+  | '--gog-scheduler-weekday-font-size'
+  | '--gog-scheduler-weekday-font-weight'
+  | '--gog-scheduler-weekday-line-height'
+  | '--gog-scheduler-weekday-padding-block'
+  | '--gog-scheduler-weekday-text-transform'
   | '--gog-scroll-corner-bg'
   | '--gog-scroll-fade-duration'
   | '--gog-scroll-focus-ring'
@@ -2245,6 +2331,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-breadcrumbs-focus-ring-width',
       '--gog-breadcrumbs-font-family',
       '--gog-breadcrumbs-gap',
+      '--gog-breadcrumbs-icon-gap',
       '--gog-breadcrumbs-lg-font-size',
       '--gog-breadcrumbs-line-height',
       '--gog-breadcrumbs-link-color',
@@ -3293,6 +3380,30 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
     ],
   },
   {
+    section: 'Popover',
+    layer: 'component',
+    tokens: [
+      '--gog-popover-bg',
+      '--gog-popover-border-color',
+      '--gog-popover-border-style',
+      '--gog-popover-border-width',
+      '--gog-popover-color',
+      '--gog-popover-focus-ring-color',
+      '--gog-popover-focus-ring-width',
+      '--gog-popover-font-family',
+      '--gog-popover-font-size',
+      '--gog-popover-line-height',
+      '--gog-popover-max-height',
+      '--gog-popover-max-width',
+      '--gog-popover-min-width',
+      '--gog-popover-padding',
+      '--gog-popover-panel-gap',
+      '--gog-popover-radius',
+      '--gog-popover-shadow',
+      '--gog-popover-z',
+    ],
+  },
+  {
     section: 'Progressbar',
     layer: 'component',
     tokens: [
@@ -3310,10 +3421,15 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-progressbar-lg-height',
       '--gog-progressbar-md-height',
       '--gog-progressbar-radius',
+      '--gog-progressbar-shimmer-color',
+      '--gog-progressbar-shimmer-duration',
+      '--gog-progressbar-shimmer-easing',
       '--gog-progressbar-slg-height',
       '--gog-progressbar-sm-height',
       '--gog-progressbar-stripe-color',
       '--gog-progressbar-stripe-size',
+      '--gog-progressbar-stripes-duration',
+      '--gog-progressbar-stripes-tile',
       '--gog-progressbar-success-bg',
       '--gog-progressbar-success-buffer-bg',
       '--gog-progressbar-track-base-bg',
@@ -3338,6 +3454,73 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-ripple-enter-duration',
       '--gog-ripple-exit-duration',
       '--gog-ripple-opacity',
+    ],
+  },
+  {
+    section: 'Scheduler',
+    layer: 'component',
+    tokens: [
+      '--gog-scheduler-bg',
+      '--gog-scheduler-body-max-height',
+      '--gog-scheduler-cell-gap',
+      '--gog-scheduler-cell-padding',
+      '--gog-scheduler-color',
+      '--gog-scheduler-day-hover-bg',
+      '--gog-scheduler-day-number-font-size',
+      '--gog-scheduler-day-number-line-height',
+      '--gog-scheduler-day-number-size',
+      '--gog-scheduler-day-press-bg',
+      '--gog-scheduler-event-accent-color',
+      '--gog-scheduler-event-bg',
+      '--gog-scheduler-event-border-color',
+      '--gog-scheduler-event-color',
+      '--gog-scheduler-event-danger-color',
+      '--gog-scheduler-event-edge-width',
+      '--gog-scheduler-event-font-size',
+      '--gog-scheduler-event-gap',
+      '--gog-scheduler-event-hover-bg',
+      '--gog-scheduler-event-info-color',
+      '--gog-scheduler-event-line-height',
+      '--gog-scheduler-event-min-height',
+      '--gog-scheduler-event-padding-x',
+      '--gog-scheduler-event-padding-y',
+      '--gog-scheduler-event-press-bg',
+      '--gog-scheduler-event-radius',
+      '--gog-scheduler-event-shadow',
+      '--gog-scheduler-event-success-color',
+      '--gog-scheduler-event-time-color',
+      '--gog-scheduler-event-title-font-weight',
+      '--gog-scheduler-event-warning-color',
+      '--gog-scheduler-focus-ring-color',
+      '--gog-scheduler-focus-ring-offset',
+      '--gog-scheduler-focus-ring-width',
+      '--gog-scheduler-font-family',
+      '--gog-scheduler-gutter-width',
+      '--gog-scheduler-hour-label-color',
+      '--gog-scheduler-hour-label-font-size',
+      '--gog-scheduler-hour-label-line-height',
+      '--gog-scheduler-line-color',
+      '--gog-scheduler-line-width',
+      '--gog-scheduler-more-color',
+      '--gog-scheduler-now-color',
+      '--gog-scheduler-now-width',
+      '--gog-scheduler-outside-color',
+      '--gog-scheduler-slot-height',
+      '--gog-scheduler-slot-line-style',
+      '--gog-scheduler-title-font-size',
+      '--gog-scheduler-title-font-weight',
+      '--gog-scheduler-title-line-height',
+      '--gog-scheduler-today-bg',
+      '--gog-scheduler-today-color',
+      '--gog-scheduler-today-font-weight',
+      '--gog-scheduler-toolbar-gap',
+      '--gog-scheduler-toolbar-padding-block',
+      '--gog-scheduler-weekday-color',
+      '--gog-scheduler-weekday-font-size',
+      '--gog-scheduler-weekday-font-weight',
+      '--gog-scheduler-weekday-line-height',
+      '--gog-scheduler-weekday-padding-block',
+      '--gog-scheduler-weekday-text-transform',
     ],
   },
   {
@@ -3912,6 +4095,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-panel-gap',
       '--gog-panel-padding-x',
       '--gog-panel-padding-y',
+      '--gog-popover-available-height',
       '--gog-progressbar-buffer-bg',
       '--gog-progressbar-fill-bg',
       '--gog-progressbar-height',

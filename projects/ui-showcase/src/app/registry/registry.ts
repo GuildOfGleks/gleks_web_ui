@@ -2,6 +2,7 @@ import { reflectComponentType, type Type } from '@angular/core';
 import * as root from '@guildofgleks/ui';
 import * as datepicker from '@guildofgleks/ui/datepicker';
 import * as dialog from '@guildofgleks/ui/dialog';
+import * as scheduler from '@guildofgleks/ui/scheduler';
 import * as table from '@guildofgleks/ui/table';
 
 import { PAGES } from '../pages/pages';
@@ -38,6 +39,7 @@ export const ENTRY_POINTS: Readonly<Record<GogUnit['entry'], Readonly<Record<str
   table,
   datepicker,
   dialog,
+  scheduler,
 };
 
 /**

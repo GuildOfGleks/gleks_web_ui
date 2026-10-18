@@ -67,9 +67,9 @@ reset is untouched either way, and a single class of specificity means your own 
 
 ```ts
 import { ButtonComponent, SelectComponent } from '@guildofgleks/ui';
-// Three components are imported from their own entry point, so a lazy route can keep them out
-// of your initial bundle: '@guildofgleks/ui/table', '/datepicker' and '/dialog'. The root does
-// not export them.
+// Four components are imported from their own entry point, so a lazy route can keep them out
+// of your initial bundle: '@guildofgleks/ui/table', '/datepicker', '/dialog' and '/scheduler'.
+// The root does not export them.
 
 @Component({
   imports: [ButtonComponent, SelectComponent],
@@ -376,14 +376,15 @@ instance — goes through one provider:
 provideGogConfig({
   control: { size: 'sm', errorDisplay: 'auto', clearable: true },
   dropdown: { appendToBody: true },
-  datepicker: { locale: 'de-DE', format: 'dd.MM.yyyy' },
+  datepicker: { locale: 'de-DE', format: 'dd.MM.yyyy', timeZone: 'Europe/Berlin' },
   ripple: { enabled: true }, // press feedback on every interactive surface at once
   labels: { clear: 'Löschen', selectAll: 'Alle auswählen' }, // translate the library once
 });
 ```
 
 Keys: `control`, `dropdown`, `floatLabel`, `datepicker`, `autocomplete`, `inputfield`, `textarea`,
-`tooltip`, `scroll`, `button`, `ripple`, `spinner`, `paginator`, `toast`, `theme`, `labels`. An
+`tooltip`, `scroll`, `button`, `ripple`, `spinner`, `paginator`, `scheduler`, `toast`, `theme`,
+`labels`. An
 instance's own input always wins, and providing the config again lower in the injector tree layers
 onto the parent rather than replacing it.
 
@@ -452,9 +453,9 @@ dropdowns, always for the menu.
 | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Form controls       | `gog-inputfield`, `gog-textarea`, `gog-select`, `gog-multiselect`, `gog-autocomplete`, `gog-checkbox`, `gog-radio-group`, `gog-toggle`, `gog-slider`, `gog-datepicker`, `gog-calendar`, `gog-button-toggle-group`, `gog-file-upload`, `gog-rating` |
 | Actions             | `gog-button`, `gog-chip`                                                                                                                                                                                                                           |
-| Data                | `gog-table` (+ `gog-column`), `gog-paginator`, `gog-tag`                                                                                                                                                                                           |
+| Data                | `gog-table` (+ `gog-column`), `gog-paginator`, `gog-tag`, `gog-scheduler`                                                                                                                                                                          |
 | Layout & disclosure | `gog-accordion`, `gog-tabs` (+ `gog-tab`), `gog-collapsible`, `gog-card`, `gog-panel`, `gog-divider`, `gog-scroll`, `gog-breadcrumbs`, `gog-stepper`                                                                                               |
-| Overlays            | `gog-dialog`, `gog-confirmation-dialog`, `gog-toast` (+ `gog-toast-container`), `gog-menu` (+ `gogMenuTrigger` / `gogMenuItem`)                                                                                                                    |
+| Overlays            | `gog-dialog`, `gog-confirmation-dialog`, `gog-toast` (+ `gog-toast-container`), `gog-menu` (+ `gogMenuTrigger` / `gogMenuItem`), `gog-context-menu`, `gog-popover`                                                                                 |
 | Feedback            | `gog-spinner`, `gog-spinner-overlay`, `gog-progressbar`, `gog-skeleton`, `gog-alert`, `gog-empty-state`                                                                                                                                            |
 | Content             | `gog-icon`, `gog-avatar` (+ `gog-avatar-group`)                                                                                                                                                                                                    |
 

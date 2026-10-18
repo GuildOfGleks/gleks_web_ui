@@ -1,0 +1,477 @@
+/*
+ * Token layering (see styles/theme.css):
+ *   --gog-scheduler-<name>                    the actual values, in styles/theme.css.
+ *   --gog-scheduler-event-variant-color       internal, set by the event's severity classes.
+ *
+ * A surface, not a control: the event buttons and slots frame content in a grid whose rows are
+ * set by the slot height, so the optical-ratio law (horizontal padding twice vertical) applies to
+ * the event chip alone.
+ */
+:host {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background-color: var(--gog-scheduler-bg);
+  color: var(--gog-scheduler-color);
+  font-family: var(--gog-scheduler-font-family);
+  contain: layout style;
+}
+
+/* ── Toolbar ──────────────────────────────────────────────────────────────── */
+
+.gog-scheduler__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--gog-scheduler-toolbar-gap);
+  padding-block: var(--gog-scheduler-toolbar-padding-block);
+}
+
+.gog-scheduler__nav {
+  display: flex;
+  align-items: center;
+  gap: var(--gog-scheduler-event-gap);
+}
+
+.gog-scheduler__title {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: var(--gog-scheduler-title-font-size);
+  font-weight: var(--gog-scheduler-title-font-weight);
+  line-height: var(--gog-scheduler-title-line-height);
+}
+
+/* "Previous" points toward the start of the line, which is the right under RTL. */
+:host-context([dir='rtl']) .gog-scheduler__step gog-icon {
+  transform: scaleX(-1);
+}
+
+/* ── Shared: lines, focus ─────────────────────────────────────────────────── */
+
+.gog-scheduler__day,
+.gog-scheduler__all-day-slot,
+.gog-scheduler__slot,
+.gog-scheduler__column-day,
+.gog-scheduler__more,
+.gog-scheduler__event {
+  margin: 0;
+  border: 0;
+  background-color: transparent;
+  color: inherit;
+  font: inherit;
+}
+
+button.gog-scheduler__column-day,
+.gog-scheduler__day,
+.gog-scheduler__all-day-slot,
+.gog-scheduler__slot,
+.gog-scheduler__more,
+.gog-scheduler__event {
+  cursor: pointer;
+}
+
+button.gog-scheduler__column-day:hover,
+.gog-scheduler__day:hover,
+.gog-scheduler__all-day-slot:hover,
+.gog-scheduler__slot:hover,
+.gog-scheduler__more:hover {
+  background-color: var(--gog-scheduler-day-hover-bg);
+}
+
+button.gog-scheduler__column-day:active,
+.gog-scheduler__day:active,
+.gog-scheduler__all-day-slot:active,
+.gog-scheduler__slot:active,
+.gog-scheduler__more:active {
+  background-color: var(--gog-scheduler-day-press-bg);
+}
+
+button.gog-scheduler__column-day:focus-visible,
+.gog-scheduler__day:focus-visible,
+.gog-scheduler__all-day-slot:focus-visible,
+.gog-scheduler__slot:focus-visible,
+.gog-scheduler__more:focus-visible,
+.gog-scheduler__event:focus-visible {
+  outline: var(--gog-scheduler-focus-ring-width) solid var(--gog-scheduler-focus-ring-color);
+  outline-offset: var(--gog-scheduler-focus-ring-offset);
+}
+
+/* ── Month ────────────────────────────────────────────────────────────────── */
+
+/* The weekday row and every week share seven equal columns. */
+.gog-scheduler__weekdays,
+.gog-scheduler__week {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.gog-scheduler__weekday {
+  padding-block: var(--gog-scheduler-weekday-padding-block);
+  border-block-end: var(--gog-scheduler-line-width) solid var(--gog-scheduler-line-color);
+  color: var(--gog-scheduler-weekday-color);
+  font-size: var(--gog-scheduler-weekday-font-size);
+  font-weight: var(--gog-scheduler-weekday-font-weight);
+  line-height: var(--gog-scheduler-weekday-line-height);
+  text-align: center;
+  text-transform: var(--gog-scheduler-weekday-text-transform);
+}
+
+/*
+ * A week is one grid: the day number's row, one row per event row, the cell's bottom padding —
+ * bound inline from `monthEventLimit`. Its events are placed across its columns, so an event that
+ * spans days is one bar, with no seam where one day meets the next.
+ */
+.gog-scheduler__week {
+  row-gap: var(--gog-scheduler-event-gap);
+  border-block-end: var(--gog-scheduler-line-width) solid var(--gog-scheduler-line-color);
+  border-inline-start: var(--gog-scheduler-line-width) solid var(--gog-scheduler-line-color);
+}
+
+/* The whole column, under the week's events: a press on its empty part is a press on the day. */
+.gog-scheduler__day {
+  grid-row: 1 / -1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  min-width: 0;
+  padding: var(--gog-scheduler-cell-padding);
+  border-inline-end: var(--gog-scheduler-line-width) solid var(--gog-scheduler-line-color);
+}
+
+.gog-scheduler__day-number,
+.gog-scheduler__column-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: var(--gog-scheduler-day-number-size);
+  height: var(--gog-scheduler-day-number-size);
+  border-radius: 50%;
+  font-size: var(--gog-scheduler-day-number-font-size);
+  line-height: var(--gog-scheduler-day-number-line-height);
+  font-variant-numeric: tabular-nums;
+}
+
+.gog-scheduler__day--outside {
+  color: var(--gog-scheduler-outside-color);
+}
+
+.gog-scheduler__day--today .gog-scheduler__day-number,
+.gog-scheduler__column-head--today .gog-scheduler__column-number {
+  background-color: var(--gog-scheduler-today-bg);
+  color: var(--gog-scheduler-today-color);
+  font-weight: var(--gog-scheduler-today-font-weight);
+}
+
+.gog-scheduler__more {
+  position: relative;
+  justify-self: start;
+  min-height: var(--gog-scheduler-event-min-height);
+  margin-inline: var(--gog-scheduler-cell-padding);
+  padding: var(--gog-scheduler-event-padding-y) var(--gog-scheduler-event-padding-x);
+  border-radius: var(--gog-scheduler-event-radius);
+  color: var(--gog-scheduler-more-color);
+  font-size: var(--gog-scheduler-event-font-size);
+  line-height: var(--gog-scheduler-event-line-height);
+}
+
+/* ── Events ───────────────────────────────────────────────────────────────── */
+
+.gog-scheduler__event {
+  display: flex;
+  align-items: center;
+  gap: var(--gog-scheduler-event-gap);
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: var(--gog-scheduler-event-min-height);
+  padding: var(--gog-scheduler-event-padding-y) var(--gog-scheduler-event-padding-x);
+  overflow: hidden;
+  border: var(--gog-scheduler-line-width) solid var(--gog-scheduler-event-border-color);
+  border-inline-start: var(--gog-scheduler-event-edge-width) solid
+    var(--gog-scheduler-event-variant-color, var(--gog-scheduler-event-accent-color));
+  border-radius: var(--gog-scheduler-event-radius);
+  background-color: var(--gog-scheduler-event-bg);
+  box-shadow: var(--gog-scheduler-event-shadow);
+  color: var(--gog-scheduler-event-color);
+  font-size: var(--gog-scheduler-event-font-size);
+  line-height: var(--gog-scheduler-event-line-height);
+  text-align: start;
+  white-space: nowrap;
+}
+
+.gog-scheduler__event:hover {
+  background-color: var(--gog-scheduler-event-hover-bg);
+}
+
+.gog-scheduler__event:active {
+  background-color: var(--gog-scheduler-event-press-bg);
+}
+
+.gog-scheduler__event-title {
+  min-width: 0;
+  overflow: hidden;
+  font-weight: var(--gog-scheduler-event-title-font-weight);
+  text-overflow: ellipsis;
+}
+
+.gog-scheduler__event-time {
+  flex: none;
+  color: var(--gog-scheduler-event-time-color);
+}
+
+/* A piece of an event that runs on from another day has no corner on that side. */
+.gog-scheduler__event--continues-before {
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+}
+
+.gog-scheduler__event--continues-after {
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+}
+
+/*
+ * A bar, in a month week or the all-day row: placed by the grid across the days it covers, inset
+ * by the cell padding where it truly starts and ends, and running to the column's edge where it
+ * goes on into another week. Only its real start carries the severity edge.
+ */
+.gog-scheduler__event--bar {
+  position: relative;
+  width: auto;
+  margin-inline: var(--gog-scheduler-cell-padding);
+}
+
+.gog-scheduler__event--bar.gog-scheduler__event--continues-before {
+  margin-inline-start: 0;
+  border-inline-start: var(--gog-scheduler-line-width) solid var(--gog-scheduler-event-border-color);
+}
+
+.gog-scheduler__event--bar.gog-scheduler__event--continues-after {
+  margin-inline-end: 0;
+}
+
+/* The event a move or a new end is being chosen for. */
+.gog-scheduler__event--picked {
+  outline: var(--gog-scheduler-focus-ring-width) dashed var(--gog-scheduler-focus-ring-color);
+  outline-offset: calc(var(--gog-scheduler-focus-ring-width) * -1);
+}
+
+.gog-scheduler__event--success {
+  --gog-scheduler-event-variant-color: var(--gog-scheduler-event-success-color);
+}
+
+.gog-scheduler__event--danger {
+  --gog-scheduler-event-variant-color: var(--gog-scheduler-event-danger-color);
+}
+
+.gog-scheduler__event--warning {
+  --gog-scheduler-event-variant-color: var(--gog-scheduler-event-warning-color);
+}
+
+.gog-scheduler__event--info {
+  --gog-scheduler-event-variant-color: var(--gog-scheduler-event-info-color);
+}
+
+/* ── Week and day ─────────────────────────────────────────────────────────── */
+
+.gog-scheduler__hours-view {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.gog-scheduler__head,
+.gog-scheduler__all-day,
+.gog-scheduler__grid {
+  display: flex;
+}
+
+.gog-scheduler__gutter {
+  flex: 0 0 var(--gog-scheduler-gutter-width);
+  box-sizing: border-box;
+}
+
+.gog-scheduler__column-head,
+.gog-scheduler__column {
+  flex: 1 1 0;
+  min-width: 0;
+  box-sizing: border-box;
+  border-inline-start: var(--gog-scheduler-line-width) solid var(--gog-scheduler-line-color);
+}
+
+.gog-scheduler__head {
+  border-block-end: var(--gog-scheduler-line-width) solid var(--gog-scheduler-line-color);
+}
+
+.gog-scheduler__column-head {
+  display: flex;
+  justify-content: center;
+  padding-block: var(--gog-scheduler-cell-padding);
+}
+
+.gog-scheduler__column-day {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gog-scheduler-cell-gap);
+  padding: var(--gog-scheduler-cell-padding) var(--gog-scheduler-event-padding-x);
+  border-radius: var(--gog-scheduler-event-radius);
+}
+
+.gog-scheduler__column-weekday {
+  color: var(--gog-scheduler-weekday-color);
+  font-size: var(--gog-scheduler-weekday-font-size);
+  font-weight: var(--gog-scheduler-weekday-font-weight);
+  line-height: var(--gog-scheduler-weekday-line-height);
+  text-transform: var(--gog-scheduler-weekday-text-transform);
+}
+
+.gog-scheduler__all-day {
+  border-block-end: var(--gog-scheduler-line-width) solid var(--gog-scheduler-line-color);
+}
+
+.gog-scheduler__all-day-label,
+.gog-scheduler__hour-label {
+  padding-inline-end: var(--gog-scheduler-event-padding-x);
+  color: var(--gog-scheduler-hour-label-color);
+  font-size: var(--gog-scheduler-hour-label-font-size);
+  line-height: var(--gog-scheduler-hour-label-line-height);
+  text-align: end;
+}
+
+.gog-scheduler__all-day-label {
+  align-self: center;
+}
+
+/* The all-day row is a grid like a month week: top padding, a row per bar row, bottom padding. */
+.gog-scheduler__all-day-grid {
+  display: grid;
+  flex: 1 1 0;
+  min-width: 0;
+  row-gap: var(--gog-scheduler-event-gap);
+}
+
+.gog-scheduler__all-day-slot {
+  grid-row: 1 / -1;
+  min-height: var(--gog-scheduler-slot-height);
+  border-inline-start: var(--gog-scheduler-line-width) solid var(--gog-scheduler-line-color);
+}
+
+.gog-scheduler__body {
+  max-height: var(--gog-scheduler-body-max-height);
+}
+
+.gog-scheduler__grid {
+  position: relative;
+}
+
+.gog-scheduler__hour-label {
+  box-sizing: border-box;
+  padding-block-start: var(--gog-scheduler-cell-padding);
+}
+
+.gog-scheduler__column {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.gog-scheduler__slot {
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  height: var(--gog-scheduler-slot-height);
+  padding: 0;
+  border-block-start: var(--gog-scheduler-line-width) var(--gog-scheduler-slot-line-style)
+    var(--gog-scheduler-line-color);
+}
+
+.gog-scheduler__slot--hour {
+  border-block-start-style: solid;
+}
+
+/* Over the slots; only the events take the pointer, so an empty stretch still reaches its slot. */
+.gog-scheduler__column-events {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.gog-scheduler__event--timed {
+  position: absolute;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  white-space: normal;
+  pointer-events: auto;
+}
+
+/* No line shrinks: under `overflow: hidden` a flex item's minimum height is zero, so an event one
+   slot tall would squeeze its title away and keep the time. The title comes first and the rest is
+   clipped instead. */
+.gog-scheduler__event--timed > * {
+  flex-shrink: 0;
+}
+
+.gog-scheduler__event--timed .gog-scheduler__event-title,
+.gog-scheduler__event--timed .gog-scheduler__event-time {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gog-scheduler__now {
+  position: absolute;
+  inset-inline: 0;
+  height: 0;
+  border-block-start: var(--gog-scheduler-now-width) solid var(--gog-scheduler-now-color);
+  pointer-events: none;
+}
+
+/* ── Editing: choosing a place, and the "+N more" list ───────────────────── */
+
+.gog-scheduler__status:not(:empty) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--gog-scheduler-toolbar-gap);
+  margin-block-end: var(--gog-scheduler-toolbar-padding-block);
+  padding: var(--gog-scheduler-cell-padding) var(--gog-scheduler-event-padding-x);
+  border: var(--gog-scheduler-line-width) solid var(--gog-scheduler-focus-ring-color);
+  border-radius: var(--gog-scheduler-event-radius);
+  font-size: var(--gog-scheduler-event-font-size);
+  line-height: var(--gog-scheduler-event-line-height);
+}
+
+.gog-scheduler__status-text {
+  flex: 1 1 auto;
+}
+
+/* While a place is being chosen, events let the pointer through to the slot or day under them —
+   a place already taken by another event is still a place. */
+:host(.gog-scheduler--picking) .gog-scheduler__event {
+  pointer-events: none;
+}
+
+/* While a place is being chosen, every slot and day says it can be picked. */
+:host(.gog-scheduler--picking) .gog-scheduler__day,
+:host(.gog-scheduler--picking) .gog-scheduler__all-day-slot,
+:host(.gog-scheduler--picking) .gog-scheduler__slot {
+  cursor: crosshair;
+}
+
+.gog-scheduler__more-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gog-scheduler-event-gap);
+}
+
+.gog-scheduler__more-heading {
+  margin-block-end: var(--gog-scheduler-cell-padding);
+  color: var(--gog-scheduler-weekday-color);
+  font-size: var(--gog-scheduler-weekday-font-size);
+  font-weight: var(--gog-scheduler-weekday-font-weight);
+  line-height: var(--gog-scheduler-weekday-line-height);
+  text-transform: var(--gog-scheduler-weekday-text-transform);
+}

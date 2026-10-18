@@ -101,6 +101,15 @@ export type GogProgressbarMode = 'determinate' | 'indeterminate' | 'buffer';
 export type GogProgressbarVariant = GogSeverity;
 
 /**
+ * Motion drawn on `gog-progressbar`'s fill while it reports a value. Ignored in `'indeterminate'`
+ * mode, which already moves.
+ * - `'none'` — a flat fill.
+ * - `'stripes'` — diagonal stripes travelling along the fill; static stripes under reduced motion.
+ * - `'shimmer'` — a highlight sweeping across the fill; removed under reduced motion.
+ */
+export type GogProgressbarAnimation = 'none' | 'stripes' | 'shimmer';
+
+/**
  * What an action or a reading *means*, as opposed to how loudly it is drawn. `'accent'` is the
  * absence of a claim — the library's own colour, and the default everywhere this appears — and
  * the four status names are the exception, so nothing has to opt out of a severity it does not
@@ -112,6 +121,18 @@ export type GogProgressbarVariant = GogSeverity;
  * `gog-progressbar` had this exact union first, under its own name, which is kept as an alias.
  */
 export type GogSeverity = 'accent' | 'success' | 'danger' | 'warning' | 'info';
+
+/**
+ * Which period `gog-scheduler` draws: a six-week month grid, or a week or a single day as columns of
+ * hours. Lives here rather than beside the component because `GOG_CONFIG.labels` names it.
+ */
+export type GogSchedulerView = 'month' | 'week' | 'day';
+
+/**
+ * What `gog-scheduler`'s "+N more" opens: `'popover'` lists the day's events beside the cell,
+ * `'day'` switches to the day view.
+ */
+export type GogSchedulerMoreAction = 'popover' | 'day';
 
 /**
  * How `gog-alert` announces itself, and it is a decision the component cannot make for you.

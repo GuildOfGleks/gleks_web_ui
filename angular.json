@@ -42,7 +42,8 @@
               "../shared/**/*.spec.ts",
               "../table/**/*.spec.ts",
               "../datepicker/**/*.spec.ts",
-              "../dialog/**/*.spec.ts"
+              "../dialog/**/*.spec.ts",
+              "../scheduler/**/*.spec.ts"
             ]
           },
           "configurations": {
@@ -53,7 +54,8 @@
                 "projects/gleks/ui/shared/**/*.ts",
                 "projects/gleks/ui/table/**/*.ts",
                 "projects/gleks/ui/datepicker/**/*.ts",
-                "projects/gleks/ui/dialog/**/*.ts"
+                "projects/gleks/ui/dialog/**/*.ts",
+                "projects/gleks/ui/scheduler/**/*.ts"
               ],
               "coverageExclude": [
                 "projects/gleks/ui/src/**/*.spec.ts",
@@ -61,11 +63,13 @@
                 "projects/gleks/ui/table/**/*.spec.ts",
                 "projects/gleks/ui/datepicker/**/*.spec.ts",
                 "projects/gleks/ui/dialog/**/*.spec.ts",
+                "projects/gleks/ui/scheduler/**/*.spec.ts",
                 "projects/gleks/ui/src/public-api.ts",
                 "projects/gleks/ui/shared/public-api.ts",
                 "projects/gleks/ui/table/public-api.ts",
                 "projects/gleks/ui/datepicker/public-api.ts",
                 "projects/gleks/ui/dialog/public-api.ts",
+                "projects/gleks/ui/scheduler/public-api.ts",
                 "projects/gleks/ui/shared/token-names.ts"
               ],
               "coverageReporters": ["text", "lcovonly"],

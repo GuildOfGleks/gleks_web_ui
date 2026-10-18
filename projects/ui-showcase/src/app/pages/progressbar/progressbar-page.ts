@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import {
   ProgressbarComponent,
+  type GogProgressbarAnimation,
   type GogProgressbarMode,
   type GogProgressbarVariant,
   type GogSize,
@@ -31,6 +32,11 @@ export class ProgressbarPage {
     'success',
     'warning',
     'danger',
+  ];
+  protected readonly animations: readonly GogProgressbarAnimation[] = [
+    'none',
+    'stripes',
+    'shimmer',
   ];
   /** The same bars as drawn and with hue taken away, without and with the opt-in edge marker. */
   protected readonly renderings = [

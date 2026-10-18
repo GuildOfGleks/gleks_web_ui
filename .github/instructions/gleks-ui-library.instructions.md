@@ -53,7 +53,7 @@ shared/                              # the @guildofgleks/ui/shared entry point, 
   ng-package.json
   public-api.ts
   types.ts, config.ts, …
-table/  datepicker/  dialog/         # split entry points: @guildofgleks/ui/table, /datepicker, /dialog
+table/  datepicker/  dialog/  scheduler/   # split entry points: @guildofgleks/ui/table, /datepicker, /dialog, /scheduler
   ng-package.json
   public-api.ts
   table.component.ts, …              # their own code, not re-exports

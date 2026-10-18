@@ -94,6 +94,7 @@ context — is not a breadcrumb, and is out of scope.
 | #   | What                                                                                                                                                                                                      | Status        |
 | --- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
 | 1   | `gog-breadcrumbs` + `*gogBreadcrumb`: landmark, list, `aria-current`, hidden separators, RTL, sizes, collapsing with the focus rule, tokens, specs, showcase page, `AGENTS.md`/`README.md`/`CHANGELOG.md` | ✅ 2026-10-04 |
+| 2   | `[items]` with accessors, `gogItemClick`, `gogBreadcrumbItem` — the trail from an array, for 21.20.0                                                                                                      | ✅ 2026-10-18 |
 
 One iteration: the collapse is what makes the component worth having over the markup, so it does
 not ship later than the rest.
@@ -129,3 +130,21 @@ paints 15.6px tall and takes the pointer from 12px above its centre to 11px belo
 pressed from the keyboard leaves focus on the first revealed link ("Sales"); the separator under
 `dir="rtl"` computes to `matrix(-1, 0, 0, 1, 0, 0)`. `check:contrast` measures the link, the current
 page and the `…` hover in all eleven themes (55 pairs, all passing).
+
+## Iteration 2 — the trail from an array (2026-10-18, for 21.20.0)
+
+Asked for by the owner: writing one `*gogBreadcrumb` element per item was too much boilerplate next
+to PrimeNG's "pass an array of `{ id, label }`", while the element form's flexibility was worth
+keeping. Both now exist; `items` wins when it has entries.
+
+- **Accessors, not a fixed shape**, as the collection components take them: `itemLabel`,
+  `itemHref`, `itemIcon`, defaulting to `'label'`, `'href'`, `'icon'`. The trail draws a link for a
+  parent with an `href`, a button for one without, and text with `aria-current="page"` for the last
+  item — the same three answers §1 above gives for elements, now made by the component.
+- **Still no router dependency.** `gogItemClick` carries the item, its index and the click, so an app
+  with a router calls `preventDefault()` and navigates; `routerLink` on the element itself stays
+  what `*gogBreadcrumb` is for.
+- **Collapsing works on either source** — the entries are built from whichever is in use, before
+  `maxItems` is applied.
+- `gogBreadcrumbItem` replaces what is drawn inside each link, with the item and whether it is the
+  current page; the link stays the trail's.

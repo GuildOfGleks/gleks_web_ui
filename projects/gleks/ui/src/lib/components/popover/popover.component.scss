@@ -1,0 +1,45 @@
+/*
+ * A surface, not a control: it frames content, so the optical-ratio law does not apply to its
+ * padding. The host adds no box where the popover is declared; the panel lives in `<body>`.
+ */
+:host {
+  display: contents;
+}
+
+/* Fixed, placed from the trigger's measured rect. */
+.gog-popover {
+  position: fixed;
+  z-index: var(--gog-popover-z);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  min-width: var(--gog-popover-min-width);
+  max-width: var(--gog-popover-max-width);
+  /* The smaller of the measured room and the theme's cap; `100vh` covers the first frame. */
+  max-height: min(var(--gog-popover-available-height, 100vh), var(--gog-popover-max-height));
+  overflow: hidden;
+  border: var(--gog-popover-border-width) var(--gog-popover-border-style)
+    var(--gog-popover-border-color);
+  border-radius: var(--gog-popover-radius);
+  background-color: var(--gog-popover-bg);
+  box-shadow: var(--gog-popover-shadow);
+  color: var(--gog-popover-color);
+  font-family: var(--gog-popover-font-family);
+  font-size: var(--gog-popover-font-size);
+  line-height: var(--gog-popover-line-height);
+}
+
+.gog-popover:focus-visible {
+  outline: var(--gog-popover-focus-ring-width) solid var(--gog-popover-focus-ring-color);
+  outline-offset: calc(var(--gog-popover-focus-ring-width) * -1);
+}
+
+/* `min-height: 0` lets the scroller shrink so the panel's max-height applies. */
+.gog-popover__scroll {
+  flex: 1;
+  min-height: 0;
+}
+
+.gog-popover__body {
+  padding: var(--gog-popover-padding);
+}

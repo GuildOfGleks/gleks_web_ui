@@ -21,6 +21,7 @@ import {
   DividerComponent,
   GogAccordionChevronDirective,
   GogBreadcrumbDirective,
+  GogBreadcrumbItemDirective,
   GogAccordionContentDirective,
   GogAccordionHeaderDirective,
   GogAlertIconDirective,
@@ -40,6 +41,11 @@ import {
   GogInputAddonStartDirective,
   GogMenuItemDirective,
   GogMenuTriggerDirective,
+  GogPopoverTriggerDirective,
+  PopoverComponent,
+  ContextMenuComponent,
+  GogContextMenuContentDirective,
+  GogContextMenuTriggerDirective,
   GogMultiselectClearIconDirective,
   GogPanelFooterDirective,
   GogPanelHeaderDirective,
@@ -84,9 +90,10 @@ import {
   GogColumnHeaderDirective,
   TableComponent,
 } from '@guildofgleks/ui/table';
+import { GogSchedulerEventDirective, SchedulerComponent } from '@guildofgleks/ui/scheduler';
 
 export type GogUnitGroup = 'actions' | 'form' | 'display' | 'layout' | 'overlay';
-export type GogEntryPoint = 'root' | 'table' | 'datepicker' | 'dialog';
+export type GogEntryPoint = 'root' | 'table' | 'datepicker' | 'dialog' | 'scheduler';
 
 export type GogPart =
   | { readonly kind: 'component'; readonly type: Type<unknown> }
@@ -241,6 +248,13 @@ export const UNITS: readonly GogUnit[] = [
     group: 'form',
     entry: 'datepicker',
     parts: [cmp(DatepickerComponent), cmp(CalendarComponent)],
+  },
+  {
+    id: 'scheduler',
+    name: 'Scheduler',
+    group: 'display',
+    entry: 'scheduler',
+    parts: [cmp(SchedulerComponent), dir(GogSchedulerEventDirective, '[gogSchedulerEvent]')],
   },
 
   // Display & feedback
@@ -412,7 +426,11 @@ export const UNITS: readonly GogUnit[] = [
     name: 'Breadcrumbs',
     group: 'layout',
     entry: 'root',
-    parts: [cmp(BreadcrumbsComponent), dir(GogBreadcrumbDirective, '[gogBreadcrumb]')],
+    parts: [
+      cmp(BreadcrumbsComponent),
+      dir(GogBreadcrumbDirective, '[gogBreadcrumb]'),
+      dir(GogBreadcrumbItemDirective, '[gogBreadcrumbItem]'),
+    ],
   },
   {
     id: 'stepper',
@@ -446,6 +464,24 @@ export const UNITS: readonly GogUnit[] = [
       dir(GogMenuTriggerDirective, '[gogMenuTrigger]'),
       dir(GogMenuItemDirective, '[gogMenuItem]'),
     ],
+  },
+  {
+    id: 'context-menu',
+    name: 'Context menu',
+    group: 'overlay',
+    entry: 'root',
+    parts: [
+      cmp(ContextMenuComponent),
+      dir(GogContextMenuTriggerDirective, '[gogContextMenu]'),
+      dir(GogContextMenuContentDirective, '[gogContextMenuContent]'),
+    ],
+  },
+  {
+    id: 'popover',
+    name: 'Popover',
+    group: 'overlay',
+    entry: 'root',
+    parts: [cmp(PopoverComponent), dir(GogPopoverTriggerDirective, '[gogPopoverTrigger]')],
   },
   {
     id: 'tooltip',

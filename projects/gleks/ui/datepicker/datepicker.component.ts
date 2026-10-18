@@ -40,7 +40,14 @@ import {
   GogHourFormat,
   GogSize,
 } from '@guildofgleks/ui/shared';
-import { type GogDateRange, formatDate, parseDate } from '@guildofgleks/ui/shared';
+import {
+  type GogDateRange,
+  formatDate,
+  gogFromZonedTime,
+  gogResolveTimeZone,
+  gogToZonedTime,
+  parseDate,
+} from '@guildofgleks/ui/shared';
 import { configurableBooleanAttribute } from '@guildofgleks/ui/shared';
 
 /** Built-in defaults, used when neither the instance input nor `GOG_CONFIG` supplies one. */
@@ -135,6 +142,12 @@ export class DatepickerComponent implements ControlValueAccessor, DoCheck {
   readonly locale = input<string | undefined>(undefined);
   /** Unset, falls back to `GOG_CONFIG.datepicker.firstDayOfWeek`, then to the locale's own. */
   readonly firstDayOfWeek = input<number | undefined>(undefined);
+  /**
+   * IANA zone the field and its calendar read and write in. Unset, falls back to
+   * `GOG_CONFIG.datepicker.timeZone`, then to the browser's own. `value` stays an instant: what
+   * the field shows, and what typing in it means, is that instant on this zone's clock.
+   */
+  readonly timeZone = input<string | undefined>(undefined);
   /**
    * Whether the date can be typed as well as picked. Typed text is parsed against `format`;
    * text that isn't a real date leaves the value untouched and is reverted on blur, rather
@@ -247,6 +260,10 @@ export class DatepickerComponent implements ControlValueAccessor, DoCheck {
   protected readonly resolvedFirstDayOfWeek = computed(
     () => this.firstDayOfWeek() ?? this.globalConfig.datepicker?.firstDayOfWeek ?? null,
   );
+  /** `null` is the browser's own zone, which needs no conversion at all. */
+  protected readonly resolvedTimeZone = computed(() =>
+    gogResolveTimeZone(this.timeZone() ?? this.globalConfig.datepicker?.timeZone),
+  );
   /** Derived from `showTime` so turning the clock on doesn't also require a new format. */
   protected readonly resolvedFormat = computed(() => {
     const explicit = this.format() ?? this.globalConfig.datepicker?.format;
@@ -306,11 +323,13 @@ export class DatepickerComponent implements ControlValueAccessor, DoCheck {
   protected readonly displayText = computed(() => {
     const current = this.value();
     const pattern = this.resolvedFormat();
+    const zone = this.resolvedTimeZone();
+    const format = (date: Date) => formatDate(zone ? gogToZonedTime(date, zone) : date, pattern);
     if (current === null) return '';
-    if (current instanceof Date) return formatDate(current, pattern);
+    if (current instanceof Date) return format(current);
 
-    const start = current.start ? formatDate(current.start, pattern) : '';
-    const end = current.end ? formatDate(current.end, pattern) : '';
+    const start = current.start ? format(current.start) : '';
+    const end = current.end ? format(current.end) : '';
     if (!start) return '';
     return end ? `${start} — ${end}` : start;
   });
@@ -423,7 +442,8 @@ export class DatepickerComponent implements ControlValueAccessor, DoCheck {
     // mid-way through typing a date almost every keystroke, and wiping the value each time
     // would fire a stream of nulls at an attached form.
     if (parsed) {
-      this.commit(parsed);
+      const zone = this.resolvedTimeZone();
+      this.commit(zone ? gogFromZonedTime(parsed, zone) : parsed);
     }
   }
 

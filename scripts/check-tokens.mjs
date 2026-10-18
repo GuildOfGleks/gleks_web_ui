@@ -125,6 +125,8 @@ const LITERAL_FALLBACK_ALLOWED = new Set([
   // Written by gog-menu from the room measured beside its trigger; 100vh means "not measured
   // yet", which is the frame before the first placement and every server-rendered pass.
   '--gog-menu-available-height',
+  // Written by gog-popover the same way, for the same reason.
+  '--gog-popover-available-height',
 ]);
 
 const DECLARATION_RE = /(--gog-[a-zA-Z0-9-]+)\s*:/g;

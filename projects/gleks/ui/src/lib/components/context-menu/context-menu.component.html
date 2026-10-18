@@ -1,0 +1,6 @@
+<gog-menu [ariaLabel]="ariaLabel()" (gogClosed)="onClosed()">
+  @if (content(); as items) {
+    <ng-container *ngTemplateOutlet="items.templateRef; context: context()" />
+  }
+  <ng-content />
+</gog-menu>
