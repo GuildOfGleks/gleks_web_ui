@@ -1921,12 +1921,13 @@ stays the scheduler's, so put text and icons in it, not controls. Its context
 `time` (the range on the scheduler's clock and locale, `''` for all-day — use it rather than
 `start.getHours()`, which reads the browser's zone) and `view`.
 
-**Layout.** All-day events and timed ones a day long or more are bars — in the month grid and the
-week view's all-day row they **keep one row across the week**, so the pieces join into one bar, its
-title drawn where it starts and again where a week row begins. Rows are ordered all-day/multi-day
-first (earliest, then longest, on top), then timed events by start, which fill rows a bar left
-free. Shorter timed events sit in the hour grid by start and length, overlapping ones side by
-side. An event shorter than a slot is drawn a slot tall. A red line marks now in today's column.
+**Layout.** All-day events and timed ones a day long or more are bars. In the month grid and the
+week view's all-day row a bar is **one button across the days it covers** in that week — a CSS grid
+places it over the columns, so nothing breaks where one day meets the next — starting a new bar
+only in the next week row, where it continues with a square corner. Rows are ordered
+all-day/multi-day first (earliest, then longest, on top), then timed events by start, which fill
+rows a bar left free. Shorter timed events sit in the hour grid by start and length, overlapping
+ones side by side. An event shorter than a slot is drawn a slot tall. A red line marks now in today's column.
 
 **"+N more".** A month cell draws `monthEventLimit` rows (3 by default — set 5 for five, app-wide
 with `GOG_CONFIG.scheduler.monthEventLimit`); the cell is as tall as its rows. A fuller day draws

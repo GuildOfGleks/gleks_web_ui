@@ -294,3 +294,52 @@ export function fitRows<T>(
   const hidden = rows.slice(shown.length).filter((row) => row !== null).length;
   return { shown, more: hidden };
 }
+
+/** One bar of a week row: an item drawn once across the consecutive days it shows on. */
+export interface GogSchedulerBar<T> {
+  item: GogSchedulerItem<T>;
+  /** First column, 0-based, and how many columns it spans. */
+  column: number;
+  span: number;
+  /** Its row in the week, 0-based. */
+  row: number;
+  /** The item began before the bar's first day, or goes on after its last. */
+  continuesBefore: boolean;
+  continuesAfter: boolean;
+}
+
+/**
+ * `weekRows`' pieces joined into bars: the same item on consecutive days in the same row is one bar.
+ * A row hidden on a day (`visible[i]` rows are shown there) breaks the bar, so a bar never runs
+ * under a day's "+N more".
+ */
+export function weekBars<T>(
+  rows: readonly (readonly (GogSchedulerDayPiece<T> | null)[])[],
+  visible: readonly number[],
+): GogSchedulerBar<T>[] {
+  const bars: GogSchedulerBar<T>[] = [];
+  const height = Math.max(0, ...rows.map((day) => day.length));
+  for (let row = 0; row < height; row++) {
+    let open: GogSchedulerBar<T> | null = null;
+    rows.forEach((day, column) => {
+      const piece = row < visible[column] ? (day[row] ?? null) : null;
+      if (open && piece && piece.item === open.item) {
+        open.span++;
+        open.continuesAfter = piece.continuesAfter;
+        return;
+      }
+      open = piece
+        ? {
+            item: piece.item,
+            column,
+            span: 1,
+            row,
+            continuesBefore: piece.continuesBefore,
+            continuesAfter: piece.continuesAfter,
+          }
+        : null;
+      if (open) bars.push(open);
+    });
+  }
+  return bars;
+}

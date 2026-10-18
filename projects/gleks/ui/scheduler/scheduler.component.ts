@@ -58,7 +58,7 @@ import {
   GogSchedulerEventDirective,
 } from './scheduler-event.directive';
 import {
-  type GogSchedulerDayPiece,
+  type GogSchedulerBar,
   type GogSchedulerItem,
   type GogSchedulerTimedPiece,
   dayPieces,
@@ -67,6 +67,7 @@ import {
   timedPieces,
   visibleRange,
   visibleWeeks,
+  weekBars,
   weekRows,
   weekdayOffset,
 } from './scheduler-layout';
@@ -152,10 +153,12 @@ interface Pending<T> {
 
 /** One event as a view draws it: where it sits, what it is called, and what its template gets. */
 interface EventView<T> {
-  /** Unique within the view: an event drawn on three days is three buttons. */
+  /** Unique within the view: an event drawn across two weeks is two bars. */
   key: string;
   item: GogSchedulerItem<T>;
+  /** The first day the button is drawn on, and the last — the same day except for a bar. */
   day: Date;
+  lastDay: Date;
   name: string;
   /** The time range, for the hour grid; `''` for an all-day event. */
   time: string;
@@ -164,11 +167,10 @@ interface EventView<T> {
   context: GogSchedulerEventContext<T>;
   continuesBefore: boolean;
   continuesAfter: boolean;
-  /**
-   * Whether the title is drawn. A bar across several days draws it once at its start, and again
-   * at the start of each week row it reaches; its other pieces are the bar alone.
-   */
-  showLabel: boolean;
+  /** Bars only: the grid column it starts in (1-based), how many it spans, and its grid row. */
+  column: number;
+  span: number;
+  row: number;
   /** Timed pieces only: offset and length in slots, and the lane geometry in percent. */
   top: number;
   height: number;
@@ -176,17 +178,27 @@ interface EventView<T> {
   width: number;
 }
 
-interface MonthCell<T> {
+interface MonthCell {
   date: Date;
   key: number;
   label: string;
   name: string;
   outside: boolean;
   today: boolean;
-  /** One per row; `null` holds a row open for a bar drawn on another day of the week. */
-  rows: (EventView<T> | null)[];
   /** Events the cell has no room for; "+N more" lists them, or opens the day. */
   more: number;
+}
+
+/**
+ * One week row of the month grid: its seven days, and its events as bars — each drawn once across
+ * the days it covers, so a multi-day event is one element rather than a piece per cell.
+ */
+interface MonthWeek<T> {
+  key: number;
+  /** The week's dates, for the group's name. */
+  name: string;
+  days: MonthCell[];
+  bars: EventView<T>[];
 }
 
 interface DayColumn<T> {
@@ -196,8 +208,6 @@ interface DayColumn<T> {
   label: string;
   name: string;
   today: boolean;
-  /** The all-day row, packed across the week as the month grid is; `null` holds a row open. */
-  allDay: (EventView<T> | null)[];
   timed: EventView<T>[];
   slots: { minute: number; name: string }[];
 }
@@ -412,13 +422,18 @@ export class SchedulerComponent<T = unknown> {
    * the gaps between them, inside the cell's padding. Bound inline because the row count is a
    * number the template has and the stylesheet does not.
    */
-  protected readonly cellHeight = computed(() => {
-    const rows = this.monthLimit();
-    return (
-      `calc(var(--gog-scheduler-cell-padding) * 3 + var(--gog-scheduler-day-number-size) + ` +
-      `var(--gog-scheduler-event-min-height) * ${rows} + var(--gog-scheduler-event-gap) * ${rows - 1})`
-    );
-  });
+  /**
+   * A month week's grid rows: the day number's, one per event row, and the cell's bottom padding.
+   * Bound inline because the row count is a number the template has and the stylesheet does not.
+   */
+  protected readonly monthRowsTemplate = computed(() =>
+    eventRowsTemplate(
+      'calc(var(--gog-scheduler-cell-padding) + var(--gog-scheduler-day-number-size))',
+      this.monthLimit(),
+    ),
+  );
+  /** The grid row "+N more" takes: the last event row. */
+  protected readonly moreRow = computed(() => this.monthLimit() + 1);
 
   protected readonly viewOptions = computed(() => {
     const labels = this.labels();
@@ -559,7 +574,7 @@ export class SchedulerComponent<T = unknown> {
   });
 
   /** The month grid, six weeks of cells. Empty in the other views. */
-  protected readonly monthWeeks = computed<MonthCell<T>[][]>(() => {
+  protected readonly monthWeeks = computed<MonthWeek<T>[]>(() => {
     if (this.view() !== 'month') return [];
     const items = this.items();
     const anchor = this.anchor();
@@ -569,21 +584,44 @@ export class SchedulerComponent<T = unknown> {
 
     return this.weeks().map((week) => {
       const rows = weekRows(items, week, true);
-      return week.map((date, i) => {
-        const { shown, more } = fitRows(rows[i], limit);
-        return {
+      const fitted = rows.map((day) => fitRows(day, limit));
+      return {
+        key: week[0].getTime(),
+        name: formatDayRange(formats.dayName, week[0], addDays(week[6], 1)),
+        days: week.map((date, i) => ({
           date,
           key: date.getTime(),
           label: formats.dayNumber.format(date),
           name: formats.dayName.format(date),
           outside: !isSameMonth(date, anchor),
           today: isSameDay(date, today),
-          rows: shown.map((piece) => (piece ? this.dayEventView(piece, date, i === 0) : null)),
-          more,
-        };
-      });
+          more: fitted[i].more,
+        })),
+        bars: weekBars(
+          rows,
+          fitted.map((day) => day.shown.length),
+        ).map((bar) => this.barView(bar, week)),
+      };
     });
   });
+
+  /** The week and day views' all-day row, as bars across the columns. Empty in the month view. */
+  protected readonly allDayBars = computed<EventView<T>[]>(() => {
+    if (this.view() === 'month') return [];
+    const week = this.weeks()[0];
+    const rows = weekRows(this.items(), week, false);
+    return weekBars(
+      rows,
+      rows.map((day) => day.length),
+    ).map((bar) => this.barView(bar, week));
+  });
+  /** The all-day row's grid rows: top padding, one per bar row (at least one), bottom padding. */
+  protected readonly allDayRowsTemplate = computed(() =>
+    eventRowsTemplate(
+      'var(--gog-scheduler-cell-padding)',
+      Math.max(1, ...this.allDayBars().map((bar) => bar.row - 1)),
+    ),
+  );
 
   /** The week or day view's columns. Empty in the month view. */
   protected readonly columns = computed<DayColumn<T>[]>(() => {
@@ -596,8 +634,7 @@ export class SchedulerComponent<T = unknown> {
     const step = this.slotMinutes();
 
     const week = this.weeks()[0];
-    const allDayRows = weekRows(items, week, false);
-    return week.map((date, i) => {
+    return week.map((date) => {
       const slots: { minute: number; name: string }[] = [];
       for (let minute = from; minute < to; minute += step) {
         slots.push({ minute, name: formats.slot.format(atMinute(date, minute)) });
@@ -609,9 +646,6 @@ export class SchedulerComponent<T = unknown> {
         label: formats.dayNumber.format(date),
         name: formats.dayName.format(date),
         today: isSameDay(date, today),
-        allDay: allDayRows[i].map((piece) =>
-          piece ? this.dayEventView(piece, date, i === 0) : null,
-        ),
         timed: timedPieces(items, date, from, to, step).map((piece) =>
           this.timedEventView(piece, date),
         ),
@@ -640,9 +674,7 @@ export class SchedulerComponent<T = unknown> {
   protected readonly moreDayEvents = computed(() => {
     const day = this.moreDay();
     if (!day) return [];
-    return dayPieces(this.items(), day).map((piece) =>
-      this.eventView(piece.item, day, false, false, true, 0, 0, 0, 100),
-    );
+    return dayPieces(this.items(), day).map((piece) => this.eventView(piece.item, day));
   });
 
   // ── Editing ──────────────────────────────────────────────────────────────────
@@ -664,11 +696,9 @@ export class SchedulerComponent<T = unknown> {
   /** Every event button drawn, by its key, so a right-click on one can find what it shows. */
   private readonly drawnEvents = computed(() => {
     const drawn = new Map<string, EventView<T>>();
-    for (const week of this.monthWeeks()) {
-      for (const cell of week) for (const row of cell.rows) if (row) drawn.set(row.key, row);
-    }
+    for (const week of this.monthWeeks()) for (const bar of week.bars) drawn.set(bar.key, bar);
+    for (const bar of this.allDayBars()) drawn.set(bar.key, bar);
     for (const column of this.columns()) {
-      for (const row of column.allDay) if (row) drawn.set(row.key, row);
       for (const event of column.timed) drawn.set(event.key, event);
     }
     for (const event of this.moreDayEvents()) drawn.set(event.key, event);
@@ -903,7 +933,11 @@ export class SchedulerComponent<T = unknown> {
   protected onFocusIn(event: FocusEvent): void {
     const target = (event.target as HTMLElement | null)?.closest<HTMLElement>('[data-day]');
     if (!target) return;
-    this.focusedDayState.set(new Date(Number(target.dataset['day'])));
+    const first = new Date(Number(target.dataset['day']));
+    const last = target.dataset['last'] ? new Date(Number(target.dataset['last'])) : first;
+    // A bar focused from one of its own days keeps that day; from elsewhere, its first day.
+    const day = this.focusedDay();
+    if (isBeforeDay(day, first) || isAfterDay(day, last)) this.focusedDayState.set(first);
     if (target.dataset['minute'] !== undefined) {
       this.focusedMinuteState.set(Number(target.dataset['minute']));
     }
@@ -975,6 +1009,12 @@ export class SchedulerComponent<T = unknown> {
     return isSameDay(day, this.focusedDay());
   }
 
+  /** A bar carries a tab stop while the focused day is one of the days it covers. */
+  protected isFocusedSpan(event: EventView<T>): boolean {
+    const day = this.focusedDay();
+    return !isBeforeDay(day, event.day) && !isAfterDay(day, event.lastDay);
+  }
+
   private moveAnchorTo(day: Date): void {
     this.date.set(this.fromWall(day));
   }
@@ -1010,46 +1050,50 @@ export class SchedulerComponent<T = unknown> {
   }
 
   /** `rowStart`: the day opens a row of the grid, where a continuing bar draws its title again. */
-  private dayEventView(piece: GogSchedulerDayPiece<T>, day: Date, rowStart: boolean): EventView<T> {
-    return this.eventView(
-      piece.item,
-      day,
-      piece.continuesBefore,
-      piece.continuesAfter,
-      !piece.continuesBefore || rowStart,
-      0,
-      0,
-      0,
-      100,
-    );
+  /** A bar of a week row: one button from its first day to its last, in the grid's own rows. */
+  private barView(bar: GogSchedulerBar<T>, week: readonly Date[]): EventView<T> {
+    return this.eventView(bar.item, week[bar.column], {
+      lastDay: week[bar.column + bar.span - 1],
+      continuesBefore: bar.continuesBefore,
+      continuesAfter: bar.continuesAfter,
+      column: bar.column + 1,
+      span: bar.span,
+      // Grid row 1 is the day number's (or the top padding), so the first event row is 2.
+      row: bar.row + 2,
+    });
   }
 
   private timedEventView(piece: GogSchedulerTimedPiece<T>, day: Date): EventView<T> {
     const step = this.slotMinutes();
     const length = Math.max(piece.endMinute - piece.startMinute, step);
-    return this.eventView(
-      piece.item,
-      day,
-      piece.continuesBefore,
-      piece.continuesAfter,
-      true,
-      (piece.startMinute - this.startMinute()) / step,
-      length / step,
-      (piece.lane / piece.lanes) * 100,
-      100 / piece.lanes,
-    );
+    return this.eventView(piece.item, day, {
+      continuesBefore: piece.continuesBefore,
+      continuesAfter: piece.continuesAfter,
+      top: (piece.startMinute - this.startMinute()) / step,
+      height: length / step,
+      inset: (piece.lane / piece.lanes) * 100,
+      width: 100 / piece.lanes,
+    });
   }
 
   private eventView(
     item: GogSchedulerItem<T>,
     day: Date,
-    continuesBefore: boolean,
-    continuesAfter: boolean,
-    showLabel: boolean,
-    top: number,
-    height: number,
-    inset: number,
-    width: number,
+    place: Partial<
+      Pick<
+        EventView<T>,
+        | 'lastDay'
+        | 'continuesBefore'
+        | 'continuesAfter'
+        | 'column'
+        | 'span'
+        | 'row'
+        | 'top'
+        | 'height'
+        | 'inset'
+        | 'width'
+      >
+    > = {},
   ): EventView<T> {
     const formats = this.formats();
     const time = item.allDay
@@ -1079,13 +1123,16 @@ export class SchedulerComponent<T = unknown> {
         time,
         view: this.view(),
       },
-      continuesBefore,
-      continuesAfter,
-      showLabel,
-      top,
-      height,
-      inset,
-      width,
+      lastDay: place.lastDay ?? day,
+      continuesBefore: place.continuesBefore ?? false,
+      continuesAfter: place.continuesAfter ?? false,
+      column: place.column ?? 0,
+      span: place.span ?? 1,
+      row: place.row ?? 0,
+      top: place.top ?? 0,
+      height: place.height ?? 0,
+      inset: place.inset ?? 0,
+      width: place.width ?? 100,
     };
   }
 
@@ -1098,6 +1145,14 @@ export class SchedulerComponent<T = unknown> {
     const zone = this.resolvedTimeZone();
     return zone ? gogFromZonedTime(date, zone) : date;
   }
+}
+
+/**
+ * Grid rows for a run of event rows: the first row as given (the day number's, or a padding), one
+ * row per event row, and the cell padding under them.
+ */
+function eventRowsTemplate(first: string, rows: number): string {
+  return `${first} repeat(${rows}, var(--gog-scheduler-event-min-height)) var(--gog-scheduler-cell-padding)`;
 }
 
 /** A wall date `minute` minutes after `day`'s midnight on the clock — past 24:00 rolls over. */

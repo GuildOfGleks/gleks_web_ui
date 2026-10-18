@@ -41,13 +41,34 @@ describe('SchedulerComponent', () => {
 
   /** A month cell's day button, by its day of the month, skipping the neighbouring months. */
   function dayButton(day: number): HTMLButtonElement {
-    return all<HTMLButtonElement>(
-      '.gog-scheduler__cell:not(.gog-scheduler__cell--outside) .gog-scheduler__day',
-    ).find((button) => button.textContent?.trim() === String(day))!;
+    return all<HTMLButtonElement>('.gog-scheduler__day:not(.gog-scheduler__day--outside)').find(
+      (button) => button.textContent?.trim() === String(day),
+    )!;
   }
 
-  function cellOf(day: number): HTMLElement {
-    return dayButton(day).closest('.gog-scheduler__cell')!;
+  /** The event buttons drawn over a month day: every bar whose span covers it. */
+  function eventsOn(day: number): HTMLButtonElement[] {
+    const key = Number(dayButton(day).dataset['day']);
+    const week = dayButton(day).closest('.gog-scheduler__week')!;
+    return Array.from(week.querySelectorAll<HTMLButtonElement>('.gog-scheduler__event')).filter(
+      (bar) => {
+        const first = Number(bar.dataset['day']);
+        const last = Number(bar.dataset['last'] ?? bar.dataset['day']);
+        return first <= key && key <= last;
+      },
+    );
+  }
+
+  function textOn(day: number): string {
+    return eventsOn(day)
+      .map((event) => event.textContent)
+      .join(' ');
+  }
+
+  function moreOn(day: number): HTMLButtonElement | null {
+    return host().querySelector<HTMLButtonElement>(
+      `.gog-scheduler__more[data-day="${dayButton(day).dataset['day']}"]`,
+    );
   }
 
   function toolbarButton(name: string): HTMLButtonElement {
@@ -82,10 +103,13 @@ describe('SchedulerComponent', () => {
 
   describe('month', () => {
     it('draws six weeks under weekday headers named in full', () => {
-      expect(all('.gog-scheduler__cell').length).toBe(42);
+      expect(all('.gog-scheduler__day').length).toBe(42);
+      expect(all('.gog-scheduler__week').length).toBe(6);
       const headers = all('.gog-scheduler__weekday');
       expect(headers.map((h) => h.textContent?.trim())[0]).toBe('Mon');
-      expect(headers[0].getAttribute('aria-label')).toBe('Monday');
+      // The weekday row is for the eye; each day's own button carries its weekday in full.
+      expect(headers[0].closest('[aria-hidden="true"]')).not.toBeNull();
+      expect(all('.gog-scheduler__day')[0].getAttribute('aria-label')).toMatch(/^Monday, June 1$/);
       expect(title()).toBe('June 2026');
     });
 
@@ -106,22 +130,19 @@ describe('SchedulerComponent', () => {
           { title: 'Trip', start: at(18), end: at(20), allDay: true },
         ],
       });
-      const names = (day: number) =>
-        Array.from(cellOf(day).querySelectorAll('.gog-scheduler__event')).map((e) =>
-          e.getAttribute('aria-label'),
-        );
-      expect(cellOf(17).textContent).toContain('Standup');
+      const names = (day: number) => eventsOn(day).map((e) => e.getAttribute('aria-label'));
+      expect(textOn(17)).toContain('Standup');
       expect(names(18)).toEqual([expect.stringContaining('Trip')]);
       expect(names(19)).toEqual([expect.stringContaining('Trip')]);
       expect(names(20)).toEqual([]);
-      // The title is drawn where the bar starts; the piece that continues it is the bar alone.
-      expect(cellOf(18).textContent).toContain('Trip');
-      expect(cellOf(19).textContent).not.toContain('Trip');
+      // One button across both days, not a piece per day: nothing to break where the days meet.
+      expect(eventsOn(18)[0]).toBe(eventsOn(19)[0]);
+      expect(eventsOn(18)[0].style.gridColumn).toBe('4 / span 2');
     });
 
     it('names an event by its title and its time', async () => {
       await set({ events: [{ title: 'Standup', start: at(17, 9), end: at(17, 9, 15) }] });
-      const name = cellOf(17).querySelector('.gog-scheduler__event')!.getAttribute('aria-label')!;
+      const name = eventsOn(17)[0].getAttribute('aria-label')!;
       expect(name.startsWith('Standup, Wednesday, June 17')).toBe(true);
       expect(name).toContain('9:00');
       expect(name).toContain('9:15');
@@ -137,8 +158,8 @@ describe('SchedulerComponent', () => {
         eventStart: (event: { from: string }) => event.from,
         eventEnd: 'to',
       });
-      expect(cellOf(17).querySelectorAll('.gog-scheduler__event').length).toBe(1);
-      expect(cellOf(17).textContent).toContain('ISO string');
+      expect(eventsOn(17).length).toBe(1);
+      expect(textOn(17)).toContain('ISO string');
     });
 
     it('ends a full cell in "+N more", which lists the day in a popover', async () => {
@@ -148,8 +169,8 @@ describe('SchedulerComponent', () => {
         end: at(17, 10 + i),
       }));
       await set({ events, monthEventLimit: 3 });
-      expect(cellOf(17).querySelectorAll('.gog-scheduler__event').length).toBe(2);
-      const more = cellOf(17).querySelector<HTMLButtonElement>('.gog-scheduler__more')!;
+      expect(eventsOn(17).length).toBe(2);
+      const more = moreOn(17)!;
       expect(more.textContent?.trim()).toBe('+3 more');
 
       const clicks: GogSchedulerEventClick<Booking>[] = [];
@@ -182,7 +203,7 @@ describe('SchedulerComponent', () => {
         start: at(17, 9 + i),
       }));
       await set({ events, monthEventLimit: 2, moreEventsAction: 'day' });
-      cellOf(17).querySelector<HTMLButtonElement>('.gog-scheduler__more')!.click();
+      moreOn(17)!.click();
       await fixture.whenStable();
       fixture.detectChanges();
       expect(component.view()).toBe('day');
@@ -195,8 +216,10 @@ describe('SchedulerComponent', () => {
         start: at(17, 9 + i),
       }));
       await set({ events, monthEventLimit: 5 });
-      expect(cellOf(17).querySelectorAll('.gog-scheduler__event').length).toBe(4);
-      expect(cellOf(17).style.height).toContain('var(--gog-scheduler-event-min-height) * 5');
+      expect(eventsOn(17).length).toBe(4);
+      expect(
+        (dayButton(17).closest('.gog-scheduler__week') as HTMLElement).style.gridTemplateRows,
+      ).toContain('repeat(5, var(--gog-scheduler-event-min-height))');
     });
 
     it('keeps a multi-day bar in one row across the week, holding the row open on other days', async () => {
@@ -206,15 +229,14 @@ describe('SchedulerComponent', () => {
           { title: 'Trip', start: at(17), end: at(20), allDay: true },
         ],
       });
-      const rows = (day: number) =>
-        Array.from(cellOf(day).querySelector('.gog-scheduler__cell-events')!.children).map((row) =>
-          row.classList.contains('gog-scheduler__spacer')
-            ? '·'
-            : (row.getAttribute('aria-label') ?? '').split(',')[0],
+      // Grid row 2 is the first event row, under the day number's.
+      const placed = (day: number) =>
+        eventsOn(day).map(
+          (e) => `${(e.getAttribute('aria-label') ?? '').split(',')[0]}@${e.style.gridRow}`,
         );
-      expect(rows(17)).toEqual(['Trip']);
-      expect(rows(18)).toEqual(['Trip', 'Early']);
-      expect(rows(19)).toEqual(['Trip']);
+      expect(placed(17)).toEqual(['Trip@2']);
+      expect(placed(18)).toEqual(['Trip@2', 'Early@3']);
+      expect(placed(19)).toEqual(['Trip@2']);
     });
 
     it('emits the whole day when a cell is pressed', async () => {
@@ -230,7 +252,7 @@ describe('SchedulerComponent', () => {
       const clicks: GogSchedulerEventClick<Booking>[] = [];
       component.gogEventClick.subscribe((click) => clicks.push(click));
 
-      cellOf(17).querySelector<HTMLButtonElement>('.gog-scheduler__event')!.click();
+      eventsOn(17)[0].click();
       expect(clicks).toEqual([
         { event: standup, start: at(17, 9), end: at(17, 9, 15), allDay: false },
       ]);
@@ -367,6 +389,22 @@ describe('SchedulerComponent', () => {
       expect(host().querySelector('.gog-scheduler__grid')!.textContent).not.toContain('Holiday');
     });
 
+    it('draws a multi-day event in the all-day row as one bar across its columns', async () => {
+      await set({
+        events: [
+          { title: 'Offsite', start: at(16), end: at(19), allDay: true },
+          { title: 'Holiday', start: at(18), allDay: true },
+        ],
+      });
+      const bars = all<HTMLElement>('.gog-scheduler__all-day-grid .gog-scheduler__event');
+      expect(
+        bars.map((bar) => [bar.textContent?.trim(), bar.style.gridColumn, bar.style.gridRow]),
+      ).toEqual([
+        ['Offsite', '2 / span 3', '2'],
+        ['Holiday', '4 / span 1', '3'],
+      ]);
+    });
+
     it('emits a slot of the grid when it is pressed', async () => {
       const slots: GogSchedulerSlot[] = [];
       component.gogSlotClick.subscribe((slot) => slots.push(slot));
@@ -498,7 +536,7 @@ describe('SchedulerComponent', () => {
       await set({ readonly: false, events: [standup] });
       const deleted: GogSchedulerEventClick<Booking>[] = [];
       component.gogEventDelete.subscribe((click) => deleted.push(click));
-      rightClick(cellOf(17).querySelector('.gog-scheduler__event')!);
+      rightClick(eventsOn(17)[0]);
       expect(await menuItem('New event')).toBeUndefined();
       await choose('Delete');
       expect(deleted.map((d) => d.event)).toEqual([standup]);
@@ -540,7 +578,7 @@ describe('SchedulerComponent', () => {
       await set({ readonly: false, events: [review] });
       const changes: GogSchedulerEventChange<Booking>[] = [];
       component.gogEventChange.subscribe((change) => changes.push(change));
-      rightClick(cellOf(17).querySelector('.gog-scheduler__event')!);
+      rightClick(eventsOn(17)[0]);
       await choose('Move');
       dayButton(24).click();
       expect([changes[0].start, changes[0].end]).toEqual([at(24, 9), at(24, 10)]);
@@ -614,16 +652,14 @@ describe('SchedulerComponent', () => {
 
     it('takes the month cell limit from the config, and the instance wins', async () => {
       await configured({ scheduler: { monthEventLimit: 5 } });
-      expect(cellOf(17).querySelectorAll('.gog-scheduler__event').length).toBe(4);
+      expect(eventsOn(17).length).toBe(4);
       await set({ monthEventLimit: 2 });
-      expect(cellOf(17).querySelectorAll('.gog-scheduler__event').length).toBe(1);
+      expect(eventsOn(17).length).toBe(1);
     });
 
     it('words "+N more" through GOG_CONFIG.labels.moreEvents', async () => {
       await configured({ labels: { moreEvents: (count: number) => `+${count} weitere` } });
-      expect(cellOf(17).querySelector('.gog-scheduler__more')?.textContent?.trim()).toBe(
-        '+4 weitere',
-      );
+      expect(moreOn(17)?.textContent?.trim()).toBe('+4 weitere');
     });
 
     it('takes readonly and the "+N more" action from the config', async () => {
@@ -631,7 +667,7 @@ describe('SchedulerComponent', () => {
       const event = new MouseEvent('contextmenu', { bubbles: true, cancelable: true, button: 2 });
       dayButton(17).dispatchEvent(event);
       expect(event.defaultPrevented).toBe(true);
-      cellOf(17).querySelector<HTMLButtonElement>('.gog-scheduler__more')!.click();
+      moreOn(17)!.click();
       await fixture.whenStable();
       expect(component.view()).toBe('day');
     });
@@ -670,7 +706,7 @@ describe('SchedulerComponent', () => {
       fixture = TestBed.createComponent(SchedulerComponent<Booking>);
       await set({ date: new Date(Date.UTC(2026, 5, 17, 12)) });
       expect(title()).toBe('Juni 2026');
-      expect(all('.gog-scheduler__weekday')[0].getAttribute('aria-label')).toBe('Sonntag');
+      expect(all('.gog-scheduler__day')[0].getAttribute('aria-label')).toMatch(/^Sonntag/);
     });
   });
 

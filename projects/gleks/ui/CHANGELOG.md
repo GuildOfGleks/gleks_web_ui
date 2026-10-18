@@ -15,9 +15,9 @@ _Versioning_ section. Before 21.16.0 a minor could carry a breaking change, and 
   out: `gogEventClick` with the event, `gogSlotClick` with an empty slot of the hour grid or a whole
   day, and `gogRangeChange` with the period drawn — on first render and after every move, the moment
   to load that period's events. `view` and `date` are two-way.
-  - **Layout.** All-day and day-long events are bars that keep one row across the week, so a
-    multi-day event reads as one bar with its title at its start; rows go all-day/multi-day first,
-    then timed events by start. Timed events sit in the hour grid by start and length, overlapping
+  - **Layout.** All-day and day-long events are bars: one button across the days an event covers
+    in a week, placed by a CSS grid over the week's columns, so nothing breaks between days; rows
+    go all-day/multi-day first, then timed events by start. Timed events sit in the hour grid by start and length, overlapping
     ones side by side; a line marks now. `gogSchedulerEvent` draws an event's insides.
   - **"+N more".** A month cell draws `monthEventLimit` rows (3 by default) and is as tall as them;
     a fuller day ends in "+N more", which lists the day in a `gog-popover` or, with

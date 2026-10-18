@@ -50,11 +50,12 @@
   }
 </div>
 
-<ng-template #eventButton let-event let-timed="timed" let-inList="inList">
+<ng-template #eventButton let-event let-timed="timed" let-inList="inList" let-bar="bar">
   <button
     type="button"
     class="gog-scheduler__event"
     [class.gog-scheduler__event--timed]="timed"
+    [class.gog-scheduler__event--bar]="bar"
     [class.gog-scheduler__event--all-day]="!timed && event.item.allDay"
     [class.gog-scheduler__event--continues-before]="event.continuesBefore"
     [class.gog-scheduler__event--continues-after]="event.continuesAfter"
@@ -67,16 +68,17 @@
     [style.height]="timed ? 'calc(var(--gog-scheduler-slot-height) * ' + event.height + ')' : null"
     [style.inset-inline-start.%]="timed ? event.inset : null"
     [style.width.%]="timed ? event.width : null"
+    [style.grid-column]="bar ? event.column + ' / span ' + event.span : null"
+    [style.grid-row]="bar ? event.row : null"
     data-kind="event"
     [attr.data-key]="event.key"
     [attr.data-day]="event.day.getTime()"
-    [tabindex]="inList || isFocusedDay(event.day) ? 0 : -1"
+    [attr.data-last]="bar ? event.lastDay.getTime() : null"
+    [tabindex]="inList || isFocusedSpan(event) ? 0 : -1"
     [attr.aria-label]="event.name"
     (click)="onEventClick(event, inList)"
   >
-    @if (!event.showLabel) {
-      <!-- A bar's continuing piece: the bar alone, its name is still on the button. -->
-    } @else if (eventTemplate(); as custom) {
+    @if (eventTemplate(); as custom) {
       <ng-container *ngTemplateOutlet="custom.templateRef; context: event.context" />
     } @else if (timed) {
       <span class="gog-scheduler__event-title">{{ event.item.title }}</span>
@@ -100,70 +102,61 @@
     (keydown)="onKeydown($event)"
     (focusin)="onFocusIn($event)"
   >
-    <table class="gog-scheduler__month-grid">
-      <thead>
-        <tr>
-          @for (weekday of weekdays(); track $index) {
-            <th class="gog-scheduler__weekday" scope="col" [attr.aria-label]="weekday.name">
-              {{ weekday.label }}
-            </th>
+    <!-- Every day and every event is a button named in full, so the weekday row is for the eye. -->
+    <div class="gog-scheduler__weekdays" aria-hidden="true">
+      @for (weekday of weekdays(); track $index) {
+        <div class="gog-scheduler__weekday">{{ weekday.label }}</div>
+      }
+    </div>
+    @for (week of monthWeeks(); track week.key) {
+      <!-- One grid per week: the days are its columns, and an event spanning days is one button
+           across them, so a multi-day event is a single bar rather than a piece per cell. -->
+      <div
+        class="gog-scheduler__week"
+        role="group"
+        [attr.aria-label]="week.name"
+        [style.grid-template-rows]="monthRowsTemplate()"
+      >
+        @for (cell of week.days; track cell.key; let i = $index) {
+          <!-- The whole cell, under the events: a press on its empty part is a press on the day. -->
+          <button
+            type="button"
+            class="gog-scheduler__day"
+            [class.gog-scheduler__day--outside]="cell.outside"
+            [class.gog-scheduler__day--today]="cell.today"
+            [style.grid-column]="i + 1"
+            data-kind="day"
+            [attr.data-day]="cell.key"
+            [tabindex]="isFocusedDay(cell.date) ? 0 : -1"
+            [attr.aria-label]="cell.name"
+            [attr.aria-current]="cell.today ? 'date' : null"
+            (click)="onDayClick(cell.date)"
+          >
+            <span class="gog-scheduler__day-number">{{ cell.label }}</span>
+          </button>
+          @if (cell.more) {
+            <button
+              type="button"
+              class="gog-scheduler__more"
+              [style.grid-column]="i + 1"
+              [style.grid-row]="moreRow()"
+              data-kind="more"
+              [attr.data-day]="cell.key"
+              [tabindex]="isFocusedDay(cell.date) ? 0 : -1"
+              aria-haspopup="dialog"
+              (click)="openMore(cell.date, $event)"
+            >
+              {{ labels().moreEvents(cell.more) }}
+            </button>
           }
-        </tr>
-      </thead>
-      <tbody>
-        @for (week of monthWeeks(); track week[0].key) {
-          <tr>
-            @for (cell of week; track cell.key) {
-              <td
-                class="gog-scheduler__cell"
-                [class.gog-scheduler__cell--outside]="cell.outside"
-                [class.gog-scheduler__cell--today]="cell.today"
-                [style.height]="cellHeight()"
-              >
-                <!-- The whole cell is this button, under the events: a press on its empty part is
-                     a press on the day. -->
-                <button
-                  type="button"
-                  class="gog-scheduler__day"
-                  data-kind="day"
-                  [attr.data-day]="cell.key"
-                  [tabindex]="isFocusedDay(cell.date) ? 0 : -1"
-                  [attr.aria-label]="cell.name"
-                  [attr.aria-current]="cell.today ? 'date' : null"
-                  (click)="onDayClick(cell.date)"
-                >
-                  <span class="gog-scheduler__day-number">{{ cell.label }}</span>
-                </button>
-                <div class="gog-scheduler__cell-events">
-                  @for (event of cell.rows; track $index) {
-                    @if (event) {
-                      <ng-container
-                        *ngTemplateOutlet="eventButton; context: { $implicit: event, timed: false }"
-                      />
-                    } @else {
-                      <span class="gog-scheduler__spacer" aria-hidden="true"></span>
-                    }
-                  }
-                  @if (cell.more) {
-                    <button
-                      type="button"
-                      class="gog-scheduler__more"
-                      data-kind="more"
-                      [attr.data-day]="cell.key"
-                      [tabindex]="isFocusedDay(cell.date) ? 0 : -1"
-                      aria-haspopup="dialog"
-                      (click)="openMore(cell.date, $event)"
-                    >
-                      {{ labels().moreEvents(cell.more) }}
-                    </button>
-                  }
-                </div>
-              </td>
-            }
-          </tr>
         }
-      </tbody>
-    </table>
+        @for (event of week.bars; track event.key) {
+          <ng-container
+            *ngTemplateOutlet="eventButton; context: { $implicit: event, timed: false, bar: true }"
+          />
+        }
+      </div>
+    }
   </div>
 } @else {
   <!-- eslint-disable-next-line @angular-eslint/template/interactive-supports-focus -- delegated, as in the month view above. -->
@@ -208,28 +201,30 @@
 
     <div class="gog-scheduler__all-day">
       <div class="gog-scheduler__gutter gog-scheduler__all-day-label">{{ labels().allDay }}</div>
-      @for (column of columns(); track column.key) {
-        <div class="gog-scheduler__all-day-cell">
+      <!-- Packed and drawn as the month's weeks are: a multi-day event is one bar across columns. -->
+      <div
+        class="gog-scheduler__all-day-grid"
+        [style.grid-template-columns]="'repeat(' + columns().length + ', minmax(0, 1fr))'"
+        [style.grid-template-rows]="allDayRowsTemplate()"
+      >
+        @for (column of columns(); track column.key; let i = $index) {
           <button
             type="button"
             class="gog-scheduler__all-day-slot"
+            [style.grid-column]="i + 1"
             data-kind="allday"
             [attr.data-day]="column.key"
             [tabindex]="isFocusedDay(column.date) ? 0 : -1"
             [attr.aria-label]="column.name + ', ' + labels().allDay"
             (click)="onDayClick(column.date)"
           ></button>
-          @for (event of column.allDay; track $index) {
-            @if (event) {
-              <ng-container
-                *ngTemplateOutlet="eventButton; context: { $implicit: event, timed: false }"
-              />
-            } @else {
-              <span class="gog-scheduler__spacer" aria-hidden="true"></span>
-            }
-          }
-        </div>
-      }
+        }
+        @for (event of allDayBars(); track event.key) {
+          <ng-container
+            *ngTemplateOutlet="eventButton; context: { $implicit: event, timed: false, bar: true }"
+          />
+        }
+      </div>
     </div>
 
     <gog-scroll class="gog-scheduler__body" [focusable]="false" overscrollBehavior="contain">

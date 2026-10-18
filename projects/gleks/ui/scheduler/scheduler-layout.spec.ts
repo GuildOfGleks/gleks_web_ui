@@ -2,6 +2,7 @@ import {
   type GogSchedulerItem,
   dayPieces,
   fitRows,
+  weekBars,
   weekRows,
   isSpanning,
   lastDayOf,
@@ -215,5 +216,57 @@ describe('scheduler layout', () => {
       expect(shiftAnchor('week', at(17), -1)).toEqual(at(10));
       expect(shiftAnchor('day', at(17), 1)).toEqual(at(18));
     });
+  });
+});
+
+describe('weekBars', () => {
+  const week = Array.from({ length: 7 }, (_, i) => new Date(2026, 5, 15 + i));
+  let index = 0;
+  const make = (
+    start: Date,
+    end: Date,
+    allDay: boolean,
+    title: string,
+  ): GogSchedulerItem<string> => ({
+    event: title,
+    index: index++,
+    title,
+    start,
+    end,
+    allDay,
+    variant: 'accent',
+    sourceStart: start,
+    sourceEnd: end,
+  });
+  const bars = (items: GogSchedulerItem<string>[], visible = [9, 9, 9, 9, 9, 9, 9]) =>
+    weekBars(weekRows(items, week, true), visible).map(
+      (bar) => `${bar.item.title}@${bar.row}:${bar.column}+${bar.span}`,
+    );
+
+  it('draws a multi-day item as one bar across its days', () => {
+    const trip = make(new Date(2026, 5, 16), new Date(2026, 5, 19), true, 'trip');
+    const meeting = make(new Date(2026, 5, 17, 9), new Date(2026, 5, 17, 10), false, 'meeting');
+    expect(bars([trip, meeting])).toEqual(['trip@0:1+3', 'meeting@1:2+1']);
+  });
+
+  it('breaks a bar where its row is hidden behind "+N more"', () => {
+    const trip = make(new Date(2026, 5, 15), new Date(2026, 5, 18), true, 'trip');
+    const blocker = make(new Date(2026, 5, 15), new Date(2026, 5, 22), true, 'week');
+    expect(bars([trip, blocker], [9, 1, 9, 9, 9, 9, 9])).toEqual([
+      'week@0:0+7',
+      'trip@1:0+1',
+      'trip@1:2+1',
+    ]);
+  });
+
+  it('marks a bar that runs on past the week', () => {
+    const long = make(new Date(2026, 5, 10), new Date(2026, 5, 25), true, 'long');
+    const [bar] = weekBars(weekRows([long], week, true), [9, 9, 9, 9, 9, 9, 9]);
+    expect([bar.column, bar.span, bar.continuesBefore, bar.continuesAfter]).toEqual([
+      0,
+      7,
+      true,
+      true,
+    ]);
   });
 });

@@ -98,15 +98,15 @@ button.gog-scheduler__column-day:focus-visible,
 
 /* ── Month ────────────────────────────────────────────────────────────────── */
 
-.gog-scheduler__month-grid {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed;
+/* The weekday row and every week share seven equal columns. */
+.gog-scheduler__weekdays,
+.gog-scheduler__week {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
 }
 
 .gog-scheduler__weekday {
   padding-block: var(--gog-scheduler-weekday-padding-block);
-  padding-inline: 0;
   border-block-end: var(--gog-scheduler-line-width) solid var(--gog-scheduler-line-color);
   color: var(--gog-scheduler-weekday-color);
   font-size: var(--gog-scheduler-weekday-font-size);
@@ -116,23 +116,27 @@ button.gog-scheduler__column-day:focus-visible,
   text-transform: var(--gog-scheduler-weekday-text-transform);
 }
 
-.gog-scheduler__cell {
-  /* Its height is bound inline from `monthEventLimit`: the rows decide it, not a fixed length. */
-  position: relative;
-  padding: 0;
-  border: var(--gog-scheduler-line-width) solid var(--gog-scheduler-line-color);
-  vertical-align: top;
+/*
+ * A week is one grid: the day number's row, one row per event row, the cell's bottom padding —
+ * bound inline from `monthEventLimit`. Its events are placed across its columns, so an event that
+ * spans days is one bar, with no seam where one day meets the next.
+ */
+.gog-scheduler__week {
+  row-gap: var(--gog-scheduler-event-gap);
+  border-block-end: var(--gog-scheduler-line-width) solid var(--gog-scheduler-line-color);
+  border-inline-start: var(--gog-scheduler-line-width) solid var(--gog-scheduler-line-color);
 }
 
-/* The whole cell, under its events: a press on the cell's empty part is a press on the day. */
+/* The whole column, under the week's events: a press on its empty part is a press on the day. */
 .gog-scheduler__day {
-  position: absolute;
-  inset: 0;
+  grid-row: 1 / -1;
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
   box-sizing: border-box;
+  min-width: 0;
   padding: var(--gog-scheduler-cell-padding);
+  border-inline-end: var(--gog-scheduler-line-width) solid var(--gog-scheduler-line-color);
 }
 
 .gog-scheduler__day-number,
@@ -149,37 +153,22 @@ button.gog-scheduler__column-day:focus-visible,
   font-variant-numeric: tabular-nums;
 }
 
-.gog-scheduler__cell--outside .gog-scheduler__day {
+.gog-scheduler__day--outside {
   color: var(--gog-scheduler-outside-color);
 }
 
-.gog-scheduler__cell--today .gog-scheduler__day-number,
+.gog-scheduler__day--today .gog-scheduler__day-number,
 .gog-scheduler__column-head--today .gog-scheduler__column-number {
   background-color: var(--gog-scheduler-today-bg);
   color: var(--gog-scheduler-today-color);
   font-weight: var(--gog-scheduler-today-font-weight);
 }
 
-/* Events sit above the day button and below the day number's row; only they take the pointer. */
-.gog-scheduler__cell-events {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: var(--gog-scheduler-event-gap);
-  padding: var(--gog-scheduler-cell-padding);
-  padding-block-start: calc(
-    var(--gog-scheduler-cell-padding) * 2 + var(--gog-scheduler-day-number-size)
-  );
-  pointer-events: none;
-}
-
-.gog-scheduler__cell-events > * {
-  pointer-events: auto;
-}
-
 .gog-scheduler__more {
-  align-self: flex-start;
+  position: relative;
+  justify-self: start;
   min-height: var(--gog-scheduler-event-min-height);
+  margin-inline: var(--gog-scheduler-cell-padding);
   padding: var(--gog-scheduler-event-padding-y) var(--gog-scheduler-event-padding-x);
   border-radius: var(--gog-scheduler-event-radius);
   color: var(--gog-scheduler-more-color);
@@ -244,35 +233,23 @@ button.gog-scheduler__column-day:focus-visible,
 }
 
 /*
- * In the month grid and the all-day row a multi-day event keeps one row across the week, so its
- * pieces join into one bar: a continuing side reaches over the cell's padding and its line to meet
- * the next piece, and has no border there. Only the first piece carries the severity edge.
+ * A bar, in a month week or the all-day row: placed by the grid across the days it covers, inset
+ * by the cell padding where it truly starts and ends, and running to the column's edge where it
+ * goes on into another week. Only its real start carries the severity edge.
  */
-.gog-scheduler__cell-events > .gog-scheduler__event,
-.gog-scheduler__all-day-cell > .gog-scheduler__event {
+.gog-scheduler__event--bar {
+  position: relative;
   width: auto;
+  margin-inline: var(--gog-scheduler-cell-padding);
 }
 
-.gog-scheduler__cell-events > .gog-scheduler__event--continues-before,
-.gog-scheduler__all-day-cell > .gog-scheduler__event--continues-before {
-  margin-inline-start: calc(
-    (var(--gog-scheduler-cell-padding) + var(--gog-scheduler-line-width)) * -1
-  );
-  border-inline-start-width: 0;
+.gog-scheduler__event--bar.gog-scheduler__event--continues-before {
+  margin-inline-start: 0;
+  border-inline-start: var(--gog-scheduler-line-width) solid var(--gog-scheduler-event-border-color);
 }
 
-.gog-scheduler__cell-events > .gog-scheduler__event--continues-after,
-.gog-scheduler__all-day-cell > .gog-scheduler__event--continues-after {
-  margin-inline-end: calc(
-    (var(--gog-scheduler-cell-padding) + var(--gog-scheduler-line-width)) * -1
-  );
-  border-inline-end-width: 0;
-}
-
-/* A row held open for a bar drawn on another day, so the rows under it stay aligned. */
-.gog-scheduler__spacer {
-  display: block;
-  min-height: var(--gog-scheduler-event-min-height);
+.gog-scheduler__event--bar.gog-scheduler__event--continues-after {
+  margin-inline-end: 0;
 }
 
 /* The event a move or a new end is being chosen for. */
@@ -317,7 +294,6 @@ button.gog-scheduler__column-day:focus-visible,
 }
 
 .gog-scheduler__column-head,
-.gog-scheduler__all-day-cell,
 .gog-scheduler__column {
   flex: 1 1 0;
   min-width: 0;
@@ -369,22 +345,18 @@ button.gog-scheduler__column-day:focus-visible,
   align-self: center;
 }
 
-.gog-scheduler__all-day-cell {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: var(--gog-scheduler-event-gap);
-  min-height: calc(var(--gog-scheduler-slot-height) + var(--gog-scheduler-cell-padding) * 2);
-  padding: var(--gog-scheduler-cell-padding);
+/* The all-day row is a grid like a month week: top padding, a row per bar row, bottom padding. */
+.gog-scheduler__all-day-grid {
+  display: grid;
+  flex: 1 1 0;
+  min-width: 0;
+  row-gap: var(--gog-scheduler-event-gap);
 }
 
 .gog-scheduler__all-day-slot {
-  position: absolute;
-  inset: 0;
-}
-
-.gog-scheduler__all-day-cell > .gog-scheduler__event {
-  position: relative;
+  grid-row: 1 / -1;
+  min-height: var(--gog-scheduler-slot-height);
+  border-inline-start: var(--gog-scheduler-line-width) solid var(--gog-scheduler-line-color);
 }
 
 .gog-scheduler__body {

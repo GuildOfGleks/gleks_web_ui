@@ -128,3 +128,18 @@ root +9 exports and `/shared` +6, none removed; initial bundle 124.39 kB estimat
 121.54 — the popover and context menu are root components); the scheduler's lazy chunk 10590 bytes
 (from 8370 — the editing and the popover list). The `SMOKE` page still prerenders, hydrates with an
 empty console and takes a press on its event.
+
+## Iteration 3 — one bar, not pieces (2026-10-18)
+
+The owner's verdict on iteration 2's bars: the line breaks between days. It did — a bar was a piece
+per cell, joined by negative margins over the cell's padding and its border, and the joint showed
+at every day boundary. No margin arithmetic removes a seam between two elements, so the bar became
+**one element**: a month week is now a CSS grid (seven columns; the day number's row, one row per
+event row, the bottom padding), and each event is placed across the columns it covers with
+`grid-column: <first> / span <n>`. `weekBars()` joins `weekRows()`' pieces into those bars and
+breaks one only where a day hides that row behind "+N more". The week view's all-day row is the
+same grid. A bar still ends at the week's edge, square, and continues in the next week row.
+
+The month grid stopped being a `<table>`: a bar spanning cells cannot live inside one cell. Each week
+is a named group, and the weekday row is `aria-hidden`, because every day and every event is a
+button whose name already says its weekday and date.
