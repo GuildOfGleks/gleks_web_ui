@@ -673,6 +673,8 @@
   /* A single line of labels: the tight end of the leading scale. */
   --gog-breadcrumbs-line-height: var(--gog-line-height-snug);
   --gog-breadcrumbs-gap: var(--gog-space-8);
+  /* Between an item's icon and its label: inside one item, tighter than between items. */
+  --gog-breadcrumbs-icon-gap: var(--gog-space-4);
   --gog-breadcrumbs-link-color: var(--gog-muted-text-color);
   --gog-breadcrumbs-link-hover-color: var(--gog-text-color);
   --gog-breadcrumbs-current-color: var(--gog-text-color);

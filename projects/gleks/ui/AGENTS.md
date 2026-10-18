@@ -2168,11 +2168,40 @@ Model: `open: boolean` (default `true`, ignored while `collapsible` is off). No 
 - **The surface is never itself a link** — there is no `gogPanelLink`. Controls live inside a
   panel, and a region that is a link cannot hold them. Use `gog-card` for that.
 
-#### `gog-breadcrumbs` + `*gogBreadcrumb`
+#### `gog-breadcrumbs` — from `[items]`, or from `*gogBreadcrumb` elements
 
-Where the current page sits, as a trail. **The items are your own elements** — the package has no
-router dependency, so a link keeps its own `routerLink` or `href` — marked with the structural
-`*gogBreadcrumb`, one element per item. The last item is the current page.
+Where the current page sits, as a trail. The last item is the current page. Two ways to write one.
+
+**From an array** (since 21.20.0) — the short way. Your objects, first item to current page, read
+through accessors as `gog-select` reads options:
+
+```html
+<gog-breadcrumbs [items]="trail" (gogItemClick)="go($event)" />
+```
+
+```ts
+trail = [
+  { label: 'Home', href: '/', icon: 'home' },
+  { label: 'Orders', href: '/orders' },
+  { label: '#1042' }, // the current page: drawn as text with aria-current="page"
+];
+
+// The package has no router dependency. With a router, take over the navigation:
+go({ item, event }: GogBreadcrumbClick<Crumb>) {
+  event.preventDefault();
+  this.router.navigateByUrl(item.href!);
+}
+```
+
+A parent with an `href` is an `<a href>`; one without is a button that only emits `gogItemClick`.
+`itemLabel`, `itemHref`, `itemIcon` (`'label'`, `'href'`, `'icon'` by default) take a property path
+or a function. An `ng-template gogBreadcrumbItem` (context: `$implicit`/`item`, `label`, `current`,
+`index`; typed with `gogBreadcrumbItemTypeOf`) replaces what is drawn **inside** each link — the
+link, `href` and `aria-current` stay the trail's.
+
+**From your own elements** — for anything the element itself must carry (`routerLink`, query
+params, a tooltip): mark one element per item with the structural `*gogBreadcrumb`. When `items`
+has entries, it wins.
 
 ```html
 <gog-breadcrumbs [maxItems]="4">
@@ -2182,14 +2211,20 @@ router dependency, so a link keeps its own `routerLink` or `href` — marked wit
 </gog-breadcrumbs>
 ```
 
-| Input           | Type                  | Default                      |
-| --------------- | --------------------- | ---------------------------- |
-| `maxItems`      | `number \| null`      | `null` — never collapse      |
-| `itemsBefore`   | `number`              | `1`                          |
-| `itemsAfter`    | `number`              | `2`                          |
-| `separatorIcon` | `GogIconName`         | `'chevron-right'`            |
-| `size`          | `GogSize`             | `'md'`                       |
-| `ariaLabel`     | `string \| undefined` | `undefined` — `'Breadcrumb'` |
+| Input           | Type                                                     | Default                      |
+| --------------- | -------------------------------------------------------- | ---------------------------- |
+| `items`         | `readonly T[]`                                           | `[]` — use `*gogBreadcrumb`  |
+| `itemLabel`     | `GogOptionAccessor<T, string>`                           | `'label'`                    |
+| `itemHref`      | `GogOptionAccessor<T, string \| null \| undefined>`      | `'href'`                     |
+| `itemIcon`      | `GogOptionAccessor<T, GogIconName \| null \| undefined>` | `'icon'`                     |
+| `maxItems`      | `number \| null`                                         | `null` — never collapse      |
+| `itemsBefore`   | `number`                                                 | `1`                          |
+| `itemsAfter`    | `number`                                                 | `2`                          |
+| `separatorIcon` | `GogIconName`                                            | `'chevron-right'`            |
+| `size`          | `GogSize`                                                | `'md'`                       |
+| `ariaLabel`     | `string \| undefined`                                    | `undefined` — `'Breadcrumb'` |
+
+Output: `gogItemClick` — `GogBreadcrumbClick<T>` `{ item, index, event }`, for a parent of `items`.
 
 - **It owns the semantics**: a `<nav>` named by `ariaLabel` (or `GOG_CONFIG.labels.breadcrumbs`),
   an `<ol>` with each item in its own `<li>`, `aria-current="page"` set on the last item's element,
@@ -2199,7 +2234,7 @@ router dependency, so a link keeps its own `routerLink` or `href` — marked wit
   (`GOG_CONFIG.labels.showBreadcrumbs`, "Show full path") and `itemsAfter` items. The button
   expands the trail in place and moves focus to the first item it revealed. A trail that would hide
   nothing does not collapse.
-- **Use `*gogBreadcrumb`, with the star** — the trail needs the template, not the element, to wrap
+- **With elements, use `*gogBreadcrumb`, with the star** — the trail needs the template, not the element, to wrap
   each item in a list item and to leave items out while collapsed. One element per item; a
   template with two root elements breaks `aria-current`.
 - The items' link, hover, focus and current-page styles live in the baseline stylesheet

@@ -18,6 +18,7 @@ import {
   GogEmptyStateActionsDirective,
   GogEmptyStateMediaDirective,
   GogBreadcrumbDirective,
+  GogBreadcrumbItemDirective,
   ChipComponent,
   CollapsibleComponent,
   DividerComponent,
@@ -146,6 +147,7 @@ import {
     GogEmptyStateActionsDirective,
     GogEmptyStateMediaDirective,
     GogBreadcrumbDirective,
+    GogBreadcrumbItemDirective,
     ChipComponent,
     CollapsibleComponent,
     DatepickerComponent,
@@ -273,6 +275,16 @@ export class SpecimenPage {
   private readonly today = startOfDay(new Date());
   private readonly at = (day: number, hour = 0) =>
     new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() + day, hour);
+  protected readonly ordersTrail = [
+    { label: 'Workspace', href: '#specimen-orders' },
+    { label: 'Sales', href: '#specimen-orders' },
+    { label: 'Europe', href: '#specimen-orders' },
+    { label: 'Orders' },
+  ];
+  protected readonly deliveriesTrail = [
+    { label: 'Orders', href: '#specimen-orders' },
+    { label: 'Deliveries' },
+  ];
   protected readonly away = ['Mila Kovacs', 'Jonas Berg'];
   protected readonly tileNames = ['quick actions'];
   /** The colleague a right-click landed on; between names the browser's own menu opens. */

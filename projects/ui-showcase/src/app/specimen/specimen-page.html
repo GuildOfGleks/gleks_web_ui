@@ -517,11 +517,10 @@
 
 <!-- Scene 2: orders -->
 <section class="specimen__scene" aria-labelledby="specimen-orders">
-  <gog-breadcrumbs [size]="size()" [maxItems]="3">
-    <a *gogBreadcrumb href="#specimen-orders">Workspace</a>
-    <a *gogBreadcrumb href="#specimen-orders">Sales</a>
-    <a *gogBreadcrumb href="#specimen-orders">Europe</a>
-    <span *gogBreadcrumb>Orders</span>
+  <gog-breadcrumbs [size]="size()" [maxItems]="3" [items]="ordersTrail">
+    <ng-template gogBreadcrumbItem let-crumb [gogBreadcrumbItemTypeOf]="ordersTrail">
+      {{ crumb.label }}
+    </ng-template>
   </gog-breadcrumbs>
   <h2 id="specimen-orders" class="specimen__scene-title">Orders</h2>
   <gog-stepper
@@ -904,6 +903,19 @@
 
         <gog-tab label="Deliveries">
           <ng-template gogTabContent>
+            <gog-breadcrumbs size="sm" [items]="deliveriesTrail">
+              <ng-template
+                gogBreadcrumbItem
+                let-crumb
+                let-current="current"
+                [gogBreadcrumbItemTypeOf]="deliveriesTrail"
+              >
+                @if (current) {
+                  <gog-icon name="truck" />
+                }
+                {{ crumb.label }}
+              </ng-template>
+            </gog-breadcrumbs>
             <gog-scheduler
               view="week"
               [views]="['week', 'day']"

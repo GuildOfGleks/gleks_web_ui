@@ -30,6 +30,9 @@ delete the section too.
   Sunday under `en-US`. Watch the prerender: a page drawn around "now" is rendered at build time
   and hydrated later, so give prerendered examples a fixed `date` and `timeZone`, as
   `check:install`'s `SMOKE` page does.
+- **Breadcrumbs page**: the array form first — `[items]`, the three accessors, `gogItemClick` with
+  the router recipe, `gogBreadcrumbItem` — and `*gogBreadcrumb` after it, as the way to put
+  `routerLink` on the element. Source: `AGENTS.md`, `docs/breadcrumbs.md` iteration 2.
 - **Two new overlay pages, Popover and Context menu**, from the root — route, nav, SEO and
   overview entries as for any page, sourced from `AGENTS.md` and `docs/popover-and-context-menu.md`.
   The Menu page gains `openAt()` in its methods list.

@@ -21,6 +21,7 @@ import {
   DividerComponent,
   GogAccordionChevronDirective,
   GogBreadcrumbDirective,
+  GogBreadcrumbItemDirective,
   GogAccordionContentDirective,
   GogAccordionHeaderDirective,
   GogAlertIconDirective,
@@ -425,7 +426,11 @@ export const UNITS: readonly GogUnit[] = [
     name: 'Breadcrumbs',
     group: 'layout',
     entry: 'root',
-    parts: [cmp(BreadcrumbsComponent), dir(GogBreadcrumbDirective, '[gogBreadcrumb]')],
+    parts: [
+      cmp(BreadcrumbsComponent),
+      dir(GogBreadcrumbDirective, '[gogBreadcrumb]'),
+      dir(GogBreadcrumbItemDirective, '[gogBreadcrumbItem]'),
+    ],
   },
   {
     id: 'stepper',

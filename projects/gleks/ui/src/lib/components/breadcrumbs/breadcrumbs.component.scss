@@ -78,6 +78,53 @@
   outline-offset: var(--gog-breadcrumbs-focus-ring-offset);
 }
 
+/* An item of `items`: the link and the current page take utilities.css's rules for any item's
+   element; what is drawn here is the icon beside the label and a parent with no `href`, which is
+   a button that has to look like the links beside it. */
+.gog-breadcrumbs__link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gog-breadcrumbs-icon-gap);
+}
+
+button.gog-breadcrumbs__link {
+  position: relative;
+  padding: 0;
+  border: 0;
+  border-radius: var(--gog-breadcrumbs-more-radius);
+  background: transparent;
+  color: var(--gog-breadcrumbs-link-color);
+  font: inherit;
+  cursor: pointer;
+}
+
+/* WCAG 2.5.8, as for the links: 24x24 of target without growing the paint. */
+button.gog-breadcrumbs__link::before {
+  content: '';
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  translate: -50% -50%;
+  min-inline-size: 24px;
+  min-block-size: 24px;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+button.gog-breadcrumbs__link:hover {
+  color: var(--gog-breadcrumbs-link-hover-color);
+  text-decoration: underline;
+}
+
+button.gog-breadcrumbs__link:focus-visible {
+  outline: var(--gog-breadcrumbs-focus-ring-width) solid var(--gog-breadcrumbs-focus-ring-color);
+  outline-offset: var(--gog-breadcrumbs-focus-ring-offset);
+}
+
+.gog-breadcrumbs__icon {
+  flex-shrink: 0;
+}
+
 /* === Sizes ===
    `md` needs no block: it is what the chain above falls back to. */
 

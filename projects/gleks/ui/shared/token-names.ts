@@ -250,6 +250,7 @@ export type GogTokenName =
   | '--gog-breadcrumbs-focus-ring-width'
   | '--gog-breadcrumbs-font-family'
   | '--gog-breadcrumbs-gap'
+  | '--gog-breadcrumbs-icon-gap'
   | '--gog-breadcrumbs-lg-font-size'
   | '--gog-breadcrumbs-line-height'
   | '--gog-breadcrumbs-link-color'
@@ -2330,6 +2331,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-breadcrumbs-focus-ring-width',
       '--gog-breadcrumbs-font-family',
       '--gog-breadcrumbs-gap',
+      '--gog-breadcrumbs-icon-gap',
       '--gog-breadcrumbs-lg-font-size',
       '--gog-breadcrumbs-line-height',
       '--gog-breadcrumbs-link-color',

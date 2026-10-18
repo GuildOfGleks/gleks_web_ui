@@ -2,7 +2,12 @@ import { Component, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
 import { GOG_CONFIG } from '@guildofgleks/ui/shared';
-import { BreadcrumbsComponent, GogBreadcrumbDirective } from './breadcrumbs.component';
+import {
+  BreadcrumbsComponent,
+  GogBreadcrumbDirective,
+  GogBreadcrumbItemDirective,
+  type GogBreadcrumbClick,
+} from './breadcrumbs.component';
 
 @Component({
   imports: [BreadcrumbsComponent, GogBreadcrumbDirective],
@@ -128,5 +133,129 @@ describe('BreadcrumbsComponent', () => {
     await update();
     expect(root.querySelector('nav')!.getAttribute('aria-label')).toBe('Brotkrumen');
     expect(more()!.getAttribute('aria-label')).toBe('Ganzen Pfad zeigen');
+  });
+});
+
+interface Crumb {
+  id: number;
+  name: string;
+  url?: string;
+  count?: number;
+}
+
+@Component({
+  imports: [BreadcrumbsComponent],
+  template: `
+    <gog-breadcrumbs
+      [items]="trail()"
+      itemLabel="name"
+      itemHref="url"
+      [maxItems]="max()"
+      (gogItemClick)="clicked.push($event)"
+    />
+  `,
+})
+class DataHost {
+  readonly max = signal<number | null>(null);
+  readonly trail = signal<Crumb[]>([
+    { id: 1, name: 'Home', url: '/' },
+    { id: 2, name: 'Sales' },
+    { id: 3, name: 'Orders', url: '/orders' },
+    { id: 4, name: '#1042', url: '/orders/1042' },
+  ]);
+  readonly clicked: GogBreadcrumbClick<Crumb>[] = [];
+}
+
+describe('BreadcrumbsComponent with items', () => {
+  async function renderData() {
+    await TestBed.configureTestingModule({ imports: [DataHost] }).compileComponents();
+    const fixture = TestBed.createComponent(DataHost);
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const root = fixture.nativeElement as HTMLElement;
+    const links = () => Array.from(root.querySelectorAll<HTMLElement>('.gog-breadcrumbs__link'));
+    return { fixture, root, links };
+  }
+
+  it('draws the array in order: links for parents, the last one the current page as text', async () => {
+    const { links } = await renderData();
+    expect(links().map((link) => link.textContent?.trim())).toEqual([
+      'Home',
+      'Sales',
+      'Orders',
+      '#1042',
+    ]);
+    expect(links().map((link) => link.tagName)).toEqual(['A', 'BUTTON', 'A', 'SPAN']);
+    expect(links()[0].getAttribute('href')).toBe('/');
+    expect(links()[3].getAttribute('aria-current')).toBe('page');
+    expect(links()[3].hasAttribute('href')).toBe(false);
+  });
+
+  it('reports a pressed parent, and lets the app take over the navigation', async () => {
+    const { fixture, links } = await renderData();
+    links()[2].addEventListener('click', (event) => event.preventDefault());
+    links()[2].click();
+    links()[1].click();
+    const clicked = fixture.componentInstance.clicked;
+    expect(clicked.map((c) => [c.item.name, c.index])).toEqual([
+      ['Orders', 2],
+      ['Sales', 1],
+    ]);
+    expect(clicked[0].event).toBeInstanceOf(MouseEvent);
+  });
+
+  it('collapses the middle of an array as it does elements', async () => {
+    const { fixture, root, links } = await renderData();
+    fixture.componentInstance.max.set(3);
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(links().map((link) => link.textContent?.trim())).toEqual(['Home', 'Orders', '#1042']);
+    root.querySelector<HTMLButtonElement>('.gog-breadcrumbs__more')!.click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(links().length).toBe(4);
+  });
+
+  it('follows the array as it changes', async () => {
+    const { fixture, links } = await renderData();
+    fixture.componentInstance.trail.update((trail) => trail.slice(0, 2));
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(links().map((link) => [link.tagName, link.textContent?.trim()])).toEqual([
+      ['A', 'Home'],
+      ['SPAN', 'Sales'],
+    ]);
+  });
+
+  it("draws an item through a gogBreadcrumbItem template, inside the trail's own link", async () => {
+    @Component({
+      imports: [BreadcrumbsComponent, GogBreadcrumbItemDirective],
+      template: `
+        <gog-breadcrumbs [items]="trail" itemLabel="name" itemHref="url">
+          <ng-template
+            gogBreadcrumbItem
+            let-crumb
+            let-current="current"
+            [gogBreadcrumbItemTypeOf]="trail"
+          >
+            <em class="custom">{{ crumb.name }}{{ current ? ' (here)' : '' }}</em>
+          </ng-template>
+        </gog-breadcrumbs>
+      `,
+    })
+    class CustomHost {
+      readonly trail: Crumb[] = [
+        { id: 1, name: 'Home', url: '/' },
+        { id: 2, name: 'Orders' },
+      ];
+    }
+    await TestBed.configureTestingModule({ imports: [CustomHost] }).compileComponents();
+    const fixture = TestBed.createComponent(CustomHost);
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const custom = Array.from(
+      (fixture.nativeElement as HTMLElement).querySelectorAll('.gog-breadcrumbs__link .custom'),
+    ).map((element) => element.textContent);
+    expect(custom).toEqual(['Home', 'Orders (here)']);
   });
 });

@@ -40,6 +40,12 @@ _Versioning_ section. Before 21.16.0 a minor could carry a breaking change, and 
   and usually lives on one route: the root does not export it, so a lazy route keeps it out of an
   app's initial bundle.
 
+- **`gog-breadcrumbs` from an array** — `[items]`, read through `itemLabel`, `itemHref` and
+  `itemIcon` (`'label'`, `'href'`, `'icon'` by default): each parent a link from its `href` (a button
+  emitting `gogItemClick` without one), the last item the current page. `gogItemClick` carries the
+  item and the click, so an app with a router can `preventDefault()` and navigate itself. An
+  `ng-template gogBreadcrumbItem` draws an item's insides. `*gogBreadcrumb` elements work as before,
+  for anything the element itself must carry; `items` wins when it has entries.
 - **`gog-popover`** and **`[gogPopoverTrigger]`** — a panel of anything anchored to the element
   that opened it: a non-modal dialog that takes focus, follows its trigger on scroll and closes on
   Escape, a press outside or focus leaving it. Rendered into `<body>`, so nothing clips it; its width

@@ -22,6 +22,48 @@
   </app-doc-section>
 
   <app-doc-section
+    id="items"
+    title="From an array"
+    lead="The short way: an array of your objects, first item to current page. Each parent is a link from its href; the last item is the current page, as text. *gogBreadcrumb stays for when the element itself needs something only you can put on it, such as routerLink."
+  >
+    <h3>[items]</h3>
+    <p class="breadcrumbs-page__note">
+      Read through <code>itemLabel</code>, <code>itemHref</code> and
+      <code>itemIcon</code> (<code>'label'</code>, <code>'href'</code>, <code>'icon'</code> by
+      default), so your own objects work as they are. A parent with no <code>href</code> — "Europe"
+      here — is a button that only emits <code>gogItemClick</code>. With a router,
+      <code>preventDefault()</code> that event and navigate yourself; this page does, and prints
+      what was pressed. <code>maxItems</code> collapses an array exactly as it collapses elements.
+    </p>
+    <div class="breadcrumbs-page__stack">
+      <gog-breadcrumbs [items]="trail" (gogItemClick)="onCrumb($event)" />
+      <gog-breadcrumbs [items]="trail" [maxItems]="3" (gogItemClick)="onCrumb($event)" />
+      <code>gogItemClick: {{ lastClick() }}</code>
+    </div>
+
+    <h3>gogBreadcrumbItem — your markup inside the trail's links</h3>
+    <p class="breadcrumbs-page__note">
+      The template fills each item's link (or the current page's text); the link, its
+      <code>href</code> and <code>aria-current</code> stay the trail's.
+    </p>
+    <div class="breadcrumbs-page__stack">
+      <gog-breadcrumbs [items]="trail" (gogItemClick)="onCrumb($event)">
+        <ng-template
+          gogBreadcrumbItem
+          let-crumb
+          let-current="current"
+          [gogBreadcrumbItemTypeOf]="trail"
+        >
+          {{ crumb.label }}
+          @if (crumb.count) {
+            <span class="breadcrumbs-page__count">{{ crumb.count }}</span>
+          }
+        </ng-template>
+      </gog-breadcrumbs>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
     id="collapsing"
     title="Collapsing"
     lead="Past maxItems the middle becomes a … button; pressing it expands the trail in place and focuses the first item it revealed."
