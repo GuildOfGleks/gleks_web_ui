@@ -1107,23 +1107,27 @@ the dropdowns first, and do not start it as a table feature. That order is what 
 own decisions out of the dropdowns' code. What it got wrong is that the table could not reuse the
 primitive at all: its rows genuinely vary in height, so it needed a second one.
 
-5. **A time zone setting for datepicker and calendar in `GOG_CONFIG`.** Today
-   `GOG_CONFIG.datepicker` carries `locale` and `firstDayOfWeek`. Note the library is deliberately
-   native-`Date`-only with no adapter, and `Date` has no time zone — so this is a design decision
-   about what a zone even means here (formatting only? parsing too? `Intl.DateTimeFormat`'s
-   `timeZone` option?), not a config key to add. Write the decision down before the code.
+5. ~~**A time zone setting for datepicker and calendar in `GOG_CONFIG`.**~~ **Built 2026-10-18 for
+   21.20.0** (`docs/time-zone.md`). The decision this entry asked for came first: full semantics —
+   the zone governs what is shown, what is typed, "today", `min` and `max`, and every `Date` out
+   is the instant the chosen clock time means in the zone. Built as a conversion at the
+   components' boundary (`gogToZonedTime`/`gogFromZonedTime`, now public), so the date arithmetic
+   never learned a zone exists.
 6. ~~**More icons.**~~ **Shipped 2026-10-04 in 21.19.0**: 95 more, 136 built-in, chosen by the
    owner over an opt-in, tree-shaken export per glyph. The registry ships whole, and measuring it
    is what made built-in the right call: 41 glyphs gzipped to 1.8 KB and 136 to 6.3 KB — about 45
    bytes a glyph, because the markup repeats — against 142 KB for the library. Adding them taught
    `check:geometry`'s path parser the compact arc flag (`a1.5 1.5 0 00-2.474`), which it had read as
    one number.
-7. **More `gog-progressbar` variants (animations).** Smallest of the features; a good warm-up.
-8. **If the library ever gets a full-page event calendar, it is `gog-scheduler`.** Decided by
-   the owner on 2026-10-03, when the overlap with FullCalendar's name came up. The industry calls
-   that component a scheduler (Syncfusion, DevExtreme, Kendo); `gog-calendar` is already the date
-   grid and keeps that meaning. Not planned — this records the name so a future plan does not
-   reach for "big calendar" or "full calendar".
+7. ~~**More `gog-progressbar` variants (animations).**~~ **Built 2026-10-18 for 21.20.0**
+   (`docs/progressbar-animation.md`): `animation="stripes" | "shimmer"`, the two the owner chose of
+   four offered. The shimmer's first colour was the stripe colour, which on a dark theme is a
+   shadow — found in the showcase, not by a check.
+8. ~~**If the library ever gets a full-page event calendar, it is `gog-scheduler`.**~~ **Built
+   2026-10-18 for 21.20.0** (`docs/scheduler.md`), under that name: month, week and day views, no
+   drag-and-drop, in its own entry point `@guildofgleks/ui/scheduler`. What it left for later — a
+   bar spanning several days instead of a piece per day, drag/resize, recurrence, resources, a
+   `loading` state — is in that file's _What it does not do_, not here, until someone asks.
 
 ---
 
