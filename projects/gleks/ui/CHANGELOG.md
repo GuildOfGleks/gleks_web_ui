@@ -78,6 +78,18 @@ _Versioning_ section. Before 21.16.0 a minor could carry a breaking change, and 
   fields read `date` on `zone`'s clock, which is how a `disabledDates` predicate reads a weekday in
   the configured zone.
 
+### Fixed
+
+- **The package loads in Node again.** `gog-card`'s `contentChild(GogCardLinkDirective)` named a
+  directive declared below the component in the same file, and the partial-compiled bundle
+  evaluates query predicates in a static field when the class is declared — so importing _anything_
+  from `@guildofgleks/ui` outside the Angular linker (a consumer's Vitest or Jest run, a Node
+  script) threw `ReferenceError: Cannot access 'GogCardLinkDirective' before initialization`, and
+  `/table`, `/datepicker`, `/dialog` and `/scheduler` with it, since they import the root. Present
+  since 21.6.1. An Angular CLI app was never affected: its linker turns the predicates into a
+  function that runs lazily, and a card's `gogCardLink` worked there. The directive is now declared
+  first, and `npm run check:bundle-import`, a CI step, imports every built bundle in Node.
+
 ## [21.19.0] - 05.10.2026
 
 ### Changed

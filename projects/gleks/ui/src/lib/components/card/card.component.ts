@@ -59,6 +59,57 @@ export class GogCardMediaDirective {}
 })
 export class GogCardFooterDirective {}
 
+/*
+ * Declared above `CardComponent` on purpose. The partial-compiled bundle puts the component's
+ * `contentChild` predicates into a static `ɵcmp` field, evaluated when the class is declared, so
+ * a directive declared below it is read in its temporal dead zone: loading the package in Node
+ * (Vitest, Jest, a script) throws `ReferenceError` before anything renders. `forwardRef` does not
+ * help a query predicate. `npm run check:bundle-import` fails the build on the next one.
+ */
+/**
+ * Makes the whole card activate this link — put it on the `<a>` (or `<button>`) the card is
+ * *about*, usually the one inside its heading:
+ *
+ * ```html
+ * <gog-card>
+ *   <h3 gogCardHeader><a gogCardLink routerLink="/people/ada">Ada Lovelace</a></h3>
+ *   <p>Mathematician, 1815–1852.</p>
+ * </gog-card>
+ * ```
+ *
+ * ## Why this, and not an `interactive` input
+ *
+ * The obvious API — `<gog-card interactive (gogClick)>` — has the component render a `<button>`
+ * or an `<a>` of its own, and that goes wrong in three ways this does not:
+ *
+ * - **Nothing else in the card could be interactive.** A `<button>` may not contain a button or
+ *   a link, so a card with actions in its footer would be invalid markup with a broken tab order.
+ * - **It could not navigate the way an app navigates.** `routerLink` lives on the consumer's
+ *   element; a card rendering its own `<a>` would have to broker the router's whole input
+ *   surface, which is exactly why `[gogButton]` is a directive rather than a link mode on
+ *   `gog-button`.
+ * - **The accessible name would be the card's entire text**, because that is what a button
+ *   wrapping everything announces.
+ *
+ * Here the link stays a real link — its href, its keyboard behaviour, its middle-click, its
+ * "open in new tab" — and only its *hit area* is stretched over the card, with the card's focus
+ * ring drawn around the surface when it is focused. Anything else focusable inside an
+ * interactive card sits above that hit area automatically (see `surfaces.css`).
+ *
+ * The two costs of the pattern, both inherent to it: text inside the card cannot be selected by
+ * dragging across it, and a second link in the card is reached by keyboard but not by clicking
+ * the surface around it.
+ */
+@Directive({
+  // Restricted to the two elements that are already a control, for the same reason
+  // `[gogButton]` is: on a `<div>` this would look clickable and be invisible to the keyboard.
+  selector: 'a[gogCardLink], button[gogCardLink]',
+  host: { class: 'gog-card__link' },
+})
+export class GogCardLinkDirective {
+  readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
+}
+
 /**
  * A surface for one self-contained thing: a product tile, a summary, a search result.
  *
@@ -153,48 +204,4 @@ export class CardComponent {
       }
     });
   }
-}
-
-/**
- * Makes the whole card activate this link — put it on the `<a>` (or `<button>`) the card is
- * *about*, usually the one inside its heading:
- *
- * ```html
- * <gog-card>
- *   <h3 gogCardHeader><a gogCardLink routerLink="/people/ada">Ada Lovelace</a></h3>
- *   <p>Mathematician, 1815–1852.</p>
- * </gog-card>
- * ```
- *
- * ## Why this, and not an `interactive` input
- *
- * The obvious API — `<gog-card interactive (gogClick)>` — has the component render a `<button>`
- * or an `<a>` of its own, and that goes wrong in three ways this does not:
- *
- * - **Nothing else in the card could be interactive.** A `<button>` may not contain a button or
- *   a link, so a card with actions in its footer would be invalid markup with a broken tab order.
- * - **It could not navigate the way an app navigates.** `routerLink` lives on the consumer's
- *   element; a card rendering its own `<a>` would have to broker the router's whole input
- *   surface, which is exactly why `[gogButton]` is a directive rather than a link mode on
- *   `gog-button`.
- * - **The accessible name would be the card's entire text**, because that is what a button
- *   wrapping everything announces.
- *
- * Here the link stays a real link — its href, its keyboard behaviour, its middle-click, its
- * "open in new tab" — and only its *hit area* is stretched over the card, with the card's focus
- * ring drawn around the surface when it is focused. Anything else focusable inside an
- * interactive card sits above that hit area automatically (see `surfaces.css`).
- *
- * The two costs of the pattern, both inherent to it: text inside the card cannot be selected by
- * dragging across it, and a second link in the card is reached by keyboard but not by clicking
- * the surface around it.
- */
-@Directive({
-  // Restricted to the two elements that are already a control, for the same reason
-  // `[gogButton]` is: on a `<div>` this would look clickable and be invisible to the keyboard.
-  selector: 'a[gogCardLink], button[gogCardLink]',
-  host: { class: 'gog-card__link' },
-})
-export class GogCardLinkDirective {
-  readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
 }

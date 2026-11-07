@@ -159,6 +159,12 @@ jobs:
       - name: Build @gleks/ui
         run: npm run build:lib
 
+      # Every built bundle must load in plain Node. An Angular CLI app links the package and never
+      # notices a query predicate read before its class is declared; a consumer's Vitest run does,
+      # and crashes on the first root import. gog-card shipped that way from 21.6.1 to 21.19.0.
+      - name: Bundles load in Node
+        run: npm run check:bundle-import
+
       - name: Test @gleks/ui
         run: npm run test:lib
 
