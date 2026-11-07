@@ -38,12 +38,19 @@ defaults.
 - Tree-shakeable: `"sideEffects": false` and every component is a separate standalone import, so
   importing `ButtonComponent` alone does not pull in the rest of the library — measured on the real
   CLI, a button costs about 10 kB gzip over an empty app and all 31 components about 75 kB.
-  **It does not yet code-split**: a component used only behind a lazy route still ships in the
-  initial bundle, because the root is one module. `docs/entry-points.md` in the repository is the
-  plan that fixes it.
-- **Import from `@guildofgleks/ui`.** `@guildofgleks/ui/shared` also resolves — it is the
-  package's internal entry point, which the root and its other entry points share so that
-  `GOG_CONFIG` exists once. It is not an API to build an app on.
+  **It code-splits by route** (since 21.20.0): a component used only behind a lazy route ships in
+  that route's chunk, whether it was imported from the root or from its own entry point.
+- **Every component has its own entry point** — `@guildofgleks/ui/<name>`, named after the
+  component's folder: `/button`, `/select`, `/toast`, `/avatar` (with `gog-avatar-group`), `/tabs`
+  (with `gog-tab`), and so on. App-wide pieces have theirs: `/config` (`provideGogConfig`,
+  `GOG_CONFIG`, `GogSize` and the other shared types), `/icon` (also `provideGogIcons` and the icon
+  registry), `/toast` (also `ToastService`), `/theme` (`ThemeService`), `/date` (the date helpers),
+  `/dropdown` (the dropdown base classes), `/tokens` (`GOG_TOKEN_GROUPS`), `/ripple`. **The root
+  re-exports all of them**, so `import { ButtonComponent } from '@guildofgleks/ui'` and
+  `from '@guildofgleks/ui/button'` are the same class; either is fine, and neither is deprecated.
+- `@guildofgleks/ui/shared` and `/shared/date`, `/shared/dropdown`, `/shared/virtual` also
+  resolve — they are the package's internal entry points, shared so that `GOG_CONFIG` exists once.
+  They are not an API to build an app on.
 - SSR-safe: anything touching `window`/`document` is guarded with `isPlatformBrowser`/
   `afterNextRender`.
 
@@ -600,6 +607,7 @@ export class EditDialogComponent {
 ## Component reference
 
 Every component below is exported from `@guildofgleks/ui`'s root — `import { X } from '@guildofgleks/ui'` —
+and from its own entry point, `@guildofgleks/ui/<folder>` (the subpath list is under _Quick facts_),
 **except `gog-table`, `gog-datepicker`/`gog-calendar`, `gog-dialog` with `DialogService`, and
 `gog-scheduler`**, which have their own entry points: `@guildofgleks/ui/table`, `/datepicker`,
 `/dialog` and (since 21.20.0) `/scheduler`. They are the components heavy enough to be worth

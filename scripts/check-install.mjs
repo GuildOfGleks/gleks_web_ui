@@ -21,8 +21,11 @@
  *      installed with `npm install`, and the package's own `ng-add` schematic run on it — which
  *      must put the baseline stylesheet into `angular.json`.
  *   4. One page per public entry point, from `SMOKE` below, the root one eager and every other one
- *      behind `loadComponent`; `provideGogConfig` sets marker labels once, in the root. An entry
- *      point with no `SMOKE` page fails the check — a new one has to say how it is exercised.
+ *      behind `loadComponent`; `provideGogConfig` sets marker labels once, in the root. The
+ *      per-component subpaths (`/button`, `/select`, … — docs/component-entry-points.md) get no page
+ *      each: one generated page, `/subpaths`, imports a value from every one of them and the same
+ *      name from the root, and must render that all of them are the same object. A subpath with
+ *      no value export to test that way fails the check.
  *   5. `ng build` with prerendering. An error fails; so does a warning that names the package. Each
  *      secondary entry point's lazy chunk must be at least its `minLazyBytes` — the 21.13.0 shape
  *      of this bug was a 442-byte chunk that left the whole component in the initial bundle.
@@ -218,6 +221,22 @@ function entryPoints(entries) {
   return found;
 }
 
+/**
+ * Every name an entry point exports, following its `export * from '<package path>'` lines into the
+ * other entry points: since the root became nothing but those lines, its own `.d.ts` names nothing
+ * (docs/component-entry-points.md), and reading it alone reported every root export as removed.
+ */
+function resolvedNames(specifier, apis, seen = new Set()) {
+  if (seen.has(specifier)) return new Set();
+  seen.add(specifier);
+  const dts = apis.get(specifier) ?? '';
+  const names = exportedNames(dts);
+  for (const match of dts.matchAll(/^export\s+\*\s+from\s+'([^']+)'/gm)) {
+    for (const name of resolvedNames(match[1], apis, seen)) names.add(name);
+  }
+  return names;
+}
+
 /** Every name a bundled `.d.ts` exports, values and types alike. */
 function exportedNames(dts) {
   const names = new Set();
@@ -233,6 +252,47 @@ function exportedNames(dts) {
     }
   }
   return names;
+}
+
+/** The generated page's key: not an entry point, a page covering the per-component subpaths. */
+const SUBPATHS = `${PACKAGE}/subpaths`;
+
+/**
+ * One page for every public entry point without a hand-written `SMOKE` page — the per-component
+ * subpaths. From each it imports one value (a component, directive, service, function or
+ * constant: a `.d.ts` export list does not say which names are values, so the pick is by spelling,
+ * and a wrong pick fails the app's own build), imports the same name from the root, and renders
+ * how many of the pairs are the same object. Equal means the subpath resolves through the
+ * `exports` map and the root's `export *` reaches that one declaration rather than a second copy.
+ */
+function subpathsPage(specifiers, apis) {
+  if (specifiers.length === 0) return null;
+  const isValue = (name) =>
+    /(Component|Directive|Service)$/.test(name) || /^[a-z]/.test(name) || /^[A-Z_]+$/.test(name);
+  const imports = {};
+  const rootNames = [];
+  const pairs = [];
+  specifiers.forEach((specifier, i) => {
+    const name = [...exportedNames(apis.get(specifier) ?? '')].sort().find(isValue);
+    // No value to compare: left out here, so the [no-smoke-page] check names it.
+    if (!name) return;
+    imports[specifier] = [`${name} as s${i}`];
+    rootNames.push(`${name} as r${i}`);
+    pairs.push(`[s${i}, r${i}]`);
+  });
+  imports[PACKAGE] = rootNames;
+  const marker = `subpaths identical: ${pairs.length}/${pairs.length}`;
+  return {
+    imports,
+    components: [],
+    fields: `protected readonly same = ([${pairs.join(', ')}] as unknown[][]).filter(([a, b]) => a === b).length;`,
+    template: `<p>subpaths identical: {{ same }}/${pairs.length}</p>`,
+    expectHtml: [marker],
+    expectProblem: (html) =>
+      `[subpaths] the generated page did not render "${marker}" — ` +
+      `${html.match(/subpaths identical: \d+\/\d+/)?.[0] ?? 'no count at all'}: a subpath and the root ` +
+      `export different objects for one name, or a subpath did not resolve`,
+  };
 }
 
 function topChangelogEntry() {
@@ -272,9 +332,12 @@ function compareWithBaseline(scratch, newEntries) {
   const changelog = topChangelogEntry();
   const oldApi = entryPoints(oldEntries);
   const newApi = entryPoints(newEntries);
-  for (const [specifier, dts] of oldApi) {
-    const before = exportedNames(dts);
-    const after = exportedNames(newApi.get(specifier) ?? '');
+  for (const specifier of oldApi.keys()) {
+    // An internal entry point is not API: what moves between `shared` and its nested units breaks
+    // nobody who keeps to the public paths.
+    if (INTERNAL.has(specifier)) continue;
+    const before = resolvedNames(specifier, oldApi);
+    const after = resolvedNames(specifier, newApi);
     const removed = [...before].filter((name) => !after.has(name));
     const added = [...after].filter((name) => !before.has(name));
     if (removed.length || added.length) {
@@ -480,8 +543,18 @@ async function main() {
 
     compareWithBaseline(scratch, newEntries);
 
-    const specifiers = [...entryPoints(newEntries).keys()].filter((s) => !INTERNAL.has(s));
-    const missing = specifiers.filter((s) => !SMOKE[s]);
+    const newApis = entryPoints(newEntries);
+    let specifiers = [...newApis.keys()].filter((s) => !INTERNAL.has(s));
+    const subpaths = subpathsPage(
+      specifiers.filter((s) => !SMOKE[s]),
+      newApis,
+    );
+    if (subpaths) {
+      SMOKE[SUBPATHS] = subpaths;
+      specifiers = [...specifiers, SUBPATHS];
+    }
+    const generated = new Set(subpaths ? Object.keys(subpaths.imports) : []);
+    const missing = specifiers.filter((s) => !SMOKE[s] && !generated.has(s));
     if (missing.length > 0) {
       problems.push(
         `[no-smoke-page] ${missing.join(', ')} ${missing.length === 1 ? 'is a public entry point' : 'are public entry points'} ` +
@@ -581,7 +654,8 @@ async function main() {
       for (const expected of page.smoke.expectHtml) {
         if (!html.includes(expected)) {
           problems.push(
-            `[config] ${page.specifier}'s prerendered page lacks "${expected}" — the root's GOG_CONFIG did not reach it`,
+            page.smoke.expectProblem?.(html) ??
+              `[config] ${page.specifier}'s prerendered page lacks "${expected}" — the root's GOG_CONFIG did not reach it`,
           );
         }
       }

@@ -40,55 +40,68 @@ ng generate component components/<name> --project @gleks/ui
 ## Project layout
 
 ```
-projects/gleks/ui/src/
-  public-api.ts                      # the root entry point's public API
-  lib/
-    components/<name>/               # one folder per component
-      <name>.component.ts
-      <name>.component.html
-      <name>.component.scss
-      <name>.component.spec.ts
-    shared-integration/              # specs that exercise shared code through components
-shared/                              # the @guildofgleks/ui/shared entry point, beside src/
-  ng-package.json
-  public-api.ts
-  types.ts, config.ts, …
-table/  datepicker/  dialog/  scheduler/   # split entry points: @guildofgleks/ui/table, /datepicker, /dialog, /scheduler
-  ng-package.json
-  public-api.ts
-  table.component.ts, …              # their own code, not re-exports
+projects/gleks/ui/
+  src/
+    public-api.ts                    # the root: nothing but `export * from '@guildofgleks/ui/<name>'`
+    lib/styles/                      # Sass partials shared by stylesheets (no TypeScript)
+    lib/shared-integration/          # specs that exercise shared code through components
+  <name>/                            # one entry point per component: @guildofgleks/ui/<name>
+    ng-package.json
+    public-api.ts                    # `export *` of the component's files, plus its own types
+    <name>.component.ts / .html / .scss / .spec.ts
+  config/  date/  dropdown/  tokens/ # public subpaths that are named lists over shared
+  shared/                            # @guildofgleks/ui/shared — internal, holds every InjectionToken
+    date/  dropdown/  virtual/       # internal nested entry points split off the floor
+  table/  datepicker/  dialog/  scheduler/   # on their own entry point only; the root does not export them
 ```
 
-- One component per folder under `lib/components/<name>/` — except the three **split entry
-  points**, whose directories sit beside `src/` (`docs/entry-points.md`). They exist so a lazy route
-  can keep a heavy component out of an app's initial bundle, and that only works if **the root never
-  imports or re-exports them**. They import the rest of the library as `@guildofgleks/ui`, never by
-  relative path. `check:layering` rules D and E fail the build on either mistake.
+- **One entry point per component** (`docs/component-entry-points.md`): its directory sits beside
+  `src/`, holds its own files, and is re-exported by the root with one `export *` line. A folder
+  that holds two public components (`avatar` + `avatar-group`, `tabs` + `tab`) stays one entry
+  point. Entry points are discovered (`scripts/library-sources.mjs`: a directory with an
+  `ng-package.json`), so a new one needs no script edit — but it needs the `export *` line in
+  `src/public-api.ts`, or `check:layering` rule G fails.
+- **The root holds no code** (rule H): `src/public-api.ts` is only `export *` from subpaths and
+  `src/lib` has no TypeScript. That is what lets an app that imports from the root split by
+  route; a declaration in the root reinstates the problem the split exists to fix.
+- **Every import inside the library is a subpath**: a component that uses another imports
+  `@guildofgleks/ui/<other>`, never `@guildofgleks/ui` (a cycle, and the whole root for anyone
+  importing the subpath) and never a relative path out of its own directory. The four heavy units
+  are never imported by `shared` or the root (rule D).
 - **A script that scans the library's source takes its directories from
-  `scripts/library-sources.mjs`**, never a spelled-out `src/lib`. The layout moved twice, and both
-  times checks kept passing while scanning a directory that no longer held the code.
-- Shared, reusable primitives (types, injection tokens, helpers) live in **`shared/`, beside
-  `src/`** — the `@guildofgleks/ui/shared` entry point since `docs/entry-points.md` phase 1a.
-- **Import shared code as `@guildofgleks/ui/shared`, never by relative path.** An entry point is
-  compiled into its own bundle, and a file reached by relative path from outside it is compiled
-  into that bundle too: two copies of `GOG_CONFIG` are two different `InjectionToken`s, and
-  `provideGogConfig` silently reaches only one. `npm run check:layering` fails the build on it.
+  `scripts/library-sources.mjs`**, never a spelled-out path. The layout has moved three times, and
+  each time a check kept passing while scanning a directory that no longer held the code.
+- Shared, reusable primitives (types, injection tokens, helpers) live in **`shared/`** — the
+  internal `@guildofgleks/ui/shared`. **Import it by package path, never by relative path**: a
+  file reached by relative path from another entry point is compiled into that bundle too, and two
+  copies of `GOG_CONFIG` are two different `InjectionToken`s that `provideGogConfig` reaches only
+  one of. Code a lazy page needs but an app shell does not (date helpers, the dropdown base, the
+  virtual windows) goes into a nested unit — `shared/date`, `shared/dropdown`, `shared/virtual` —
+  because the shell imports `shared` eagerly and the CLI places whatever any page uses of an eager
+  module in the initial chunk. `shared` never imports its nested units (rule F).
 - Code in `shared/` never imports the root package or anything outside its own directory.
 - Templates and styles are **always external** (`templateUrl` / `styleUrl`), never inline —
   this keeps components consistent and diffable.
 
 ## Public API — the golden rule
 
-- **Nothing is usable until it is re-exported from `src/public-api.ts`.** Every new
-  component, directive, pipe, service, injection token, and public type MUST be added there.
-- Only export what consumers should use. Keep internal helpers unexported.
+- **Nothing is usable until a public entry point exports it.** A component's directives, types and
+  services go in its own `public-api.ts`; the root picks them up through its `export *`. A value
+  the root must carry that belongs to no component goes on one of the named-list subpaths
+  (`/config`, `/date`, `/dropdown`, `/tokens`), never straight into `src/public-api.ts`:
+  `check:subpaths` fails on a root export no public subpath carries.
+- Only export what consumers should use. Keep internal helpers unexported — a helper two entry
+  points share goes into `shared/`, not into a component's `public-api.ts`, where the root's
+  `export *` would publish it.
 - Treat exported symbols as a stable contract: renaming or removing one is a breaking change.
 
 ```ts
-// public-api.ts
-export * from './lib/components/button/button.component';
-export * from './lib/components/spinner/spinner.component';
-export type { GogSize, GogVariant } from '@guildofgleks/ui/shared';
+// projects/gleks/ui/tag/public-api.ts
+export * from './tag.component';
+export type { GogTagShape, GogTagVariant } from '@guildofgleks/ui/shared';
+
+// projects/gleks/ui/src/public-api.ts
+export * from '@guildofgleks/ui/tag';
 ```
 
 ## Naming conventions
@@ -291,7 +304,8 @@ honest the same way: make it fail on purpose once.
 ## Definition of done for a new/changed component
 
 1. Follows the layout, naming, `gog` prefix, and OnPush/standalone rules above.
-2. Public symbols are exported from `src/public-api.ts`.
+2. Public symbols are exported from the component's own `public-api.ts`, and `src/public-api.ts`
+   re-exports that entry point (`check:layering` rules G and H, `check:subpaths`).
 3. SCSS uses `--gog-*` custom properties and BEM classes; no global leakage.
 4. **Every length it declares is derived, not chosen** — the grid, concentric radii, the optical
    ratio, the typographic ratio and the 24x24 target, all five of

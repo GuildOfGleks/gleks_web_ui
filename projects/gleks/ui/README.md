@@ -66,10 +66,12 @@ reset is untouched either way, and a single class of specificity means your own 
 **2. Import components where you use them** — each is standalone:
 
 ```ts
-import { ButtonComponent, SelectComponent } from '@guildofgleks/ui';
-// Four components are imported from their own entry point, so a lazy route can keep them out
-// of your initial bundle: '@guildofgleks/ui/table', '/datepicker', '/dialog' and '/scheduler'.
-// The root does not export them.
+import { ButtonComponent } from '@guildofgleks/ui';
+import { SelectComponent } from '@guildofgleks/ui/select';
+// Both paths work: every component also has its own entry point ('@guildofgleks/ui/select'), and
+// the root only re-exports them, so a component used behind a lazy route ships with that route
+// either way (since 21.20.0). Four are on their own entry point only, not the root:
+// '@guildofgleks/ui/table', '/datepicker', '/dialog' and '/scheduler'.
 
 @Component({
   imports: [ButtonComponent, SelectComponent],

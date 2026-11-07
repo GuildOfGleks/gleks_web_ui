@@ -78,6 +78,21 @@ _Versioning_ section. Before 21.16.0 a minor could carry a breaking change, and 
   fields read `date` on `zone`'s clock, which is how a `disabledDates` predicate reads a weekday in
   the configured zone.
 
+- **Every component has its own entry point, and an app code-splits by route without changing an
+  import.** `@guildofgleks/ui/button`, `/select`, `/toast` and so on — 44 subpaths beside the four
+  that already existed — plus `/config` (`provideGogConfig`, `GOG_CONFIG`, the shared types),
+  `/date` (the date helpers), `/dropdown` (the base classes for a dropdown of your own), `/tokens`
+  (`GOG_TOKEN_GROUPS`), `/theme` (`ThemeService`) and `/ripple`. `ToastService` is on `/toast` and
+  the icon registry on `/icon`. **The root re-exports every one of them**, so no import breaks and
+  none is deprecated, and the root itself is now nothing but those re-exports — which is what lets
+  a bundler place each component in the chunk of the route that uses it, whichever path it was
+  imported by. Before this, the root was one module: one eager import of it (a toast container,
+  `provideGogConfig`) put every component any lazy page used into the initial bundle. Measured on a
+  real Angular 21 admin app with every page lazy: **143.5 kB initial transfer against 21.19.0,
+  116.6 kB against this release, with the app unchanged** — and the same 116.6 kB with every import
+  rewritten to a subpath. Subpaths are still the clearer statement of what a file uses; they are
+  not required.
+
 ### Fixed
 
 - **The package loads in Node again.** `gog-card`'s `contentChild(GogCardLinkDirective)` named a

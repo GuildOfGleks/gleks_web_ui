@@ -40,9 +40,19 @@ delete the section too.
   `monthEventLimit`/`moreEventsAction`/`readonly` and the `GOG_CONFIG.scheduler` key, "+N more" in
   a popover, and an editable demo that applies `gogEventCreate`/`Delete`/`Change` to its own array.
   The Global Config page gets the `scheduler` key and the eight editing labels.
-- **Every place that lists the entry points** says four now: the Getting started / installation
-  imports, the FAQ, the comparison page's code-splitting section, and the lab's own imports where
-  it lists them.
+- **Every place that describes the entry points**, rewritten for the per-component subpaths
+  (`docs/component-entry-points.md`): four components are on their own entry point only (`/table`,
+  `/datepicker`, `/dialog`, `/scheduler`), and **every other component, plus `/config`, `/date`,
+  `/dropdown`, `/tokens`, `/theme` and `/ripple`, is on its own subpath and re-exported by the
+  root**. The point the pages must make: an app now splits by route whichever path it imports from
+  (the admin app: 143.5 → 116.6 kB initial transfer, no change to the app). Places: the Getting
+  started / installation imports, the FAQ (`faq-data.ts` — any answer that says the root is one
+  module or that only four components split), the comparison page's code-splitting section
+  (`compare-full.md`, from line ~243, and the "root plus the three split entry points" bundling
+  recipe near line 100 — the whole-library figure must still bundle every public entry point, now
+  48), and each component page's import line where it names the root — optionally showing the
+  subpath beside it, from `AGENTS.md`'s _Quick facts_ list. Re-measure the code-splitting
+  section's numbers against the published package rather than quoting the admin app's.
 - **Progressbar page**: `animation` (`'none' | 'stripes' | 'shimmer'`) in the inputs table, a demo
   of both (and of both under reduced motion: stripes stop, the shimmer goes), and the five new
   tokens in the token reference.

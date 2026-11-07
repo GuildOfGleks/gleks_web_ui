@@ -94,8 +94,8 @@ only if **the library's own code** never imports the root either: a subpath that
 | 2a  | A public subpath for every value and type the root takes from `shared` (`/config`, `/date`, `/dropdown`, `/tokens`, the icon registry on `/icon`, each component's own types on its subpath); `check:subpaths` | ✅ 2026-11-07 |
 | 2b  | `shared` split by concern, so an eager `/icon` or `/config` does not bring the dropdown base, the date helpers and the virtual windows (about 25 kB minified, 9 kB transfer, in the admin app)                 | ✅ 2026-11-07 |
 | 3   | Every other component, all at once (a staged move leaves a not-yet-moved dependency unreachable by subpath); the heavy units' imports                                                                          | ✅ 2026-11-07 |
-| 4   | Rules: `check:layering`, `check:install`'s `SMOKE`, `library-sources.mjs`; docs (`README.md`, `AGENTS.md`, `CHANGELOG.md`) and the lab checklist                                                               |               |
-| 5   | The admin app rebuilt against the local package with every import a subpath; the number published here                                                                                                         |               |
+| 4   | Rules: `check:layering`, `check:install`'s `SMOKE`, `library-sources.mjs`; docs (`README.md`, `AGENTS.md`, `CHANGELOG.md`) and the lab checklist                                                               | ✅ 2026-11-07 |
+| 5   | The admin app rebuilt against the local package with every import a subpath; the number published here                                                                                                         | ✅ 2026-11-07 |
 
 **Iteration 1 decides whether the rest happens.** If ng-packagr refuses a primary that re-exports
 secondaries, or the linked partial code does not split the way the probe did, the plan stops and
@@ -253,3 +253,27 @@ by upgrading, with subpaths recommended rather than required; and the rule that 
 quietly reinstate Part 2's row 2. `check:layering` rule H now fails on that: `src/public-api.ts` may hold
 only `export * from '@guildofgleks/ui/<name>'` lines and `src/lib` no source (proven by planting a
 `const`, a named re-export and a file in `src/lib`).
+
+### As 4 and 5 finished
+
+**Rules.** `check:layering` rules F (the floor never imports its nested units) and H (the root
+holds no code), each proven by planting the violation. `library-sources.mjs` discovers the nested
+units. `check:install` covers the per-component subpaths with one generated page rather than 44
+hand-written ones: it imports one value from every subpath and the same name from the root and
+must render that every pair is the same object — the failure that matters for a subpath is that it
+does not resolve through the `exports` map, or resolves to a second copy. Two of the check's own
+assumptions broke on the first run and were fixed rather than accepted: it read the root's `.d.ts`
+alone, which now names nothing, and reported all 185 root exports as removed (it follows
+`export *` now); and it compared `shared` as if it were public API. Passing run on 2026-11-07
+against the published 21.19.0: 189 files (+144), root +12 exports and none removed, the clean CLI
+app at 110.97 kB initial, every lazy chunk in place, hydration clean in Chrome. The generated page
+was not proven by planting a mismatch.
+
+**Docs.** `CHANGELOG.md` (21.20.0, Added), `README.md`'s import example, `AGENTS.md`'s _Quick
+facts_ (which still said "it does not yet code-split") and the component reference's preamble;
+`gleks-ui-library.instructions.md`'s layout and public-API rule, which still sent a new component
+to `src/lib/components/`. The lab's half is one entry in `docs/lab-after-publish.md`'s 21.20.0
+section.
+
+**Iteration 5** is the V3 row under _As 2b finished_: 116.62 kB with every import a subpath, the
+same as the unchanged app.
