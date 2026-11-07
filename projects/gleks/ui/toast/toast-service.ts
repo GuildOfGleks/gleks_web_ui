@@ -1,10 +1,9 @@
 import { Injectable, TemplateRef, inject, signal } from '@angular/core';
 
-import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
+import { GOG_CONFIG, resolveConfigured, type ToastPosition } from '@guildofgleks/ui/shared';
 import { GogIconName } from '@guildofgleks/ui/icon';
 
 export type ToastType = 'success' | 'error' | 'warning' | 'info';
-import type { ToastPosition } from '@guildofgleks/ui/shared';
 // Re-exported, not declared: the type lives in `shared/types.ts` with the rest of the public
 // types. Kept exported from here so `@guildofgleks/ui`'s surface is unchanged.
 export type { ToastPosition };

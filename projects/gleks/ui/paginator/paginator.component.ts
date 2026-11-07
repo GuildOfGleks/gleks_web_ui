@@ -10,11 +10,15 @@ import {
   booleanAttribute,
 } from '@angular/core';
 
-import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
+import {
+  configurableBooleanAttribute,
+  GOG_CONFIG,
+  GogPaginatorRangeMode,
+  GogSize,
+  resolveConfigured,
+} from '@guildofgleks/ui/shared';
 import { ButtonComponent } from '@guildofgleks/ui/button';
 import { SelectComponent } from '@guildofgleks/ui/select';
-import { GogPaginatorRangeMode, GogSize } from '@guildofgleks/ui/shared';
-import { configurableBooleanAttribute } from '@guildofgleks/ui/shared';
 
 /** Built-in defaults, used when neither the instance input nor `GOG_CONFIG.labels` supplies one. */
 const DEFAULT_PAGE_SIZE = 10;

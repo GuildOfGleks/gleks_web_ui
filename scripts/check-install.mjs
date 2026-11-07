@@ -75,7 +75,12 @@ const LABELS = {
  * `expectHtml` must appear in its prerendered HTML; `interact` runs against the live page.
  * Entry points in `INTERNAL` are not public and get no page.
  */
-const INTERNAL = new Set([`${PACKAGE}/shared`]);
+const INTERNAL = new Set([
+  `${PACKAGE}/shared`,
+  `${PACKAGE}/shared/date`,
+  `${PACKAGE}/shared/dropdown`,
+  `${PACKAGE}/shared/virtual`,
+]);
 const SMOKE = {
   [PACKAGE]: {
     imports: { [PACKAGE]: ['ButtonComponent', 'IconComponent'] },

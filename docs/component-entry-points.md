@@ -92,7 +92,7 @@ only if **the library's own code** never imports the root either: a subpath that
 | 0   | Part 1 and Part 2 — measure before moving anything                                                                                                                                                             | ✅ 2026-11-07 |
 | 1   | Pilot: `icon`, `tag`, `toggle`, `textarea` as entry points, re-exported by the root; installed into the admin copy and measured                                                                                | ✅ 2026-11-07 |
 | 2a  | A public subpath for every value and type the root takes from `shared` (`/config`, `/date`, `/dropdown`, `/tokens`, the icon registry on `/icon`, each component's own types on its subpath); `check:subpaths` | ✅ 2026-11-07 |
-| 2b  | `shared` split by concern, so an eager `/icon` or `/config` does not bring the dropdown base, the date helpers and the virtual windows (about 25 kB minified, 9 kB transfer, in the admin app)                 |               |
+| 2b  | `shared` split by concern, so an eager `/icon` or `/config` does not bring the dropdown base, the date helpers and the virtual windows (about 25 kB minified, 9 kB transfer, in the admin app)                 | ✅ 2026-11-07 |
 | 3   | Every other component, all at once (a staged move leaves a not-yet-moved dependency unreachable by subpath); the heavy units' imports                                                                          | ✅ 2026-11-07 |
 | 4   | Rules: `check:layering`, `check:install`'s `SMOKE`, `library-sources.mjs`; docs (`README.md`, `AGENTS.md`, `CHANGELOG.md`) and the lab checklist                                                               |               |
 | 5   | The admin app rebuilt against the local package with every import a subpath; the number published here                                                                                                         |               |
@@ -213,3 +213,23 @@ the source-map attribution through the FESM was not precise enough on minified l
 
 `token-names.ts` (58.9 kB) is not in the initial chunk: nothing eager uses `GOG_TOKEN_GROUPS`, and
 the unused part of a module still shakes. Iteration 2b is the three "one module" rows.
+
+### As 2b finished
+
+Three internal entry points nested in `shared/`: `@guildofgleks/ui/shared/date` (`date-utils`,
+`time-zone`), `/shared/dropdown` (the two dropdown bases) and `/shared/virtual` (both windows). No
+`InjectionToken` moved — those stay in `shared`. Internal rather than folded into the public `/date`
+and `/dropdown`, because the components need names the public lists leave out
+(`gogResolveTimeZone`), and the root's `export *` would have published them. `check:layering` rule F
+fails when `shared/` imports a sub-unit (proven by planting one in `config.ts`) or two shared units
+reach each other by relative path; `check:subpaths` and `check:install` list the three as internal.
+Root exports still 185; 76 files, 1496 tests.
+
+**Measured on a fresh copy of the admin app** (the earlier copy was lost): `shared` in the initial
+chunk fell from 78.3 to 62.3 kB minified; the dropdown base, virtual windows and date helpers are in
+the table page's lazy chunk. **Initial 116.6 kB transfer — and that is V0, the app unchanged, its
+imports still from the root.** The root's FESM is now only `export *` lines, and with no code of its
+own it no longer pins anything into the initial chunk: `inputfield`, `tag`, `toggle`, `textarea`
+landed in lazy chunks. This contradicts Part 2's row 2 for a root that holds code; it has to be
+re-checked (and the subpath-only variant measured) before iteration 5 writes it up, because if it
+holds, the opt-in contract is stronger than Part 3 says — a root import splits too.

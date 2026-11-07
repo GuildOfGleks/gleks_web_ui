@@ -15,13 +15,16 @@ import {
   booleanAttribute,
 } from '@angular/core';
 
-import { GogDropdownBase, type GogDropdownOption } from '@guildofgleks/ui/shared';
-import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
+import {
+  configurableBooleanAttribute,
+  GOG_CONFIG,
+  resolveConfigured,
+} from '@guildofgleks/ui/shared';
+import { GogDropdownBase, type GogDropdownOption } from '@guildofgleks/ui/shared/dropdown';
 import { GogRippleDirective } from '@guildofgleks/ui/ripple';
 import { IconComponent } from '@guildofgleks/ui/icon';
 import { ScrollComponent } from '@guildofgleks/ui/scroll';
 import { SpinnerComponent } from '@guildofgleks/ui/spinner';
-import { configurableBooleanAttribute } from '@guildofgleks/ui/shared';
 
 /** Built-in defaults, used when neither the instance input nor `GOG_CONFIG` supplies one. */
 const DEFAULT_SEARCH_DEBOUNCE = 300;

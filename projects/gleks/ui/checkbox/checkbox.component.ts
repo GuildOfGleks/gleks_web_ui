@@ -13,11 +13,12 @@ import {
 } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { IconComponent } from '@guildofgleks/ui/icon';
-import { GogSize } from '@guildofgleks/ui/shared';
-import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
 import {
   GOG_CHECKABLE_CONTROL_PADDING,
   GOG_CHECKABLE_CONTROL_SIZE_MAP,
+  GOG_CONFIG,
+  GogSize,
+  resolveConfigured,
 } from '@guildofgleks/ui/shared';
 
 /** Built-in defaults, used when neither the instance input nor `GOG_CONFIG` supplies one. */

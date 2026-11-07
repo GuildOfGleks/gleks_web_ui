@@ -1,10 +1,12 @@
 import { Directive, ElementRef, inject, input } from '@angular/core';
 
-import { GOG_CONFIG } from '@guildofgleks/ui/shared';
-import { resolveRipple } from '@guildofgleks/ui/shared';
-import { bindRipple } from '@guildofgleks/ui/shared';
+import {
+  bindRipple,
+  configurableBooleanAttribute,
+  GOG_CONFIG,
+  resolveRipple,
+} from '@guildofgleks/ui/shared';
 import { CollapsibleComponent } from './collapsible.component';
-import { configurableBooleanAttribute } from '@guildofgleks/ui/shared';
 
 /**
  * Elements the browser already makes focusable and operable by keyboard. A `<button>` fires

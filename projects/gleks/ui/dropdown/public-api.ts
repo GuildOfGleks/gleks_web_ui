@@ -1,6 +1,6 @@
 /*
  * `@guildofgleks/ui/dropdown` -- the base classes and directives for building a dropdown of your own. Opt-in; the root re-exports all of it
- * (docs/component-entry-points.md). The code lives in the internal `@guildofgleks/ui/shared`;
+ * (docs/component-entry-points.md). The code lives in the internal `@guildofgleks/ui/shared` and `/shared/dropdown`;
  * this list is what of it is public.
  */
 export {
@@ -8,8 +8,8 @@ export {
   GogDropdownChevronDirective,
   GogDropdownOptionDirective,
   GogFilterableDropdownBase,
-  GogFloatLabelState,
-} from '@guildofgleks/ui/shared';
+} from '@guildofgleks/ui/shared/dropdown';
+export { GogFloatLabelState } from '@guildofgleks/ui/shared';
 /*
  * Named, not wholesale: `GogOptionAccessor` is the type every collection control's `optionLabel`
  * / `optionValue` / `optionDisabled` inputs are declared with, so a consumer needs it. The
@@ -19,9 +19,11 @@ export {
  */
 export type {
   GogDropdownChevronContext,
-  GogDropdownDirection,
-  GogDropdownFilterPosition,
   GogDropdownOption,
   GogDropdownOptionContext,
+} from '@guildofgleks/ui/shared/dropdown';
+export type {
+  GogDropdownDirection,
+  GogDropdownFilterPosition,
   GogOptionAccessor,
 } from '@guildofgleks/ui/shared';

@@ -18,14 +18,16 @@ import {
   booleanAttribute,
 } from '@angular/core';
 import { NgTemplateOutlet, isPlatformBrowser } from '@angular/common';
-import { GogSize } from '@guildofgleks/ui/shared';
-import { handleRovingFocusKeydown } from '@guildofgleks/ui/shared';
+import {
+  configurableBooleanAttribute,
+  GOG_CONFIG,
+  GogSize,
+  handleRovingFocusKeydown,
+  resolveRipple,
+} from '@guildofgleks/ui/shared';
 import { GogRippleDirective } from '@guildofgleks/ui/ripple';
 import { IconComponent } from '@guildofgleks/ui/icon';
 import { SkeletonComponent } from '@guildofgleks/ui/skeleton';
-import { GOG_CONFIG } from '@guildofgleks/ui/shared';
-import { resolveRipple } from '@guildofgleks/ui/shared';
-import { configurableBooleanAttribute } from '@guildofgleks/ui/shared';
 
 /** Cycled by `skeletonWidth()` — see there for why these are fixed rather than random. */
 const SKELETON_WIDTHS = ['62%', '45%', '71%', '53%'] as const;

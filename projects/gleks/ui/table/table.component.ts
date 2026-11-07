@@ -27,11 +27,15 @@ import { PaginatorComponent } from '@guildofgleks/ui/paginator';
 import { ScrollComponent } from '@guildofgleks/ui/scroll';
 import { SpinnerComponent } from '@guildofgleks/ui/spinner';
 
-import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
-import { GogSize } from '@guildofgleks/ui/shared';
-import { getByPath } from '@guildofgleks/ui/shared';
-import { resolveCssLengthPx } from '@guildofgleks/ui/shared';
-import { GogVariableWindow } from '@guildofgleks/ui/shared';
+import {
+  configurableBooleanAttribute,
+  getByPath,
+  GOG_CONFIG,
+  GogSize,
+  resolveConfigured,
+  resolveCssLengthPx,
+} from '@guildofgleks/ui/shared';
+import { GogVariableWindow } from '@guildofgleks/ui/shared/virtual';
 import {
   GogColumn,
   GogTableEmptyDirective,
@@ -39,7 +43,6 @@ import {
   type GogColumnHeaderContext,
   defaultCompare,
 } from './column';
-import { configurableBooleanAttribute } from '@guildofgleks/ui/shared';
 
 /**
  * Row height assumed before any row has been measured, for `virtualize`. A seed, not a claim: the

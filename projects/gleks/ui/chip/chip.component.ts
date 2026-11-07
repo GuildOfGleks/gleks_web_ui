@@ -12,11 +12,14 @@ import {
 
 import { AvatarComponent } from '@guildofgleks/ui/avatar';
 import { type GogIconName, IconComponent } from '@guildofgleks/ui/icon';
-import { GogSize, GogTagShape } from '@guildofgleks/ui/shared';
-import { GOG_CONFIG } from '@guildofgleks/ui/shared';
-import { resolveRipple } from '@guildofgleks/ui/shared';
+import {
+  configurableBooleanAttribute,
+  GOG_CONFIG,
+  GogSize,
+  GogTagShape,
+  resolveRipple,
+} from '@guildofgleks/ui/shared';
 import { GogRippleDirective } from '@guildofgleks/ui/ripple';
-import { configurableBooleanAttribute } from '@guildofgleks/ui/shared';
 
 @Component({
   selector: 'gog-chip',

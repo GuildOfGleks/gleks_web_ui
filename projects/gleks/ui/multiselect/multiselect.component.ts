@@ -18,14 +18,16 @@ import {
   booleanAttribute,
 } from '@angular/core';
 
-import { resolveConfigured } from '@guildofgleks/ui/shared';
-import { GogFilterableDropdownBase, type GogDropdownOption } from '@guildofgleks/ui/shared';
+import { configurableBooleanAttribute, resolveConfigured } from '@guildofgleks/ui/shared';
+import {
+  type GogDropdownOption,
+  GogFilterableDropdownBase,
+} from '@guildofgleks/ui/shared/dropdown';
 import { ButtonComponent } from '@guildofgleks/ui/button';
 import { GogRippleDirective } from '@guildofgleks/ui/ripple';
 import { IconComponent } from '@guildofgleks/ui/icon';
 import { ScrollComponent } from '@guildofgleks/ui/scroll';
 import { GogTooltipDirective } from '@guildofgleks/ui/tooltip';
-import { configurableBooleanAttribute } from '@guildofgleks/ui/shared';
 
 /** Height of the select-all/clear row, included in the panel height estimate. */
 const CONTROLS_ROW_HEIGHT = 38;

@@ -16,14 +16,20 @@ import {
 } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 
-import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
-import { nextGogControlId } from '@guildofgleks/ui/shared';
-import { GogErrorState, type GogErrorDisplay } from '@guildofgleks/ui/shared';
-import { GogClearableState } from '@guildofgleks/ui/shared';
-import { GogFloatLabelState } from '@guildofgleks/ui/shared';
-import { GogFloatLabelVariant, GogSize, GogTextareaResize } from '@guildofgleks/ui/shared';
+import {
+  configurableBooleanAttribute,
+  GOG_CONFIG,
+  GogClearableState,
+  type GogErrorDisplay,
+  GogErrorState,
+  GogFloatLabelState,
+  GogFloatLabelVariant,
+  GogSize,
+  GogTextareaResize,
+  nextGogControlId,
+  resolveConfigured,
+} from '@guildofgleks/ui/shared';
 import { IconComponent } from '@guildofgleks/ui/icon';
-import { configurableBooleanAttribute } from '@guildofgleks/ui/shared';
 
 /** Built-in defaults, used when neither the instance input nor `GOG_CONFIG` supplies one. */
 const DEFAULT_SIZE: GogSize = 'md';

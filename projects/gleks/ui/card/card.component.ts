@@ -11,8 +11,7 @@ import {
   input,
 } from '@angular/core';
 
-import { nextGogControlId } from '@guildofgleks/ui/shared';
-import { GogSize, GogSurfaceVariant } from '@guildofgleks/ui/shared';
+import { GogSize, GogSurfaceVariant, nextGogControlId } from '@guildofgleks/ui/shared';
 import { SkeletonComponent } from '@guildofgleks/ui/skeleton';
 
 /** Placeholder lines rendered under the title bar while `loading` is on. */

@@ -30,6 +30,19 @@ export const ROOT_LIB_DIR = path.join(UI_ROOT, 'src/lib');
 export const SHARED_DIR = path.join(UI_ROOT, 'shared');
 
 /**
+ * Internal entry points nested in `shared/` — `@guildofgleks/ui/shared/date`, `/shared/dropdown`,
+ * `/shared/virtual`. Split off the floor because an app shell imports `shared` eagerly, and the
+ * Angular CLI places in the initial chunk whatever any lazy page uses of an eagerly reachable
+ * module (`docs/component-entry-points.md`, iteration 2b). Discovered like the component entry
+ * points: a directory in `shared/` holding an `ng-package.json`.
+ */
+export const SHARED_SUB_ENTRY_POINTS = readdirSync(SHARED_DIR, { withFileTypes: true })
+  .filter((entry) => entry.isDirectory())
+  .map((entry) => entry.name)
+  .filter((name) => existsSync(path.join(SHARED_DIR, name, 'ng-package.json')))
+  .sort();
+
+/**
  * The heavy units split out of the root so a lazy route can keep them out of an app's initial
  * bundle. The root does not export them and must never import one (`check:layering` rule D).
  */

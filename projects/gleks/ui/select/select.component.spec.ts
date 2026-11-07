@@ -4,7 +4,11 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { vi } from 'vitest';
 
 import { SelectComponent } from './select.component';
-import type { GogDropdownOption } from '@guildofgleks/ui/shared';
+import { GOG_CONFIG } from '@guildofgleks/ui/shared';
+import {
+  GogDropdownChevronDirective,
+  type GogDropdownOption,
+} from '@guildofgleks/ui/shared/dropdown';
 
 /**
  * `SelectComponent` is generic over its option and value types. A template infers both from the
@@ -12,7 +16,6 @@ import type { GogDropdownOption } from '@guildofgleks/ui/shared';
  * these specs pin the defaults explicitly.
  */
 type DefaultSelect = SelectComponent<GogDropdownOption, string | number | null>;
-import { GOG_CONFIG, GogDropdownChevronDirective } from '@guildofgleks/ui/shared';
 
 function stubRect(target: Element, rect: Partial<DOMRect>): void {
   vi.spyOn(target, 'getBoundingClientRect').mockReturnValue({

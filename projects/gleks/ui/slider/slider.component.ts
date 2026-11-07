@@ -11,13 +11,18 @@ import {
 } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 
-import { nextGogControlId } from '@guildofgleks/ui/shared';
-import { GogErrorState, type GogErrorDisplay } from '@guildofgleks/ui/shared';
-import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
+import {
+  GOG_CONFIG,
+  type GogErrorDisplay,
+  GogErrorState,
+  GogSliderOrientation,
+  GogSliderRange,
+  nextGogControlId,
+  resolveConfigured,
+} from '@guildofgleks/ui/shared';
 
 /** Built-in default, used when neither the instance input nor `GOG_CONFIG` supplies one. */
 const DEFAULT_ERROR_DISPLAY: GogErrorDisplay = 'manual';
-import { GogSliderOrientation, GogSliderRange } from '@guildofgleks/ui/shared';
 
 /** How many digits after the decimal point `step` prints, e.g. `0.25` → `2`, `5` → `0`. */
 function decimalPlaces(step: number): number {

@@ -19,10 +19,10 @@ import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { IconComponent } from '@guildofgleks/ui/icon';
 import {
   GOG_CONFIG,
+  type GogErrorDisplay,
   GogErrorState,
   GogSize,
   resolveConfigured,
-  type GogErrorDisplay,
 } from '@guildofgleks/ui/shared';
 
 /** Why a file was not added. */

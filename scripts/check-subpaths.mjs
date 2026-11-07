@@ -8,7 +8,7 @@
  * exports and no subpath does — a helper added to `src/public-api.ts` straight from `shared`, say —
  * forces every such app back onto the root, silently, with every build green. This check reads the
  * built `.d.ts` through the TypeScript checker and fails on any root export that no public subpath
- * carries. `@guildofgleks/ui/shared` does not count: it is internal.
+ * carries. `@guildofgleks/ui/shared` and its three nested units do not count: they are internal.
  *
  * It also fails if two public subpaths export the same name from different declarations, which
  * would make the root's `export *` ambiguous.
@@ -27,7 +27,12 @@ const ts = require('typescript');
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const distDir = path.join(rootDir, 'dist/gleks/ui');
 const PACKAGE = '@guildofgleks/ui';
-const INTERNAL = new Set([`${PACKAGE}/shared`]);
+const INTERNAL = new Set([
+  `${PACKAGE}/shared`,
+  `${PACKAGE}/shared/date`,
+  `${PACKAGE}/shared/dropdown`,
+  `${PACKAGE}/shared/virtual`,
+]);
 
 if (!existsSync(path.join(distDir, 'package.json'))) {
   console.error('check:subpaths: dist/gleks/ui not found — run npm run build:lib first.');

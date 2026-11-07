@@ -16,16 +16,21 @@ import {
 } from '@angular/core';
 
 import { IconComponent } from '@guildofgleks/ui/icon';
-import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
-import { GogDateSelectionMode, GogHourFormat, GogSize } from '@guildofgleks/ui/shared';
 import {
-  type GogDateRange,
+  GOG_CONFIG,
+  GogDateSelectionMode,
+  GogHourFormat,
+  GogSize,
+  resolveConfigured,
+} from '@guildofgleks/ui/shared';
+import {
   addDays,
   addMonths,
   addYears,
   buildMonthGrid,
   clampDate,
   copyTimeOnto,
+  type GogDateRange,
   gogFromZonedTime,
   gogResolveTimeZone,
   gogToZonedTime,
@@ -40,7 +45,7 @@ import {
   startOfDay,
   weekdayNames,
   withTime,
-} from '@guildofgleks/ui/shared';
+} from '@guildofgleks/ui/shared/date';
 
 /** What `gog-calendar` and `gog-datepicker` carry, depending on `selectionMode`. */
 export type GogDatepickerValue = Date | GogDateRange | null;

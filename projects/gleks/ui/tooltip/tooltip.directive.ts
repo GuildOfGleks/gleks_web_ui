@@ -14,19 +14,20 @@ import {
   booleanAttribute,
 } from '@angular/core';
 
-import { GOG_CONFIG, gogAddIdRef, gogAriaTarget, gogRemoveIdRef } from '@guildofgleks/ui/shared';
 import {
+  GOG_CONFIG,
+  gogAddIdRef,
+  gogAriaTarget,
+  gogRemoveIdRef,
   gogScrolledOutOfView,
-  resolveLengthToken,
-  resolveNumberToken,
-} from '@guildofgleks/ui/shared';
-import { GogTooltipOverlay } from './tooltip-overlay';
-import {
+  GogTooltipPosition,
   GogTooltipTargetRect,
   GogTooltipViewport,
+  resolveLengthToken,
+  resolveNumberToken,
   resolveTooltipPlacement,
 } from '@guildofgleks/ui/shared';
-import { GogTooltipPosition } from '@guildofgleks/ui/shared';
+import { GogTooltipOverlay } from './tooltip-overlay';
 import { GogTooltipBubbleComponent } from './tooltip-bubble.component';
 
 const DEFAULT_SHOW_DELAY = 300;

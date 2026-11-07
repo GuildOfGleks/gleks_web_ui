@@ -3,9 +3,8 @@ import { Component, signal } from '@angular/core';
 import { By } from '@angular/platform-browser';
 
 import { AlertComponent } from './alert.component';
-import type { GogAlertLive, GogSeverity } from '@guildofgleks/ui/shared';
+import { GOG_CONFIG, type GogAlertLive, type GogSeverity } from '@guildofgleks/ui/shared';
 import { IconComponent } from '@guildofgleks/ui/icon';
-import { GOG_CONFIG } from '@guildofgleks/ui/shared';
 
 describe('AlertComponent', () => {
   let component: AlertComponent;

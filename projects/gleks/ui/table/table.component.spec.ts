@@ -17,7 +17,7 @@ import {
 } from './column';
 import { PaginatorComponent } from '@guildofgleks/ui/paginator';
 import { ScrollComponent } from '@guildofgleks/ui/scroll';
-import { provideGogConfig, type GogGlobalConfig } from '@guildofgleks/ui/shared';
+import { type GogGlobalConfig, provideGogConfig } from '@guildofgleks/ui/shared';
 
 interface Row {
   id: number;

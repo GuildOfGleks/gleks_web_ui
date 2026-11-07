@@ -24,14 +24,18 @@ import {
 import { GogRippleDirective } from '@guildofgleks/ui/ripple';
 import { IconComponent } from '@guildofgleks/ui/icon';
 import { ScrollComponent } from '@guildofgleks/ui/scroll';
-import { GOG_CONFIG } from '@guildofgleks/ui/shared';
-import { resolveRipple } from '@guildofgleks/ui/shared';
-import { handleRovingFocusKeydown } from '@guildofgleks/ui/shared';
-import { GogOrientation, GogSize, GogTabsAlign } from '@guildofgleks/ui/shared';
+import {
+  configurableBooleanAttribute,
+  GOG_CONFIG,
+  GogOrientation,
+  GogSize,
+  GogTabsAlign,
+  gogWarnIfUnnamed,
+  handleRovingFocusKeydown,
+  resolveRipple,
+} from '@guildofgleks/ui/shared';
 import { GOG_TABS_STATE, type GogTabsState } from './tabs-state';
 import { TabComponent } from './tab.component';
-import { configurableBooleanAttribute } from '@guildofgleks/ui/shared';
-import { gogWarnIfUnnamed } from '@guildofgleks/ui/shared';
 
 /** Context handed to a `gogTabHeader` template. */
 export interface GogTabHeaderContext {

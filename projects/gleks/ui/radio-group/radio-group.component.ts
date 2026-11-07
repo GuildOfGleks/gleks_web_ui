@@ -11,19 +11,23 @@ import {
 } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 
-import { GogOrientation, GogSize } from '@guildofgleks/ui/shared';
-import { nextGogControlId } from '@guildofgleks/ui/shared';
-import { GogErrorState, type GogErrorDisplay } from '@guildofgleks/ui/shared';
-import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
-import { type GogOptionAccessor, readOption } from '@guildofgleks/ui/shared';
+import {
+  GOG_CHECKABLE_CONTROL_PADDING,
+  GOG_CHECKABLE_CONTROL_SIZE_MAP,
+  GOG_CONFIG,
+  type GogErrorDisplay,
+  GogErrorState,
+  type GogOptionAccessor,
+  GogOrientation,
+  GogSize,
+  nextGogControlId,
+  readOption,
+  resolveConfigured,
+} from '@guildofgleks/ui/shared';
 
 /** Built-in defaults, used when neither the instance input nor `GOG_CONFIG` supplies one. */
 const DEFAULT_SIZE: GogSize = 'md';
 const DEFAULT_ERROR_DISPLAY: GogErrorDisplay = 'manual';
-import {
-  GOG_CHECKABLE_CONTROL_PADDING,
-  GOG_CHECKABLE_CONTROL_SIZE_MAP,
-} from '@guildofgleks/ui/shared';
 
 /** A single choice in a `gog-radio-group`, in the shape the accessors read by default. */
 export interface GogRadioOption {

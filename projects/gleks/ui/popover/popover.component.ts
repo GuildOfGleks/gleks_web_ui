@@ -23,17 +23,18 @@ import {
 
 import {
   GOG_FOCUSABLE,
-  GogDropdownOverlay,
   gogAriaTarget,
+  type GogDropdownDirection,
+  GogDropdownOverlay,
+  type GogMenuPlacement,
   gogScrolledOutOfView,
   nextGogControlId,
   resolveLengthToken,
+  resolveMenuPlacement,
   resolveNumberToken,
   scopedOverlayDirection,
-  type GogDropdownDirection,
 } from '@guildofgleks/ui/shared';
 import { ScrollComponent } from '@guildofgleks/ui/scroll';
-import { resolveMenuPlacement, type GogMenuPlacement } from '@guildofgleks/ui/shared';
 
 /** Fallback for `--gog-popover-panel-gap` before layout, matching the token's default at density 1. */
 const DEFAULT_PANEL_GAP = 4;

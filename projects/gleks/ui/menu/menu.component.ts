@@ -21,26 +21,26 @@ import {
   viewChild,
 } from '@angular/core';
 
-import { GOG_CONFIG, gogAriaTarget } from '@guildofgleks/ui/shared';
 import {
-  gogScrolledOutOfView,
-  resolveLengthToken,
-  resolveNumberToken,
-} from '@guildofgleks/ui/shared';
-import { GogDropdownOverlay } from '@guildofgleks/ui/shared';
-import { resolveRipple } from '@guildofgleks/ui/shared';
-import { bindRipple } from '@guildofgleks/ui/shared';
-import { nextGogControlId } from '@guildofgleks/ui/shared';
-import { isRovingFocusKey, nextRovingFocusIndex } from '@guildofgleks/ui/shared';
-import { scopedOverlayDirection } from '@guildofgleks/ui/shared';
-import type { GogDropdownDirection } from '@guildofgleks/ui/shared';
-import { ScrollComponent } from '@guildofgleks/ui/scroll';
-import {
+  bindRipple,
+  configurableBooleanAttribute,
   DEFAULT_MENU_PANEL_GAP,
-  resolveMenuPlacement,
+  GOG_CONFIG,
+  gogAriaTarget,
+  type GogDropdownDirection,
+  GogDropdownOverlay,
   type GogMenuPlacement,
+  gogScrolledOutOfView,
+  isRovingFocusKey,
+  nextGogControlId,
+  nextRovingFocusIndex,
+  resolveLengthToken,
+  resolveMenuPlacement,
+  resolveNumberToken,
+  resolveRipple,
+  scopedOverlayDirection,
 } from '@guildofgleks/ui/shared';
-import { configurableBooleanAttribute } from '@guildofgleks/ui/shared';
+import { ScrollComponent } from '@guildofgleks/ui/scroll';
 
 /**
  * One command in a `gog-menu`. Put it on the consumer's own `<button>`:

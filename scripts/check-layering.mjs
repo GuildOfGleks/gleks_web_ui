@@ -24,6 +24,15 @@
  *                          relative path. The whole benefit of splitting them rests on it: a root
  *                          that imports a split entry point pulls it back into the initial bundle
  *                          of every app, silently, with every build green.
+ *   F. shared-floor-stays-small
+ *                          `shared/`'s own files never import `@guildofgleks/ui/shared/date`,
+ *                          `/shared/dropdown` or `/shared/virtual`, and no two of those units reach
+ *                          each other by relative path. An app shell imports `shared` eagerly, and
+ *                          the CLI puts whatever any lazy page uses of an eagerly reachable module
+ *                          in the initial chunk — the sub-units exist so that is not the date
+ *                          helpers, the dropdown base and the virtual windows. The floor importing
+ *                          one makes it eager again, with every build green
+ *                          (docs/component-entry-points.md, iteration 2b).
  *   E. split-imports-by-package
  *                          A split entry point's directory may not reach into `src/` or another
  *                          split directory by relative path. ng-packagr refuses an entry point that
@@ -46,6 +55,7 @@ import { fileURLToPath } from 'node:url';
 import {
   ROOT_LIB_DIR as libRoot,
   SHARED_DIR as sharedRoot,
+  SHARED_SUB_ENTRY_POINTS,
   COMPONENT_ENTRY_POINTS,
   HEAVY_ENTRY_POINTS,
   SPLIT_DIRS,
@@ -62,7 +72,11 @@ const rel = (file) => path.relative(rootDir, file).split(path.sep).join('/');
 
 /** `split:<name>`, `shared`, a component folder or a `src/lib` bucket — or `root` for `src/` itself. */
 function unitOf(file) {
-  if (!path.relative(sharedRoot, file).startsWith('..')) return 'shared';
+  const inShared = path.relative(sharedRoot, file).split(path.sep).join('/');
+  if (!inShared.startsWith('..')) {
+    const [first] = inShared.split('/');
+    return SHARED_SUB_ENTRY_POINTS.includes(first) ? `shared/${first}` : 'shared';
+  }
   const split = SPLIT_DIRS.findIndex((dir) => !path.relative(dir, file).startsWith('..'));
   if (split !== -1) return `split:${SPLIT_ENTRY_POINTS[split]}`;
   const inLib = path.relative(libRoot, file).split(path.sep).join('/');
@@ -123,8 +137,23 @@ async function main() {
         addEdge(from, 'shared', file);
         continue;
       }
+      const sharedSub = SHARED_SUB_ENTRY_POINTS.find(
+        (name) => specifier === `${SHARED_PACKAGE}/${name}`,
+      );
+      if (sharedSub) {
+        if (from === 'shared') {
+          problems.push(
+            `[shared-floor-stays-small] ${rel(file)}\n` +
+              `      shared/ imports ${specifier} — every app shell imports shared eagerly, so this puts\n` +
+              `      the sub-unit back in every app's initial chunk. Import it from the component instead`,
+          );
+          continue;
+        }
+        addEdge(from, `shared/${sharedSub}`, file);
+        continue;
+      }
       const split = SPLIT_ENTRY_POINTS.find((name) => specifier === `${ROOT_PACKAGE}/${name}`);
-      if (split && from === 'shared') {
+      if (split && (from === 'shared' || from.startsWith('shared/'))) {
         problems.push(
           `[shared-is-a-floor] ${rel(file)}\n` +
             `      shared/ imports ${specifier} — every entry point imports shared, so this is a cycle`,
@@ -156,7 +185,7 @@ async function main() {
               `      with it. Import the other component's own subpath`,
           );
         }
-        if (from === 'shared') {
+        if (from === 'shared' || from.startsWith('shared/')) {
           problems.push(
             `[shared-is-a-floor] ${rel(file)}\n` +
               `      shared/ imports ${ROOT_PACKAGE} — the root imports shared, so this is a cycle\n` +
@@ -188,7 +217,16 @@ async function main() {
         continue;
       }
 
-      if (from === 'shared' && to !== 'shared') {
+      const isShared = (unit) => unit === 'shared' || unit.startsWith('shared/');
+      if (isShared(from) && isShared(to) && from !== to) {
+        problems.push(
+          `[shared-floor-stays-small] ${rel(file)}\n` +
+            `      reaches ${specifier} by relative path — ${from} and ${to} are separate entry points;\n` +
+            `      import ${to === 'shared' ? SHARED_PACKAGE : `${ROOT_PACKAGE}/${to}`}`,
+        );
+        continue;
+      }
+      if (isShared(from) && !isShared(to)) {
         problems.push(
           `[shared-is-a-floor] ${rel(file)}\n` +
             `      shared/ reaches out of its own directory (${specifier}) — an entry point owns its\n` +
@@ -196,7 +234,7 @@ async function main() {
         );
         continue;
       }
-      if (from !== 'shared' && to === 'shared') {
+      if (!isShared(from) && isShared(to)) {
         problems.push(
           `[shared-by-package] ${rel(file)}\n` +
             `      imports ${specifier} by relative path — compile shared into this bundle and\n` +
@@ -246,7 +284,8 @@ async function main() {
   const fileCount = libFiles.length + sharedFiles.length + splitFiles.length;
   console.log(
     `Layering check passed — ${units.size} unit(s) across ${fileCount} ` +
-      `file(s), no cycles, shared/ (${sharedFiles.length} file(s)) imports nothing above it, and ` +
+      `file(s), no cycles, shared/ (${sharedFiles.length} file(s), ${SHARED_SUB_ENTRY_POINTS.length} internal sub-unit(s) ` +
+      `it never imports) imports nothing above it, and ` +
       `nothing outside it imports shared by relative path; ${HEAVY_ENTRY_POINTS.length} heavy entry point(s) ` +
       `nothing imports back, and ${COMPONENT_ENTRY_POINTS.length} component entry point(s) the root re-exports ` +
       `(${splitFiles.length} file(s) in all) that never import the root.`,

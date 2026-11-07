@@ -10,8 +10,7 @@ import {
   booleanAttribute,
 } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { GogIconName, ICON_DEFS } from '@guildofgleks/ui/shared';
-import { GOG_ICONS } from '@guildofgleks/ui/shared';
+import { GOG_ICONS, GogIconName, ICON_DEFS } from '@guildofgleks/ui/shared';
 
 export type { GogIconName, GogBuiltinIconName } from '@guildofgleks/ui/shared';
 

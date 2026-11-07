@@ -24,31 +24,32 @@ import { NgTemplateOutlet } from '@angular/common';
 
 import { CalendarComponent, type GogDatepickerValue } from './calendar/calendar.component';
 import { IconComponent } from '@guildofgleks/ui/icon';
-import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
-import { GogClearableState, gogScrolledOutOfView } from '@guildofgleks/ui/shared';
-import { GogErrorState, type GogErrorDisplay } from '@guildofgleks/ui/shared';
-import { GogFloatLabelState } from '@guildofgleks/ui/shared';
-import { GogDropdownOverlay } from '@guildofgleks/ui/shared';
 import {
+  configurableBooleanAttribute,
+  GOG_CONFIG,
+  GogClearableState,
+  GogDateSelectionMode,
   type GogDropdownDirection,
+  GogDropdownOverlay,
   type GogDropdownPlacement,
+  type GogErrorDisplay,
+  GogErrorState,
+  GogFloatLabelState,
+  GogFloatLabelVariant,
+  GogHourFormat,
+  gogScrolledOutOfView,
+  GogSize,
+  resolveConfigured,
   resolveDropdownPlacement,
 } from '@guildofgleks/ui/shared';
 import {
-  GogDateSelectionMode,
-  GogFloatLabelVariant,
-  GogHourFormat,
-  GogSize,
-} from '@guildofgleks/ui/shared';
-import {
-  type GogDateRange,
   formatDate,
+  type GogDateRange,
   gogFromZonedTime,
   gogResolveTimeZone,
   gogToZonedTime,
   parseDate,
-} from '@guildofgleks/ui/shared';
-import { configurableBooleanAttribute } from '@guildofgleks/ui/shared';
+} from '@guildofgleks/ui/shared/date';
 
 /** Built-in defaults, used when neither the instance input nor `GOG_CONFIG` supplies one. */
 const DEFAULT_SIZE: GogSize = 'md';

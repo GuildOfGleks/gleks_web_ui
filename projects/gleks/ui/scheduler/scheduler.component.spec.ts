@@ -1,8 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { GOG_CONFIG } from '@guildofgleks/ui/shared';
-import type { GogSchedulerView } from '@guildofgleks/ui/shared';
+import { GOG_CONFIG, type GogSchedulerView } from '@guildofgleks/ui/shared';
 import { GogSchedulerEventDirective } from './scheduler-event.directive';
 import {
   SchedulerComponent,

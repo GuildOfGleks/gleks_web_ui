@@ -9,6 +9,7 @@
  * hour of the clock, not an hour of elapsed time.
  */
 
+import type { GogSchedulerView, GogSeverity } from '@guildofgleks/ui/shared';
 import {
   addDays,
   addMonths,
@@ -16,8 +17,7 @@ import {
   isAfterDay,
   isBeforeDay,
   startOfDay,
-} from '@guildofgleks/ui/shared';
-import type { GogSchedulerView, GogSeverity } from '@guildofgleks/ui/shared';
+} from '@guildofgleks/ui/shared/date';
 
 /** One consumer event, read through the accessors and placed on the wall clock. */
 export interface GogSchedulerItem<T> {

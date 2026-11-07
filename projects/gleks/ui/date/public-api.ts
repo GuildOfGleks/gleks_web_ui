@@ -1,6 +1,6 @@
 /*
  * `@guildofgleks/ui/date` -- the date helpers and their types. Opt-in; the root re-exports all of it
- * (docs/component-entry-points.md). The code lives in the internal `@guildofgleks/ui/shared`;
+ * (docs/component-entry-points.md). The code lives in the internal `@guildofgleks/ui/shared/date` and `/shared`;
  * this list is what of it is public.
  */
 /*
@@ -34,5 +34,6 @@ export {
   startOfDay,
   weekdayNames,
   withTime,
-} from '@guildofgleks/ui/shared';
-export type { GogDateRange, GogDateSelectionMode, GogHourFormat } from '@guildofgleks/ui/shared';
+} from '@guildofgleks/ui/shared/date';
+export type { GogDateRange } from '@guildofgleks/ui/shared/date';
+export type { GogDateSelectionMode, GogHourFormat } from '@guildofgleks/ui/shared';

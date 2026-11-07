@@ -31,13 +31,17 @@ import { GogMenuItemDirective } from '@guildofgleks/ui/menu';
 import { PopoverComponent } from '@guildofgleks/ui/popover';
 import { ScrollComponent } from '@guildofgleks/ui/scroll';
 import {
+  configurableBooleanAttribute,
   GOG_CONFIG,
   type GogOptionAccessor,
   type GogSchedulerMoreAction,
   type GogSchedulerView,
   type GogSeverity,
+  readOption,
+  resolveConfigured,
+} from '@guildofgleks/ui/shared';
+import {
   addDays,
-  configurableBooleanAttribute,
   copyTimeOnto,
   gogFromZonedTime,
   gogResolveTimeZone,
@@ -47,11 +51,9 @@ import {
   isSameDay,
   isSameMonth,
   localeFirstDayOfWeek,
-  readOption,
-  resolveConfigured,
   startOfDay,
   weekdayNames,
-} from '@guildofgleks/ui/shared';
+} from '@guildofgleks/ui/shared/date';
 
 import {
   type GogSchedulerEventContext,

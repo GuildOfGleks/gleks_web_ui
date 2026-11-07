@@ -9,11 +9,14 @@ import {
   viewChild,
 } from '@angular/core';
 
-import { GogFilterableDropdownBase, type GogDropdownOption } from '@guildofgleks/ui/shared';
+import { configurableBooleanAttribute } from '@guildofgleks/ui/shared';
+import {
+  type GogDropdownOption,
+  GogFilterableDropdownBase,
+} from '@guildofgleks/ui/shared/dropdown';
 import { GogRippleDirective } from '@guildofgleks/ui/ripple';
 import { IconComponent } from '@guildofgleks/ui/icon';
 import { ScrollComponent } from '@guildofgleks/ui/scroll';
-import { configurableBooleanAttribute } from '@guildofgleks/ui/shared';
 
 @Component({
   selector: 'gog-select',

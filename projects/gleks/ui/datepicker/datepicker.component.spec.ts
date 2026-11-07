@@ -4,7 +4,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 import { DatepickerComponent } from './datepicker.component';
 import { GOG_CONFIG } from '@guildofgleks/ui/shared';
-import type { GogDateRange } from '@guildofgleks/ui/shared';
+import type { GogDateRange } from '@guildofgleks/ui/shared/date';
 
 /** jsdom lays nothing out: puts an element's box wherever a test says it has scrolled to. */
 function placeAt(element: Element, top: number): void {

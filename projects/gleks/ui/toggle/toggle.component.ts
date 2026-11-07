@@ -10,8 +10,7 @@ import {
 } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 
-import { GogSize } from '@guildofgleks/ui/shared';
-import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
+import { GOG_CONFIG, GogSize, resolveConfigured } from '@guildofgleks/ui/shared';
 
 /** Built-in defaults, used when neither the instance input nor `GOG_CONFIG` supplies one. */
 const DEFAULT_SIZE: GogSize = 'md';

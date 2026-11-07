@@ -21,30 +21,33 @@ import {
 } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 
-import { GOG_CONFIG, resolveConfigured } from './config';
-import { GogDropdownOverlay } from './dropdown-overlay';
 import {
+  configurableBooleanAttribute,
+  GOG_CONFIG,
+  GogClearableState,
   type GogDropdownDirection,
+  GogDropdownOverlay,
   type GogDropdownPlacement,
   type GogDropdownTriggerRect,
-  resolveCssLengthPx,
-  resolveDropdownPlacement,
-} from './dropdown-position';
-import { GogClearableState } from './clearable-state';
-import { resolveRipple } from './ripple-state';
-import { GogErrorState, type GogErrorDisplay } from './error-state';
-import { type GogOptionAccessor, isSameOptionValue, readOption } from './option-accessor';
-import { GogFloatLabelState } from './float-label-state';
-import {
-  type RovingFocusKey,
+  type GogErrorDisplay,
+  GogErrorState,
+  GogFloatLabelState,
+  GogFloatLabelVariant,
+  type GogOptionAccessor,
+  gogScrolledOutOfView,
+  GogSize,
   handleRovingFocusKeydown,
   isRovingFocusKey,
+  isSameOptionValue,
   nextRovingFocusIndex,
-} from './roving-focus';
-import { gogScrolledOutOfView } from './scrolled-out-of-view';
-import { GogVirtualWindow } from './virtual-window';
-import { GogFloatLabelVariant, GogSize } from './types';
-import { configurableBooleanAttribute } from './config';
+  readOption,
+  resolveConfigured,
+  resolveCssLengthPx,
+  resolveDropdownPlacement,
+  resolveRipple,
+  type RovingFocusKey,
+} from '@guildofgleks/ui/shared';
+import { GogVirtualWindow } from '@guildofgleks/ui/shared/virtual';
 
 /** Context handed to a `gogDropdownChevron` template. */
 export interface GogDropdownChevronContext {

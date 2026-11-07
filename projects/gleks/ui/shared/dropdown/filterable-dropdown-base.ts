@@ -1,12 +1,15 @@
 import { Directive, Signal, computed, contentChild, input, signal } from '@angular/core';
 
-import { configurableBooleanAttribute, resolveConfigured } from './config';
+import {
+  configurableBooleanAttribute,
+  GogDropdownFilterPosition,
+  resolveConfigured,
+} from '@guildofgleks/ui/shared';
 import {
   GogDropdownBase,
   GogDropdownChevronDirective,
   type GogDropdownOption,
 } from './dropdown-base';
-import { GogDropdownFilterPosition } from './types';
 
 /** Built-in defaults, used when neither the instance input nor `GOG_CONFIG` supplies one. */
 const DEFAULT_FILTER = false;

@@ -21,10 +21,10 @@ import {
 import { IconComponent, type GogIconName } from '@guildofgleks/ui/icon';
 import {
   GOG_CONFIG,
+  type GogOptionAccessor,
   GogSize,
   readOption,
   resolveConfigured,
-  type GogOptionAccessor,
 } from '@guildofgleks/ui/shared';
 
 /**

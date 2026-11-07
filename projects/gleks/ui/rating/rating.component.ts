@@ -15,11 +15,11 @@ import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { IconComponent } from '@guildofgleks/ui/icon';
 import {
   GOG_CONFIG,
+  type GogErrorDisplay,
   GogErrorState,
   GogSize,
   nextGogControlId,
   resolveConfigured,
-  type GogErrorDisplay,
 } from '@guildofgleks/ui/shared';
 
 /** Built-in defaults, used when `GOG_CONFIG.labels` leaves them unset. */

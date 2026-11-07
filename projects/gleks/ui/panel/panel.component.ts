@@ -11,9 +11,13 @@ import {
   model,
 } from '@angular/core';
 
-import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
-import { nextGogControlId } from '@guildofgleks/ui/shared';
-import { GogSize, GogSurfaceVariant } from '@guildofgleks/ui/shared';
+import {
+  GOG_CONFIG,
+  GogSize,
+  GogSurfaceVariant,
+  nextGogControlId,
+  resolveConfigured,
+} from '@guildofgleks/ui/shared';
 import { CollapsibleComponent } from '@guildofgleks/ui/collapsible';
 import { GogCollapsibleContentDirective } from '@guildofgleks/ui/collapsible';
 import { GogCollapsibleTriggerDirective } from '@guildofgleks/ui/collapsible';

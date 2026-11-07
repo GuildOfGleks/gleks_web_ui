@@ -6,7 +6,7 @@ import { AutocompleteComponent } from './autocomplete.component';
 import { MultiselectComponent } from '@guildofgleks/ui/multiselect';
 import { SelectComponent } from '@guildofgleks/ui/select';
 import { GOG_CONFIG } from '@guildofgleks/ui/shared';
-import type { GogDropdownOption } from '@guildofgleks/ui/shared';
+import type { GogDropdownOption } from '@guildofgleks/ui/shared/dropdown';
 
 const OPTIONS: GogDropdownOption[] = [
   { id: 1, name: 'Angular' },

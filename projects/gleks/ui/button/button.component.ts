@@ -9,17 +9,18 @@ import {
 } from '@angular/core';
 
 import {
+  configurableBooleanAttribute,
+  GOG_CONFIG,
   GogAriaCurrent,
   GogAriaHasPopup,
   GogSeverity,
   GogSize,
   GogVariant,
+  resolveConfigured,
+  resolveRipple,
 } from '@guildofgleks/ui/shared';
-import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
-import { resolveRipple } from '@guildofgleks/ui/shared';
 import { GogRippleDirective } from '@guildofgleks/ui/ripple';
 import { SpinnerComponent } from '@guildofgleks/ui/spinner';
-import { configurableBooleanAttribute } from '@guildofgleks/ui/shared';
 
 const DEFAULT_DEBOUNCE = 300;
 /** Built-in default, used when neither the instance input nor `GOG_CONFIG` supplies one. */

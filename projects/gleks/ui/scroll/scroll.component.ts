@@ -17,11 +17,15 @@ import {
   booleanAttribute,
 } from '@angular/core';
 
-import { GogScrollAxis, GogScrollOverscrollBehavior, GogScrollSize } from '@guildofgleks/ui/shared';
-import { GOG_CONFIG } from '@guildofgleks/ui/shared';
-import { resolveLengthToken } from '@guildofgleks/ui/shared';
-import { configurableBooleanAttribute } from '@guildofgleks/ui/shared';
-import { gogWarnIfUnnamed } from '@guildofgleks/ui/shared';
+import {
+  configurableBooleanAttribute,
+  GOG_CONFIG,
+  GogScrollAxis,
+  GogScrollOverscrollBehavior,
+  GogScrollSize,
+  gogWarnIfUnnamed,
+  resolveLengthToken,
+} from '@guildofgleks/ui/shared';
 
 /** Snapshot of the viewport's native scroll geometry, emitted on every scroll/resize. */
 export interface GogScrollMetrics {
