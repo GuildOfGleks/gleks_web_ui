@@ -230,6 +230,26 @@ chunk fell from 78.3 to 62.3 kB minified; the dropdown base, virtual windows and
 the table page's lazy chunk. **Initial 116.6 kB transfer — and that is V0, the app unchanged, its
 imports still from the root.** The root's FESM is now only `export *` lines, and with no code of its
 own it no longer pins anything into the initial chunk: `inputfield`, `tag`, `toggle`, `textarea`
-landed in lazy chunks. This contradicts Part 2's row 2 for a root that holds code; it has to be
-re-checked (and the subpath-only variant measured) before iteration 5 writes it up, because if it
-holds, the opt-in contract is stronger than Part 3 says — a root import splits too.
+landed in lazy chunks.
+
+**Re-checked the same day, and it holds.** Walking the esbuild metafile from `main` along static
+imports only, the chunk holding `inputfield` is reached by a dynamic import and nothing else. Then
+the same copy with every import rewritten to a subpath (V3): **116.62 kB, byte for byte the V0
+figure** — the same seven initial chunks, the same per-entry-point sizes:
+
+| `@guildofgleks/ui` in the initial chunk, minified, V0 and V3 alike                                             |
+| -------------------------------------------------------------------------------------------------------------- |
+| shared 62.3 (48.7 of it the icon set), toast 14.6, scroll 13.7, dialog 13.6, spinner 7.8, button 3.3, icon 1.9 |
+
+So **Part 3's "opt-in is the whole contract" is too weak**: once the root holds no code of its own,
+an app that never touches a subpath splits by route as well, and 21.19.0's 143.5 kB becomes
+116.6 kB with no change to the app. Part 2's row 2 measured a root that re-exported _and_ shared a
+bundle with what it re-exported; a root whose FESM is only `export *` lines gives the CLI nothing
+to place. Not re-run against the probe to prove that is the difference.
+
+What this changes downstream: iteration 4's `README.md`/`CHANGELOG.md` text says an app gets this
+by upgrading, with subpaths recommended rather than required; and the rule that keeps it true is
+"the root's FESM holds no code" — a value or class defined in `src/` rather than re-exported would
+quietly reinstate Part 2's row 2. `check:layering` rule H now fails on that: `src/public-api.ts` may hold
+only `export * from '@guildofgleks/ui/<name>'` lines and `src/lib` no source (proven by planting a
+`const`, a named re-export and a file in `src/lib`).

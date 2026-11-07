@@ -33,6 +33,12 @@
  *                          helpers, the dropdown base and the virtual windows. The floor importing
  *                          one makes it eager again, with every build green
  *                          (docs/component-entry-points.md, iteration 2b).
+ *   H. root-holds-no-code
+ *                          `src/public-api.ts` is only `export * from '@guildofgleks/ui/<name>'`
+ *                          lines, and `src/lib` holds no source. Measured on a real app: a root
+ *                          of pure re-exports splits by route even for an app that imports
+ *                          nothing but the root; a root with code of its own does not
+ *                          (docs/component-entry-points.md, iteration 2b).
  *   E. split-imports-by-package
  *                          A split entry point's directory may not reach into `src/` or another
  *                          split directory by relative path. ng-packagr refuses an entry point that
@@ -257,6 +263,34 @@ async function main() {
           `      every app importing it from ${ROOT_PACKAGE} breaks (docs/component-entry-points.md)`,
       );
     }
+  }
+
+  // H. root-holds-no-code: the root's bundle must be nothing but `export *` from subpaths. A root
+  // with code of its own is a module the CLI places in the initial chunk together with whatever
+  // any lazy page uses through it; a root of re-exports gives it nothing to place, and an app
+  // importing only from the root splits by route as well (docs/component-entry-points.md, 2b).
+  const statements = publicApi
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/\/\/.*$/gm, '')
+    .split(';')
+    .map((s) => s.trim())
+    .filter(Boolean);
+  for (const statement of statements) {
+    if (!/^export \* from '@guildofgleks\/ui\/[a-z-]+'$/.test(statement)) {
+      problems.push(
+        `[root-holds-no-code] src/public-api.ts\n` +
+          `      \`${statement.replace(/\s+/g, ' ').slice(0, 80)}\` — the root may only \`export *\` from\n` +
+          `      a subpath. Code here makes the root a module of its own, and the CLI then puts\n` +
+          `      what lazy pages use through it in every app's initial chunk (a named re-export is\n` +
+          `      held to the same form: only the \`export *\` shape was measured)`,
+      );
+    }
+  }
+  for (const file of libFiles) {
+    problems.push(
+      `[root-holds-no-code] ${rel(file)}\n` +
+        `      src/lib holds source again — it belongs in an entry point beside src/`,
+    );
   }
 
   for (const [from, outs] of edges) {
