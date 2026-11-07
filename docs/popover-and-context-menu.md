@@ -55,3 +55,4 @@ because the geometry question is the same one.
 | #   | What                                                                                    | Status        |
 | --- | --------------------------------------------------------------------------------------- | ------------- |
 | 1   | `openAt` and DOM-read items on `gog-menu`; both components, specs, showcase pages, docs | ✅ 2026-10-18 |
+| 2   | A long press on `[gogContextMenu]` (iOS raises no `contextmenu`); specs, docs           | ✅ 2026-11-07 |

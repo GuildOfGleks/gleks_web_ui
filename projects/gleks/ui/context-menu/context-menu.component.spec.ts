@@ -146,6 +146,112 @@ describe('ContextMenuComponent', () => {
     expect(rightClick(file('a.txt')).defaultPrevented).toBe(false);
   });
 
+  describe('long press', () => {
+    beforeEach(() => vi.useFakeTimers());
+    afterEach(() => vi.useRealTimers());
+
+    function pointer(
+      type: string,
+      element: Element,
+      {
+        x = 60,
+        y = 40,
+        pointerType = 'touch',
+      }: { x?: number; y?: number; pointerType?: string } = {},
+    ): void {
+      const event = new MouseEvent(type, {
+        bubbles: true,
+        cancelable: true,
+        clientX: x,
+        clientY: y,
+      });
+      Object.defineProperties(event, {
+        pointerId: { value: 7 },
+        pointerType: { value: pointerType },
+        isPrimary: { value: true },
+      });
+      element.dispatchEvent(event);
+    }
+
+    /** Lets the timers run, then the menu render. */
+    async function hold(ms: number): Promise<void> {
+      await vi.advanceTimersByTimeAsync(ms);
+      fixture.detectChanges();
+      await vi.advanceTimersByTimeAsync(0);
+      fixture.detectChanges();
+    }
+
+    it('opens at the finger after half a second held still, with the resolved data', async () => {
+      pointer('pointerdown', file('b.txt'), { x: 60, y: 40 });
+      await hold(400);
+      expect(menu()).toBeNull();
+      await hold(150);
+      expect(menu()).not.toBeNull();
+      expect(items()[0].textContent?.trim()).toBe('Rename b.txt');
+    });
+
+    it('is not a long press when it drifts, lifts early, or is a mouse', async () => {
+      pointer('pointerdown', file('a.txt'), { x: 60, y: 40 });
+      pointer('pointermove', file('a.txt'), { x: 60, y: 60 });
+      await hold(600);
+      expect(menu()).toBeNull();
+
+      pointer('pointerdown', file('a.txt'));
+      await hold(200);
+      pointer('pointerup', file('a.txt'));
+      await hold(600);
+      expect(menu()).toBeNull();
+
+      pointer('pointerdown', file('a.txt'), { pointerType: 'mouse' });
+      await hold(600);
+      expect(menu()).toBeNull();
+    });
+
+    it('opens once when the platform raises contextmenu for the same press, either way round', async () => {
+      // Android after ours: the menu is already open, and the platform's event only stops its own.
+      pointer('pointerdown', file('a.txt'));
+      await hold(550);
+      const late = rightClick(file('a.txt'));
+      expect(late.defaultPrevented).toBe(true);
+      expect(document.querySelectorAll('.gog-menu').length).toBe(1);
+      pointer('pointerup', file('a.txt'));
+      await hold(600);
+
+      // Android before ours: the platform's event opens it, and the timer stands down.
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+      await hold(0);
+      pointer('pointerdown', file('b.txt'));
+      rightClick(file('b.txt'));
+      await hold(600);
+      expect(document.querySelectorAll('.gog-menu').length).toBe(1);
+    });
+
+    it('swallows the click the release makes, and only that one', async () => {
+      const clicks: string[] = [];
+      file('a.txt').addEventListener('click', () => clicks.push('a'));
+      pointer('pointerdown', file('a.txt'));
+      await hold(550);
+      pointer('pointerup', file('a.txt'));
+      file('a.txt').click();
+      expect(clicks).toEqual([]);
+      await hold(600);
+      file('a.txt').click();
+      expect(clicks).toEqual(['a']);
+    });
+
+    it('keeps to the resolver and to disabled', async () => {
+      pointer('pointerdown', document.getElementById('gap')!);
+      await hold(600);
+      expect(menu()).toBeNull();
+
+      fixture.componentInstance.disabled.set(true);
+      fixture.detectChanges();
+      pointer('pointerdown', file('a.txt'));
+      await hold(600);
+      expect(menu()).toBeNull();
+    });
+  });
+
   it('closes when the page scrolls under it', async () => {
     rightClick(file('a.txt'));
     await settle();

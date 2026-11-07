@@ -53,8 +53,11 @@ export class BreadcrumbsPage {
   protected readonly lastClick = signal('none yet');
 
   protected onCrumb(click: GogBreadcrumbClick<Crumb>): void {
-    // With a router: click.event.preventDefault(); this.router.navigateByUrl(click.item.href!);
-    click.event.preventDefault();
+    // With a router: the same, then this.router.navigateByUrl(click.item.href!). A modifier key
+    // asks the browser for a new tab or window, so that click is left to it.
+    const e = click.event;
+    if (click.item.href && (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey)) return;
+    e.preventDefault();
     this.lastClick.set(`${click.item.label} (index ${click.index})`);
   }
 

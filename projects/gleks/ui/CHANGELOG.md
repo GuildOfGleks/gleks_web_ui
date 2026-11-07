@@ -30,7 +30,7 @@ _Versioning_ section. Before 21.16.0 a minor could carry a breaking change, and 
     kept, the minute or day it was grabbed by staying under the pointer), drag its end edge to
     change the end, drag across empty slots or days to create an event. The event is drawn where it
     would land until let go, the hour grid scrolls near its edges, and Escape drops the drag. The
-    outputs are the menu's own. Touch keeps the context menu, which a long press opens on Android.
+    outputs are the menu's own. Touch keeps the context menu, which a long press opens.
   - **Agenda**, `view: 'agenda'`: the days that have events, as a list from the anchor day, for
     `agendaDays` (7) days; stepping moves by as many. A day's heading opens the day view.
   - **`loading`**: while the period's events are fetched, the grid stays drawn but goes inert and
@@ -63,7 +63,10 @@ _Versioning_ section. Before 21.16.0 a minor could carry a breaking change, and 
   where the pointer right-clicks, or under the focused element on the ContextMenu key or Shift+F10,
   and handed what was clicked: one value (`gogContextMenuData`) or one worked out from the clicked
   element (`gogContextMenuResolve`, where `null` leaves the browser's own menu). Its items are a
-  template that receives that data.
+  template that receives that data. A touch or pen held still for half a second opens it too —
+  iOS Safari raises no `contextmenu`, so this is the only way it opens on an iPhone or iPad — once
+  per press where Android raises its own, with the click the release makes swallowed and iOS's
+  link callout suppressed.
 - **`gog-menu`'s `openAt(point, returnFocusTo)`**, which opens it at a viewport point instead of
   under a trigger. Its items are now found in the rendered panel rather than through a content
   query, so items stamped from a template are arrowed between like the rest.

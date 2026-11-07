@@ -86,7 +86,11 @@ export class GogBreadcrumbItemDirective<T = unknown> {
 export interface GogBreadcrumbClick<T> {
   item: T;
   index: number;
-  /** `preventDefault()` it to navigate yourself — with a router, say — instead of following `href`. */
+  /**
+   * `preventDefault()` it to navigate yourself — with a router, say — instead of following `href`.
+   * Leave a click with a modifier key alone: Ctrl/Cmd/Shift/Alt ask the browser for a new tab or
+   * window, and only it can open one. A middle click raises no `click`, so it never arrives here.
+   */
   event: MouseEvent;
 }
 
@@ -162,7 +166,8 @@ export class BreadcrumbsComponent<T = unknown> {
 
   /**
    * A parent item of `items` was pressed. With a router, `preventDefault()` the event and navigate
-   * to the item yourself; without one, the link simply follows its `href`.
+   * to the item yourself — unless a modifier key is held, which asks for a new tab or window;
+   * without a router, the link simply follows its `href`.
    */
   readonly gogItemClick = output<GogBreadcrumbClick<T>>();
 

@@ -1966,9 +1966,8 @@ Drag across empty slots of one day, or across days, to create an event over them
 drawn where it would land until it is let go, the hour grid scrolls near its top and bottom, and
 Escape drops the drag. A press that travels under 4px is still a click. The outputs are the menu's
 own — `gogEventChange` with `change: 'move' | 'resize'`, `gogEventCreate` — and the click the
-release makes is swallowed. Touch is left to the context menu, since a long press is how Android
-opens it; iOS Safari raises no `contextmenu`, so on iPhone and iPad an editable scheduler has no
-editing path yet.
+release makes is swallowed. Touch is left to the context menu, which a long press opens on every
+platform, so a drag would have to compete with it for the same gesture.
 
 **Editing** (`readonly` off; it is on by default). A right-click — or the ContextMenu key, or
 Shift+F10 — opens a `gog-context-menu`: **New event** on an empty slot or day (`gogEventCreate`,
@@ -2225,8 +2224,11 @@ trail = [
   { label: '#1042' }, // the current page: drawn as text with aria-current="page"
 ];
 
-// The package has no router dependency. With a router, take over the navigation:
+// The package has no router dependency. With a router, take over the navigation — but not a
+// Ctrl/Cmd/Shift/Alt click, which the browser opens in a new tab or window. (A middle click
+// raises no `click` at all, so it always reaches the browser.)
 go({ item, event }: GogBreadcrumbClick<Crumb>) {
+  if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
   event.preventDefault();
   this.router.navigateByUrl(item.href!);
 }
@@ -2742,8 +2744,9 @@ opens.
 
 #### `gog-context-menu` + `[gogContextMenu]` / `gogContextMenuContent`
 
-Since 21.20.0. `gog-menu` opened where the pointer right-clicks — or, from the keyboard, under the
-focused element on the ContextMenu key or **Shift+F10** — and handed data about what was clicked.
+Since 21.20.0. `gog-menu` opened where the pointer right-clicks, where a touch or pen is **held
+still for 500ms** — or, from the keyboard, under the focused element on the ContextMenu key or
+**Shift+F10** — and handed data about what was clicked.
 The panel, items, keyboard, styling and tokens are `gog-menu`'s (`gogMenuItem` buttons,
 `--gog-menu-*`).
 
@@ -2782,6 +2785,13 @@ data as `let-x` (typed through `gogContextMenuContentTypeOf`), or straight betwe
 they do not depend on it. Focus goes to the first item and comes back to what was clicked; the menu
 closes on Escape, Tab, a press elsewhere, or a page scroll. **Make every action reachable another
 way as well** — a right-click is a shortcut, not the only door.
+
+**Long press.** iOS Safari never raises `contextmenu`, so the trigger times a touch or pen press
+itself: held within 10px for 500ms, it opens the menu at the finger. Android raises its own
+`contextmenu` for the same hold; whichever arrives first opens the menu and the other is swallowed,
+so it opens once. The click the release makes is swallowed too, so the row pressed is not also
+activated, and the trigger sets `-webkit-touch-callout: none` so iOS draws no link or image callout
+over it. A mouse is never timed. `gogContextMenuDisabled` turns this off with the rest.
 
 #### `gog-popover` + `[gogPopoverTrigger]`
 

@@ -54,9 +54,8 @@ full-page event calendar, it is `gog-scheduler`" (decided 2026-10-03, so a plan 
 ## What it does not do
 
 - No recurring events (the app expands them into `events`), no resource columns.
-- **No drag on touch** (iteration 4): a long press is Android's context menu. iOS Safari raises no
-  `contextmenu`, so an editable scheduler has no editing path on iPhone or iPad until
-  `gog-context-menu` learns a long press of its own (`docs/backlog.md`, Gaps).
+- **No drag on touch** (iteration 4): a long press opens the context menu, which is the touch
+  path to editing — on iOS too, since `gog-context-menu` times the press itself (2026-11-07).
 
 ## Iterations
 
@@ -185,4 +184,6 @@ console error.
 **Touch is the gap.** The plan was a long press to start a drag. It conflicts with the long press
 Android already uses to open the context menu — the only touch path to editing — and on iOS there
 is no `contextmenu` at all, so editing has no touch path there either way. Both are the context
-menu's problem, not the scheduler's, and are filed in `docs/backlog.md`.
+menu's problem, not the scheduler's, and were filed in `docs/backlog.md`. **Closed the same day:**
+`gog-context-menu` now times a touch or pen press itself, so a long press opens it on iOS as well,
+once per press on Android.

@@ -32,8 +32,10 @@
       <code>itemIcon</code> (<code>'label'</code>, <code>'href'</code>, <code>'icon'</code> by
       default), so your own objects work as they are. A parent with no <code>href</code> — "Europe"
       here — is a button that only emits <code>gogItemClick</code>. With a router,
-      <code>preventDefault()</code> that event and navigate yourself; this page does, and prints
-      what was pressed. <code>maxItems</code> collapses an array exactly as it collapses elements.
+      <code>preventDefault()</code> that event and navigate yourself — except when Ctrl, Cmd, Shift
+      or Alt is held, which asks the browser for a new tab or window. This page does exactly that,
+      and prints what was pressed; a middle click raises no <code>click</code>, so it always opens a
+      new tab. <code>maxItems</code> collapses an array exactly as it collapses elements.
     </p>
     <div class="breadcrumbs-page__stack">
       <gog-breadcrumbs [items]="trail" (gogItemClick)="onCrumb($event)" />

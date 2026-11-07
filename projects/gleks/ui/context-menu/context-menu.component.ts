@@ -2,6 +2,7 @@ import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   Directive,
   ElementRef,
   TemplateRef,
@@ -130,6 +131,11 @@ export class ContextMenuComponent<T = unknown> {
   }
 }
 
+/** How long a touch or a pen must be held still to open the menu, in milliseconds. */
+const LONG_PRESS_MS = 500;
+/** How far it may drift meanwhile and still be a press rather than a scroll or a drag, in px. */
+const LONG_PRESS_SLOP = 10;
+
 /** The element focus should go back to: `source` if it takes focus, else its nearest ancestor that does. */
 function focusableFor(source: HTMLElement): HTMLElement {
   return source.closest<HTMLElement>(GOG_FOCUSABLE) ?? source;
@@ -147,12 +153,23 @@ function focusableFor(source: HTMLElement): HTMLElement {
  * `gogContextMenuData` hands the menu one value. `gogContextMenuResolve` works it out from the
  * element that was clicked instead — one listener on a list rather than one per row — and
  * returning `null` or `undefined` from it leaves the browser's own menu alone for that spot.
+ *
+ * **A long press opens it too**, with a touch or a pen held still for half a second. Android
+ * raises `contextmenu` for a long press itself; iOS Safari never does, so without this an iPhone
+ * or iPad had no way to open the menu at all. Whichever comes first opens it, once per press, and
+ * the click the finger's release makes is swallowed, so the element pressed is not also activated.
  */
 @Directive({
   selector: '[gogContextMenu]',
   host: {
     '(contextmenu)': 'onContextMenu($event)',
     '(keydown)': 'onKeydown($event)',
+    '(pointerdown)': 'onPointerDown($event)',
+    '(pointermove)': 'onPointerMove($event)',
+    '(pointerup)': 'endPress()',
+    '(pointercancel)': 'endPress()',
+    // iOS draws its own callout (open link, save image) for the same hold; the menu replaces it.
+    '[style.-webkit-touch-callout]': "disabled() ? null : 'none'",
   },
 })
 export class GogContextMenuTriggerDirective<T = unknown> {
@@ -169,11 +186,110 @@ export class GogContextMenuTriggerDirective<T = unknown> {
 
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
 
+  /** A touch or pen press that may become a long press. */
+  private press: { pointerId: number; x: number; y: number; target: HTMLElement } | null = null;
+  private pressTimer: ReturnType<typeof setTimeout> | null = null;
+  /** The current press already opened the menu — by the timer or by the platform's own event. */
+  private pressOpened = false;
+  /** The click the release of a long press makes, to be swallowed. */
+  private swallowClick = false;
+
+  constructor() {
+    // Capture phase: the element pressed must not see the click a long press ends in.
+    const onClick = (event: Event) => {
+      if (!this.swallowClick) return;
+      this.swallowClick = false;
+      event.stopPropagation();
+      event.preventDefault();
+    };
+    // iOS starts selecting text on the same hold; a press that is opening a menu is not a selection.
+    const onSelectStart = (event: Event) => {
+      if (this.press) event.preventDefault();
+    };
+    this.host.addEventListener('click', onClick, true);
+    this.host.addEventListener('selectstart', onSelectStart);
+    inject(DestroyRef).onDestroy(() => {
+      this.clearTimer();
+      this.host.removeEventListener('click', onClick, true);
+      this.host.removeEventListener('selectstart', onSelectStart);
+    });
+  }
+
+  protected onPointerDown(event: PointerEvent): void {
+    this.cancelPress();
+    this.pressOpened = false;
+    this.swallowClick = false;
+    if (event.pointerType !== 'touch' && event.pointerType !== 'pen') return;
+    if (!event.isPrimary || this.disabled()) return;
+    this.press = {
+      pointerId: event.pointerId,
+      x: event.clientX,
+      y: event.clientY,
+      target: this.targetOf(event),
+    };
+    this.pressTimer = setTimeout(() => this.longPress(), LONG_PRESS_MS);
+  }
+
+  protected onPointerMove(event: PointerEvent): void {
+    const press = this.press;
+    if (!press || event.pointerId !== press.pointerId) return;
+    if (Math.hypot(event.clientX - press.x, event.clientY - press.y) > LONG_PRESS_SLOP) {
+      this.cancelPress();
+    }
+  }
+
+  /** The finger lifted, or a scroll took the touch: the press is over, and so is its timer. */
+  protected endPress(): void {
+    this.clearTimer();
+    this.press = null;
+    if (!this.pressOpened && !this.swallowClick) return;
+    // The click a release makes comes right after it, and Android may still be about to raise
+    // `contextmenu`; past that, a right-click or the menu key is a new request again.
+    setTimeout(() => {
+      this.pressOpened = false;
+      this.swallowClick = false;
+    }, LONG_PRESS_MS);
+  }
+
+  /** Moved too far to be a press — a scroll or a drag. */
+  private cancelPress(): void {
+    this.clearTimer();
+    this.press = null;
+  }
+
+  private longPress(): void {
+    const press = this.press;
+    this.pressTimer = null;
+    if (!press || this.pressOpened) return;
+    const data = this.dataFor(press.target);
+    if (data === undefined) return;
+    this.pressOpened = true;
+    this.swallowClick = true;
+    this.host.ownerDocument.getSelection?.()?.removeAllRanges();
+    this.menu().openAt({ x: press.x, y: press.y }, press.target, data);
+  }
+
+  private clearTimer(): void {
+    if (this.pressTimer !== null) clearTimeout(this.pressTimer);
+    this.pressTimer = null;
+  }
+
   protected onContextMenu(event: MouseEvent): void {
+    // The platform's own long press (Android) after — or before — ours: one menu per press.
+    if (this.pressOpened) {
+      event.preventDefault();
+      return;
+    }
     const target = this.targetOf(event);
     const data = this.dataFor(target);
     if (data === undefined) return;
     event.preventDefault();
+    if (this.press) {
+      // Android's long press arrived first: it opens the menu, and the timer stands down.
+      this.pressOpened = true;
+      this.swallowClick = true;
+      this.clearTimer();
+    }
     // A keyboard-raised `contextmenu` event (some platforms fire one) has no pointer position.
     if (event.clientX === 0 && event.clientY === 0 && event.button !== 2) {
       this.menu().openFor(target, data);

@@ -35,7 +35,9 @@ delete the section too.
   `routerLink` on the element. Source: `AGENTS.md`, `docs/breadcrumbs.md` iteration 2.
 - **Two new overlay pages, Popover and Context menu**, from the root — route, nav, SEO and
   overview entries as for any page, sourced from `AGENTS.md` and `docs/popover-and-context-menu.md`.
-  The Menu page gains `openAt()` in its methods list.
+  The Menu page gains `openAt()` in its methods list. The Context menu page says a long press opens
+  it on touch (iOS included) and that the release's click is swallowed. The Breadcrumbs page's
+  router example leaves a Ctrl/Cmd/Shift/Alt click to the browser, as `AGENTS.md`'s does.
 - **The Scheduler page also covers iteration 2** (`docs/scheduler.md`): bars across the week,
   `monthEventLimit`/`moreEventsAction`/`readonly` and the `GOG_CONFIG.scheduler` key, "+N more" in
   a popover, and an editable demo that applies `gogEventCreate`/`Delete`/`Change` to its own array.
@@ -43,7 +45,7 @@ delete the section too.
 - **The Scheduler page also covers iteration 4** (`docs/scheduler.md`): `view: 'agenda'` and
   `agendaDays`, with a demo; `loading`, with a demo that loads on `gogRangeChange` (the showcase's
   900ms one is the model); drag-and-drop in the editing demo's prose — mouse and pen only, and why
-  touch keeps the menu (and that iOS has no path yet). Inputs table: `agendaDays`, `loading`,
+  touch keeps the menu, which a long press opens on iOS too. Inputs table: `agendaDays`, `loading`,
   `views` defaulting to all four. Global Config page: `agendaView`, `noEvents`, `loadingEvents`.
   Token reference: the six new `--gog-scheduler-*` tokens.
 - **Every place that describes the entry points**, rewritten for the per-component subpaths

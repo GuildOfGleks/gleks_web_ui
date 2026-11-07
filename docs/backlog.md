@@ -617,16 +617,14 @@ a page and inside a card.
 
 Each is additive: nothing here breaks an existing consumer, and none blocks another.
 
-- **`gog-context-menu` has no touch gesture of its own, so on iOS it never opens** (found
-  2026-11-07, while adding drag-and-drop to `gog-scheduler`). The trigger listens for the native
-  `contextmenu` event, which Android Chrome fires on a long press and iOS Safari does not fire at
-  all. Every editing action of an editable `gog-scheduler` goes through that menu on touch —
-  drag-and-drop is mouse and pen only, deliberately, so it does not take Android's long press away
-  from the menu — which leaves an iPhone or iPad with no way to create, move or delete an event.
-  The fix belongs in the trigger, not the scheduler: a long press (a touch held ~500ms without
-  moving) raising the same `openAt()`, skipped where the platform will raise `contextmenu` itself,
-  so Android does not open it twice. Needs a device to verify on; jsdom cannot tell the two
-  platforms apart.
+- ~~**`gog-context-menu` has no touch gesture of its own, so on iOS it never opens**~~ **Done
+  2026-11-07, for 21.20.0.** Found while adding drag-and-drop to `gog-scheduler`: the trigger only
+  listened for `contextmenu`, which iOS Safari never fires. It now times a touch or pen press itself
+  (500ms within 10px) and opens through the same path; where Android raises its own `contextmenu`
+  for the hold, whichever comes first opens the menu and the other is swallowed. Covered by specs
+  under fake timers; **still unverified on a real iPhone and a real Android device**, which is the
+  one thing jsdom and desktop Chrome cannot stand in for — the order Android raises `contextmenu`
+  against the 500ms timer, and whether iOS honours `-webkit-touch-callout: none` on the trigger.
 
 - ~~**A selectable chip.**~~ **Shipped in 21.9.0** as `[(selected)]`, and the entry's own argument
   is what it was built to: the look and the semantics landed together, an inset ring
