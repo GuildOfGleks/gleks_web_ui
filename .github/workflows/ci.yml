@@ -165,6 +165,11 @@ jobs:
       - name: Bundles load in Node
         run: npm run check:bundle-import
 
+      # Every root export must also be on a public subpath: an app splits by route only when all of
+      # its imports are subpaths, so a root-only export forces it back (docs/component-entry-points.md).
+      - name: Every root export on a subpath
+        run: npm run check:subpaths
+
       - name: Test @gleks/ui
         run: npm run test:lib
 

@@ -87,14 +87,15 @@ only if **the library's own code** never imports the root either: a subpath that
 
 ## Iterations
 
-| #   | What                                                                                                                                                         | Status        |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------- |
-| 0   | Part 1 and Part 2 — measure before moving anything                                                                                                           | ✅ 2026-11-07 |
-| 1   | Pilot: `icon`, `tag`, `toggle`, `textarea` as entry points, re-exported by the root; installed into the admin copy and measured                              | ✅ 2026-11-07 |
-| 2   | `shared` split by concern, so `provideGogConfig` does not bring the dropdown base, the icon set and the date helpers; subpaths for what an app shell imports |               |
-| 3   | Every other component, all at once (a staged move leaves a not-yet-moved dependency unreachable by subpath); the heavy units' imports                        | ✅ 2026-11-07 |
-| 4   | Rules: `check:layering`, `check:install`'s `SMOKE`, `library-sources.mjs`; docs (`README.md`, `AGENTS.md`, `CHANGELOG.md`) and the lab checklist             |               |
-| 5   | The admin app rebuilt against the local package with every import a subpath; the number published here                                                       |               |
+| #   | What                                                                                                                                                                                                           | Status        |
+| --- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| 0   | Part 1 and Part 2 — measure before moving anything                                                                                                                                                             | ✅ 2026-11-07 |
+| 1   | Pilot: `icon`, `tag`, `toggle`, `textarea` as entry points, re-exported by the root; installed into the admin copy and measured                                                                                | ✅ 2026-11-07 |
+| 2a  | A public subpath for every value and type the root takes from `shared` (`/config`, `/date`, `/dropdown`, `/tokens`, the icon registry on `/icon`, each component's own types on its subpath); `check:subpaths` | ✅ 2026-11-07 |
+| 2b  | `shared` split by concern, so an eager `/icon` or `/config` does not bring the dropdown base, the date helpers and the virtual windows (about 25 kB minified, 9 kB transfer, in the admin app)                 |               |
+| 3   | Every other component, all at once (a staged move leaves a not-yet-moved dependency unreachable by subpath); the heavy units' imports                                                                          | ✅ 2026-11-07 |
+| 4   | Rules: `check:layering`, `check:install`'s `SMOKE`, `library-sources.mjs`; docs (`README.md`, `AGENTS.md`, `CHANGELOG.md`) and the lab checklist                                                               |               |
+| 5   | The admin app rebuilt against the local package with every import a subpath; the number published here                                                                                                         |               |
 
 **Iteration 1 decides whether the rest happens.** If ng-packagr refuses a primary that re-exports
 secondaries, or the linked partial code does not split the way the probe did, the plan stops and
@@ -178,3 +179,37 @@ directories now. Test and coverage globs are wildcards (`../*/**/*.spec.ts`,
 
 What is left is what the shell renders — the toast container and the dialog with their closure —
 and `shared`, which is now the largest single input from this library in the initial chunk.
+
+### As 2a finished
+
+**An app that imports only subpaths could not exist until this step**: 36 values and 48 types the
+root exports — `provideGogConfig`, `provideGogIcons`, the date helpers, the dropdown base classes,
+`GOG_TOKEN_GROUPS`, `GogSize` — were reachable only from the root or from the internal `/shared`.
+Each now has a public subpath: four new thin ones (`/config`, `/date`, `/dropdown`, `/tokens`), the
+icon registry on `/icon`, and every component-specific type on its component's subpath
+(`GogTagVariant` on `/tag`). They are named lists over `shared`, so `shared` stays internal and the
+"adding a line here is the choosing" rule the root's date list carried moved with it into `/date`.
+The root takes `export *` from the four and has no import of `shared` left. Its export list is still
+the same 185 names as `master`'s.
+
+**`npm run check:subpaths`** (a CI step after `build:lib`) reads the built `.d.ts` and fails on a
+root export that no public subpath carries — the next helper added to `src/public-api.ts` straight
+from `shared` would otherwise force every subpath-only app back onto the root with every build
+green. Proven by planting `getByPath` in the root. It also fails on two subpaths exporting one name
+from different declarations, which would make the root's `export *` ambiguous.
+
+The admin app with `provideGogConfig` from `/config` and `provideGogIcons` from `/icon`:
+**127.3 kB**, the same as V3 — the subpaths are free.
+
+**What is in that `shared` 78 kB**, by minifying each of its files alone (an upper bound per file;
+the source-map attribution through the FESM was not precise enough on minified lines):
+
+| Part of `shared`                                                       | Minified | gzip   | Eager in the admin app because                      |
+| ---------------------------------------------------------------------- | -------- | ------ | --------------------------------------------------- |
+| `icons.ts` — the 136 built-in icons                                    | 48.7 kB  | 6.9 kB | `gog-icon` is in the toast and the dialog: it stays |
+| the dropdown base (`dropdown-base`, `filterable-…`, overlay, position) | ~17 kB   | ~6 kB  | `shared` is one module                              |
+| `date-utils`, `time-zone`                                              | 4.7 kB   | 2.1 kB | `shared` is one module                              |
+| `virtual-window`, `variable-window`                                    | 3.3 kB   | 1.3 kB | `shared` is one module                              |
+
+`token-names.ts` (58.9 kB) is not in the initial chunk: nothing eager uses `GOG_TOKEN_GROUPS`, and
+the unused part of a module still shakes. Iteration 2b is the three "one module" rows.

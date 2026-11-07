@@ -4,3 +4,4 @@
 export * from './toast.component';
 export * from './toast-container/toast-container.component';
 export * from './toast-service';
+export type { ToastPosition } from '@guildofgleks/ui/shared';

@@ -3,3 +3,4 @@
  */
 export * from './spinner-overlay/spinner-overlay.component';
 export * from './spinner.component';
+export type { GogSpinnerVariant } from '@guildofgleks/ui/shared';

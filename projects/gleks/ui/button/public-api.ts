@@ -3,3 +3,4 @@
  */
 export * from './button.component';
 export * from './button.directive';
+export type { GogAriaCurrent, GogAriaHasPopup } from '@guildofgleks/ui/shared';
