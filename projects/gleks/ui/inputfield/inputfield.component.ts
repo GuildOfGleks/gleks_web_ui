@@ -9,14 +9,16 @@ import {
   effect,
   inject,
   input,
+  isDevMode,
   model,
   type Signal,
   signal,
   viewChild,
   type WritableSignal,
   booleanAttribute,
+  untracked,
 } from '@angular/core';
-import { ControlValueAccessor, NgControl } from '@angular/forms';
+import { type AbstractControl, ControlValueAccessor, NgControl } from '@angular/forms';
 
 import {
   configurableBooleanAttribute,
@@ -33,6 +35,14 @@ import {
   resolveConfigured,
 } from '@guildofgleks/ui/shared';
 import { IconComponent, type GogIconName } from '@guildofgleks/ui/icon';
+import {
+  type GogMask,
+  type GogMaskTokens,
+  type GogMaskValue,
+  GogMaskController,
+  compileMask,
+  gogMaskValidator,
+} from '@guildofgleks/ui/mask';
 
 /** Built-in defaults, used when neither the instance input nor `GOG_CONFIG` supplies one. */
 const DEFAULT_SIZE: GogSize = 'md';
@@ -158,6 +168,22 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
   readonly decrementLabel = input<string | undefined>(undefined);
   readonly errorMessage = input('');
   /**
+   * Formats the value to a fixed shape as it is typed — the same engine as `[gogMask]`, whose
+   * JSDoc has the pattern language: `0` a digit, `a` a letter, `*` either, `\` escapes, anything
+   * else a literal; an array for a value whose length varies. Unset (`null`), no mask. Has no
+   * effect on `type="number"` or `"password"`.
+   */
+  readonly mask = input<GogMask | null>(null);
+  /** Extra slot characters for `mask`, or overrides of `0`, `a` and `*`: `{ H: /[0-9a-f]/i }`. */
+  readonly maskTokens = input<GogMaskTokens>({});
+  /**
+   * What a form gets from a masked field, and how a value written into it is read: the slot
+   * characters alone (`'raw'`, the default) or the text as shown (`'formatted'`). The `value`
+   * model is always the text as shown. A non-empty value that fills no pattern puts
+   * `{ gogMask: { actual, required } }` on the field's form control.
+   */
+  readonly maskValue = input<GogMaskValue>('raw');
+  /**
    * See `GogErrorDisplay`. Unset, falls back to `GOG_CONFIG.control.errorDisplay`, then to
    * `'manual'` — matching every other control in the library.
    */
@@ -233,6 +259,28 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
     this.ngControl,
   );
   private readonly passwordVisible = signal(false);
+  private readonly fieldElement = viewChild<ElementRef<HTMLInputElement>>('field');
+  protected readonly compiledMask = computed(() => {
+    const mask = this.mask();
+    if (!mask || mask.length === 0 || this.type() === 'number' || this.type() === 'password') {
+      return null;
+    }
+    return compileMask(mask, this.maskTokens());
+  });
+  private readonly maskController = new GogMaskController(
+    () => this.fieldElement()?.nativeElement,
+    () => this.compiledMask(),
+  );
+  private readonly maskValidator = gogMaskValidator(
+    () => this.compiledMask(),
+    () => this.maskValue(),
+  );
+  /** The form control the mask validator was added to — a `formControl` binding can swap it. */
+  private maskValidated: AbstractControl | null = null;
+  /** A digits-only mask asks for the numeric keyboard, unless `inputMode` says otherwise. */
+  protected readonly effectiveInputMode = computed(
+    () => this.inputMode() ?? (this.compiledMask()?.numeric ? 'numeric' : null),
+  );
   /** Set from `(focus)`/`(blur)` on the `<input>` — see `onFocus`/`onBlur`. */
   protected readonly isFocused = signal(false);
 
@@ -422,14 +470,66 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
     }
     trackWidth(this.addonStartSlot, this.addonStartWidth);
     trackWidth(this.addonEndSlot, this.addonEndWidth);
+
+    // A value bound from outside (`[value]`, no form) is conformed like a typed one; the
+    // field's own writes already are, and are recognised by being the controller's display.
+    effect(() => {
+      const value = this.value();
+      const compiled = this.compiledMask();
+      untracked(() => {
+        if (!compiled || value === this.maskController.state.display) return;
+        this.value.set(this.maskController.write(value, false).display);
+      });
+    });
+    // A new pattern re-shapes what is there and re-judges it.
+    effect(() => {
+      this.compiledMask();
+      untracked(() => {
+        const { raw } = this.maskController.state;
+        const state = raw
+          ? this.maskController.write(raw, true)
+          : this.maskController.write(this.value(), false);
+        this.value.set(state.display);
+        this.maskValidated?.updateValueAndValidity();
+      });
+    });
+    effect(() => {
+      const type = this.type();
+      if (isDevMode() && this.mask() && (type === 'number' || type === 'password')) {
+        console.warn(
+          `gog-inputfield: mask has no effect with type="${type}" — a number input exposes no ` +
+            'caret, and a password has no shape to show. Use type="text" or "tel".',
+        );
+      }
+    });
   }
 
   ngDoCheck(): void {
     this.errorState.check();
+    this.attachMaskValidator();
+  }
+
+  /**
+   * Puts the mask's validator on the field's form control. Here rather than in `ngOnInit`: a
+   * `formControl` directive on the same element gets its control after this component's init.
+   * Validity is refreshed a microtask later, outside the check that found the control.
+   */
+  private attachMaskValidator(): void {
+    const control = this.ngControl?.control ?? null;
+    if (!control || control === this.maskValidated) return;
+    this.maskValidated?.removeValidators(this.maskValidator);
+    control.addValidators(this.maskValidator);
+    this.maskValidated = control;
+    queueMicrotask(() => control.updateValueAndValidity());
   }
 
   writeValue(val: string | number | null): void {
-    this.value.set(val === null || val === undefined ? '' : String(val));
+    const text = val === null || val === undefined ? '' : String(val);
+    if (this.compiledMask()) {
+      this.value.set(this.maskController.write(text, this.maskValue() === 'raw').display);
+      return;
+    }
+    this.value.set(text);
   }
 
   registerOnChange(fn: (val: string | number | null) => void): void {
@@ -450,6 +550,11 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
 
   onInput(event: Event): void {
     const input = event.target as HTMLInputElement;
+    if (this.compiledMask()) {
+      // `null` while an IME composition is open: the text is not final, so nothing is emitted.
+      this.emitMasked(this.maskController.input());
+      return;
+    }
     this.value.set(input.value);
 
     if (this.isNumberField()) {
@@ -458,6 +563,24 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
     }
 
     this._onChange(input.value);
+  }
+
+  protected onKeydown(event: KeyboardEvent): void {
+    this.emitMasked(this.maskController.keydown(event));
+  }
+
+  protected onCompositionStart(): void {
+    this.maskController.compositionStart();
+  }
+
+  protected onCompositionEnd(): void {
+    this.emitMasked(this.maskController.compositionEnd());
+  }
+
+  private emitMasked(state: { display: string } | null): void {
+    if (!state) return;
+    this.value.set(state.display);
+    this._onChange(this.maskController.value(this.maskValue()));
   }
 
   /** Increments (`direction: 1`) or decrements (`direction: -1`) by `step`, clamped to min/max. */
@@ -488,6 +611,7 @@ export class InputfieldComponent implements ControlValueAccessor, DoCheck {
   protected clearValue(event: Event): void {
     event.preventDefault();
     event.stopPropagation();
+    this.maskController.write('', true);
     this.value.set('');
     this._onChange(this.isNumberField() ? null : '');
     this._onTouched();

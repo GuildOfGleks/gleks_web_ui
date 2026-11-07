@@ -38,6 +38,7 @@
       </span>
     }
     <input
+      #field
       class="gog-input__field"
       [class.gog-input__field--error]="hasError()"
       [class.gog-input__field--spin-hidden]="isNumberField()"
@@ -55,11 +56,14 @@
       [attr.maxlength]="maxlength()"
       [attr.minlength]="minlength()"
       [attr.pattern]="pattern() || null"
-      [attr.inputmode]="inputMode()"
+      [attr.inputmode]="effectiveInputMode()"
       [attr.spellcheck]="spellcheck()"
       [attr.aria-invalid]="hasError()"
       [attr.aria-describedby]="errorId()"
       (input)="onInput($event)"
+      (keydown)="onKeydown($event)"
+      (compositionstart)="onCompositionStart()"
+      (compositionend)="onCompositionEnd()"
       (focus)="onFocus()"
       (blur)="onBlur()"
     />

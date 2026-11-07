@@ -28,6 +28,7 @@ export * from '@guildofgleks/ui/toggle';
 export * from '@guildofgleks/ui/radio-group';
 export * from '@guildofgleks/ui/icon';
 export * from '@guildofgleks/ui/toast';
+export * from '@guildofgleks/ui/mask';
 export * from '@guildofgleks/ui/inputfield';
 export * from '@guildofgleks/ui/textarea';
 export * from '@guildofgleks/ui/chip';

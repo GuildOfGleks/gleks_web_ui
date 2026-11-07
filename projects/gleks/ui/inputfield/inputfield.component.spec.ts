@@ -1004,4 +1004,132 @@ describe('InputfieldComponent', () => {
       expect(container().style.getPropertyValue('--input-addon-start-width')).toBe('57px');
     });
   });
+
+  describe('mask', () => {
+    const PHONE = '+38 (000) 000-00-00';
+
+    @Component({
+      imports: [InputfieldComponent, ReactiveFormsModule],
+      template: `<gog-inputfield
+        [mask]="mask()"
+        [maskValue]="kind()"
+        [inputMode]="mode()"
+        [clearable]="true"
+        [formControl]="control"
+      />`,
+    })
+    class MaskHost {
+      readonly mask = signal<string | null>(PHONE);
+      readonly kind = signal<'raw' | 'formatted'>('raw');
+      readonly mode = signal<'text' | null>(null);
+      readonly control = new FormControl<string | null>('', Validators.required);
+    }
+
+    let host: ComponentFixture<MaskHost>;
+    let field: HTMLInputElement;
+
+    function type(text: string, caret = text.length): void {
+      field.value = text;
+      field.setSelectionRange(caret, caret);
+      field.dispatchEvent(new Event('input', { bubbles: true }));
+      host.detectChanges();
+    }
+
+    beforeEach(async () => {
+      host = TestBed.createComponent(MaskHost);
+      host.detectChanges();
+      await host.whenStable();
+      field = host.nativeElement.querySelector('input');
+      field.focus();
+    });
+
+    it('formats what is typed and hands the form the raw value', () => {
+      type('050123');
+      expect(field.value).toBe('+38 (050) 123');
+      expect(host.componentInstance.control.value).toBe('050123');
+    });
+
+    it('formats a raw value written in', () => {
+      host.componentInstance.control.setValue('0671234567');
+      host.detectChanges();
+      expect(field.value).toBe('+38 (067) 123-45-67');
+    });
+
+    it('hands over the formatted text with maskValue "formatted"', () => {
+      host.componentInstance.kind.set('formatted');
+      host.detectChanges();
+      type('0501');
+      expect(host.componentInstance.control.value).toBe('+38 (050) 1');
+    });
+
+    it('steps Backspace over a literal', () => {
+      type('+38 (050) 12');
+      field.setSelectionRange(10, 10);
+      field.dispatchEvent(new KeyboardEvent('keydown', { key: 'Backspace', cancelable: true }));
+      host.detectChanges();
+      expect(field.value).toBe('+38 (051) 2');
+      expect(host.componentInstance.control.value).toBe('0512');
+    });
+
+    it('puts an incomplete value in error on the form control', async () => {
+      type('050');
+      await host.whenStable();
+      expect(host.componentInstance.control.errors).toEqual({
+        gogMask: { actual: 3, required: 10 },
+      });
+      type('0501234567');
+      expect(host.componentInstance.control.errors).toBeNull();
+    });
+
+    it('re-judges the value when the pattern changes, and lets it go when the mask is removed', async () => {
+      type('0501234567');
+      host.componentInstance.mask.set('000-000-00000');
+      host.detectChanges();
+      await host.whenStable();
+      expect(field.value).toBe('050-123-4567');
+      expect(host.componentInstance.control.errors).toEqual({
+        gogMask: { actual: 10, required: 11 },
+      });
+      host.componentInstance.mask.set(null);
+      host.detectChanges();
+      await host.whenStable();
+      expect(host.componentInstance.control.errors).toBeNull();
+    });
+
+    it('asks for the numeric keyboard for a digits-only mask, unless inputMode is set', () => {
+      expect(field.getAttribute('inputmode')).toBe('numeric');
+      host.componentInstance.mode.set('text');
+      host.detectChanges();
+      expect(field.getAttribute('inputmode')).toBe('text');
+    });
+
+    it('clears to empty', () => {
+      type('050');
+      (host.nativeElement.querySelector('.gog-input__clear') as HTMLButtonElement).click();
+      host.detectChanges();
+      expect(field.value).toBe('');
+      expect(host.componentInstance.control.value).toBe('');
+      type('1');
+      expect(field.value).toBe('+38 (1');
+    });
+
+    it('conforms a value bound without a form', async () => {
+      const plain = TestBed.createComponent(InputfieldComponent);
+      plain.componentRef.setInput('mask', '00/00');
+      plain.componentRef.setInput('value', '1225');
+      await plain.whenStable();
+      expect((plain.nativeElement.querySelector('input') as HTMLInputElement).value).toBe('12/25');
+      expect(plain.componentInstance.value()).toBe('12/25');
+    });
+
+    it('does nothing on a number field, and says why in dev mode', async () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+      const number = TestBed.createComponent(InputfieldComponent);
+      number.componentRef.setInput('type', 'number');
+      number.componentRef.setInput('mask', '000');
+      await number.whenStable();
+      expect(warn).toHaveBeenCalledWith(expect.stringContaining('type="number"'));
+      warn.mockRestore();
+    });
+  });
 });
