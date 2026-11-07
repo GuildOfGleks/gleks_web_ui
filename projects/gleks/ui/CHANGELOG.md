@@ -105,6 +105,21 @@ _Versioning_ section. Before 21.16.0 a minor could carry a breaking change, and 
   rewritten to a subpath. Subpaths are still the clearer statement of what a file uses; they are
   not required.
 
+### Changed
+
+- **A text field's side padding equals its top and bottom, no longer twice it** — every input,
+  select, multiselect, autocomplete, datepicker and textarea, and the search box in the select's
+  and multiselect's panels. `md` goes from 24px to 12px each side, and the five sizes run
+  `8 / 8 / 12 / 16 / 20` instead of `8 / 16 / 24 / 32 / 40`; heights are unchanged. 21.11.0 held
+  fields to the button's 2:1, which balances a centred label; a field's text starts at its edge,
+  so its padding is an inset, and 1:1 is the other ratio the 4px grid reaches at all five sizes.
+  It now equals the field's icon offset at every size, so a leading icon and the text of a field
+  without one share an edge. `--gog-control-padding-x` changes value with it, from the 24px step
+  to the 12px one. To keep the old look:
+  `--gog-field-sm-padding-x: var(--gog-space-16)` and so on, or `--gog-control-padding-x` for `md`.
+- **`gog-multiselect`'s value stops 8px short of its clear button and chevron**, the gap between
+  those two, instead of running into them.
+
 ### Fixed
 
 - **The package loads in Node again.** `gog-card`'s `contentChild(GogCardLinkDirective)` named a

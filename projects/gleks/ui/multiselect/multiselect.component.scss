@@ -156,6 +156,9 @@
  */
 .gog-ms {
   padding-inline-end: var(--gog-multiselect-actions-inset);
+  /* The value stops short of the clear button and chevron by the gap between those two, rather
+     than running its last glyph into them. */
+  column-gap: var(--gog-multiselect-actions-gap);
 }
 
 .gog-ms__actions {

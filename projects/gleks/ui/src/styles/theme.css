@@ -407,9 +407,12 @@
   --gog-panel-radius: calc(var(--gog-radius) + 8px);
 
   /* ── Control metrics ────────────────────────────────────────────────────────── */
-  /* The shared control padding, at the library's 2:1 horizontal-to-vertical ratio. */
+  /* The shared field padding. A field's text starts at its edge rather than sitting centred, so its
+     horizontal padding is an inset equal to the vertical one (1:1, never under 8px), not the 2:1
+     balance a button's label takes — and the same distance as the field's icon offset, so a
+     leading icon and the text without one share an edge. */
   --gog-control-padding-y: var(--gog-space-12);
-  --gog-control-padding-x: var(--gog-space-24);
+  --gog-control-padding-x: var(--gog-space-12);
   /* Padding around a checkable control's box is part of its pointer target: it is what lets the
      smallest checkbox reach 24×24 (WCAG 2.5.8) without growing the box. */
   --gog-control-checkbox-padding: var(--gog-space-8);
@@ -419,13 +422,13 @@
   --gog-field-xsm-padding-y: var(--gog-space-4);
   --gog-field-xsm-padding-x: var(--gog-space-8);
   --gog-field-sm-padding-y: var(--gog-space-8);
-  --gog-field-sm-padding-x: var(--gog-space-16);
+  --gog-field-sm-padding-x: var(--gog-space-8);
   --gog-field-md-padding-y: var(--gog-control-padding-y);
   --gog-field-md-padding-x: var(--gog-control-padding-x);
   --gog-field-lg-padding-y: var(--gog-space-16);
-  --gog-field-lg-padding-x: var(--gog-space-32);
+  --gog-field-lg-padding-x: var(--gog-space-16);
   --gog-field-slg-padding-y: var(--gog-space-20);
-  --gog-field-slg-padding-x: var(--gog-space-40);
+  --gog-field-slg-padding-x: var(--gog-space-20);
   --gog-field-xsm-font-size: var(--gog-text-xs);
   --gog-field-sm-font-size: var(--gog-text-sm);
   --gog-field-md-font-size: var(--gog-text-md);
@@ -1686,7 +1689,7 @@
   --gog-multiselect-actions-gap: var(--gog-space-8);
   --gog-multiselect-filter-padding: var(--gog-space-8);
   --gog-multiselect-filter-input-padding-y: var(--gog-space-8);
-  --gog-multiselect-filter-input-padding-x: var(--gog-space-16);
+  --gog-multiselect-filter-input-padding-x: var(--gog-space-8);
   --gog-multiselect-filter-input-bg: var(--gog-background-color);
   --gog-multiselect-filter-input-color: var(--gog-multiselect-field-color);
   --gog-multiselect-filter-input-border: var(--gog-multiselect-field-border);
@@ -2056,7 +2059,7 @@
   /* Filter box, rendered only when `filter` is on. */
   --gog-select-filter-padding: var(--gog-space-8);
   --gog-select-filter-input-padding-y: var(--gog-space-8);
-  --gog-select-filter-input-padding-x: var(--gog-space-16);
+  --gog-select-filter-input-padding-x: var(--gog-space-8);
   --gog-select-filter-input-bg: var(--gog-background-color);
   --gog-select-filter-input-color: var(--gog-select-field-color);
   --gog-select-filter-input-border: var(--gog-select-field-border);

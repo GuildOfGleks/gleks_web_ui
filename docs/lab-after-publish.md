@@ -21,6 +21,11 @@ delete the section too.
 
 ## 21.20.0
 
+- **Fields are narrower at the sides** (CHANGELOG 21.20.0, _Changed_): every text field's horizontal
+  padding equals its vertical now. Regenerate `theme-starter.css` (`check:theme-starter` fails until
+  then), re-read the token reference's `--gog-field-*-padding-x` and `--gog-control-padding-x` rows,
+  and look at every field page and the theme generator's field tiles in a browser — any lab layout
+  that compensated for the old 24px inset is now off by 12px.
 - **A new Scheduler page** (`components/scheduler`) — the lab's first page for a component from
   `@guildofgleks/ui/scheduler`. Route in `app.routes.ts`, entries in `nav-data.ts`, `seo-data.ts`
   and the Components overview, examples under `src/app/examples/scheduler/` (one per page section,

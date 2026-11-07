@@ -9,7 +9,7 @@
 //                    is the other half — a step whose *value* is off the grid.
 //
 //   3. OPTICAL RATIO A control's horizontal padding is exactly twice its vertical, at every size
-//                    step. 2.0 is arithmetic rather than taste: with both paddings on the 4px
+//                    step (a text field's equals it instead, floored at 8px — TEXT_INSET). 2.0 is arithmetic rather than taste: with both paddings on the 4px
 //                    grid, 2.0 and 1.0 are the only ratios reachable at all five steps, so any
 //                    other value needs an exception at `xsm` for every block in the library.
 //                    Surfaces are out of this law — a surface frames content, a control balances
@@ -103,6 +103,20 @@ const SURFACES = new Map([
   ['multiselect-controls', 'a row of chrome inside a panel, not a labelled control'],
   ['badge', 'a count marker; its geometry follows the dot, not a label box'],
 ]);
+
+/**
+ * Law 3's second ratio. A text field's value starts at its edge instead of sitting centred, so the
+ * horizontal padding is an inset, not a balance: equal to the vertical one, and never under 8px so
+ * the `xsm` text does not touch its border. 1.0 is the other ratio the 4px grid reaches at all five
+ * steps, which is why D3 named it; it matches the field's icon offset at every size.
+ */
+const TEXT_INSET = new Map([
+  ['field', 'the shared tier every input, select, multiselect, autocomplete and datepicker reads'],
+  ['control', "`--gog-control-padding-*`, which the field tier's md step aliases"],
+  ['select-filter-input', "the search box in the select's panel"],
+  ['multiselect-filter-input', "the search box in the multiselect's panel"],
+]);
+const TEXT_INSET_FLOOR = 8;
 
 /**
  * Targets whose painted box is deliberately smaller than 24x24, with the hit area inflated in the
@@ -310,6 +324,17 @@ for (const block of blocks.values()) {
   for (const [size, slot] of bySize) {
     if (slot.x === null || slot.y === null || slot.y === 0) continue;
     const ratio = slot.x / slot.y;
+    if (TEXT_INSET.has(block.name)) {
+      const want = Math.max(slot.y, TEXT_INSET_FLOOR);
+      if (slot.x === want) continue;
+      add(
+        block.name,
+        size,
+        3,
+        `text inset ${fmt(slot.x)}, expected ${fmt(want)} — a field's horizontal padding equals its vertical, never under ${TEXT_INSET_FLOOR}px`,
+      );
+      continue;
+    }
     if (ratio === 2) continue;
     add(
       block.name,

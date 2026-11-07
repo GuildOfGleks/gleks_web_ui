@@ -218,8 +218,10 @@ it is done, and an existing one that violates one is a defect, not a style.**
 3. **Optical ratio: horizontal padding is exactly twice vertical.** The same multiple at every
    size step, on every control. **2.0 is not a taste, it is the arithmetic:** with both paddings
    on the 4px grid, 2.0 and 1.0 are the only ratios reachable at all five steps, so any other
-   value would need an exception at `xsm` for every block in the library. A _surface_ is out of
-   this law and says so in its own stylesheet — `card`, `panel`, `dialog`, `toast`, `tooltip`,
+   value would need an exception at `xsm` for every block in the library. **A text field takes the
+   other one, 1.0** — its value starts at its edge instead of sitting centred, so the padding is an
+   inset, equal to the vertical and never under 8px (`TEXT_INSET` in `check-geometry.mjs`; decided
+   2026-11-07, `docs/component-geometry.md` D3b). A _surface_ is out of this law and says so in its own stylesheet — `card`, `panel`, `dialog`, `toast`, `tooltip`,
    the accordion body and the table cell frame content rather than balancing a label.
 4. **The typographic ratio.** Line-height is a function of font size and role, not a per-component
    choice: text that wraps takes the relaxed end of `--gog-line-height-*`, a single-line label the

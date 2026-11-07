@@ -510,6 +510,20 @@ host from the shared `--gog-control-checkbox-*` scale, exactly as the checkbox d
 `-md` inside the fallback is the no-size default, not a missing decision. What the survey saw as
 an absence is the design; rule D of the token contract exists to catch precisely this fix.
 
+**D3b — a text field takes 1.0, not 2.0** (2026-11-07, for 21.20.0; reverses part of D3). D3's
+argument proved that a ratio held at all five steps must be 2.0 **or 1.0**; it did not say which
+suits which control, and it gave fields the button's 2.0. That suits a centred label, where the
+padding is the control's shape. A field's value is start-aligned, so its horizontal padding is an
+_inset_ from the border, and at 2.0 it was twice what fields elsewhere carry (`md`: 24px, against
+12px in Bootstrap and PrimeNG and 16px in Material's 56px-tall outlined field) — the owner's eye
+caught it, not a check, because the check enforced exactly the rule that was wrong. The field tier
+is `8 / 8 / 12 / 16 / 20` now: equal to the vertical padding, floored at 8px so the `xsm` value does
+not touch its border, and — the confirmation that it is the right number rather than a smaller one —
+identical to `--gog-field-<size>-icon-offset` at every size, which iteration 8 had chosen on its
+own. So a leading icon and the text of a field without one now share an edge. The in-panel search
+boxes of select and multiselect follow (8/8). Option rows and menu items stay at 2.0: they are not
+fields, and whether a list row is a balance or an inset is a separate decision nobody has asked for.
+
 **D3a — a padding may repeat between adjacent size steps.** Found by the first calibration
 commit (`gog-tag`) rather than decided in advance, which is what the calibration slot exists for.
 Five _distinct_ vertical paddings on a 4px grid have to run 4, 8, 12, 16, 20; on a tag that
