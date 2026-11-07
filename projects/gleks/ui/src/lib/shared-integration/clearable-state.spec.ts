@@ -3,9 +3,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { describe, expect, it } from 'vitest';
 
-import { InputfieldComponent } from '../components/inputfield/inputfield.component';
-import { MultiselectComponent } from '../components/multiselect/multiselect.component';
-import { SelectComponent } from '../components/select/select.component';
+import { InputfieldComponent } from '@guildofgleks/ui/inputfield';
+import { MultiselectComponent } from '@guildofgleks/ui/multiselect';
+import { SelectComponent } from '@guildofgleks/ui/select';
 import { TextareaComponent } from '@guildofgleks/ui/textarea';
 import { provideGogConfig } from '@guildofgleks/ui/shared';
 

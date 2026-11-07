@@ -1,0 +1,191 @@
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  output,
+  booleanAttribute,
+} from '@angular/core';
+
+import {
+  GogAriaCurrent,
+  GogAriaHasPopup,
+  GogSeverity,
+  GogSize,
+  GogVariant,
+} from '@guildofgleks/ui/shared';
+import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
+import { resolveRipple } from '@guildofgleks/ui/shared';
+import { GogRippleDirective } from '@guildofgleks/ui/ripple';
+import { SpinnerComponent } from '@guildofgleks/ui/spinner';
+import { configurableBooleanAttribute } from '@guildofgleks/ui/shared';
+
+const DEFAULT_DEBOUNCE = 300;
+/** Built-in default, used when neither the instance input nor `GOG_CONFIG` supplies one. */
+const DEFAULT_SIZE: GogSize = 'md';
+
+@Component({
+  selector: 'gog-button',
+  imports: [GogRippleDirective, SpinnerComponent],
+  templateUrl: './button.component.html',
+  styleUrl: './button.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    // Drives the :host(.gog-host--full-width) rules in the stylesheet — without this
+    // binding the `fullWidth` input has no visible effect.
+    '[class.gog-host--full-width]': 'fullWidth()',
+  },
+})
+export class ButtonComponent {
+  variant = input<GogVariant>('primary');
+  /**
+   * What the action means, as opposed to how loudly the button is drawn. `'accent'` — the
+   * default — is the absence of a claim and leaves the button exactly as it was; the four status
+   * names paint it in that status's colour.
+   *
+   * **Orthogonal to `variant`, on purpose.** A destructive action is destructive whether it is
+   * filled, outlined or a ghost, so this does not add a fifth variant: it re-points the colours
+   * all four are built from. `variant="ghost" severity="danger"` is a quiet delete, and
+   * `variant="primary" severity="danger"` is a loud one.
+   *
+   * ```html
+   * <gog-button severity="danger" (gogClick)="deleteAccount()">Delete account</gog-button>
+   * <gog-button variant="outline" severity="warning">Discard draft</gog-button>
+   * ```
+   *
+   * A filled severity button's label is `--gog-<status>-text-color`, which each theme states for
+   * its own hue; a transparent one's is that hue mixed toward the page's ink until it reads as
+   * text, since the raw status colour clears WCAG AA on the page in only five of the eleven
+   * shipped themes. Override `--gog-button-<status>-ink` to change it.
+   */
+  severity = input<GogSeverity>('accent');
+  /** Unset, falls back to `GOG_CONFIG.control.size`, then to `'md'`. */
+  size = input<GogSize | undefined>(undefined);
+  disabled = input(false, { transform: booleanAttribute });
+  fullWidth = input(false, { transform: booleanAttribute });
+  type = input<'button' | 'submit' | 'reset'>('button');
+  loading = input(false, { transform: booleanAttribute });
+  /**
+   * Press ripple. Unset, falls back to `GOG_CONFIG.ripple.enabled`, then to `false` — so
+   * `[ripple]="false"` is how one button opts out of an app that turned it on everywhere.
+   */
+  ripple = input<boolean | undefined, unknown>(undefined, {
+    transform: configurableBooleanAttribute,
+  });
+
+  /**
+   * Minimum time, in ms, between accepted clicks. This is a spam/double-click
+   * guard, not a delay before the first click fires: the first click in a
+   * window is emitted immediately (leading edge), and any further clicks
+   * within `debounce` ms are silently dropped until the window elapses.
+   * Unset, falls back to `GOG_CONFIG.button.debounce`, then to `300`.
+   */
+  debounce = input<number | undefined>(undefined);
+
+  /**
+   * Accessible name for the button, forwarded to the native <button>.
+   * Setting `aria-label` directly on <gog-button> in a template does NOT
+   * work — that attribute lands on the custom element host, not on the
+   * actual interactive <button> inside it, so assistive tech never sees it.
+   * Use this input instead, especially for icon-only buttons.
+   */
+  ariaLabel = input<string | null>(null);
+
+  /**
+   * State and relationship attributes, forwarded to the native `<button>` for the same reason
+   * `ariaLabel` is: this component hides the real button, so an `[attr.aria-*]` written on
+   * `<gog-button>` lands on the custom element — which has no role — and reaches nothing.
+   * It fails silently, with no error and no visible difference.
+   *
+   * `null` (the default) omits the attribute. `false` is **not** the same as `null` here and is
+   * deliberately forwarded: a toggle button in its off state has to say `aria-pressed="false"`,
+   * because a button with no `aria-pressed` at all is not a toggle button — it is a button that
+   * does something, and a screen reader will describe it as one.
+   *
+   * ```html
+   * <gog-button [ariaPressed]="isRtl()" (gogClick)="toggle()">Mirror</gog-button>
+   *
+   * <gog-button [ariaExpanded]="isOpen()" ariaControls="filters" ariaHasPopup="dialog">
+   *   Filters
+   * </gog-button>
+   * ```
+   *
+   * The `[gogButton]` directive needs none of this: it styles an element the consumer owns, so
+   * `aria-pressed` written there already lands where it should.
+   */
+  ariaPressed = input<boolean | 'mixed' | null>(null);
+  /** See `ariaPressed`. `false` renders `aria-expanded="false"`; `null` omits the attribute. */
+  ariaExpanded = input<boolean | null>(null);
+  /** Id of the element this button controls — pairs with `ariaExpanded`. See `ariaPressed`. */
+  ariaControls = input<string | null>(null);
+  /** What this button opens, if anything. See `ariaPressed`. */
+  ariaHasPopup = input<GogAriaHasPopup | null>(null);
+  /**
+   * Marks this button as the current item of a set — `'page'` for the current page of a
+   * pagination. Only the current one carries it; `false` renders `aria-current="false"`, which is
+   * the same as omitting it, so leave the others at `null`. See `ariaPressed`.
+   */
+  ariaCurrent = input<GogAriaCurrent | null>(null);
+
+  gogClick = output<MouseEvent>();
+
+  /** Fully non-interactive: excluded from tab order via the native `disabled` attribute. */
+  protected isNativeDisabled = computed(() => this.disabled());
+  /** Logically blocked from activating (disabled OR loading), used to guard click handling. */
+  protected isDisabled = computed(() => this.disabled() || this.loading());
+  private static readonly SPINNER_SIZE_BY_BUTTON_SIZE: Record<GogSize, GogSize> = {
+    xsm: 'sm',
+    sm: 'sm',
+    md: 'sm',
+    lg: 'md',
+    slg: 'md',
+  };
+  private readonly globalConfig = inject(GOG_CONFIG);
+  protected readonly rippleEnabled = resolveRipple(this.ripple, this.globalConfig);
+  /** Instance input → `GOG_CONFIG` → the component's own default. See `resolveConfigured`. */
+  protected readonly resolvedSize = computed(() =>
+    resolveConfigured(this.size(), this.globalConfig.control?.size, DEFAULT_SIZE),
+  );
+  protected spinnerSize = computed<GogSize>(
+    () => ButtonComponent.SPINNER_SIZE_BY_BUTTON_SIZE[this.resolvedSize()],
+  );
+
+  protected readonly resolvedDebounce = computed(() =>
+    resolveConfigured(this.debounce(), this.globalConfig.button?.debounce, DEFAULT_DEBOUNCE),
+  );
+
+  /**
+   * The single size modifier, replacing one `[class.gog-btn--<size>]` binding per size.
+   * Always emitted — `gog-btn` has a rule for every size, `md` included.
+   */
+  protected readonly sizeClass = computed(() => `gog-btn--${this.resolvedSize()}`);
+
+  /**
+   * Size and severity in one binding, because a template may carry only one `[class]`. `'accent'`
+   * emits nothing: it is the absence of a severity, and a `.gog-btn--accent` class would be a
+   * selector that has to exist for no reason.
+   */
+  protected readonly stateClasses = computed(() => {
+    const severity = this.severity();
+    return severity === 'accent' ? this.sizeClass() : `${this.sizeClass()} gog-btn--${severity}`;
+  });
+
+  /** When the current debounce window closes, as a `performance.now()` time; 0 before any click. */
+  private windowEndsAt = 0;
+
+  /**
+   * Decides synchronously, because a click that is not emitted has to be cancelled in the same
+   * event: with `type="submit"` the native button would otherwise still submit its form, which is
+   * the double submission `loading` and `debounce` are there to prevent.
+   */
+  protected onClick(event: MouseEvent): void {
+    const now = performance.now();
+    if (this.isDisabled() || now < this.windowEndsAt) {
+      event.preventDefault();
+      return;
+    }
+    this.windowEndsAt = now + this.resolvedDebounce();
+    this.gogClick.emit(event);
+  }
+}

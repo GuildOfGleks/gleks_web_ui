@@ -21,13 +21,11 @@ import {
   booleanAttribute,
 } from '@angular/core';
 import { NgTemplateOutlet, isPlatformBrowser } from '@angular/common';
-import {
-  CheckboxComponent,
-  IconComponent,
-  PaginatorComponent,
-  ScrollComponent,
-  SpinnerComponent,
-} from '@guildofgleks/ui';
+import { CheckboxComponent } from '@guildofgleks/ui/checkbox';
+import { IconComponent } from '@guildofgleks/ui/icon';
+import { PaginatorComponent } from '@guildofgleks/ui/paginator';
+import { ScrollComponent } from '@guildofgleks/ui/scroll';
+import { SpinnerComponent } from '@guildofgleks/ui/spinner';
 
 import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
 import { GogSize } from '@guildofgleks/ui/shared';

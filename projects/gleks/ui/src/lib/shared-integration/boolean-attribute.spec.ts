@@ -2,9 +2,9 @@ import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, expect, it } from 'vitest';
 
-import { CheckboxComponent } from '../components/checkbox/checkbox.component';
-import { InputfieldComponent } from '../components/inputfield/inputfield.component';
-import { SelectComponent } from '../components/select/select.component';
+import { CheckboxComponent } from '@guildofgleks/ui/checkbox';
+import { InputfieldComponent } from '@guildofgleks/ui/inputfield';
+import { SelectComponent } from '@guildofgleks/ui/select';
 import { provideGogConfig } from '@guildofgleks/ui/shared';
 
 /**

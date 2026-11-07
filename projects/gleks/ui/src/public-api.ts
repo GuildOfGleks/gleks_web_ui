@@ -2,29 +2,23 @@
  * Public API Surface of ui
  */
 
-export * from './lib/components/button/button.component';
-export * from './lib/components/button/button.directive';
-export * from './lib/components/accordion/accordion.component';
-export * from './lib/components/alert/alert.component';
-export * from './lib/components/avatar/avatar.component';
-export * from './lib/components/avatar/avatar-group.component';
-export * from './lib/components/breadcrumbs/breadcrumbs.component';
-export * from './lib/components/stepper/stepper.component';
-export * from './lib/components/file-upload/file-upload.component';
-export * from './lib/components/rating/rating.component';
-export * from './lib/components/empty-state/empty-state.component';
-export * from './lib/components/collapsible/collapsible.component';
-export * from './lib/components/collapsible/collapsible-trigger.directive';
-export * from './lib/components/collapsible/collapsible-content.directive';
-export * from './lib/components/autocomplete/autocomplete.component';
-export * from './lib/components/badge/badge.directive';
-export * from './lib/components/button-toggle/button-toggle.component';
-export * from './lib/components/tabs/tab.component';
-export * from './lib/components/tabs/tabs.component';
-export * from './lib/components/tabs/tabs-state';
-export * from './lib/components/card/card.component';
-export * from './lib/components/panel/panel.component';
-export * from './lib/components/checkbox/checkbox.component';
+export * from '@guildofgleks/ui/button';
+export * from '@guildofgleks/ui/accordion';
+export * from '@guildofgleks/ui/alert';
+export * from '@guildofgleks/ui/avatar';
+export * from '@guildofgleks/ui/breadcrumbs';
+export * from '@guildofgleks/ui/stepper';
+export * from '@guildofgleks/ui/file-upload';
+export * from '@guildofgleks/ui/rating';
+export * from '@guildofgleks/ui/empty-state';
+export * from '@guildofgleks/ui/collapsible';
+export * from '@guildofgleks/ui/autocomplete';
+export * from '@guildofgleks/ui/badge';
+export * from '@guildofgleks/ui/button-toggle';
+export * from '@guildofgleks/ui/tabs';
+export * from '@guildofgleks/ui/card';
+export * from '@guildofgleks/ui/panel';
+export * from '@guildofgleks/ui/checkbox';
 /*
  * Named, not wholesale, though nothing is dropped: `AGENTS.md` advertises `formatDate`,
  * `parseDate` and "a family of date-math helpers", so this whole set is supported on purpose.
@@ -58,32 +52,29 @@ export {
   withTime,
 } from '@guildofgleks/ui/shared';
 export type { GogDateRange } from '@guildofgleks/ui/shared';
-export * from './lib/components/divider/divider.component';
-export * from './lib/components/progressbar/progressbar.component';
-export * from './lib/components/popover/popover.component';
-export * from './lib/components/context-menu/context-menu.component';
-export * from './lib/components/ripple/ripple.directive';
+export * from '@guildofgleks/ui/divider';
+export * from '@guildofgleks/ui/progressbar';
+export * from '@guildofgleks/ui/popover';
+export * from '@guildofgleks/ui/context-menu';
+export * from '@guildofgleks/ui/ripple';
 export * from '@guildofgleks/ui/toggle';
-export * from './lib/components/radio-group/radio-group.component';
+export * from '@guildofgleks/ui/radio-group';
 export * from '@guildofgleks/ui/icon';
-export * from './lib/components/toast/toast.component';
-export * from './lib/components/toast/toast-container/toast-container.component';
-export * from './lib/components/inputfield/inputfield.component';
+export * from '@guildofgleks/ui/toast';
+export * from '@guildofgleks/ui/inputfield';
 export * from '@guildofgleks/ui/textarea';
-export * from './lib/components/chip/chip.component';
+export * from '@guildofgleks/ui/chip';
 export * from '@guildofgleks/ui/tag';
-export * from './lib/components/select/select.component';
-export * from './lib/components/menu/menu.component';
-export * from './lib/components/multiselect/multiselect.component';
-export * from './lib/components/slider/slider.component';
-export * from './lib/components/skeleton/skeleton.component';
-export * from './lib/components/paginator/paginator.component';
-export * from './lib/components/scroll/scroll.component';
-export * from './lib/components/spinner/spinner-overlay/spinner-overlay.component';
-export * from './lib/components/spinner/spinner.component';
-export * from './lib/components/tooltip/tooltip.directive';
-export * from './lib/services/toast-service/toast-service';
-export * from './lib/services/theme-service/theme.service';
+export * from '@guildofgleks/ui/select';
+export * from '@guildofgleks/ui/menu';
+export * from '@guildofgleks/ui/multiselect';
+export * from '@guildofgleks/ui/slider';
+export * from '@guildofgleks/ui/skeleton';
+export * from '@guildofgleks/ui/paginator';
+export * from '@guildofgleks/ui/scroll';
+export * from '@guildofgleks/ui/spinner';
+export * from '@guildofgleks/ui/tooltip';
+export * from '@guildofgleks/ui/theme';
 export type {
   GogAlertLive,
   GogAriaCurrent,

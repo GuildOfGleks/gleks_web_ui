@@ -536,9 +536,10 @@ async function main() {
   }
 
   // Rule E
-  const componentNames = await collectComponentNames(path.join(uiSrc, 'lib/components'));
-  // A split entry point's directory is itself a component folder (`table/`), and its subfolders
-  // are nested components the same way `dialog/confirmation-dialog` always was.
+  // Every component lives in its own entry point's directory (`table/`, `button/`, …;
+  // docs/component-entry-points.md), and its subfolders are nested components the same way
+  // `dialog/confirmation-dialog` always was. `src/lib/components` no longer exists.
+  const componentNames = new Set();
   for (const dir of SPLIT_DIRS) {
     componentNames.add(path.basename(dir));
     for (const name of await collectComponentNames(dir)) componentNames.add(name);
@@ -852,7 +853,7 @@ async function main() {
     if (namespace === null) {
       problems.push(
         `[known-prefix] ${token} starts with no namespace this library has\n` +
-          `      a component's own name (lib/components/<name>/), a foundation family or a shared block —\n` +
+          `      a component's own name (its entry point's <name>/), a foundation family or a shared block —\n` +
           `      spell the component out (\`--gog-multiselect-*\`, not \`--gog-ms-*\`), or add the namespace to\n` +
           `      FOUNDATION_NAMESPACES / SHARED_BLOCK_NAMESPACES in this script with the reason`,
       );

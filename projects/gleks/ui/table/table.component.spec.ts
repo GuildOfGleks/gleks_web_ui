@@ -15,7 +15,8 @@ import {
   GogColumnHeaderDirective,
   GogTableEmptyDirective,
 } from './column';
-import { PaginatorComponent, ScrollComponent } from '@guildofgleks/ui';
+import { PaginatorComponent } from '@guildofgleks/ui/paginator';
+import { ScrollComponent } from '@guildofgleks/ui/scroll';
 import { provideGogConfig, type GogGlobalConfig } from '@guildofgleks/ui/shared';
 
 interface Row {

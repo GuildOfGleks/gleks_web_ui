@@ -1,0 +1,280 @@
+import { isPlatformBrowser, NgTemplateOutlet } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Directive,
+  ElementRef,
+  PLATFORM_ID,
+  TemplateRef,
+  afterNextRender,
+  computed,
+  contentChild,
+  contentChildren,
+  effect,
+  forwardRef,
+  inject,
+  input,
+  model,
+  output,
+  viewChild,
+  viewChildren,
+  booleanAttribute,
+} from '@angular/core';
+
+import { GogRippleDirective } from '@guildofgleks/ui/ripple';
+import { IconComponent } from '@guildofgleks/ui/icon';
+import { ScrollComponent } from '@guildofgleks/ui/scroll';
+import { GOG_CONFIG } from '@guildofgleks/ui/shared';
+import { resolveRipple } from '@guildofgleks/ui/shared';
+import { handleRovingFocusKeydown } from '@guildofgleks/ui/shared';
+import { GogOrientation, GogSize, GogTabsAlign } from '@guildofgleks/ui/shared';
+import { GOG_TABS_STATE, type GogTabsState } from './tabs-state';
+import { TabComponent } from './tab.component';
+import { configurableBooleanAttribute } from '@guildofgleks/ui/shared';
+import { gogWarnIfUnnamed } from '@guildofgleks/ui/shared';
+
+/** Context handed to a `gogTabHeader` template. */
+export interface GogTabHeaderContext {
+  /** The `gog-tab` this header belongs to. */
+  $implicit: TabComponent;
+  active: boolean;
+  disabled: boolean;
+  index: number;
+}
+
+/**
+ * Custom markup for a tab's header button:
+ *
+ * ```html
+ * <gog-tabs>
+ *   <ng-template gogTabHeader let-tab let-active="active">
+ *     {{ tab.label() }} <gog-tag *ngIf="active">•</gog-tag>
+ *   </ng-template>
+ *   <gog-tab label="Inbox">…</gog-tab>
+ * </gog-tabs>
+ * ```
+ */
+@Directive({ selector: '[gogTabHeader]' })
+export class GogTabHeaderDirective {
+  readonly templateRef = inject<TemplateRef<GogTabHeaderContext>>(TemplateRef);
+
+  static ngTemplateContextGuard(
+    _dir: GogTabHeaderDirective,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- only used as a type guard
+    ctx: unknown,
+  ): ctx is GogTabHeaderContext {
+    return true;
+  }
+}
+
+/**
+ * A tablist over projected `<gog-tab>` children.
+ *
+ * ```html
+ * <gog-tabs [(activeIndex)]="index" align="start">
+ *   <gog-tab label="Profile"><app-profile /></gog-tab>
+ *   <gog-tab label="Settings"><app-settings /></gog-tab>
+ * </gog-tabs>
+ * ```
+ *
+ * The header row is built from each tab's own `label` / `iconName` / `disabled`, so a tab is
+ * declared in exactly one place. Overflowing headers scroll inside a `<gog-scroll>` rather than
+ * a native `overflow-x`, per the library's styling contract — a native scrollbar is the one
+ * piece of chrome no `--gog-*` token can reach.
+ */
+@Component({
+  selector: 'gog-tabs',
+  imports: [GogRippleDirective, IconComponent, NgTemplateOutlet, ScrollComponent],
+  templateUrl: './tabs.component.html',
+  styleUrl: './tabs.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    // forwardRef because the class is not yet defined when this decorator is evaluated.
+    { provide: GOG_TABS_STATE, useExisting: forwardRef(() => TabsComponent) },
+  ],
+  host: {
+    '[class]': 'hostClasses()',
+  },
+})
+export class TabsComponent implements GogTabsState {
+  readonly tabs = contentChildren(TabComponent);
+
+  /**
+   * Two-way bindable index of the visible tab: `[(activeIndex)]="signal"`.
+   *
+   * **An index that names a disabled or missing tab is kept, not corrected.** The tablist shows the
+   * first enabled tab instead, but the model keeps the value it was given, so a tab disabled for a
+   * moment (while its data loads) comes back as soon as it is enabled. Writing the shown index back
+   * would lose that choice for good. Read what is on screen from `gogTabChange`, or compare the
+   * index with the tab's own `disabled`.
+   */
+  readonly activeIndex = model(0);
+  readonly align = input<GogTabsAlign>('start');
+  readonly orientation = input<GogOrientation>('horizontal');
+  readonly size = input<GogSize>('md');
+  readonly fullWidth = input(false, { transform: booleanAttribute });
+  /** Names the tablist: what the tabs switch between ("Account settings"). Unset, it warns in dev mode. */
+  readonly ariaLabel = input('');
+  /**
+   * Press ripple. Unset, falls back to `GOG_CONFIG.ripple.enabled`, then to `false` — so
+   * `[ripple]="false"` opts one instance out of an app that turned it on everywhere.
+   */
+  readonly ripple = input<boolean | undefined, unknown>(undefined, {
+    transform: configurableBooleanAttribute,
+  });
+  /** Declared after the input it reads: field initialisers run in source order. */
+  protected readonly rippleEnabled = resolveRipple(this.ripple, inject(GOG_CONFIG));
+
+  /**
+   * Whether selecting a tab scrolls the (possibly overflowing) header row so the active tab
+   * stays in view — centered where there's room, so its neighbours on both sides stay visible
+   * too, the same "always show what's around the current position" idea `gog-paginator` uses
+   * for pages. Reacts to `activeIndex` however it changes: a click, the arrow keys, or a
+   * consumer setting it directly. On by default; turn it off for a header that never actually
+   * overflows, or to own the scroll position yourself.
+   */
+  readonly scrollActiveIntoView = input(true, { transform: booleanAttribute });
+  /**
+   * Whether the header row shows its own draggable scroll thumb/track. Native scrolling
+   * (wheel, touch, keyboard) works the same regardless; this is purely the visual affordance.
+   *
+   * Unset, it follows `scrollActiveIntoView`: hidden while that's on, since a second scroll
+   * indicator sitting right next to the active-tab underline reads as two conflicting signals
+   * for the same thing once selecting a tab already moves the row on its own; shown while it's
+   * off, since the track is then the only way to reach an off-screen tab without a keyboard.
+   * Set explicitly to pin it either way regardless of `scrollActiveIntoView`.
+   */
+  readonly showScrollTrack = input<boolean | undefined, unknown>(undefined, {
+    transform: configurableBooleanAttribute,
+  });
+
+  /** Emits the newly active index whenever it changes, including via keyboard. */
+  readonly gogTabChange = output<number>();
+
+  protected readonly headerSlot = contentChild(GogTabHeaderDirective);
+  private readonly headerRefs = viewChildren<ElementRef<HTMLButtonElement>>('tabHeader');
+  private readonly tablistRef = viewChild.required<ElementRef<HTMLElement>>('tablist');
+
+  /**
+   * The index actually shown. Clamped, and never a disabled tab: `activeIndex` is a plain
+   * number a consumer can set to anything, and silently showing nothing would be worse than
+   * falling back to the nearest usable tab.
+   */
+  protected readonly resolvedIndex = computed(() => {
+    const tabs = this.tabs();
+    if (tabs.length === 0) return -1;
+
+    const requested = this.activeIndex();
+    if (requested >= 0 && requested < tabs.length && !tabs[requested].disabled()) {
+      return requested;
+    }
+
+    const firstEnabled = tabs.findIndex((tab) => !tab.disabled());
+    return firstEnabled;
+  });
+
+  /** Read by each `gog-tab` through `GOG_TABS_STATE`; see `tabs-state.ts`. */
+  readonly activeTab = computed<TabComponent | null>(() => {
+    const index = this.resolvedIndex();
+    return index === -1 ? null : (this.tabs()[index] ?? null);
+  });
+
+  /** See `showScrollTrack`'s doc for why this defaults off precisely when the other is on. */
+  protected readonly resolvedShowScrollTrack = computed(
+    () => this.showScrollTrack() ?? !this.scrollActiveIntoView(),
+  );
+
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+  /** Instant for the first scroll (page load shouldn't animate into place), smooth after. */
+  private hasScrolledOnce = false;
+
+  constructor() {
+    afterNextRender(() =>
+      gogWarnIfUnnamed(
+        this.tablistRef().nativeElement,
+        'gog-tabs',
+        'Set ariaLabel to what the tabs switch between.',
+      ),
+    );
+
+    effect(() => {
+      const index = this.resolvedIndex();
+      const header = this.headerRefs()[index]?.nativeElement;
+      if (!this.isBrowser || !this.scrollActiveIntoView() || !header) return;
+
+      const behavior: ScrollBehavior =
+        this.hasScrolledOnce && !this.prefersReducedMotion() ? 'smooth' : 'auto';
+
+      // The header strip only — never the page.
+      //
+      // This used to call `header.scrollIntoView({ inline: 'center', block: 'nearest' })`, and
+      // `scrollIntoView` walks up and scrolls *every* scrollable ancestor that needs to move.
+      // A `gog-tabs` sitting below the fold therefore dragged the whole page down to itself the
+      // moment it initialised — jarring in an app, and in a documentation page with several
+      // examples it jumped the reader to the last one. Scrolling the component's own viewport
+      // by hand keeps the behaviour (the active header centred) and touches nothing outside.
+      const viewport = header.closest<HTMLElement>('.gog-scroll__viewport');
+      if (!viewport || typeof viewport.scrollTo !== 'function') return;
+
+      const centred = header.offsetLeft - (viewport.clientWidth - header.offsetWidth) / 2;
+      const left = Math.max(0, Math.min(centred, viewport.scrollWidth - viewport.clientWidth));
+      viewport.scrollTo({ left, behavior });
+      this.hasScrolledOnce = true;
+    });
+  }
+
+  private prefersReducedMotion(): boolean {
+    return (
+      typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    );
+  }
+
+  protected readonly hostClasses = computed(() =>
+    [
+      'gog-tabs',
+      `gog-tabs--${this.orientation()}`,
+      `gog-tabs--align-${this.align()}`,
+      `gog-tabs--${this.size()}`,
+      this.fullWidth() ? 'gog-host--full-width' : null,
+    ]
+      .filter((className): className is string => className !== null)
+      .join(' '),
+  );
+
+  protected selectIndex(index: number): void {
+    const tab = this.tabs()[index];
+    if (!tab || tab.disabled() || index === this.resolvedIndex()) return;
+
+    this.activeIndex.set(index);
+    this.gogTabChange.emit(index);
+  }
+
+  protected headerContext(tab: TabComponent, index: number): GogTabHeaderContext {
+    return {
+      $implicit: tab,
+      active: index === this.resolvedIndex(),
+      disabled: tab.disabled(),
+      index,
+    };
+  }
+
+  /**
+   * Arrows move focus and activate in one step — the "automatic activation" variant of the
+   * ARIA tabs pattern, which suits panels that are already in the DOM. Home/End jump to the
+   * first/last enabled tab.
+   */
+  protected onHeaderKeydown(event: KeyboardEvent): void {
+    const headers = this.headerRefs().map((ref) => ref.nativeElement);
+    const tabs = this.tabs();
+    const moved = handleRovingFocusKeydown(event, headers, {
+      orientation: this.orientation(),
+      isDisabled: (_header, index) => tabs[index]?.disabled() ?? true,
+    });
+    if (!moved) return;
+
+    const focused = headers.indexOf(document.activeElement as HTMLButtonElement);
+    if (focused !== -1) {
+      this.selectIndex(focused);
+    }
+  }
+}

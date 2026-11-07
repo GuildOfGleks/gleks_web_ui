@@ -1,0 +1,391 @@
+import { Component } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { vi } from 'vitest';
+
+import { ButtonComponent } from '@guildofgleks/ui/button';
+import { GogMenuItemDirective, GogMenuTriggerDirective, MenuComponent } from './menu.component';
+
+@Component({
+  standalone: true,
+  imports: [MenuComponent, GogMenuItemDirective, GogMenuTriggerDirective],
+  template: `
+    <button class="trigger" [gogMenuTrigger]="rowMenu" aria-label="Row actions">Actions</button>
+
+    <gog-menu #rowMenu ariaLabel="Row actions">
+      <button gogMenuItem class="item-edit" (click)="ran.push('edit')">Edit</button>
+      <button gogMenuItem class="item-archive" disabled (click)="ran.push('archive')">
+        Archive
+      </button>
+      <button gogMenuItem class="item-delete" (click)="ran.push('delete')">Delete</button>
+    </gog-menu>
+
+    <button class="outside">Elsewhere</button>
+  `,
+})
+class MenuHostComponent {
+  readonly ran: string[] = [];
+}
+
+/** jsdom lays nothing out: puts an element's box wherever a test says it has scrolled to. */
+function placeAt(element: Element, top: number): void {
+  element.getBoundingClientRect = () =>
+    ({ top, bottom: top + 20, left: 0, right: 100, width: 100, height: 20 }) as DOMRect;
+}
+
+/** A page scroll, then the frame the overlay re-measures in. */
+async function scrollPage(): Promise<void> {
+  document.dispatchEvent(new Event('scroll'));
+  await new Promise((resolve) => requestAnimationFrame(() => resolve(null)));
+}
+
+describe('MenuComponent', () => {
+  describe('scrolling', () => {
+    it('stays open while its trigger is in view, and closes once it has scrolled away', async () => {
+      await openByClick();
+      placeAt(trigger(), 100);
+      await scrollPage();
+      fixture.detectChanges();
+      expect(panel()).toBeTruthy();
+
+      placeAt(trigger(), -40);
+      await scrollPage();
+      fixture.detectChanges();
+      await fixture.whenStable();
+      expect(panel()).toBeNull();
+      // Nothing the reader can see was closed, so focus is not pulled back to it.
+      expect(document.activeElement).not.toBe(trigger());
+    });
+  });
+
+  let fixture: ComponentFixture<MenuHostComponent>;
+  let host: MenuHostComponent;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({ imports: [MenuHostComponent] }).compileComponents();
+    fixture = TestBed.createComponent(MenuHostComponent);
+    host = fixture.componentInstance;
+    fixture.detectChanges();
+    await fixture.whenStable();
+  });
+
+  function trigger(): HTMLButtonElement {
+    return fixture.nativeElement.querySelector('.trigger') as HTMLButtonElement;
+  }
+
+  function panel(): HTMLElement | null {
+    return document.querySelector('[role="menu"]');
+  }
+
+  function items(): HTMLElement[] {
+    return [...(panel()?.querySelectorAll('[role="menuitem"]') ?? [])] as HTMLElement[];
+  }
+
+  async function openByClick(): Promise<void> {
+    trigger().click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+  }
+
+  async function key(target: HTMLElement, name: string): Promise<void> {
+    target.dispatchEvent(new KeyboardEvent('keydown', { key: name, bubbles: true }));
+    fixture.detectChanges();
+    await fixture.whenStable();
+  }
+
+  it('renders nothing until it is opened', () => {
+    expect(panel()).toBeNull();
+    // A closed menu must not leave its commands in the accessibility tree.
+    expect(document.querySelectorAll('[role="menuitem"]')).toHaveLength(0);
+  });
+
+  describe('the trigger', () => {
+    it('advertises the menu it controls', async () => {
+      expect(trigger().getAttribute('aria-haspopup')).toBe('menu');
+      expect(trigger().getAttribute('aria-expanded')).toBe('false');
+      expect(trigger().getAttribute('aria-controls')).toBeNull();
+
+      await openByClick();
+
+      expect(trigger().getAttribute('aria-expanded')).toBe('true');
+      expect(trigger().getAttribute('aria-controls')).toBe(panel()?.id);
+    });
+
+    it('toggles: a second click closes what the first opened', async () => {
+      await openByClick();
+      expect(panel()).toBeTruthy();
+
+      await openByClick();
+      expect(panel()).toBeNull();
+    });
+
+    it('opens on ArrowDown with the first enabled item focused', async () => {
+      await key(trigger(), 'ArrowDown');
+
+      expect(panel()).toBeTruthy();
+      expect(document.activeElement).toBe(items()[0]);
+    });
+
+    it('opens on ArrowUp with the last item focused', async () => {
+      await key(trigger(), 'ArrowUp');
+
+      expect(document.activeElement).toBe(items()[2]);
+    });
+  });
+
+  describe('the panel', () => {
+    it('is a menu with the name it was given', async () => {
+      await openByClick();
+
+      expect(panel()?.getAttribute('role')).toBe('menu');
+      expect(panel()?.getAttribute('aria-label')).toBe('Row actions');
+    });
+
+    it('marks every projected button as a menu item outside the tab order', async () => {
+      await openByClick();
+
+      expect(items()).toHaveLength(3);
+      for (const item of items()) {
+        expect(item.getAttribute('role')).toBe('menuitem');
+        expect(item.getAttribute('tabindex')).toBe('-1');
+      }
+    });
+
+    it('focuses the first item on open, skipping a disabled one when it comes first', async () => {
+      await openByClick();
+
+      expect(document.activeElement).toBe(items()[0]);
+    });
+  });
+
+  describe('keyboard navigation', () => {
+    it('moves down the list with ArrowDown, stepping over disabled items', async () => {
+      await openByClick();
+
+      await key(items()[0], 'ArrowDown');
+
+      // 'Archive' is disabled, so ArrowDown from 'Edit' lands on 'Delete'.
+      expect(document.activeElement).toBe(items()[2]);
+    });
+
+    it('wraps from the last item back to the first', async () => {
+      await openByClick();
+      items()[2].focus();
+
+      await key(items()[2], 'ArrowDown');
+
+      expect(document.activeElement).toBe(items()[0]);
+    });
+
+    it('jumps to the ends with Home and End', async () => {
+      await openByClick();
+
+      await key(items()[0], 'End');
+      expect(document.activeElement).toBe(items()[2]);
+
+      await key(items()[2], 'Home');
+      expect(document.activeElement).toBe(items()[0]);
+    });
+  });
+
+  describe('closing', () => {
+    it('closes on Escape and puts focus back on the trigger', async () => {
+      await openByClick();
+      expect(document.activeElement).not.toBe(trigger());
+
+      await key(items()[0], 'Escape');
+
+      expect(panel()).toBeNull();
+      expect(document.activeElement).toBe(trigger());
+    });
+
+    it('closes when an item runs, so focus returns to the trigger it came from', async () => {
+      await openByClick();
+
+      items()[0].click();
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      expect(host.ran).toEqual(['edit']);
+      expect(panel()).toBeNull();
+      expect(document.activeElement).toBe(trigger());
+    });
+
+    it('closes on Tab and lets focus continue past it', async () => {
+      await openByClick();
+
+      await key(items()[0], 'Tab');
+
+      expect(panel()).toBeNull();
+      // Tab is the user leaving: focus must not be yanked back to the trigger.
+      expect(document.activeElement).not.toBe(trigger());
+    });
+
+    it('closes on a pointer press outside, without stealing focus back', async () => {
+      await openByClick();
+
+      const outside = fixture.nativeElement.querySelector('.outside') as HTMLElement;
+      outside.dispatchEvent(new MouseEvent('pointerdown', { bubbles: true }));
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      expect(panel()).toBeNull();
+      expect(document.activeElement).not.toBe(trigger());
+    });
+
+    it('emits gogClosed once per close', async () => {
+      const closed = vi.fn();
+      const menu = fixture.debugElement.query(
+        (node) => node.componentInstance instanceof MenuComponent,
+      ).componentInstance as MenuComponent;
+      menu.gogClosed.subscribe(closed);
+
+      await openByClick();
+      await key(items()[0], 'Escape');
+
+      expect(closed).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('where the panel renders', () => {
+    // Always `<body>`, never in place: the host is `display: contents`, so an in-place panel has
+    // nothing to position against, and `position: fixed` inside a `contain`/`transform` ancestor
+    // — which `gog-scroll` is — resolves against that ancestor rather than the viewport. A menu
+    // inside a scroller landed nowhere at all, which is what removed the mode.
+    it('renders into the overlay host, outside the component that declared it', async () => {
+      await openByClick();
+
+      const rendered = panel();
+      expect(rendered).toBeTruthy();
+      expect(rendered?.closest('.gog-overlay-host')).toBeTruthy();
+      expect(fixture.nativeElement.contains(rendered)).toBe(false);
+    });
+
+    it('scrolls its items with gog-scroll rather than the browser default', async () => {
+      await openByClick();
+
+      const scroller = panel()?.querySelector('gog-scroll');
+      expect(scroller).toBeTruthy();
+      // Every item lives inside it, so a long menu scrolls the panel and not the page.
+      for (const item of items()) {
+        expect(scroller?.contains(item)).toBe(true);
+      }
+    });
+
+    it('takes the stacking order the trigger inherits, so a menu in a dialog stays on top', async () => {
+      trigger().style.setProperty('--gog-dropdown-z', '1310');
+
+      await openByClick();
+
+      expect(panel()?.style.zIndex).toBe('1310');
+    });
+
+    it('leaves the z-index to CSS when nothing above it sets one', async () => {
+      await openByClick();
+
+      expect(panel()?.style.zIndex).toBe('');
+    });
+
+    /*
+     * The panel used to carry the measured room as an inline `max-height`, which beats any
+     * stylesheet rule and left `--gog-menu-max-height` doing nothing at all. The room is now a
+     * custom property, so `menu.css` can take whichever of the two is smaller. Pinned at this
+     * level rather than in `menu-position.spec.ts` because the defect was in *how* the number
+     * reached the element, not in the number.
+     */
+    it('hands the measured room to CSS instead of overriding max-height with it', async () => {
+      await openByClick();
+
+      expect(panel()?.style.maxHeight).toBe('');
+      expect(panel()?.style.getPropertyValue('--gog-menu-available-height')).toMatch(/^\d+px$/);
+    });
+
+    /*
+     * `--gog-menu-panel-gap` was declared in `theme.css` and read by nothing: the panel is placed
+     * in script, and the placement function was called without its `gap` argument, so it used its
+     * own default of 4. A consumer setting the token got silence, and a theme moving
+     * `--gog-density` moved the panel gap of the four other components that place one this way
+     * and left the menu's at a hard-coded 4.
+     *
+     * Same shape as the `max-height` defect above and pinned for the same reason: the bug was in
+     * whether the number reached the element at all, not in the number.
+     *
+     * jsdom reports a zero-sized trigger, so a down-menu's `top` *is* the gap.
+     */
+    it('takes the gap between trigger and panel from its token', async () => {
+      trigger().style.setProperty('--gog-menu-panel-gap', '21px');
+
+      await openByClick();
+
+      expect(panel()?.style.top).toBe('21px');
+    });
+
+    it('falls back to the built-in gap when nothing declares the token', async () => {
+      await openByClick();
+
+      expect(panel()?.style.top).toBe('4px');
+    });
+
+    it('anchors a menu by one edge only, so it is never stretched between top and bottom', async () => {
+      await openByClick();
+
+      const style = panel()!.style;
+      const anchored = [style.top, style.bottom].filter((value) => value !== '');
+      expect(anchored).toHaveLength(1);
+    });
+  });
+});
+
+// On a gog-button the host has no role; the state belongs on the <button> inside, and so does the
+// focus the menu hands back when it closes.
+describe('GogMenuTriggerDirective on gog-button', () => {
+  @Component({
+    imports: [MenuComponent, GogMenuItemDirective, GogMenuTriggerDirective, ButtonComponent],
+    template: `
+      <gog-button [gogMenuTrigger]="menu">Actions</gog-button>
+      <gog-menu #menu ariaLabel="Actions"><button gogMenuItem>Edit</button></gog-menu>
+    `,
+  })
+  class ComponentTriggerHost {}
+
+  let fixture: ComponentFixture<ComponentTriggerHost>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({ imports: [ComponentTriggerHost] }).compileComponents();
+    fixture = TestBed.createComponent(ComponentTriggerHost);
+    fixture.detectChanges();
+    await fixture.whenStable();
+  });
+
+  afterEach(() => fixture.destroy());
+
+  it('puts haspopup, expanded and controls on the inner button', async () => {
+    const host = (fixture.nativeElement as HTMLElement).querySelector('gog-button') as HTMLElement;
+    const inner = host.querySelector('button') as HTMLButtonElement;
+    expect(host.hasAttribute('aria-haspopup')).toBe(false);
+    expect(inner.getAttribute('aria-haspopup')).toBe('menu');
+    expect(inner.getAttribute('aria-expanded')).toBe('false');
+
+    inner.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(inner.getAttribute('aria-expanded')).toBe('true');
+    expect(inner.getAttribute('aria-controls')).toBeTruthy();
+  });
+
+  it('returns focus to the inner button when the menu closes with Escape', async () => {
+    const inner = (fixture.nativeElement as HTMLElement).querySelector(
+      'gog-button button',
+    ) as HTMLButtonElement;
+    inner.focus();
+    inner.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    fixture.detectChanges();
+    await fixture.whenStable();
+    await new Promise((resolve) => setTimeout(resolve));
+    const item = document.body.querySelector('[gogMenuItem]') as HTMLElement;
+    item.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(document.activeElement).toBe(inner);
+  });
+});

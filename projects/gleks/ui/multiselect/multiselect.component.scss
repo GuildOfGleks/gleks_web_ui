@@ -1,0 +1,531 @@
+@use '../src/lib/styles/float-label' as float-label;
+
+/*
+ * Token layering (see styles/theme.css):
+ *   --gog-multiselect-padding-y, --gog-multiselect-padding-x, --gog-multiselect-font-size
+ *                            per-instance override, never declared here.
+ *   --gog-multiselect-size-<prop>     internal, set by the size classes below.
+ *   --field-<size>-<prop>    the shared field scale (input / select / multiselect).
+ * `md` is the default size, so every chain bottoms out at --field-md-*.
+ */
+.gog-ms-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gog-multiselect-gap);
+  position: relative;
+  width: 100%;
+}
+
+/*
+ * Disabled dims the whole field — label, box, icons, addons, message — as every other control
+ * does. On the box alone the label and the icons stayed at full strength.
+ */
+.gog-ms-wrapper--disabled {
+  opacity: var(--gog-multiselect-disabled-opacity);
+}
+
+/*
+ * `width` has no effect on the host's own (inline, unstyled) box, so this only matters
+ * once something outside — a flex or grid parent — blockifies it, which is also exactly
+ * when its default "just wrap the inline content" sizing stops applying and this needs
+ * to take over instead.
+ */
+:host(.gog-host--auto-width) {
+  width: fit-content;
+}
+
+:host(.gog-host--auto-width) .gog-ms-wrapper {
+  width: fit-content;
+}
+
+/* Size modifiers — `md` needs no block, it is the fallback of every chain below.
+   The same tokens are set by .gog-ms__dropdown--<size> for the body-portalled panel,
+   which sits outside this subtree and so inherits from :root instead. */
+.gog-ms-wrapper--xsm,
+.gog-ms__dropdown--xsm {
+  --gog-multiselect-size-padding-y: var(--gog-field-xsm-padding-y);
+  --gog-multiselect-size-padding-x: var(--gog-field-xsm-padding-x);
+  --gog-multiselect-size-font-size: var(--gog-field-xsm-font-size);
+}
+
+.gog-ms-wrapper--sm,
+.gog-ms__dropdown--sm {
+  --gog-multiselect-size-padding-y: var(--gog-field-sm-padding-y);
+  --gog-multiselect-size-padding-x: var(--gog-field-sm-padding-x);
+  --gog-multiselect-size-font-size: var(--gog-field-sm-font-size);
+}
+
+.gog-ms-wrapper--lg,
+.gog-ms__dropdown--lg {
+  --gog-multiselect-size-padding-y: var(--gog-field-lg-padding-y);
+  --gog-multiselect-size-padding-x: var(--gog-field-lg-padding-x);
+  --gog-multiselect-size-font-size: var(--gog-field-lg-font-size);
+}
+
+.gog-ms-wrapper--slg,
+.gog-ms__dropdown--slg {
+  --gog-multiselect-size-padding-y: var(--gog-field-slg-padding-y);
+  --gog-multiselect-size-padding-x: var(--gog-field-slg-padding-x);
+  --gog-multiselect-size-font-size: var(--gog-field-slg-font-size);
+}
+
+.gog-ms__label {
+  font-family: var(--gog-multiselect-label-font-family);
+  font-size: var(--gog-multiselect-label-font-size);
+  line-height: var(--gog-multiselect-label-line-height);
+  font-weight: var(--gog-multiselect-label-font-weight);
+  color: var(--gog-multiselect-label-color);
+  text-transform: var(--gog-multiselect-label-text-transform);
+  letter-spacing: var(--gog-multiselect-label-letter-spacing);
+  cursor: pointer;
+}
+
+.gog-ms {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(
+      --gog-multiselect-padding-y,
+      var(--gog-multiselect-size-padding-y, var(--gog-field-md-padding-y))
+    )
+    var(
+      --gog-multiselect-padding-x,
+      var(--gog-multiselect-size-padding-x, var(--gog-field-md-padding-x))
+    );
+  background-color: var(--gog-multiselect-field-bg);
+  border: var(--gog-multiselect-field-border-width) var(--gog-multiselect-field-border-style)
+    var(--gog-multiselect-field-border);
+  border-radius: var(--gog-multiselect-radius);
+  color: var(--gog-multiselect-field-color);
+  cursor: pointer;
+  user-select: none;
+  transition:
+    border-color var(--gog-multiselect-transition-duration) var(--gog-easing),
+    box-shadow var(--gog-multiselect-transition-duration) var(--gog-easing);
+}
+
+.gog-ms:hover:not(.gog-ms--disabled) {
+  border-color: var(--gog-multiselect-focus-border);
+}
+
+.gog-ms:focus-visible {
+  outline: var(--gog-multiselect-focus-ring-width) solid var(--gog-multiselect-focus-ring);
+  outline-offset: var(--gog-multiselect-focus-ring-offset);
+}
+
+.gog-ms--open {
+  border-color: var(--gog-multiselect-border-color);
+  box-shadow: var(--gog-multiselect-focus-glow);
+}
+
+.gog-ms--disabled {
+  cursor: not-allowed;
+}
+
+.gog-ms--disabled .gog-ms__label {
+  cursor: not-allowed;
+}
+
+.gog-ms--error {
+  border-color: var(--gog-multiselect-error-color);
+}
+
+.gog-ms__value {
+  font-family: var(--gog-multiselect-font-family);
+  font-size: var(
+    --gog-multiselect-font-size,
+    var(--gog-multiselect-size-font-size, var(--gog-field-md-font-size))
+  );
+  flex: 1;
+  align-self: baseline;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--gog-multiselect-value-color);
+}
+
+.gog-ms__value--placeholder {
+  color: var(--gog-multiselect-placeholder-color);
+}
+
+/*
+ * Pinned to the same inset as gog-select's chevron and gog-inputfield's icons, rather than
+ * inheriting the trigger's horizontal padding — the trailing chrome of every field control
+ * should sit on one vertical line.
+ */
+.gog-ms {
+  padding-inline-end: var(--gog-multiselect-actions-inset);
+}
+
+.gog-ms__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--gog-multiselect-actions-gap);
+  flex-shrink: 0;
+}
+
+.gog-ms__clear {
+  width: var(
+    --gog-multiselect-font-size,
+    var(--gog-multiselect-size-font-size, var(--gog-field-md-font-size))
+  );
+  height: var(
+    --gog-multiselect-font-size,
+    var(--gog-multiselect-size-font-size, var(--gog-field-md-font-size))
+  );
+  padding: 0;
+  border: 0;
+  border-radius: var(--gog-multiselect-clear-radius);
+  background: transparent;
+  color: var(--gog-multiselect-placeholder-color);
+  line-height: var(--gog-multiselect-clear-line-height);
+  cursor: pointer;
+  transition: color var(--gog-multiselect-transition-duration) var(--gog-easing);
+}
+
+.gog-ms__clear gog-icon {
+  font-size: calc(
+    var(
+        --gog-multiselect-font-size,
+        var(--gog-multiselect-size-font-size, var(--gog-field-md-font-size))
+      ) *
+      var(--gog-multiselect-clear-icon-ratio)
+  );
+}
+
+.gog-ms__clear:hover {
+  color: var(--gog-multiselect-field-color);
+}
+
+.gog-ms__clear:focus-visible {
+  outline: var(--gog-multiselect-focus-ring-width) solid var(--gog-multiselect-focus-ring);
+  outline-offset: var(--gog-multiselect-focus-ring-offset);
+}
+
+.gog-ms__arrow {
+  color: var(--gog-multiselect-border-color);
+  transition: transform var(--gog-multiselect-arrow-transition-duration) var(--gog-easing);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* The box is the glyph. Both are stated once, here: this element carries the font-size the
+     mark is drawn from, and the box is `--gog-icon-size` of it -- the same declaration
+     `gog-icon` reads, so the two cannot drift for any ratio or any icon size a consumer sets.
+
+     It took two tries. The box used to read the field's type while the mark read
+     `--gog-icon-size` (1.2em) of a font-size this ratio had already reduced, so the mark came
+     out 5% wider than the box holding it. The first fix put `--gog-icon-size` in the box and
+     left the font-size on the child -- wrong for a *different* reason, and measured worse
+     (+25% at `slg`): the icon's size comes off a token chain, while an `em` in the box resolves
+     against this element's own inherited font-size, and at `lg`/`slg` those are not the same
+     number. A relative unit means the element carrying the property, which is the third time
+     this library has paid for that -- see D7's `ch` and `gog-chip`'s remove mark. */
+  font-size: calc(
+    var(
+        --gog-multiselect-font-size,
+        var(--gog-multiselect-size-font-size, var(--gog-field-md-font-size))
+      ) *
+      var(--gog-multiselect-arrow-icon-ratio)
+  );
+  width: var(--gog-icon-size, var(--gog-icon-fallback-size));
+  height: var(--gog-icon-size, var(--gog-icon-fallback-size));
+}
+
+.gog-ms__arrow--up {
+  transform: rotate(180deg);
+}
+
+.gog-ms__dropdown {
+  position: absolute;
+  top: calc(100% + var(--gog-multiselect-panel-gap));
+  inset-inline-start: 0;
+  /*
+   * Sized to its own content, with the trigger width as the floor rather than the fixed width.
+   * Pinning it to the trigger broke an auto-width trigger: it shrinks to whatever is selected,
+   * so picking a short option clipped the longer ones out of the list.
+   */
+  inset-inline-end: auto;
+  min-width: 100%;
+  width: max-content;
+  max-width: var(--gog-multiselect-panel-max-width);
+  z-index: var(--gog-dropdown-z);
+  display: flex;
+  flex-direction: column;
+  background-color: var(--gog-multiselect-panel-bg);
+  border: var(--gog-multiselect-field-border-width) var(--gog-multiselect-field-border-style)
+    var(--gog-multiselect-panel-border);
+  border-radius: var(--gog-multiselect-panel-radius);
+  max-height: var(--gog-multiselect-panel-max-height);
+  /* Defensive: gog-ms__scroll's own overlay clips its content correctly on its own, but
+     this still keeps the panel visually masked (rounded corners, no bleed) for a frame
+     before it has measured, or if a browser ever mis-sizes the flex chain below. */
+  overflow: hidden;
+  box-shadow: var(--gog-multiselect-panel-shadow);
+}
+
+.gog-ms__scroll {
+  /* min-height: 0 overrides the flex-item default of auto, which would otherwise refuse
+     to shrink below the option list's full height and defeat the max-height above. */
+  flex: 1;
+  min-height: 0;
+}
+
+.gog-ms__dropdown--up {
+  top: auto;
+  bottom: calc(100% + var(--gog-multiselect-panel-gap));
+}
+
+.gog-ms__dropdown--portal {
+  /* The portal is appended straight to <body>, outside .gog-ms-wrapper's DOM subtree.
+     Every colour and metric it paints with now lives on :root (styles/theme.css), so
+     it inherits them there; only the per-size tokens have to be restated, which the
+     .gog-ms__dropdown--<size> selectors above do. */
+  position: fixed;
+  top: unset;
+  bottom: unset;
+  inset-inline: unset;
+}
+
+.gog-ms__controls {
+  /* Sits outside .gog-ms__scroll as a flex sibling, so it stays pinned above/below the
+     scrollable options without needing position: sticky. */
+  flex-shrink: 0;
+  display: flex;
+  gap: var(--gog-multiselect-controls-gap);
+  padding: var(--gog-multiselect-controls-padding);
+  background-color: var(--gog-multiselect-panel-bg);
+  border-bottom: var(--gog-multiselect-field-border-width) var(--gog-multiselect-field-border-style)
+    var(--gog-multiselect-field-border);
+}
+
+.gog-ms__controls--bottom {
+  border-bottom: 0;
+  border-top: var(--gog-multiselect-field-border-width) var(--gog-multiselect-field-border-style)
+    var(--gog-multiselect-field-border);
+}
+
+.gog-ms__options {
+  display: flex;
+  flex-direction: column;
+  padding: var(--gog-multiselect-options-padding);
+  gap: var(--gog-multiselect-option-gap);
+}
+
+/* The windowed list's filler above and below the rendered rows. See `gog-select`'s own note;
+   this container declares a `gap`, which the spacer's computed height already accounts for. */
+.gog-ms__spacer {
+  flex-shrink: 0;
+}
+
+.gog-ms__option {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--gog-multiselect-option-gap-inline);
+  padding: var(
+      --gog-multiselect-padding-y,
+      var(--gog-multiselect-size-padding-y, var(--gog-field-md-padding-y))
+    )
+    var(
+      --gog-multiselect-padding-x,
+      var(--gog-multiselect-size-padding-x, var(--gog-field-md-padding-x))
+    );
+  border: 0;
+  background: transparent;
+  text-align: start;
+  font: inherit;
+  font-family: var(--gog-multiselect-font-family);
+  font-size: var(
+    --gog-multiselect-font-size,
+    var(--gog-multiselect-size-font-size, var(--gog-field-md-font-size))
+  );
+  cursor: pointer;
+  border-radius: var(--gog-multiselect-option-radius);
+  transition: background-color var(--gog-multiselect-option-transition-duration) var(--gog-easing);
+  color: var(--gog-multiselect-option-color);
+}
+
+.gog-ms__option--disabled {
+  opacity: var(--gog-multiselect-option-disabled-opacity);
+  cursor: not-allowed;
+}
+
+/* See the same rule in select.component.scss: a disabled option must not light up under the
+   pointer as though it were selectable. */
+.gog-ms__option:hover:not(.gog-ms__option--disabled) {
+  background-color: var(--gog-multiselect-option-hover-bg);
+}
+
+.gog-ms__option:active:not(.gog-ms__option--disabled) {
+  background-color: var(--gog-multiselect-option-press-bg);
+}
+
+.gog-ms__option--selected {
+  color: var(--gog-multiselect-border-color);
+}
+
+.gog-ms__option:focus-visible {
+  outline: var(--gog-multiselect-focus-ring-width) solid var(--gog-multiselect-focus-ring);
+  outline-offset: calc(var(--gog-multiselect-focus-ring-width) * -1);
+}
+
+.gog-ms__option-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(
+    var(
+        --gog-multiselect-font-size,
+        var(--gog-multiselect-size-font-size, var(--gog-field-md-font-size))
+      ) *
+      var(--gog-multiselect-mark-size-ratio)
+  );
+  height: calc(
+    var(
+        --gog-multiselect-font-size,
+        var(--gog-multiselect-size-font-size, var(--gog-field-md-font-size))
+      ) *
+      var(--gog-multiselect-mark-size-ratio)
+  );
+  flex-shrink: 0;
+  font-size: calc(
+    var(
+        --gog-multiselect-font-size,
+        var(--gog-multiselect-size-font-size, var(--gog-field-md-font-size))
+      ) *
+      var(--gog-multiselect-mark-icon-ratio)
+  );
+  color: var(--gog-multiselect-checkbox-border);
+}
+
+.gog-ms__option--selected .gog-ms__option-mark {
+  color: var(--gog-multiselect-checkbox-checked-bg);
+}
+
+.gog-ms__error {
+  font-family: var(--gog-multiselect-font-family);
+  font-size: var(--gog-multiselect-error-font-size);
+  line-height: var(--gog-multiselect-error-line-height);
+  color: var(--gog-multiselect-error-color);
+  margin-top: var(--gog-multiselect-error-offset);
+}
+
+/* Float label — see lib/styles/_float-label.scss for the mechanism. */
+@include float-label.variants(
+  $block: '.gog-ms-wrapper',
+  $label: '.gog-ms__label--float',
+  $field: '.gog-ms',
+  $container: '.gog-ms',
+  $prefix: 'multiselect',
+  $pad-x:
+    'var(--gog-multiselect-padding-x, var(--gog-multiselect-size-padding-x, var(--gog-field-md-padding-x)))',
+  $pad-y:
+    'var(--gog-multiselect-padding-y, var(--gog-multiselect-size-padding-y, var(--gog-field-md-padding-y)))',
+  $max-width:
+    'calc(100% - 2 * var(--gog-multiselect-padding-x, var(--gog-multiselect-size-padding-x, var(--gog-field-md-padding-x))))',
+  $cursor: default
+);
+
+@media (prefers-reduced-motion: reduce) {
+  .gog-ms,
+  .gog-ms__clear,
+  .gog-ms__arrow,
+  .gog-ms__option,
+  .gog-ms__option-mark,
+  .gog-ms__label--float {
+    transition: none;
+  }
+}
+
+/* Filter box — sticky at the top of the panel so it stays reachable while the list scrolls. */
+.gog-ms__filter {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: var(--gog-multiselect-filter-padding);
+  background: var(--gog-multiselect-panel-bg);
+}
+
+.gog-ms__filter-input {
+  width: 100%;
+  padding: var(--gog-multiselect-filter-input-padding-y)
+    var(--gog-multiselect-filter-input-padding-x);
+  font-family: var(--gog-multiselect-font-family);
+  font-size: var(
+    --gog-multiselect-font-size,
+    var(--gog-multiselect-size-font-size, var(--gog-field-md-font-size))
+  );
+  color: var(--gog-multiselect-filter-input-color);
+  background: var(--gog-multiselect-filter-input-bg);
+  border: var(--gog-control-border-width) var(--gog-control-border-style)
+    var(--gog-multiselect-filter-input-border);
+  border-radius: var(--gog-multiselect-filter-input-radius);
+  outline: none;
+}
+
+.gog-ms__filter-input:focus {
+  border-color: var(--gog-multiselect-focus-border);
+}
+
+.gog-ms__empty {
+  margin: 0;
+  padding: var(--gog-multiselect-filter-empty-padding);
+  font-family: var(--gog-multiselect-font-family);
+  font-size: var(
+    --gog-multiselect-font-size,
+    var(--gog-multiselect-size-font-size, var(--gog-field-md-font-size))
+  );
+  color: var(--gog-multiselect-filter-empty-color);
+  text-align: center;
+}
+
+/* Divider on the side facing the option list, so the search box reads as chrome, not a row. */
+.gog-ms__filter--top {
+  border-bottom: var(--gog-multiselect-filter-border-width)
+    var(--gog-multiselect-filter-border-style) var(--gog-multiselect-filter-border-color);
+}
+
+.gog-ms__filter--bottom {
+  top: auto;
+  bottom: 0;
+  border-top: var(--gog-multiselect-filter-border-width) var(--gog-multiselect-filter-border-style)
+    var(--gog-multiselect-filter-border-color);
+}
+
+/*
+ * An auto-width control sizes to its current selection, which on a short option collapses it to
+ * little more than its chrome — and, before the panel became content-sized, took the option list
+ * down with it. This floor keeps it usable; `minWidth` overrides the token per instance.
+ */
+:host(.gog-host--auto-width),
+:host(.gog-host--auto-width) .gog-ms {
+  min-width: var(--gog-multiselect-min-width);
+}
+
+/* A portalled panel is sized in JS, so it needs the same ceiling the inline one gets in CSS. */
+.gog-ms__dropdown--portal {
+  max-width: var(--gog-multiselect-panel-max-width);
+}
+
+/*
+ * "+N" — the count of selected labels that did not fit; never shrinks, so it stays readable.
+ * `align-self: baseline` (shared with .gog-ms__value, not with the icons in .gog-ms__actions)
+ * lines its text up with the summary's baseline — the container's own `align-items: center`
+ * centers each element's *box*, and a smaller font's box-center sits visibly above a larger
+ * font's baseline, which is what made this chip look like it was floating above the text.
+ */
+.gog-ms__overflow {
+  flex-shrink: 0;
+  align-self: baseline;
+  margin-inline-start: var(--gog-multiselect-overflow-gap);
+  font-size: var(--gog-multiselect-overflow-font-size);
+  line-height: var(--gog-multiselect-overflow-line-height);
+  color: var(--gog-multiselect-overflow-color);
+}
+
+.gog-ms__tooltip-list {
+  margin: 0;
+  padding-inline-start: 1.1em;
+  text-align: start;
+}

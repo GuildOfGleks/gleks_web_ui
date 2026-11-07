@@ -92,7 +92,7 @@ only if **the library's own code** never imports the root either: a subpath that
 | 0   | Part 1 and Part 2 — measure before moving anything                                                                                                           | ✅ 2026-11-07 |
 | 1   | Pilot: `icon`, `tag`, `toggle`, `textarea` as entry points, re-exported by the root; installed into the admin copy and measured                              | ✅ 2026-11-07 |
 | 2   | `shared` split by concern, so `provideGogConfig` does not bring the dropdown base, the icon set and the date helpers; subpaths for what an app shell imports |               |
-| 3   | Every other component, one dependency layer at a time (leaves first); the heavy units' imports                                                               |               |
+| 3   | Every other component, all at once (a staged move leaves a not-yet-moved dependency unreachable by subpath); the heavy units' imports                        | ✅ 2026-11-07 |
 | 4   | Rules: `check:layering`, `check:install`'s `SMOKE`, `library-sources.mjs`; docs (`README.md`, `AGENTS.md`, `CHANGELOG.md`) and the lab checklist             |               |
 | 5   | The admin app rebuilt against the local package with every import a subpath; the number published here                                                       |               |
 
@@ -140,3 +140,41 @@ root back. The heavy units' imports are not tidying; they are half the benefit.
 136-icon registry, the date helpers — is in the initial chunk: 75 kB minified, unchanged across all
 three variants. A config subpath re-exported from `shared` would buy nothing; `shared` itself has to
 be split by concern.
+
+### As 3 finished
+
+**All at once rather than a layer at a time**, by a one-off script that resolved every relative
+import against the file's _old_ location and rewrote it to the target's subpath — a staged move
+would have left some component importing a dependency that had no subpath yet. The 36 component
+folders moved with history, plus the two services: `ToastService` into `@guildofgleks/ui/toast`
+beside the component it drives, `ThemeService` as `@guildofgleks/ui/theme`. `src/lib/` keeps only
+`styles/` (the float-label partial) and `shared-integration/` (specs). The four heavy units import
+`/button`, `/icon`, `/scroll`, `/paginator`, … and nothing imports the root but `src/public-api.ts`.
+
+**Three internal helpers crossed entry points and went to `shared/`, not into a subpath**:
+`bindRipple` and `GogRippleController` (button, menu and collapsible use them) and
+`resolveMenuPlacement` with its types (popover uses it). A subpath's `export *` would have made them
+public from the root as well; `shared` is the internal floor and the root takes named lists from it.
+
+**The public surface did not move.** The root's export list, resolved by the TypeScript checker
+against the built `.d.ts` of `master` and of this branch, is the same 185 names with the same
+value/type split; `/table`, `/datepicker`, `/dialog` and `/scheduler` are unchanged too. All 46
+bundles load in Node.
+
+**Counts against the baseline**: 76 files and 1496 tests (71 and 1462 on the first run — the test
+`include` had become `../*/**/*.spec.ts`, which does not reach back into `src/` itself, so the five
+`shared-integration` specs silently stopped running), 45 layering units, 55 stylesheets, 661
+classes, 4963 contrast pairs, 7 `loading` components. `check:loading-aria` crashed on the missing
+`src/lib/components` and `check:tokens` was reading it as an empty set; both read the entry-point
+directories now. Test and coverage globs are wildcards (`../*/**/*.spec.ts`,
+`"@guildofgleks/ui/*": ["./*/public-api.ts"]`), so a new component needs no config edit.
+
+**The admin app, every import a subpath** (the config from `/shared` for now — iteration 2):
+
+| Variant                         | Initial      | `@guildofgleks/ui` in the initial chunk, minified                                    |
+| ------------------------------- | ------------ | ------------------------------------------------------------------------------------ |
+| V0 — the app unchanged          | 144.2 kB     | root 143.4, shared 75.1, …                                                           |
+| **V3 — every import a subpath** | **127.2 kB** | shared 78.3, toast 14.2, scroll 13.4, dialog 13.3, spinner 7.7, button 3.2, icon 1.8 |
+
+What is left is what the shell renders — the toast container and the dialog with their closure —
+and `shared`, which is now the largest single input from this library in the initial chunk.

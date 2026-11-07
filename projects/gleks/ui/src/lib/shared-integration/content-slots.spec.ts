@@ -2,21 +2,18 @@ import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
-import {
-  CheckboxComponent,
-  GogCheckboxIconDirective,
-} from '../components/checkbox/checkbox.component';
+import { CheckboxComponent, GogCheckboxIconDirective } from '@guildofgleks/ui/checkbox';
 import { GogTagIconDirective, TagComponent } from '@guildofgleks/ui/tag';
 import {
   GogMultiselectClearIconDirective,
   MultiselectComponent,
-} from '../components/multiselect/multiselect.component';
-import { SelectComponent } from '../components/select/select.component';
+} from '@guildofgleks/ui/multiselect';
+import { SelectComponent } from '@guildofgleks/ui/select';
 import {
   GogInputAddonEndDirective,
   GogInputAddonStartDirective,
   InputfieldComponent,
-} from '../components/inputfield/inputfield.component';
+} from '@guildofgleks/ui/inputfield';
 import { GogDropdownChevronDirective } from '@guildofgleks/ui/shared';
 
 /**

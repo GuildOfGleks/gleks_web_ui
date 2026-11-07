@@ -15,7 +15,7 @@ import {
   booleanAttribute,
 } from '@angular/core';
 
-import { IconComponent } from '@guildofgleks/ui';
+import { IconComponent } from '@guildofgleks/ui/icon';
 import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
 import { GogDateSelectionMode, GogHourFormat, GogSize } from '@guildofgleks/ui/shared';
 import {

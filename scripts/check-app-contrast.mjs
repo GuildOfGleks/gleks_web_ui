@@ -53,7 +53,8 @@ const TARGETS = [
     name: 'gleks-ui-lab',
     styles: 'projects/gleks-ui-lab/src/app',
     palettes: 'node_modules/@guildofgleks/ui/styles',
-    missing: 'run `npm install` at the repo root — the lab is checked against the published package',
+    missing:
+      'run `npm install` at the repo root — the lab is checked against the published package',
   },
   {
     key: 'showcase',
@@ -150,7 +151,9 @@ function rulesOf(css) {
     // from saying nothing at all. Without the distinction a base rule's transparency fell through
     // to its own `:hover` rule's background, and the *rest* state was then measured against the
     // hover tint: three of this check's first seven showcase findings were that, not a defect.
-    const paintsNothing = new RegExp('(?:^|;|\\s)background(?:-color)?:\\s*(none|transparent)\\s*(?:;|$)').test(body);
+    const paintsNothing = new RegExp(
+      '(?:^|;|\\s)background(?:-color)?:\\s*(none|transparent)\\s*(?:;|$)',
+    ).test(body);
     const colour = value('color');
     const bg = value('background-color') ?? value('background') ?? (paintsNothing ? 'none' : null);
     if (colour || bg) out.push({ selector, colour, bg });
@@ -180,8 +183,10 @@ async function collectPairs(stylesDir) {
       // The ground a base paints *at rest*. A state rule's ground belongs to that state: it is
       // its own pair's `bg`, or the pair built below from the rest colour. Taking whichever rule
       // came first measured `.nav-item--nested` at rest against `.nav-item:hover`'s fill.
-      if (rule.bg && rule.selector === base && !backgrounds.has(base)) backgrounds.set(base, rule.bg);
-      if (rule.colour && rule.selector === base && !colours.has(base)) colours.set(base, rule.colour);
+      if (rule.bg && rule.selector === base && !backgrounds.has(base))
+        backgrounds.set(base, rule.bg);
+      if (rule.colour && rule.selector === base && !colours.has(base))
+        colours.set(base, rule.colour);
       if (rule.colour) pairs.push(entry);
       else if (rule.bg && rule.bg !== 'none' && rule.selector !== base) groundOnly.push(entry);
     }

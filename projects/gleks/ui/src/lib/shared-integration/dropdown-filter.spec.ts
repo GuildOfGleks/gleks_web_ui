@@ -3,8 +3,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { describe, expect, it } from 'vitest';
 
-import { MultiselectComponent } from '../components/multiselect/multiselect.component';
-import { SelectComponent } from '../components/select/select.component';
+import { MultiselectComponent } from '@guildofgleks/ui/multiselect';
+import { SelectComponent } from '@guildofgleks/ui/select';
 
 const FRUIT = [
   { id: 'ap', name: 'Apple' },

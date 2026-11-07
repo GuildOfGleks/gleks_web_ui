@@ -37,9 +37,10 @@ import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { ROOT_LIB_DIR, SPLIT_DIRS } from './library-sources.mjs';
 
-// The root's components and each split entry point's: `gog-table`, which has `loading`, moved out
-// of `src/lib/components` in 21.14.0.
-const ROOTS = [join(ROOT_LIB_DIR, 'components'), ...SPLIT_DIRS];
+// Whatever is left under `src/lib` and every entry point beside it: `gog-table` moved out of
+// `src/lib/components` in 21.14.0, and every other component followed it into its own subpath
+// (docs/component-entry-points.md), so `src/lib/components` no longer exists.
+const ROOTS = [ROOT_LIB_DIR, ...SPLIT_DIRS].filter((dir) => existsSync(dir));
 
 /** Every component source under `dir`, specs excluded — a test host may declare its own input. */
 function componentsIn(dir) {

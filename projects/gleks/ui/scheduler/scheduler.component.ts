@@ -19,17 +19,17 @@ import {
   viewChild,
 } from '@angular/core';
 
+import { ButtonComponent } from '@guildofgleks/ui/button';
+import { ButtonToggleGroupComponent } from '@guildofgleks/ui/button-toggle';
 import {
-  ButtonComponent,
-  ButtonToggleGroupComponent,
   ContextMenuComponent,
   GogContextMenuContentDirective,
   GogContextMenuTriggerDirective,
-  GogMenuItemDirective,
-  IconComponent,
-  PopoverComponent,
-  ScrollComponent,
-} from '@guildofgleks/ui';
+} from '@guildofgleks/ui/context-menu';
+import { IconComponent } from '@guildofgleks/ui/icon';
+import { GogMenuItemDirective } from '@guildofgleks/ui/menu';
+import { PopoverComponent } from '@guildofgleks/ui/popover';
+import { ScrollComponent } from '@guildofgleks/ui/scroll';
 import {
   GOG_CONFIG,
   type GogOptionAccessor,
