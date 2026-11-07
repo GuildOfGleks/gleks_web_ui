@@ -40,6 +40,12 @@ delete the section too.
   `monthEventLimit`/`moreEventsAction`/`readonly` and the `GOG_CONFIG.scheduler` key, "+N more" in
   a popover, and an editable demo that applies `gogEventCreate`/`Delete`/`Change` to its own array.
   The Global Config page gets the `scheduler` key and the eight editing labels.
+- **The Scheduler page also covers iteration 4** (`docs/scheduler.md`): `view: 'agenda'` and
+  `agendaDays`, with a demo; `loading`, with a demo that loads on `gogRangeChange` (the showcase's
+  900ms one is the model); drag-and-drop in the editing demo's prose — mouse and pen only, and why
+  touch keeps the menu (and that iOS has no path yet). Inputs table: `agendaDays`, `loading`,
+  `views` defaulting to all four. Global Config page: `agendaView`, `noEvents`, `loadingEvents`.
+  Token reference: the six new `--gog-scheduler-*` tokens.
 - **Every place that describes the entry points**, rewritten for the per-component subpaths
   (`docs/component-entry-points.md`): four components are on their own entry point only (`/table`,
   `/datepicker`, `/dialog`, `/scheduler`), and **every other component, plus `/config`, `/date`,

@@ -410,10 +410,12 @@ export interface GogGlobalConfig {
     seconds?: string;
     /**
      * `gog-scheduler`'s toolbar: the step buttons, named for the period they step by — formatters
-     * taking the view, so a language can inflect the noun — the view switch's name and its three
-     * options, the all-day row's heading, and the "+N more" button a full month cell ends with.
-     * Defaults: `` (view) => `Previous ${view}` ``, `` (view) => `Next ${view}` ``, `'View'`,
-     * `'Month'`, `'Week'`, `'Day'`, `'All day'`, `` (count) => `+${count} more` ``.
+     * taking the view, so a language can inflect the noun — the view switch's name and its four
+     * options, the all-day row's heading (also an all-day event's time in the agenda), the "+N
+     * more" button a full month cell ends with, and the agenda's line for a period with no events.
+     * Defaults: `` (view) => `Previous ${view}` `` (`'Previous days'` for the agenda), the same
+     * with `Next`, `'View'`, `'Month'`, `'Week'`, `'Day'`, `'Agenda'`, `'All day'`, `` (count) =>
+     * `+${count} more` ``, `'No events'`.
      */
     previousPeriod?: (view: GogSchedulerView) => string;
     nextPeriod?: (view: GogSchedulerView) => string;
@@ -421,8 +423,10 @@ export interface GogGlobalConfig {
     monthView?: string;
     weekView?: string;
     dayView?: string;
+    agendaView?: string;
     allDay?: string;
     moreEvents?: (count: number) => string;
+    noEvents?: string;
     /**
      * `gog-scheduler` when it is editable (`readonly` off): the context menu's name and items, the
      * status line while a new place is being chosen, and its cancel button. Defaults: `'Event
@@ -438,6 +442,8 @@ export interface GogGlobalConfig {
     movingEvent?: (title: string) => string;
     resizingEvent?: (title: string) => string;
     cancel?: string;
+    /** `gog-scheduler`'s loading bar, while `loading` is on. Default `'Loading events'`. */
+    loadingEvents?: string;
   };
   /**
    * Applies to `ThemeService`. Every field is off/neutral by default, so an app that configures

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { formatDate, startOfDay, type GogSeverity } from '@guildofgleks/ui';
 import {
   GogSchedulerEventDirective,
@@ -82,6 +82,26 @@ export class SchedulerPage {
     this.recordEdit(
       `gogEventChange (${change.change}): ${change.event.title} → ${this.time(change.start)} – ${this.time(change.end)}`,
     );
+  }
+
+  /** The loading demo: every period drawn is "fetched" for 900ms, as an app would on gogRangeChange. */
+  protected readonly loadingEvents = signal<readonly Booking[]>([]);
+  protected readonly loading = signal(false);
+  private loadTimer: ReturnType<typeof setTimeout> | undefined;
+
+  constructor() {
+    inject(DestroyRef).onDestroy(() => clearTimeout(this.loadTimer));
+  }
+
+  protected load(range: GogSchedulerRange): void {
+    clearTimeout(this.loadTimer);
+    this.loading.set(true);
+    this.loadTimer = setTimeout(() => {
+      this.loadingEvents.set(
+        BOOKINGS.filter((booking) => booking.start < range.end && booking.end > range.start),
+      );
+      this.loading.set(false);
+    }, 900);
   }
 
   private recordEdit(line: string): void {

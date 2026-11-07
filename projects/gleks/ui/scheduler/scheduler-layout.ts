@@ -204,15 +204,21 @@ export function weekdayOffset(date: Date, firstDayOfWeek: number): number {
   return (date.getDay() - firstDayOfWeek + 7) % 7;
 }
 
-/** The days a view draws, as weeks: six for a month, one for a week or a day. */
+/**
+ * The days a view draws, as weeks: six for a month, one for a week or a day. The agenda is one
+ * run of `agendaDays` days from the anchor itself — a list reads forward from the day it opens on,
+ * not from the start of that day's week.
+ */
 export function visibleWeeks(
   view: GogSchedulerView,
   anchor: Date,
   firstDayOfWeek: number,
+  agendaDays = 7,
 ): Date[][] {
   const day = startOfDay(anchor);
   if (view === 'month') return buildMonthGrid(day.getFullYear(), day.getMonth(), firstDayOfWeek);
   if (view === 'day') return [[day]];
+  if (view === 'agenda') return [Array.from({ length: agendaDays }, (_, i) => addDays(day, i))];
   const first = addDays(day, -weekdayOffset(day, firstDayOfWeek));
   return [Array.from({ length: 7 }, (_, i) => addDays(first, i))];
 }
@@ -222,16 +228,23 @@ export function visibleRange(
   view: GogSchedulerView,
   anchor: Date,
   firstDayOfWeek: number,
+  agendaDays = 7,
 ): { start: Date; end: Date } {
-  const weeks = visibleWeeks(view, anchor, firstDayOfWeek);
+  const weeks = visibleWeeks(view, anchor, firstDayOfWeek, agendaDays);
   const last = weeks[weeks.length - 1];
   return { start: weeks[0][0], end: addDays(last[last.length - 1], 1) };
 }
 
 /** The anchor one period earlier (`-1`) or later (`1`). */
-export function shiftAnchor(view: GogSchedulerView, anchor: Date, step: number): Date {
+export function shiftAnchor(
+  view: GogSchedulerView,
+  anchor: Date,
+  step: number,
+  agendaDays = 7,
+): Date {
   if (view === 'month') return addMonths(startOfDay(anchor), step);
-  return addDays(startOfDay(anchor), step * (view === 'week' ? 7 : 1));
+  const length = view === 'week' ? 7 : view === 'agenda' ? agendaDays : 1;
+  return addDays(startOfDay(anchor), step * length);
 }
 
 /**

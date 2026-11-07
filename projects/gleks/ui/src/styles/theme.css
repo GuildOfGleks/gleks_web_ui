@@ -1983,6 +1983,12 @@
   /* Inset: a cell's ring drawn outside it would be hidden under its neighbours. */
   --gog-scheduler-focus-ring-offset: calc(var(--gog-focus-ring-width) * -1);
   --gog-scheduler-focus-ring-color: var(--gog-accent-color);
+  --gog-scheduler-loading-opacity: 0.7;
+  --gog-scheduler-agenda-date-width: calc(var(--gog-space-32) * 4);
+  --gog-scheduler-agenda-time-width: calc(var(--gog-space-32) * 4);
+  --gog-scheduler-resize-size: var(--gog-space-8);
+  --gog-scheduler-drag-shadow: var(--gog-elevation-3);
+  --gog-scheduler-selection-bg: var(--gog-accent-dim);
 
   /* ── Scroll ────────────────────────────────────────────────────────────────── */
   --gog-scroll-track-bg: transparent;

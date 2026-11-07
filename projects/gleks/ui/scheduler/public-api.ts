@@ -6,8 +6,8 @@
  * exported it would put it in the initial bundle of every app that imports anything from the
  * root (docs/entry-points.md, Part 2, finding 2).
  *
- * The code here imports the rest of the library from `@guildofgleks/ui` and never the reverse --
- * `check:layering` rule D.
+ * The code here imports the rest of the library by its subpaths (`@guildofgleks/ui/button`, …), and
+ * nothing in the root or `shared` imports it back -- `check:layering` rule D.
  */
 export { SchedulerComponent } from './scheduler.component';
 export type {

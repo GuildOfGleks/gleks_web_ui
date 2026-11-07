@@ -123,10 +123,11 @@ export type GogProgressbarAnimation = 'none' | 'stripes' | 'shimmer';
 export type GogSeverity = 'accent' | 'success' | 'danger' | 'warning' | 'info';
 
 /**
- * Which period `gog-scheduler` draws: a six-week month grid, or a week or a single day as columns of
- * hours. Lives here rather than beside the component because `GOG_CONFIG.labels` names it.
+ * Which period `gog-scheduler` draws: a six-week month grid, a week or a single day as columns of
+ * hours, or the agenda — the days ahead that have events, as a list. Lives here rather than beside
+ * the component because `GOG_CONFIG.labels` names it.
  */
-export type GogSchedulerView = 'month' | 'week' | 'day';
+export type GogSchedulerView = 'month' | 'week' | 'day' | 'agenda';
 
 /**
  * What `gog-scheduler`'s "+N more" opens: `'popover'` lists the day's events beside the cell,

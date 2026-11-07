@@ -53,9 +53,10 @@ full-page event calendar, it is `gog-scheduler`" (decided 2026-10-03, so a plan 
 
 ## What it does not do
 
-- **No drag-and-drop**: moving and extending go through the context menu and a pick (iteration 2).
-  No recurring events (the app expands them into `events`), no resource columns, no agenda/list
-  view, no `loading` state yet.
+- No recurring events (the app expands them into `events`), no resource columns.
+- **No drag on touch** (iteration 4): a long press is Android's context menu. iOS Safari raises no
+  `contextmenu`, so an editable scheduler has no editing path on iPhone or iPad until
+  `gog-context-menu` learns a long press of its own (`docs/backlog.md`, Gaps).
 
 ## Iterations
 
@@ -63,6 +64,8 @@ full-page event calendar, it is `gog-scheduler`" (decided 2026-10-03, so a plan 
 | --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
 | 1   | `gog-scheduler`, `gogSchedulerEvent`, the entry point, labels, tokens, specs, showcase page and specimen, docs                                                                        | ✅ 2026-10-18 |
 | 2   | Bars across the week, `monthEventLimit` and `moreEventsAction` in `GOG_CONFIG.scheduler`, "+N more" in a `gog-popover`, editing (`readonly`, context menu, move/resize/create/delete) | ✅ 2026-10-18 |
+| 3   | One bar per week row instead of a piece per day                                                                                                                                       | ✅ 2026-10-18 |
+| 4   | `loading`, the agenda view, drag-and-drop (asked for by the owner on 2026-11-07)                                                                                                      | ✅ 2026-11-07 |
 
 ## Iteration 1, as it finished
 
@@ -143,3 +146,43 @@ same grid. A bar still ends at the week's edge, square, and continues in the nex
 The month grid stopped being a `<table>`: a bar spanning cells cannot live inside one cell. Each week
 is a named group, and the weekday row is `aria-hidden`, because every day and every event is a
 button whose name already says its weekday and date.
+
+## Iteration 4 — loading, agenda, drag-and-drop (2026-11-07)
+
+The owner took three of the five items _What it does not do_ listed, for 21.20.0 while it is still
+open; recurrence and resource columns stay out, each wanting a plan of its own.
+
+**`loading`.** `api-design.instructions.md` asks a region for placeholders shaped like what is
+coming. For a scheduler that shape is the grid — the days and slots do not depend on the data —
+and fake event placeholders would sit where no event will, so the grid stays and only goes `inert`
+and dim (`--gog-scheduler-loading-opacity`). The indicator is an indeterminate `gog-progressbar`
+positioned along the toolbar's lower edge, out of the flow: measured in the showcase, the view's
+offset is 68px with and without it. **The toolbar stays live**, against the letter of "the loading
+state must be non-interactive": stepping is what starts the next load, and an app that pages
+quickly through months must not have to wait for each one. `check:loading-aria` counts eight
+components now.
+
+**Agenda.** `view: 'agenda'` lists the days that have events from the anchor day itself — not the
+start of its week, because a list reads forward from where it opens — for `agendaDays` (7) days.
+Days without events are left out; that is what makes it an agenda rather than a narrow week. Its
+items are all tab stops rather than a roving one: it is a list of buttons, short per period, and
+the arrows move along it as a convenience. The default step labels became "Previous days" / "Next
+days" for it — "Previous agenda" names no period.
+
+**Drag-and-drop.** Mouse and pen only. The hit test is `document.elementsFromPoint`, filtered to
+slots and days, so the event under the pointer — which is the dragged one, re-laid-out where it
+would land — never hides its target, and no `pointer-events` juggling is needed (which would
+_break_ `elementsFromPoint`: it skips an element that takes no pointer; the first draft of the
+stylesheet had exactly that rule). Pointer capture is taken on the host only once the 4px threshold
+is crossed — captured at the press, the click a plain press makes would be retargeted to the host.
+The preview is the dragged item's start and end substituted inside `items()`, so it goes through
+the same layout as everything else. A move keeps the grabbed minute under the pointer in the hour
+grid and the grabbed day elsewhere; a resize mirrors the menu's "Change end". The click that
+follows a drag is swallowed in a capture-phase listener. Verified with a real mouse in the
+showcase: a move across days and hours, a resize from the handle, a create across four slots, no
+console error.
+
+**Touch is the gap.** The plan was a long press to start a drag. It conflicts with the long press
+Android already uses to open the context menu — the only touch path to editing — and on iOS there
+is no `contextmenu` at all, so editing has no touch path there either way. Both are the context
+menu's problem, not the scheduler's, and are filed in `docs/backlog.md`.

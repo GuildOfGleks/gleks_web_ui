@@ -1868,43 +1868,46 @@ description the host had whenever the tooltip was closed.
 `GogSchedulerMoreAction` among them). The root does not export it, so a route that
 loads it lazily keeps it out of the initial bundle.
 
-A month, week or day of the app's own events. **It draws events; it does not own them**: `events`
-is your array, read through accessors as `gog-select` reads options, and every press goes back out
-as an output — the app decides what pressing an empty slot means (open a form, create a booking).
-Moving and extending go through a context menu, not drag-and-drop; no recurring events or
+A month, week or day of the app's own events, or an agenda of the days ahead. **It draws events;
+it does not own them**: `events` is your array, read through accessors as `gog-select` reads
+options, and every press goes back out as an output — the app decides what pressing an empty slot
+means (open a form, create a booking). Editable, events move and stretch by drag-and-drop (mouse
+and pen) and through a context menu (keyboard, and touch on Android); no recurring events or
 resource columns.
 
-| Input              | Type                                                                  | Default                    | Notes                                                                   |
-| ------------------ | --------------------------------------------------------------------- | -------------------------- | ----------------------------------------------------------------------- |
-| `events`           | `readonly T[]`                                                        | `[]`                       |                                                                         |
-| `eventStart`       | `GogOptionAccessor<T, Date \| string \| number \| null \| undefined>` | `'start'`                  | a `Date`, ISO string or timestamp; unreadable → the event is skipped    |
-| `eventEnd`         | same                                                                  | `'end'`                    | exclusive; missing → one `slotDuration` (timed) or its start day        |
-| `eventTitle`       | `GogOptionAccessor<T, string \| null \| undefined>`                   | `'title'`                  |                                                                         |
-| `eventAllDay`      | `GogOptionAccessor<T, boolean \| null \| undefined>`                  | `'allDay'`                 | only `true` counts                                                      |
-| `eventVariant`     | `GogOptionAccessor<T, GogSeverity \| null \| undefined>`              | `'variant'`                | the event's leading edge colour; anything else is `'accent'`            |
-| `view`             | `GogSchedulerView` (`'month'\|'week'\|'day'`), **model**              | `'month'`                  | `[(view)]`                                                              |
-| `views`            | `readonly GogSchedulerView[]`                                         | `['month', 'week', 'day']` | the toolbar's switch; one or none hides it                              |
-| `date`             | `Date \| null`, **model**                                             | `null` (today)             | any instant inside the period; navigation writes it                     |
-| `dayStartHour`     | `number`                                                              | `0`                        | first hour the week/day grid draws                                      |
-| `dayEndHour`       | `number`                                                              | `24`                       | last (exclusive)                                                        |
-| `slotDuration`     | `number` (minutes)                                                    | `30`                       | one row of the hour grid, and the length of a pressed slot              |
-| `scrollToHour`     | `number`                                                              | `8`                        | where the hour grid opens scrolled to                                   |
-| `monthEventLimit`  | `number \| undefined`                                                 | `3`                        | rows a month cell draws, "+N more" included; via `GOG_CONFIG.scheduler` |
-| `moreEventsAction` | `GogSchedulerMoreAction` (`'popover'\|'day'`)                         | `'popover'`                | what "+N more" opens; via `GOG_CONFIG.scheduler`                        |
-| `readonly`         | `boolean \| undefined`                                                | `true`                     | off adds the editing context menu; via `GOG_CONFIG.scheduler`           |
-| `locale`           | `string \| undefined`                                                 | `'en-US'`                  | via `GOG_CONFIG.datepicker.locale`                                      |
-| `firstDayOfWeek`   | `number \| undefined`                                                 | locale's own               | via `GOG_CONFIG.datepicker.firstDayOfWeek`                              |
-| `timeZone`         | `string \| undefined`                                                 | the browser's own          | via `GOG_CONFIG.datepicker.timeZone`; see the datepicker's time zones   |
-| `ariaLabel`        | `string`                                                              | `''`                       | names the region; unset, its title ("October 2026") does                |
+| Input              | Type                                                                  | Default           | Notes                                                                   |
+| ------------------ | --------------------------------------------------------------------- | ----------------- | ----------------------------------------------------------------------- |
+| `events`           | `readonly T[]`                                                        | `[]`              |                                                                         |
+| `eventStart`       | `GogOptionAccessor<T, Date \| string \| number \| null \| undefined>` | `'start'`         | a `Date`, ISO string or timestamp; unreadable → the event is skipped    |
+| `eventEnd`         | same                                                                  | `'end'`           | exclusive; missing → one `slotDuration` (timed) or its start day        |
+| `eventTitle`       | `GogOptionAccessor<T, string \| null \| undefined>`                   | `'title'`         |                                                                         |
+| `eventAllDay`      | `GogOptionAccessor<T, boolean \| null \| undefined>`                  | `'allDay'`        | only `true` counts                                                      |
+| `eventVariant`     | `GogOptionAccessor<T, GogSeverity \| null \| undefined>`              | `'variant'`       | the event's leading edge colour; anything else is `'accent'`            |
+| `view`             | `GogSchedulerView` (`'month'\|'week'\|'day'\|'agenda'`), **model**    | `'month'`         | `[(view)]`                                                              |
+| `views`            | `readonly GogSchedulerView[]`                                         | all four          | the toolbar's switch; one or none hides it                              |
+| `agendaDays`       | `number`                                                              | `7`               | days the agenda lists, from the anchor day; stepping moves by as many   |
+| `date`             | `Date \| null`, **model**                                             | `null` (today)    | any instant inside the period; navigation writes it                     |
+| `dayStartHour`     | `number`                                                              | `0`               | first hour the week/day grid draws                                      |
+| `dayEndHour`       | `number`                                                              | `24`              | last (exclusive)                                                        |
+| `slotDuration`     | `number` (minutes)                                                    | `30`              | one row of the hour grid, and the length of a pressed slot              |
+| `scrollToHour`     | `number`                                                              | `8`               | where the hour grid opens scrolled to                                   |
+| `monthEventLimit`  | `number \| undefined`                                                 | `3`               | rows a month cell draws, "+N more" included; via `GOG_CONFIG.scheduler` |
+| `moreEventsAction` | `GogSchedulerMoreAction` (`'popover'\|'day'`)                         | `'popover'`       | what "+N more" opens; via `GOG_CONFIG.scheduler`                        |
+| `readonly`         | `boolean \| undefined`                                                | `true`            | off adds dragging and the editing menu; via `GOG_CONFIG.scheduler`      |
+| `loading`          | `boolean`                                                             | `false`           | events being fetched: grid inert and dim, a bar on the toolbar, busy    |
+| `locale`           | `string \| undefined`                                                 | `'en-US'`         | via `GOG_CONFIG.datepicker.locale`                                      |
+| `firstDayOfWeek`   | `number \| undefined`                                                 | locale's own      | via `GOG_CONFIG.datepicker.firstDayOfWeek`                              |
+| `timeZone`         | `string \| undefined`                                                 | the browser's own | via `GOG_CONFIG.datepicker.timeZone`; see the datepicker's time zones   |
+| `ariaLabel`        | `string`                                                              | `''`              | names the region; unset, its title ("October 2026") does                |
 
 | Output           | Payload                                                       | When                                                                |
 | ---------------- | ------------------------------------------------------------- | ------------------------------------------------------------------- |
 | `gogEventClick`  | `GogSchedulerEventClick<T>` — `{ event, start, end, allDay }` | an event was pressed; `start`/`end` are the instants it was read as |
 | `gogSlotClick`   | `GogSchedulerSlot` — `{ start, end, allDay }`                 | an empty slot of the hour grid, a month cell or an all-day cell     |
 | `gogRangeChange` | `GogSchedulerRange` — `{ start, end, view }`                  | the drawn period changed, **and once on first render** — load here  |
-| `gogEventCreate` | `GogSchedulerSlot`                                            | editable: "New event" chosen on a slot or day                       |
+| `gogEventCreate` | `GogSchedulerSlot`                                            | editable: "New event" chosen, or empty slots/days dragged across    |
 | `gogEventDelete` | `GogSchedulerEventClick<T>`                                   | editable: "Delete" chosen on an event                               |
-| `gogEventChange` | `GogSchedulerEventChange<T>`                                  | editable: a move or a new end chosen, and its place pressed         |
+| `gogEventChange` | `GogSchedulerEventChange<T>`                                  | editable: an event dragged or its end dragged, or a menu move/end   |
 
 ```html
 <gog-scheduler
@@ -1942,6 +1945,31 @@ with `GOG_CONFIG.scheduler.monthEventLimit`); the cell is as tall as its rows. A
 `limit − 1` rows and "+N more", worded by `GOG_CONFIG.labels.moreEvents(count)`. It opens the day's
 events in a `gog-popover` list, or — with `moreEventsAction: 'day'` — the day view.
 
+**Agenda** (`view: 'agenda'`). The days that have events, as a list, from the anchor day itself
+(not the start of its week) and `agendaDays` long; stepping moves by as many, and the title is the
+date range. A multi-day event is listed on each of its days, an all-day one with `labels.allDay` as
+its time; a period with none says `labels.noEvents`. A day's heading opens the day view. Every
+heading and event is a tab stop, and ↑/↓/Home/End move along the list as well; PageUp/PageDown
+step. Choosing a place for a menu Move happens in the grid views — the agenda lists only days that
+already have events.
+
+**Loading.** `loading` is for the time between `gogRangeChange` and the events arriving. The grid
+stays drawn (it is the shape of what is coming), goes `inert` and dims, and an indeterminate
+`gog-progressbar` named `labels.loadingEvents` runs along the toolbar's lower edge, out of the
+flow, so nothing moves. The toolbar stays live — stepping on is what starts the next load. The
+host carries `aria-busy="true"`.
+
+**Dragging** (`readonly` off; mouse and pen). Drag an event to move it: it keeps its length, and
+the minute — or, outside the hour grid, the day — it was grabbed by stays under the pointer. Drag
+its end edge (the bottom of an event in the hour grid, the end of a bar) to change where it ends.
+Drag across empty slots of one day, or across days, to create an event over them. The event is
+drawn where it would land until it is let go, the hour grid scrolls near its top and bottom, and
+Escape drops the drag. A press that travels under 4px is still a click. The outputs are the menu's
+own — `gogEventChange` with `change: 'move' | 'resize'`, `gogEventCreate` — and the click the
+release makes is swallowed. Touch is left to the context menu, since a long press is how Android
+opens it; iOS Safari raises no `contextmenu`, so on iPhone and iPad an editable scheduler has no
+editing path yet.
+
 **Editing** (`readonly` off; it is on by default). A right-click — or the ContextMenu key, or
 Shift+F10 — opens a `gog-context-menu`: **New event** on an empty slot or day (`gogEventCreate`,
 the slot's range or the whole day), and **Move**, **Change end**, **Delete** on an event. Move and
@@ -1972,11 +2000,13 @@ polite live region, so stepping announces the new period.
 rule as `gog-datepicker`.
 
 Labels (`GOG_CONFIG.labels`): `today`, `previousPeriod(view)`, `nextPeriod(view)`, `schedulerViews`,
-`monthView`, `weekView`, `dayView`, `allDay`, `moreEvents(count)`, and for editing `eventActions`,
-`newEvent`, `moveEvent`, `resizeEvent`, `deleteEvent`, `movingEvent(title)`, `resizingEvent(title)`,
-`cancel`. Tokens: `--gog-scheduler-*` —
+`monthView`, `weekView`, `dayView`, `agendaView`, `allDay`, `moreEvents(count)`, `noEvents`,
+`loadingEvents`, and for editing `eventActions`, `newEvent`, `moveEvent`, `resizeEvent`,
+`deleteEvent`, `movingEvent(title)`, `resizingEvent(title)`, `cancel`. Tokens: `--gog-scheduler-*` —
 `-slot-height` (one row, default the 24px pointer target), `-body-max-height` (the
-hour grid scrolls inside it), `-gutter-width`, `-event-*`, `-today-*`, `-now-color`.
+hour grid scrolls inside it), `-gutter-width`, `-event-*`, `-today-*`, `-now-color`,
+`-agenda-date-width`, `-agenda-time-width`, `-loading-opacity`, `-resize-size` (the end handle),
+`-drag-shadow`, `-selection-bg` (the stretch dragged across to create).
 
 ### Layout & navigation
 

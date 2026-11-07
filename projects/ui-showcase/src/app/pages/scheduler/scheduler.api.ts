@@ -33,7 +33,12 @@ export const SCHEDULER_API: readonly DocApi[] = [
         default: "'variant'",
       },
       { name: 'view', type: 'GogSchedulerView (model)', default: "'month'" },
-      { name: 'views', type: 'readonly GogSchedulerView[]', default: "['month', 'week', 'day']" },
+      {
+        name: 'views',
+        type: 'readonly GogSchedulerView[]',
+        default: "['month', 'week', 'day', 'agenda']",
+      },
+      { name: 'agendaDays', type: 'number', default: '7' },
       { name: 'date', type: 'Date | null (model)', default: 'null (today)' },
       { name: 'dayStartHour', type: 'number', default: '0' },
       { name: 'dayEndHour', type: 'number', default: '24' },
@@ -75,6 +80,7 @@ export const SCHEDULER_API: readonly DocApi[] = [
         default: "the browser's own",
         config: 'GOG_CONFIG.datepicker.timeZone',
       },
+      { name: 'loading', type: 'boolean', default: 'false' },
       { name: 'ariaLabel', type: 'string', default: "'' (named by its title)" },
     ],
     outputs: [

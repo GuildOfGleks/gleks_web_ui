@@ -1273,6 +1273,8 @@ export type GogTokenName =
   | '--gog-ripple-enter-duration'
   | '--gog-ripple-exit-duration'
   | '--gog-ripple-opacity'
+  | '--gog-scheduler-agenda-date-width'
+  | '--gog-scheduler-agenda-time-width'
   | '--gog-scheduler-bg'
   | '--gog-scheduler-body-max-height'
   | '--gog-scheduler-cell-gap'
@@ -1283,6 +1285,7 @@ export type GogTokenName =
   | '--gog-scheduler-day-number-line-height'
   | '--gog-scheduler-day-number-size'
   | '--gog-scheduler-day-press-bg'
+  | '--gog-scheduler-drag-shadow'
   | '--gog-scheduler-event-accent-color'
   | '--gog-scheduler-event-bg'
   | '--gog-scheduler-event-border-color'
@@ -1314,10 +1317,13 @@ export type GogTokenName =
   | '--gog-scheduler-hour-label-line-height'
   | '--gog-scheduler-line-color'
   | '--gog-scheduler-line-width'
+  | '--gog-scheduler-loading-opacity'
   | '--gog-scheduler-more-color'
   | '--gog-scheduler-now-color'
   | '--gog-scheduler-now-width'
   | '--gog-scheduler-outside-color'
+  | '--gog-scheduler-resize-size'
+  | '--gog-scheduler-selection-bg'
   | '--gog-scheduler-slot-height'
   | '--gog-scheduler-slot-line-style'
   | '--gog-scheduler-title-font-size'
@@ -3460,6 +3466,8 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
     section: 'Scheduler',
     layer: 'component',
     tokens: [
+      '--gog-scheduler-agenda-date-width',
+      '--gog-scheduler-agenda-time-width',
       '--gog-scheduler-bg',
       '--gog-scheduler-body-max-height',
       '--gog-scheduler-cell-gap',
@@ -3470,6 +3478,7 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-scheduler-day-number-line-height',
       '--gog-scheduler-day-number-size',
       '--gog-scheduler-day-press-bg',
+      '--gog-scheduler-drag-shadow',
       '--gog-scheduler-event-accent-color',
       '--gog-scheduler-event-bg',
       '--gog-scheduler-event-border-color',
@@ -3501,10 +3510,13 @@ export const GOG_TOKEN_GROUPS: readonly GogTokenGroup[] = [
       '--gog-scheduler-hour-label-line-height',
       '--gog-scheduler-line-color',
       '--gog-scheduler-line-width',
+      '--gog-scheduler-loading-opacity',
       '--gog-scheduler-more-color',
       '--gog-scheduler-now-color',
       '--gog-scheduler-now-width',
       '--gog-scheduler-outside-color',
+      '--gog-scheduler-resize-size',
+      '--gog-scheduler-selection-bg',
       '--gog-scheduler-slot-height',
       '--gog-scheduler-slot-line-style',
       '--gog-scheduler-title-font-size',

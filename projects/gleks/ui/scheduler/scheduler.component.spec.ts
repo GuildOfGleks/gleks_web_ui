@@ -312,7 +312,7 @@ describe('SchedulerComponent', () => {
 
     it('switches view from the toolbar', async () => {
       const radios = all<HTMLElement>('.gog-scheduler__views [role="radio"]');
-      expect(radios.map((r) => r.textContent?.trim())).toEqual(['Month', 'Week', 'Day']);
+      expect(radios.map((r) => r.textContent?.trim())).toEqual(['Month', 'Week', 'Day', 'Agenda']);
       radios[1].click();
       await fixture.whenStable();
       fixture.detectChanges();
@@ -629,6 +629,307 @@ describe('SchedulerComponent', () => {
         }),
       );
       expect(await menuItem('New event')).toBeTruthy();
+    });
+  });
+
+  describe('dragging', () => {
+    /** What the stubbed `elementsFromPoint` reports under the pointer — jsdom lays nothing out. */
+    let under: Element[] = [];
+    let original: typeof document.elementsFromPoint | undefined;
+
+    beforeEach(() => {
+      original = document.elementsFromPoint;
+      document.elementsFromPoint = () => under;
+    });
+
+    afterEach(() => {
+      if (original) document.elementsFromPoint = original;
+      else delete (document as { elementsFromPoint?: unknown }).elementsFromPoint;
+    });
+
+    function pointer(
+      type: string,
+      target: Element,
+      y: number,
+      { pointerType = 'mouse', button = 0 } = {},
+    ): void {
+      const event = new MouseEvent(type, {
+        bubbles: true,
+        cancelable: true,
+        clientX: 10,
+        clientY: y,
+        button,
+      });
+      Object.defineProperties(event, {
+        pointerId: { value: 1 },
+        pointerType: { value: pointerType },
+      });
+      target.dispatchEvent(event);
+    }
+
+    /** Press on `from` with `fromUnder` beneath it, drag to `to`, release; then the click it makes. */
+    async function drag(from: Element, fromUnder: Element[], to: Element[]): Promise<void> {
+      under = fromUnder;
+      pointer('pointerdown', from, 0);
+      under = to;
+      pointer('pointermove', from, 40);
+      fixture.detectChanges();
+      pointer('pointerup', host(), 40);
+      (to[0] as HTMLElement).click();
+      await fixture.whenStable();
+      fixture.detectChanges();
+    }
+
+    const slot = (column: number, minute: number) =>
+      all('.gog-scheduler__column')[column].querySelector<HTMLElement>(
+        `[data-minute="${minute}"]`,
+      )!;
+
+    it('moves an event to where it is dropped, by the minute it was grabbed at', async () => {
+      const review = { title: 'Review', start: at(17, 9), end: at(17, 10, 30) };
+      await set({ readonly: false, view: 'week', events: [review] });
+      const changes: GogSchedulerEventChange<Booking>[] = [];
+      const clicks: unknown[] = [];
+      component.gogEventChange.subscribe((change) => changes.push(change));
+      component.gogEventClick.subscribe((click) => clicks.push(click));
+      component.gogSlotClick.subscribe((click) => clicks.push(click));
+
+      const event = all('.gog-scheduler__column')[2].querySelector('.gog-scheduler__event')!;
+      // Grabbed half an hour into it; dropped with the pointer on Thursday's 11:00.
+      await drag(event, [event, slot(2, 570)], [slot(3, 660)]);
+
+      expect(changes.map((c) => [c.change, c.start, c.end, c.previousStart])).toEqual([
+        ['move', at(18, 10, 30), at(18, 12), at(17, 9)],
+      ]);
+      // The release's click is not also a press.
+      expect(clicks).toEqual([]);
+      expect(host().classList).not.toContain('gog-scheduler--dragging');
+    });
+
+    it('draws the dragged event where it would land, until it is dropped', async () => {
+      await set({
+        readonly: false,
+        view: 'week',
+        events: [{ title: 'Review', start: at(17, 9), end: at(17, 10) }],
+      });
+      const event = all('.gog-scheduler__column')[2].querySelector('.gog-scheduler__event')!;
+      under = [event, slot(2, 540)];
+      pointer('pointerdown', event, 0);
+      under = [slot(4, 600)];
+      pointer('pointermove', event, 40);
+      fixture.detectChanges();
+      expect(host().classList).toContain('gog-scheduler--dragging');
+      const moved = all('.gog-scheduler__column')[4].querySelector('.gog-scheduler__event');
+      expect(moved?.classList).toContain('gog-scheduler__event--dragged');
+      expect(all('.gog-scheduler__column')[2].querySelector('.gog-scheduler__event')).toBeNull();
+    });
+
+    it('changes the end from the end handle', async () => {
+      const review = { title: 'Review', start: at(17, 9), end: at(17, 10) };
+      await set({ readonly: false, view: 'week', events: [review] });
+      const changes: GogSchedulerEventChange<Booking>[] = [];
+      component.gogEventChange.subscribe((change) => changes.push(change));
+      const handle = all('.gog-scheduler__column')[2].querySelector('.gog-scheduler__resize')!;
+      await drag(handle, [handle, slot(2, 570)], [slot(2, 690)]);
+      expect(changes.map((c) => [c.change, c.start, c.end])).toEqual([
+        ['resize', at(17, 9), at(17, 12)],
+      ]);
+    });
+
+    it('creates an event over the slots dragged across', async () => {
+      await set({ readonly: false, view: 'week' });
+      const created: GogSchedulerSlot[] = [];
+      const slots: unknown[] = [];
+      component.gogEventCreate.subscribe((slot) => created.push(slot));
+      component.gogSlotClick.subscribe((slot) => slots.push(slot));
+      await drag(slot(2, 690), [slot(2, 690)], [slot(2, 600)]);
+      expect(created).toEqual([{ start: at(17, 10), end: at(17, 12), allDay: false }]);
+      expect(slots).toEqual([]);
+    });
+
+    it('moves a month bar by the days it is dragged, and creates across days', async () => {
+      const offsite = { title: 'Offsite', start: at(17), end: at(19), allDay: true };
+      await set({ readonly: false, events: [offsite] });
+      const changes: GogSchedulerEventChange<Booking>[] = [];
+      const created: GogSchedulerSlot[] = [];
+      component.gogEventChange.subscribe((change) => changes.push(change));
+      component.gogEventCreate.subscribe((slot) => created.push(slot));
+
+      const bar = eventsOn(18)[0];
+      await drag(bar, [bar, dayButton(18)], [dayButton(25)]);
+      expect(changes.map((c) => [c.start, c.end])).toEqual([[at(24), at(26)]]);
+
+      await drag(dayButton(2), [dayButton(2)], [dayButton(4)]);
+      expect(created).toEqual([{ start: at(2), end: at(5), allDay: true }]);
+    });
+
+    it('leaves a short press a click, and ignores touch and a read-only scheduler', async () => {
+      await set({ readonly: false, view: 'week', events: [] });
+      const slots: unknown[] = [];
+      const created: unknown[] = [];
+      component.gogSlotClick.subscribe((slot) => slots.push(slot));
+      component.gogEventCreate.subscribe((slot) => created.push(slot));
+
+      under = [slot(2, 600)];
+      pointer('pointerdown', slot(2, 600), 0);
+      pointer('pointermove', slot(2, 600), 2);
+      pointer('pointerup', slot(2, 600), 2);
+      slot(2, 600).click();
+      expect(slots.length).toBe(1);
+
+      under = [slot(2, 690)];
+      pointer('pointerdown', slot(2, 600), 0, { pointerType: 'touch' });
+      pointer('pointermove', host(), 40, { pointerType: 'touch' });
+      pointer('pointerup', host(), 40, { pointerType: 'touch' });
+
+      await set({ readonly: true });
+      await drag(slot(2, 600), [slot(2, 600)], [slot(2, 690)]);
+      expect(created).toEqual([]);
+      expect(host().querySelector('.gog-scheduler__resize')).toBeNull();
+    });
+
+    it('drops a drag on Escape, emitting nothing', async () => {
+      await set({ readonly: false, view: 'week' });
+      const created: unknown[] = [];
+      component.gogEventCreate.subscribe((slot) => created.push(slot));
+      under = [slot(2, 600)];
+      pointer('pointerdown', slot(2, 600), 0);
+      under = [slot(2, 690)];
+      pointer('pointermove', host(), 40);
+      fixture.detectChanges();
+      expect(all('.gog-scheduler__slot--selected').length).toBe(4);
+      host().dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+      pointer('pointerup', host(), 40);
+      fixture.detectChanges();
+      expect(created).toEqual([]);
+      expect(all('.gog-scheduler__slot--selected').length).toBe(0);
+    });
+  });
+
+  describe('agenda', () => {
+    const agendaDays = () =>
+      all('.gog-scheduler__agenda-day').map((day) => ({
+        date: day.querySelector('.gog-scheduler__agenda-date')!.getAttribute('aria-label'),
+        events: Array.from(day.querySelectorAll('.gog-scheduler__event')).map((event) =>
+          Array.from(event.children)
+            .map((part) => part.textContent?.replace(/\s+/g, ' ').trim())
+            .join(' '),
+        ),
+      }));
+
+    it('lists the days with events, from the anchor day on, for agendaDays days', async () => {
+      await set({
+        view: 'agenda',
+        events: [
+          { title: 'Review', start: at(17, 9), end: at(17, 10) },
+          { title: 'Standup', start: at(19, 9, 30), end: at(19, 9, 45) },
+          { title: 'Later', start: at(24, 9) },
+          { title: 'Before', start: at(16, 9) },
+        ],
+      });
+      // Wednesday the 17th to Tuesday the 23rd: the agenda opens on its anchor, not on the week's start.
+      expect(title()).toMatch(/Jun 17\D+23, 2026/);
+      expect(agendaDays().map((day) => day.date)).toEqual([
+        'Wednesday, June 17',
+        'Friday, June 19',
+      ]);
+      expect(agendaDays()[0].events[0]).toContain('Review');
+      expect(agendaDays()[0].events[0]).toContain('9:00');
+
+      await set({ agendaDays: 1 });
+      expect(title()).toBe('Wednesday, June 17, 2026');
+      expect(agendaDays().length).toBe(1);
+    });
+
+    it('lists a multi-day event on each of its days, an all-day one as "All day"', async () => {
+      await set({
+        view: 'agenda',
+        events: [{ title: 'Offsite', start: at(18), end: at(20), allDay: true }],
+      });
+      expect(agendaDays().map((day) => day.date)).toEqual(['Thursday, June 18', 'Friday, June 19']);
+      expect(agendaDays()[1].events).toEqual(['All day Offsite']);
+    });
+
+    it('says so when the period has no events', async () => {
+      await set({ view: 'agenda', events: [] });
+      expect(host().querySelector('.gog-scheduler__agenda-empty')?.textContent?.trim()).toBe(
+        'No events',
+      );
+    });
+
+    it('steps by agendaDays and reports that period', async () => {
+      const ranges: GogSchedulerRange[] = [];
+      component.gogRangeChange.subscribe((range) => ranges.push(range));
+      await set({ view: 'agenda', agendaDays: 3 });
+      expect(ranges.at(-1)).toEqual({ start: at(17), end: at(20), view: 'agenda' });
+      toolbarButton('Next days').click();
+      await fixture.whenStable();
+      expect(ranges.at(-1)).toEqual({ start: at(20), end: at(23), view: 'agenda' });
+    });
+
+    it('opens a day from its heading, and reports a pressed event', async () => {
+      const review = { title: 'Review', start: at(19, 9) };
+      await set({ view: 'agenda', events: [review] });
+      const clicks: GogSchedulerEventClick<Booking>[] = [];
+      component.gogEventClick.subscribe((click) => clicks.push(click));
+      host()
+        .querySelector<HTMLButtonElement>('.gog-scheduler__agenda .gog-scheduler__event')!
+        .click();
+      expect(clicks.map((click) => click.event)).toEqual([review]);
+
+      host().querySelector<HTMLButtonElement>('.gog-scheduler__agenda-date')!.click();
+      await fixture.whenStable();
+      fixture.detectChanges();
+      expect(component.view()).toBe('day');
+      expect(title()).toBe('Friday, June 19, 2026');
+    });
+
+    it('moves along the list with the arrows, every item a tab stop', async () => {
+      await set({
+        view: 'agenda',
+        events: [
+          { title: 'A', start: at(17, 9) },
+          { title: 'B', start: at(18, 9) },
+        ],
+      });
+      const items = all('.gog-scheduler__agenda [data-kind]');
+      expect(items.length).toBe(4);
+      expect(items.every((item) => item.tabIndex === 0)).toBe(true);
+      items[0].focus();
+      await press(items[0], 'ArrowDown');
+      expect(document.activeElement).toBe(items[1]);
+      await press(items[1], 'End');
+      expect(document.activeElement).toBe(items[3]);
+    });
+  });
+
+  describe('loading', () => {
+    it('is busy, inert and barred while loading, and none of it otherwise', async () => {
+      expect(host().getAttribute('aria-busy')).toBeNull();
+      expect(host().querySelector('gog-progressbar')).toBeNull();
+
+      await set({ loading: true, events: [{ title: 'Review', start: at(17, 9) }] });
+      expect(host().getAttribute('aria-busy')).toBe('true');
+      const bar = host().querySelector('gog-progressbar')!;
+      expect(bar.getAttribute('aria-label')).toBe('Loading events');
+      expect(bar.closest('.gog-scheduler__toolbar')).not.toBeNull();
+      // The grid stays drawn, as the shape of what is coming, but does not answer.
+      expect(all('.gog-scheduler__day').length).toBe(42);
+      expect((host().querySelector('.gog-scheduler__view') as HTMLElement).inert).toBe(true);
+
+      await set({ loading: false });
+      expect(host().getAttribute('aria-busy')).toBeNull();
+      expect((host().querySelector('.gog-scheduler__view') as HTMLElement).inert).toBe(false);
+    });
+
+    it('keeps the toolbar live while loading, since stepping is what starts the next load', async () => {
+      await set({ loading: true });
+      const ranges: GogSchedulerRange[] = [];
+      component.gogRangeChange.subscribe((range) => ranges.push(range));
+      toolbarButton('Next month').click();
+      await fixture.whenStable();
+      expect(ranges.length).toBe(1);
+      expect(title()).toBe('July 2026');
     });
   });
 

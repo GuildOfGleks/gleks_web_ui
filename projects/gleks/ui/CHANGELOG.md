@@ -10,7 +10,7 @@ _Versioning_ section. Before 21.16.0 a minor could carry a breaking change, and 
 ### Added
 
 - **`gog-scheduler`**, from the new entry point **`@guildofgleks/ui/scheduler`** — a month, week
-  or day of the app's own events. `events` is the consumer's array, read through accessors
+  or day of the app's own events, or an agenda of the days ahead. `events` is the consumer's array, read through accessors
   (`eventStart`, `eventEnd`, `eventTitle`, `eventAllDay`, `eventVariant`), and every press goes back
   out: `gogEventClick` with the event, `gogSlotClick` with an empty slot of the hour grid or a whole
   day, and `gogRangeChange` with the period drawn — on first render and after every move, the moment
@@ -26,17 +26,26 @@ _Versioning_ section. Before 21.16.0 a minor could carry a breaking change, and 
     Shift+F10 opens a `gog-context-menu` — New event on a slot or day, Move, Change end and Delete on
     an event. Move and Change end wait for the next slot or day pressed, and Escape cancels. Each
     comes out as `gogEventCreate`, `gogEventDelete` or `gogEventChange`; `events` is never changed.
+  - **Drag-and-drop**, editable and with a mouse or a pen: drag an event to move it (its length
+    kept, the minute or day it was grabbed by staying under the pointer), drag its end edge to
+    change the end, drag across empty slots or days to create an event. The event is drawn where it
+    would land until let go, the hour grid scrolls near its edges, and Escape drops the drag. The
+    outputs are the menu's own. Touch keeps the context menu, which a long press opens on Android.
+  - **Agenda**, `view: 'agenda'`: the days that have events, as a list from the anchor day, for
+    `agendaDays` (7) days; stepping moves by as many. A day's heading opens the day view.
+  - **`loading`**: while the period's events are fetched, the grid stays drawn but goes inert and
+    dim under an indeterminate bar along the toolbar, which stays live; the host is `aria-busy`.
   - **Keyboard.** The focused day carries the tab stops, and the arrows, Home/End and
     PageUp/PageDown move it, moving the view past what is drawn.
   - **Configuration.** A new `GOG_CONFIG.scheduler` key (`monthEventLimit`, `moreEventsAction`,
     `readonly`); `locale`, `firstDayOfWeek` and `timeZone` fall back to `GOG_CONFIG.datepicker`'s.
-    Sixteen new `GOG_CONFIG.labels` fields — `previousPeriod`, `nextPeriod`, `schedulerViews`,
-    `monthView`, `weekView`, `dayView`, `allDay`, `moreEvents`, `eventActions`, `newEvent`,
-    `moveEvent`, `resizeEvent`, `deleteEvent`, `movingEvent`, `resizingEvent`, `cancel` (`today` is
-    shared with `gog-calendar`). Types `GogSchedulerView`, `GogSchedulerMoreAction` and
+    Nineteen new `GOG_CONFIG.labels` fields — `previousPeriod`, `nextPeriod`, `schedulerViews`,
+    `monthView`, `weekView`, `dayView`, `agendaView`, `allDay`, `moreEvents`, `noEvents`,
+    `loadingEvents`, `eventActions`, `newEvent`, `moveEvent`, `resizeEvent`, `deleteEvent`,
+    `movingEvent`, `resizingEvent`, `cancel` (`today` is shared with `gog-calendar`). Types `GogSchedulerView`, `GogSchedulerMoreAction` and
     `GogSchedulerEventChange`, and `--gog-scheduler-*` tokens.
 
-  No drag-and-drop, recurring events or resource columns. Its own entry point because it is large
+  No recurring events or resource columns. Its own entry point because it is large
   and usually lives on one route: the root does not export it, so a lazy route keeps it out of an
   app's initial bundle.
 

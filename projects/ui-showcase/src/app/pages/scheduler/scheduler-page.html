@@ -2,7 +2,7 @@
   <app-doc-section
     id="states"
     title="Views"
-    lead="A six-week month, or a week or a day as columns of hours. The toolbar steps by the period, returns to today and switches the view; all three are two-way, so the app hears every move."
+    lead="A six-week month, a week or a day as columns of hours, or the agenda. The toolbar steps by the period, returns to today and switches the view; all three are two-way, so the app hears every move."
   >
     <h3>[(view)] and [(date)], with every output</h3>
     <p class="scheduler-page__note">
@@ -59,6 +59,31 @@
       [dayEndHour]="18"
       [slotDuration]="15"
     />
+
+    <h3>view="agenda", [agendaDays]="14"</h3>
+    <p class="scheduler-page__note">
+      The days ahead that have events, as a list — from the anchor day itself, not from the start of
+      its week, and <code>agendaDays</code> long (7 by default); stepping moves by as many. A
+      multi-day event is listed on each of its days, an all-day one with "All day" for its time. A
+      day's heading opens it in the day view. Every heading and event is a tab stop; ↑/↓ and
+      Home/End move along the list too.
+    </p>
+    <gog-scheduler view="agenda" [views]="[]" [events]="bookings" [agendaDays]="14" />
+
+    <h3>[loading] — every period "fetched" for 900ms</h3>
+    <p class="scheduler-page__note">
+      Step the period or switch the view: this page loads the events on
+      <code>gogRangeChange</code> and holds <code>loading</code> on until they arrive. The grid
+      stays drawn — it is the shape of what is coming — and goes inert and dim under a bar along the
+      toolbar, which stays live, since stepping on is what starts the next load. The host is
+      <code>aria-busy</code> meanwhile.
+    </p>
+    <gog-scheduler
+      view="week"
+      [events]="loadingEvents()"
+      [loading]="loading()"
+      (gogRangeChange)="load($event)"
+    />
   </app-doc-section>
 
   <app-doc-section
@@ -95,9 +120,16 @@
   <app-doc-section
     id="editing"
     title="Editing"
-    lead="readonly is on by default. Off, a right-click — or the ContextMenu key, or Shift+F10 — opens a gog-context-menu with the scheduler's actions; each comes out as an output, and the app applies it."
+    lead="readonly is on by default. Off, events can be dragged with a mouse or a pen, and a right-click — or the ContextMenu key, or Shift+F10, or a long press on Android — opens a gog-context-menu with the same actions; each comes out as an output, and the app applies it."
   >
     <h3>[readonly]="false"</h3>
+    <p class="scheduler-page__note">
+      <strong>Drag</strong> an event to move it — it keeps its length, and the minute (or the day)
+      you grabbed it by stays under the pointer — or drag its end edge to change where it ends. Drag
+      across empty slots, or days, to create an event over them. The event is drawn where it would
+      land until you let go; Escape drops the drag. Near the top or bottom of the hour grid it
+      scrolls.
+    </p>
     <p class="scheduler-page__note">
       Right-click an empty slot or day for <strong>New event</strong>, or an event for
       <strong>Move</strong>, <strong>Change end</strong> and <strong>Delete</strong>. Move and

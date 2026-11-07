@@ -215,6 +215,12 @@ describe('scheduler layout', () => {
       expect(shiftAnchor('month', at(30), 1)).toEqual(new Date(2026, 6, 30));
       expect(shiftAnchor('week', at(17), -1)).toEqual(at(10));
       expect(shiftAnchor('day', at(17), 1)).toEqual(at(18));
+      expect(shiftAnchor('agenda', at(17), 1, 5)).toEqual(at(22));
+    });
+
+    it('draws the agenda from the anchor day itself, agendaDays long', () => {
+      // Wednesday the 17th: the agenda does not snap back to the week's first day.
+      expect(visibleRange('agenda', at(17, 15), 1, 5)).toEqual({ start: at(17), end: at(22) });
     });
   });
 });

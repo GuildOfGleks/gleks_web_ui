@@ -7,6 +7,7 @@ import {
   Injector,
   PLATFORM_ID,
   afterNextRender,
+  booleanAttribute,
   computed,
   contentChild,
   effect,
@@ -29,6 +30,7 @@ import {
 import { IconComponent } from '@guildofgleks/ui/icon';
 import { GogMenuItemDirective } from '@guildofgleks/ui/menu';
 import { PopoverComponent } from '@guildofgleks/ui/popover';
+import { ProgressbarComponent } from '@guildofgleks/ui/progressbar';
 import { ScrollComponent } from '@guildofgleks/ui/scroll';
 import {
   configurableBooleanAttribute,
@@ -65,6 +67,7 @@ import {
   type GogSchedulerTimedPiece,
   dayPieces,
   fitRows,
+  isSpanning,
   shiftAnchor,
   timedPieces,
   visibleRange,
@@ -117,18 +120,28 @@ const DEFAULT_LOCALE = 'en-US';
 const DEFAULT_MONTH_EVENT_LIMIT = 3;
 const DEFAULT_MORE_ACTION: GogSchedulerMoreAction = 'popover';
 const DEFAULT_READONLY = true;
-const VIEWS: readonly GogSchedulerView[] = ['month', 'week', 'day'];
+const VIEWS: readonly GogSchedulerView[] = ['month', 'week', 'day', 'agenda'];
+const DEFAULT_AGENDA_DAYS = 7;
 const SEVERITIES: readonly GogSeverity[] = ['accent', 'success', 'danger', 'warning', 'info'];
 const MINUTE = 60 * 1000;
+const DAY = 24 * 60 * MINUTE;
+/** How far a press must travel before it is a drag rather than a click, in CSS pixels. */
+const DRAG_THRESHOLD = 4;
+/** How near the hour grid's top or bottom edge a drag scrolls it, in CSS pixels. */
+const AUTO_SCROLL_EDGE = 32;
 
 const DEFAULT_LABELS = {
   today: 'Today',
-  previousPeriod: (view: GogSchedulerView) => `Previous ${view}`,
-  nextPeriod: (view: GogSchedulerView) => `Next ${view}`,
+  // The agenda's period is a run of days, not a unit with a name of its own.
+  previousPeriod: (view: GogSchedulerView) =>
+    view === 'agenda' ? 'Previous days' : `Previous ${view}`,
+  nextPeriod: (view: GogSchedulerView) => (view === 'agenda' ? 'Next days' : `Next ${view}`),
   schedulerViews: 'View',
   monthView: 'Month',
   weekView: 'Week',
   dayView: 'Day',
+  agendaView: 'Agenda',
+  noEvents: 'No events',
   allDay: 'All day',
   moreEvents: (count: number) => `+${count} more`,
   eventActions: 'Event actions',
@@ -139,6 +152,7 @@ const DEFAULT_LABELS = {
   movingEvent: (title: string) => `Moving "${title}": choose a new start`,
   resizingEvent: (title: string) => `Changing the end of "${title}": choose where it ends`,
   cancel: 'Cancel',
+  loadingEvents: 'Loading events',
 };
 
 /** What the context menu was opened on. */
@@ -214,6 +228,40 @@ interface DayColumn<T> {
   slots: { minute: number; name: string }[];
 }
 
+/** A slot of the hour grid (`minute` set) or a whole day — what a pointer is over. */
+interface Place {
+  day: Date;
+  minute: number | null;
+}
+
+/**
+ * A press that may become a drag: on an event (to move it, or by its end handle to change its
+ * end) or on an empty slot or day (to create an event over the stretch dragged across).
+ */
+interface DragState<T> {
+  mode: 'move' | 'resize' | 'create';
+  pointerId: number;
+  x: number;
+  y: number;
+  started: boolean;
+  /** Move and resize: the item as it was when pressed. */
+  item: GogSchedulerItem<T> | null;
+  /** Where the press landed, so a move keeps the event where it was grabbed. */
+  origin: Place;
+}
+
+/** One day of the agenda: its heading, and its events in the order a day lists them. */
+interface AgendaDay<T> {
+  date: Date;
+  key: number;
+  weekday: string;
+  label: string;
+  month: string;
+  name: string;
+  today: boolean;
+  events: EventView<T>[];
+}
+
 type FocusKind = 'day' | 'header' | 'allday' | 'slot' | 'event' | 'more';
 
 /**
@@ -261,6 +309,7 @@ type FocusKind = 'day' | 'header' | 'allday' | 'slot' | 'event' | 'more';
     IconComponent,
     NgTemplateOutlet,
     PopoverComponent,
+    ProgressbarComponent,
     ScrollComponent,
   ],
   templateUrl: './scheduler.component.html',
@@ -275,7 +324,15 @@ type FocusKind = 'day' | 'header' | 'allday' | 'slot' | 'event' | 'more';
     '[attr.aria-label]': 'ariaLabel() || null',
     '[attr.aria-labelledby]': 'ariaLabel() ? null : titleId',
     '[class.gog-scheduler--picking]': 'pending() !== null',
-    '(keydown.escape)': 'cancelPending()',
+    '[class.gog-scheduler--loading]': 'loading()',
+    // The region is coming, not empty: the events layer is inert while it loads (api-design,
+    // "Loading states"), so a screen reader has to be told why.
+    '[attr.aria-busy]': 'loading() ? "true" : null',
+    '[class.gog-scheduler--dragging]': 'dragging()',
+    '(keydown.escape)': 'onEscape()',
+    '(pointermove)': 'onPointerMove($event)',
+    '(pointerup)': 'onPointerUp($event)',
+    '(pointercancel)': 'cancelDrag()',
   },
 })
 export class SchedulerComponent<T = unknown> {
@@ -308,6 +365,11 @@ export class SchedulerComponent<T = unknown> {
   /** The first and last hour the week and day views draw, on the scheduler's clock. */
   readonly dayStartHour = input(0);
   readonly dayEndHour = input(24);
+  /**
+   * How many days the agenda lists, from the anchor day on; stepping moves by as many. Days with
+   * no events are left out of the list. Clamped to 1–62.
+   */
+  readonly agendaDays = input(DEFAULT_AGENDA_DAYS);
   /** Minutes per row of the hour grid, and the length of a pressed slot. */
   readonly slotDuration = input(30);
   /** Where the hour grid is scrolled to when a week or day view opens. */
@@ -337,6 +399,13 @@ export class SchedulerComponent<T = unknown> {
   readonly firstDayOfWeek = input<number | undefined>(undefined);
   /** IANA zone the scheduler is drawn in. Unset, `GOG_CONFIG.datepicker.timeZone`, then the browser's. */
   readonly timeZone = input<string | undefined>(undefined);
+  /**
+   * The period's events are being fetched — typically from `gogRangeChange` until they arrive. The
+   * grid stays drawn, since it is the shape of what is coming; the events and the days go inert
+   * and dim under an indeterminate bar along the toolbar, and the toolbar stays live, because
+   * stepping on is what starts the next load. `aria-busy` is set on the host.
+   */
+  readonly loading = input(false, { transform: booleanAttribute });
   /** Names the region. Unset, the toolbar's title ("October 2026") does. */
   readonly ariaLabel = input('');
 
@@ -385,6 +454,8 @@ export class SchedulerComponent<T = unknown> {
       monthView: configured.monthView ?? DEFAULT_LABELS.monthView,
       weekView: configured.weekView ?? DEFAULT_LABELS.weekView,
       dayView: configured.dayView ?? DEFAULT_LABELS.dayView,
+      agendaView: configured.agendaView ?? DEFAULT_LABELS.agendaView,
+      noEvents: configured.noEvents ?? DEFAULT_LABELS.noEvents,
       allDay: configured.allDay ?? DEFAULT_LABELS.allDay,
       moreEvents: configured.moreEvents ?? DEFAULT_LABELS.moreEvents,
       eventActions: configured.eventActions ?? DEFAULT_LABELS.eventActions,
@@ -395,6 +466,7 @@ export class SchedulerComponent<T = unknown> {
       movingEvent: configured.movingEvent ?? DEFAULT_LABELS.movingEvent,
       resizingEvent: configured.resizingEvent ?? DEFAULT_LABELS.resizingEvent,
       cancel: configured.cancel ?? DEFAULT_LABELS.cancel,
+      loadingEvents: configured.loadingEvents ?? DEFAULT_LABELS.loadingEvents,
     };
   });
 
@@ -439,7 +511,12 @@ export class SchedulerComponent<T = unknown> {
 
   protected readonly viewOptions = computed(() => {
     const labels = this.labels();
-    const names = { month: labels.monthView, week: labels.weekView, day: labels.dayView };
+    const names = {
+      month: labels.monthView,
+      week: labels.weekView,
+      day: labels.dayView,
+      agenda: labels.agendaView,
+    };
     return this.views()
       .filter((view) => VIEWS.includes(view))
       .map((view) => ({ id: view, name: names[view] }));
@@ -462,12 +539,16 @@ export class SchedulerComponent<T = unknown> {
     Math.max(clampInt(this.dayEndHour(), 1, 24) * 60, this.startMinute() + 60),
   );
   protected readonly slotMinutes = computed(() => clampInt(this.slotDuration(), 5, 240));
+  private readonly agendaLength = computed(() => clampInt(this.agendaDays(), 1, 62));
+  /** The week and day views draw an hour grid; the month and the agenda do not. */
+  protected readonly hasHourGrid = computed(() => this.view() === 'week' || this.view() === 'day');
 
   private readonly weeks = computed(() =>
-    visibleWeeks(this.view(), this.anchor(), this.resolvedFirstDayOfWeek()),
+    visibleWeeks(this.view(), this.anchor(), this.resolvedFirstDayOfWeek(), this.agendaLength()),
   );
   private readonly range = computed(
-    () => visibleRange(this.view(), this.anchor(), this.resolvedFirstDayOfWeek()),
+    () =>
+      visibleRange(this.view(), this.anchor(), this.resolvedFirstDayOfWeek(), this.agendaLength()),
     { equal: (a, b) => sameTime(a.start, b.start) && sameTime(a.end, b.end) },
   );
 
@@ -492,6 +573,7 @@ export class SchedulerComponent<T = unknown> {
       }),
       dayName: new Intl.DateTimeFormat(locale, { weekday: 'long', day: 'numeric', month: 'long' }),
       dayNumber: new Intl.DateTimeFormat(locale, { day: 'numeric' }),
+      monthShort: new Intl.DateTimeFormat(locale, { month: 'short' }),
       weekday: new Intl.DateTimeFormat(locale, { weekday: 'short' }),
       time: new Intl.DateTimeFormat(locale, { hour: 'numeric', minute: '2-digit' }),
       slot: new Intl.DateTimeFormat(locale, {
@@ -511,7 +593,12 @@ export class SchedulerComponent<T = unknown> {
       case 'month':
         return formats.month.format(this.anchor());
       case 'week':
-        return formats.weekRange.formatRange(start, addDays(end, -1));
+      case 'agenda': {
+        const last = addDays(end, -1);
+        return isSameDay(start, last)
+          ? formats.longDay.format(start)
+          : formats.weekRange.formatRange(start, last);
+      }
       default:
         return formats.longDay.format(start);
     }
@@ -546,6 +633,8 @@ export class SchedulerComponent<T = unknown> {
     const allDayAccessor = this.eventAllDay();
     const variantAccessor = this.eventVariant();
     const slot = this.slotMinutes() * MINUTE;
+    // While an event is dragged, it is drawn where it would land, laid out with everything else.
+    const preview = this.dragPreview();
     const items: GogSchedulerItem<T>[] = [];
 
     this.events().forEach((event, index) => {
@@ -564,8 +653,8 @@ export class SchedulerComponent<T = unknown> {
         event,
         index,
         title: String(readOption(event, titleAccessor) ?? ''),
-        start: this.toWall(sourceStart),
-        end: this.toWall(sourceEnd),
+        start: preview?.index === index ? preview.start : this.toWall(sourceStart),
+        end: preview?.index === index ? preview.end : this.toWall(sourceEnd),
         allDay,
         variant: variant && SEVERITIES.includes(variant) ? variant : 'accent',
         sourceStart,
@@ -609,7 +698,7 @@ export class SchedulerComponent<T = unknown> {
 
   /** The week and day views' all-day row, as bars across the columns. Empty in the month view. */
   protected readonly allDayBars = computed<EventView<T>[]>(() => {
-    if (this.view() === 'month') return [];
+    if (!this.hasHourGrid()) return [];
     const week = this.weeks()[0];
     const rows = weekRows(this.items(), week, false);
     return weekBars(
@@ -627,7 +716,7 @@ export class SchedulerComponent<T = unknown> {
 
   /** The week or day view's columns. Empty in the month view. */
   protected readonly columns = computed<DayColumn<T>[]>(() => {
-    if (this.view() === 'month') return [];
+    if (!this.hasHourGrid()) return [];
     const items = this.items();
     const today = this.today();
     const formats = this.formats();
@@ -653,6 +742,38 @@ export class SchedulerComponent<T = unknown> {
         ),
         slots,
       };
+    });
+  });
+
+  /**
+   * The agenda: each drawn day that has events, with every event touching it — a multi-day event
+   * is listed on each of its days, as the month draws it in each of its cells. Empty elsewhere.
+   */
+  protected readonly agenda = computed<AgendaDay<T>[]>(() => {
+    if (this.view() !== 'agenda') return [];
+    const items = this.items();
+    const today = this.today();
+    const formats = this.formats();
+    return this.weeks()[0].flatMap((date) => {
+      const pieces = dayPieces(items, date);
+      if (pieces.length === 0) return [];
+      return [
+        {
+          date,
+          key: date.getTime(),
+          weekday: formats.weekday.format(date),
+          label: formats.dayNumber.format(date),
+          month: formats.monthShort.format(date),
+          name: formats.dayName.format(date),
+          today: isSameDay(date, today),
+          events: pieces.map((piece) =>
+            this.eventView(piece.item, date, {
+              continuesBefore: piece.continuesBefore,
+              continuesAfter: piece.continuesAfter,
+            }),
+          ),
+        },
+      ];
     });
   });
 
@@ -704,6 +825,7 @@ export class SchedulerComponent<T = unknown> {
       for (const event of column.timed) drawn.set(event.key, event);
     }
     for (const event of this.moreDayEvents()) drawn.set(event.key, event);
+    for (const day of this.agenda()) for (const event of day.events) drawn.set(event.key, event);
     return drawn;
   });
 
@@ -723,6 +845,21 @@ export class SchedulerComponent<T = unknown> {
     if (kind === 'slot') return { kind: 'slot', day, minute: Number(target.dataset['minute']) };
     return { kind: 'day', day };
   };
+
+  // ── Dragging ─────────────────────────────────────────────────────────────────
+
+  private drag: DragState<T> | null = null;
+  /** Move or resize under way: the dragged event's index and where it would land, as wall dates. */
+  protected readonly dragPreview = signal<{ index: number; start: Date; end: Date } | null>(null);
+  /** Create under way: the stretch dragged across, as wall dates. */
+  protected readonly createPreview = signal<{ start: Date; end: Date; allDay: boolean } | null>(
+    null,
+  );
+  protected readonly dragging = computed(
+    () => this.dragPreview() !== null || this.createPreview() !== null,
+  );
+  /** Set when a drag ends, so the click the same press produces is not also a press. */
+  private suppressClick = false;
 
   // ── Focus ────────────────────────────────────────────────────────────────────
 
@@ -764,7 +901,7 @@ export class SchedulerComponent<T = unknown> {
 
     // Open an hour grid scrolled to `scrollToHour`, not at midnight.
     effect(() => {
-      if (this.view() === 'month') return;
+      if (!this.hasHourGrid()) return;
       const minute = clampInt(this.scrollToHour(), 0, 23) * 60;
       afterNextRender(() => this.scrollHourGridTo(minute), { injector: this.injector });
     });
@@ -773,12 +910,24 @@ export class SchedulerComponent<T = unknown> {
       const timer = setInterval(() => this.now.set(new Date()), MINUTE);
       inject(DestroyRef).onDestroy(() => clearInterval(timer));
     }
+
+    // A press that became a drag also ends in a click on whatever is under the pointer; caught
+    // before any button's own handler sees it.
+    this.host.addEventListener(
+      'click',
+      (event) => {
+        if (!this.suppressClick) return;
+        event.stopPropagation();
+        event.preventDefault();
+      },
+      true,
+    );
   }
 
   // ── Toolbar ──────────────────────────────────────────────────────────────────
 
   protected step(direction: number): void {
-    this.moveAnchorTo(shiftAnchor(this.view(), this.anchor(), direction));
+    this.moveAnchorTo(shiftAnchor(this.view(), this.anchor(), direction, this.agendaLength()));
   }
 
   protected goToToday(): void {
@@ -888,7 +1037,7 @@ export class SchedulerComponent<T = unknown> {
   }
 
   protected isPendingItem(item: GogSchedulerItem<T>): boolean {
-    return this.pending()?.item === item;
+    return this.pending()?.item.index === item.index;
   }
 
   /**
@@ -927,6 +1076,243 @@ export class SchedulerComponent<T = unknown> {
       previousStart: item.sourceStart,
       previousEnd: item.sourceEnd,
     });
+  }
+
+  // ── Dragging ─────────────────────────────────────────────────────────────────
+
+  /**
+   * A primary press with a mouse or a pen, while editable: on an event it may become a move — or,
+   * on the event's end handle, a new end — and on an empty slot or day a new event. Nothing
+   * happens until the pointer travels `DRAG_THRESHOLD` pixels, so a click stays a click.
+   *
+   * Touch is left out: a long press is how Android opens the context menu, and a drag on the same
+   * gesture would take it away. The keyboard reaches the same actions through the menu. (iOS
+   * Safari fires no `contextmenu` at all, so there editing has no path yet — `docs/backlog.md`.)
+   */
+  protected onPointerDown(event: PointerEvent): void {
+    if (this.isReadonly() || this.loading() || this.pending()) return;
+    if (event.button !== 0 || event.pointerType === 'touch') return;
+    const element = event.target as HTMLElement;
+    const target = element.closest<HTMLElement>('[data-kind]');
+    if (!target) return;
+    const kind = target.dataset['kind'];
+    const base = { pointerId: event.pointerId, x: event.clientX, y: event.clientY, started: false };
+
+    if (kind === 'event') {
+      const view = this.drawnEvents().get(target.dataset['key'] ?? '');
+      if (!view) return;
+      const fallback: Place =
+        view.item.allDay || isSpanning(view.item) || !target.closest('.gog-scheduler__column')
+          ? { day: view.day, minute: null }
+          : { day: view.day, minute: this.slotStartOf(view.item.start) };
+      this.drag = {
+        ...base,
+        mode: element.closest('[data-resize]') ? 'resize' : 'move',
+        item: view.item,
+        origin: this.placeAt(event.clientX, event.clientY) ?? fallback,
+      };
+      return;
+    }
+    if (kind === 'slot' || kind === 'day' || kind === 'allday') {
+      this.drag = {
+        ...base,
+        mode: 'create',
+        item: null,
+        origin: {
+          day: new Date(Number(target.dataset['day'])),
+          minute: kind === 'slot' ? Number(target.dataset['minute']) : null,
+        },
+      };
+    }
+  }
+
+  protected onPointerMove(event: PointerEvent): void {
+    const drag = this.drag;
+    if (!drag || event.pointerId !== drag.pointerId) return;
+    if (!drag.started) {
+      if (Math.hypot(event.clientX - drag.x, event.clientY - drag.y) < DRAG_THRESHOLD) return;
+      drag.started = true;
+      // Captured only now: captured from the press, the click a plain press makes would go to the
+      // host rather than to the button pressed.
+      try {
+        this.host.setPointerCapture?.(event.pointerId);
+      } catch {
+        // A pointer that is already gone cannot be captured; the drag still follows the moves.
+      }
+      this.host.ownerDocument.getSelection?.()?.removeAllRanges();
+    }
+    this.autoScroll(event.clientY);
+    const place = this.placeAt(event.clientX, event.clientY);
+    if (place) this.preview(drag, place);
+  }
+
+  protected onPointerUp(event: PointerEvent): void {
+    const drag = this.drag;
+    if (!drag || event.pointerId !== drag.pointerId) return;
+    this.drag = null;
+    if (!drag.started) return;
+    this.swallowNextClick();
+    const moved = this.dragPreview();
+    const created = this.createPreview();
+    this.dragPreview.set(null);
+    this.createPreview.set(null);
+
+    if (drag.mode === 'create') {
+      if (created) {
+        this.gogEventCreate.emit({
+          start: this.fromWall(created.start),
+          end: this.fromWall(created.end),
+          allDay: created.allDay,
+        });
+      }
+      return;
+    }
+    const item = drag.item;
+    if (!item || !moved) return;
+    if (sameTime(moved.start, item.start) && sameTime(moved.end, item.end)) return;
+    this.gogEventChange.emit({
+      event: item.event,
+      change: drag.mode,
+      start: this.fromWall(moved.start),
+      end: this.fromWall(moved.end),
+      allDay: item.allDay,
+      previousStart: item.sourceStart,
+      previousEnd: item.sourceEnd,
+    });
+  }
+
+  /** Escape, a cancelled pointer, or the scheduler going busy: drop the drag, emit nothing. */
+  protected cancelDrag(): void {
+    if (this.drag?.started) this.swallowNextClick();
+    this.drag = null;
+    this.dragPreview.set(null);
+    this.createPreview.set(null);
+  }
+
+  protected onEscape(): void {
+    this.cancelDrag();
+    this.cancelPending();
+  }
+
+  /** Whether a slot of the hour grid is inside the stretch being dragged across to create. */
+  protected isInCreate(day: Date, minute: number): boolean {
+    const created = this.createPreview();
+    if (!created || created.allDay) return false;
+    const at = atMinute(day, minute).getTime();
+    return at >= created.start.getTime() && at < created.end.getTime();
+  }
+
+  /** Whether a whole day is inside the stretch being dragged across to create. */
+  protected isDayInCreate(day: Date): boolean {
+    const created = this.createPreview();
+    return (
+      !!created &&
+      created.allDay &&
+      !isBeforeDay(day, created.start) &&
+      isBeforeDay(day, created.end)
+    );
+  }
+
+  private preview(drag: DragState<T>, place: Place): void {
+    if (drag.mode === 'create') {
+      const origin = drag.origin;
+      if (origin.minute !== null && place.minute !== null) {
+        // A new timed event stays in the column it was started in.
+        const from = Math.min(origin.minute, place.minute);
+        const to = Math.max(origin.minute, place.minute) + this.slotMinutes();
+        this.createPreview.set({
+          start: atMinute(origin.day, from),
+          end: atMinute(origin.day, to),
+          allDay: false,
+        });
+      } else if (origin.minute === null && place.minute === null) {
+        const first = isBeforeDay(place.day, origin.day) ? place.day : origin.day;
+        const last = isBeforeDay(place.day, origin.day) ? origin.day : place.day;
+        this.createPreview.set({ start: first, end: addDays(last, 1), allDay: true });
+      }
+      return;
+    }
+    const item = drag.item;
+    if (!item) return;
+    const span = this.dropSpan(item, drag.mode, drag.origin, place);
+    if (span) this.dragPreview.set({ index: item.index, ...span });
+  }
+
+  /**
+   * Where a moved or resized event lands, as wall dates, or `null` where it cannot. A move keeps
+   * the event's length and where it was grabbed: by the minute between two slots of the hour grid,
+   * by the day anywhere else (keeping its time of day). A new end is the end of the slot, or of the
+   * day, under the pointer, and must come after the start.
+   */
+  private dropSpan(
+    item: GogSchedulerItem<T>,
+    mode: 'move' | 'resize',
+    origin: Place,
+    place: Place,
+  ): { start: Date; end: Date } | null {
+    if (mode === 'move') {
+      if (!item.allDay && origin.minute !== null && place.minute !== null) {
+        const grabbed = atMinute(origin.day, origin.minute).getTime() - item.start.getTime();
+        const start = new Date(atMinute(place.day, place.minute).getTime() - grabbed);
+        return {
+          start,
+          end: new Date(start.getTime() + item.end.getTime() - item.start.getTime()),
+        };
+      }
+      const days = Math.round(
+        (startOfDay(place.day).getTime() - startOfDay(origin.day).getTime()) / DAY,
+      );
+      return { start: addDays(item.start, days), end: addDays(item.end, days) };
+    }
+    const end = item.allDay
+      ? addDays(place.day, 1)
+      : place.minute !== null
+        ? atMinute(place.day, place.minute + this.slotMinutes())
+        : copyTimeOnto(place.day, item.end);
+    return end.getTime() > item.start.getTime() ? { start: item.start, end } : null;
+  }
+
+  /**
+   * The slot or day under a point. Read through `elementsFromPoint`, so the event being dragged —
+   * drawn under the pointer — does not hide the place beneath it.
+   */
+  private placeAt(x: number, y: number): Place | null {
+    const stack = this.host.ownerDocument.elementsFromPoint?.(x, y) ?? [];
+    for (const element of stack) {
+      if (!this.host.contains(element)) continue;
+      const target = (element as HTMLElement).closest<HTMLElement>('[data-kind]');
+      const kind = target?.dataset['kind'];
+      if (target && (kind === 'slot' || kind === 'day' || kind === 'allday')) {
+        return {
+          day: new Date(Number(target.dataset['day'])),
+          minute: kind === 'slot' ? Number(target.dataset['minute']) : null,
+        };
+      }
+    }
+    return null;
+  }
+
+  /** Near the hour grid's top or bottom edge, a drag scrolls it a slot at a time. */
+  private autoScroll(y: number): void {
+    if (!this.hasHourGrid()) return;
+    const viewport = this.host.querySelector<HTMLElement>(
+      '.gog-scheduler__body .gog-scroll__viewport',
+    );
+    if (!viewport) return;
+    const rect = viewport.getBoundingClientRect();
+    const step = this.host.querySelector<HTMLElement>('.gog-scheduler__slot')?.offsetHeight || 24;
+    if (y < rect.top + AUTO_SCROLL_EDGE) viewport.scrollTop -= step;
+    else if (y > rect.bottom - AUTO_SCROLL_EDGE) viewport.scrollTop += step;
+  }
+
+  /** The start of the slot a wall time falls in, inside the drawn hours. */
+  private slotStartOf(date: Date): number {
+    return this.focusedMinuteFor(date.getHours() * 60 + date.getMinutes());
+  }
+
+  private swallowNextClick(): void {
+    this.suppressClick = true;
+    setTimeout(() => (this.suppressClick = false));
   }
 
   // ── Keyboard ─────────────────────────────────────────────────────────────────
@@ -982,10 +1368,10 @@ export class SchedulerComponent<T = unknown> {
         else nextDay = addDays(day, 6 - weekdayOffset(day, this.resolvedFirstDayOfWeek()));
         break;
       case 'PageUp':
-        nextDay = shiftAnchor(view, day, -1);
+        nextDay = shiftAnchor(view, day, -1, this.agendaLength());
         break;
       case 'PageDown':
-        nextDay = shiftAnchor(view, day, 1);
+        nextDay = shiftAnchor(view, day, 1, this.agendaLength());
         break;
       default:
         return;
@@ -1003,6 +1389,59 @@ export class SchedulerComponent<T = unknown> {
     this.focusKind(
       kind === 'event' || kind === 'more' ? (view === 'month' ? 'day' : 'slot') : kind,
     );
+  }
+
+  /** A day's heading in the agenda: the day view of it, or — choosing a place — that day. */
+  protected onAgendaDayClick(day: Date): void {
+    if (this.pending()) {
+      this.applyPending(day, null);
+      return;
+    }
+    this.openDay(day);
+  }
+
+  /**
+   * The agenda is a list, and every heading and event in it is a tab stop of its own. The arrows
+   * and Home/End move along it as well; PageUp/PageDown step the period and land on its first item.
+   */
+  protected onAgendaKeydown(event: KeyboardEvent): void {
+    const items = Array.from(
+      this.host.querySelectorAll<HTMLElement>('.gog-scheduler__agenda [data-kind]'),
+    );
+    const index = items.indexOf(event.target as HTMLElement);
+    let next: number;
+    switch (event.key) {
+      case 'ArrowDown':
+        next = index + 1;
+        break;
+      case 'ArrowUp':
+        next = index - 1;
+        break;
+      case 'Home':
+        next = 0;
+        break;
+      case 'End':
+        next = items.length - 1;
+        break;
+      case 'PageUp':
+      case 'PageDown':
+        event.preventDefault();
+        this.step(event.key === 'PageUp' ? -1 : 1);
+        afterNextRender(
+          () =>
+            (
+              this.host.querySelector<HTMLElement>('.gog-scheduler__agenda [data-kind]') ??
+              this.host.querySelector<HTMLElement>('.gog-scheduler__agenda')
+            )?.focus(),
+          { injector: this.injector },
+        );
+        return;
+      default:
+        return;
+    }
+    if (index === -1 || items.length === 0) return;
+    event.preventDefault();
+    items[Math.min(Math.max(next, 0), items.length - 1)].focus();
   }
 
   // ── Internals ────────────────────────────────────────────────────────────────

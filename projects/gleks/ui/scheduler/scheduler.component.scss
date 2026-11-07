@@ -20,6 +20,7 @@
 /* ── Toolbar ──────────────────────────────────────────────────────────────── */
 
 .gog-scheduler__toolbar {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -46,12 +47,27 @@
   transform: scaleX(-1);
 }
 
+/* ── Loading ───────────────────────────────────────────────────────────────── */
+
+/* Along the toolbar's lower edge, out of the flow: the grid does not move when it comes or goes. */
+.gog-scheduler__loading {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+}
+
+/* The view is `inert` while loading; dimmed, so the reader sees why it does not answer. */
+:host(.gog-scheduler--loading) .gog-scheduler__view {
+  opacity: var(--gog-scheduler-loading-opacity);
+}
+
 /* ── Shared: lines, focus ─────────────────────────────────────────────────── */
 
 .gog-scheduler__day,
 .gog-scheduler__all-day-slot,
 .gog-scheduler__slot,
 .gog-scheduler__column-day,
+.gog-scheduler__agenda-date,
 .gog-scheduler__more,
 .gog-scheduler__event {
   margin: 0;
@@ -62,6 +78,7 @@
 }
 
 button.gog-scheduler__column-day,
+.gog-scheduler__agenda-date,
 .gog-scheduler__day,
 .gog-scheduler__all-day-slot,
 .gog-scheduler__slot,
@@ -71,6 +88,7 @@ button.gog-scheduler__column-day,
 }
 
 button.gog-scheduler__column-day:hover,
+.gog-scheduler__agenda-date:hover,
 .gog-scheduler__day:hover,
 .gog-scheduler__all-day-slot:hover,
 .gog-scheduler__slot:hover,
@@ -79,6 +97,7 @@ button.gog-scheduler__column-day:hover,
 }
 
 button.gog-scheduler__column-day:active,
+.gog-scheduler__agenda-date:active,
 .gog-scheduler__day:active,
 .gog-scheduler__all-day-slot:active,
 .gog-scheduler__slot:active,
@@ -87,6 +106,7 @@ button.gog-scheduler__column-day:active,
 }
 
 button.gog-scheduler__column-day:focus-visible,
+.gog-scheduler__agenda-date:focus-visible,
 .gog-scheduler__day:focus-visible,
 .gog-scheduler__all-day-slot:focus-visible,
 .gog-scheduler__slot:focus-visible,
@@ -158,7 +178,8 @@ button.gog-scheduler__column-day:focus-visible,
 }
 
 .gog-scheduler__day--today .gog-scheduler__day-number,
-.gog-scheduler__column-head--today .gog-scheduler__column-number {
+.gog-scheduler__column-head--today .gog-scheduler__column-number,
+.gog-scheduler__agenda-date--today .gog-scheduler__column-number {
   background-color: var(--gog-scheduler-today-bg);
   color: var(--gog-scheduler-today-color);
   font-weight: var(--gog-scheduler-today-font-weight);
@@ -427,6 +448,102 @@ button.gog-scheduler__column-day:focus-visible,
   height: 0;
   border-block-start: var(--gog-scheduler-now-width) solid var(--gog-scheduler-now-color);
   pointer-events: none;
+}
+
+/* ── Dragging ─────────────────────────────────────────────────────────────── */
+
+/* The end handle: the bottom edge of an event in the hour grid, the end edge of a bar. */
+.gog-scheduler__resize {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  height: var(--gog-scheduler-resize-size);
+  cursor: ns-resize;
+}
+
+.gog-scheduler__resize--bar {
+  inset-block: 0;
+  inset-inline: auto 0;
+  width: var(--gog-scheduler-resize-size);
+  height: auto;
+  cursor: ew-resize;
+}
+
+/* The event being dragged is drawn where it would land, lifted off the grid. */
+.gog-scheduler__event--dragged {
+  z-index: 1;
+  box-shadow: var(--gog-scheduler-drag-shadow);
+}
+
+:host(.gog-scheduler--dragging) {
+  cursor: grabbing;
+  user-select: none;
+}
+
+/* Nothing under a drag should look pressable. Not `pointer-events: none`: the place under the
+   pointer is found with `elementsFromPoint`, which skips an element that takes no pointer. */
+:host(.gog-scheduler--dragging) .gog-scheduler__view * {
+  cursor: inherit;
+}
+
+/* The stretch dragged across to create an event. */
+.gog-scheduler__slot--selected,
+.gog-scheduler__all-day-slot--selected,
+.gog-scheduler__day--selected {
+  background-color: var(--gog-scheduler-selection-bg);
+}
+
+/* ── Agenda ───────────────────────────────────────────────────────────────── */
+
+/* One row per day with events: its date, then its events, one under another. */
+.gog-scheduler__agenda-day {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--gog-scheduler-toolbar-gap);
+  padding-block: var(--gog-scheduler-cell-padding);
+  border-block-start: var(--gog-scheduler-line-width) solid var(--gog-scheduler-line-color);
+}
+
+.gog-scheduler__agenda-date {
+  display: flex;
+  flex: 0 0 var(--gog-scheduler-agenda-date-width);
+  align-items: center;
+  gap: var(--gog-scheduler-cell-gap);
+  box-sizing: border-box;
+  padding: var(--gog-scheduler-cell-padding);
+  border-radius: var(--gog-scheduler-event-radius);
+  text-align: start;
+}
+
+.gog-scheduler__agenda-weekday {
+  color: var(--gog-scheduler-weekday-color);
+  font-size: var(--gog-scheduler-weekday-font-size);
+  font-weight: var(--gog-scheduler-weekday-font-weight);
+  line-height: var(--gog-scheduler-weekday-line-height);
+  text-transform: var(--gog-scheduler-weekday-text-transform);
+}
+
+.gog-scheduler__agenda-events {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--gog-scheduler-event-gap);
+  min-width: 0;
+  padding-block: var(--gog-scheduler-cell-padding);
+}
+
+/* A fixed column, so the titles of a day line up whatever their times. */
+.gog-scheduler__agenda-time {
+  min-width: var(--gog-scheduler-agenda-time-width);
+}
+
+.gog-scheduler__agenda-empty {
+  margin: 0;
+  padding: var(--gog-scheduler-toolbar-padding-block) var(--gog-scheduler-cell-padding);
+  border-block-start: var(--gog-scheduler-line-width) solid var(--gog-scheduler-line-color);
+  color: var(--gog-scheduler-more-color);
+  font-size: var(--gog-scheduler-event-font-size);
+  line-height: var(--gog-scheduler-event-line-height);
 }
 
 /* ── Editing: choosing a place, and the "+N more" list ───────────────────── */
