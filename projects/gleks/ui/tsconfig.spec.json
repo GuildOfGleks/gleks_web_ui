@@ -18,7 +18,11 @@
       "@guildofgleks/ui/table": ["./table/public-api.ts"],
       "@guildofgleks/ui/datepicker": ["./datepicker/public-api.ts"],
       "@guildofgleks/ui/dialog": ["./dialog/public-api.ts"],
-      "@guildofgleks/ui/scheduler": ["./scheduler/public-api.ts"]
+      "@guildofgleks/ui/scheduler": ["./scheduler/public-api.ts"],
+      "@guildofgleks/ui/icon": ["./icon/public-api.ts"],
+      "@guildofgleks/ui/tag": ["./tag/public-api.ts"],
+      "@guildofgleks/ui/toggle": ["./toggle/public-api.ts"],
+      "@guildofgleks/ui/textarea": ["./textarea/public-api.ts"]
     }
   },
   "include": [
@@ -28,6 +32,10 @@
     "table/**/*.spec.ts",
     "datepicker/**/*.spec.ts",
     "dialog/**/*.spec.ts",
-    "scheduler/**/*.spec.ts"
+    "scheduler/**/*.spec.ts",
+    "icon/**/*.spec.ts",
+    "tag/**/*.spec.ts",
+    "toggle/**/*.spec.ts",
+    "textarea/**/*.spec.ts"
   ]
 }

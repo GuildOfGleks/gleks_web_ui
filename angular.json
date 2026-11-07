@@ -43,7 +43,11 @@
               "../table/**/*.spec.ts",
               "../datepicker/**/*.spec.ts",
               "../dialog/**/*.spec.ts",
-              "../scheduler/**/*.spec.ts"
+              "../scheduler/**/*.spec.ts",
+              "../icon/**/*.spec.ts",
+              "../tag/**/*.spec.ts",
+              "../toggle/**/*.spec.ts",
+              "../textarea/**/*.spec.ts"
             ]
           },
           "configurations": {
@@ -55,7 +59,11 @@
                 "projects/gleks/ui/table/**/*.ts",
                 "projects/gleks/ui/datepicker/**/*.ts",
                 "projects/gleks/ui/dialog/**/*.ts",
-                "projects/gleks/ui/scheduler/**/*.ts"
+                "projects/gleks/ui/scheduler/**/*.ts",
+                "projects/gleks/ui/icon/**/*.ts",
+                "projects/gleks/ui/tag/**/*.ts",
+                "projects/gleks/ui/toggle/**/*.ts",
+                "projects/gleks/ui/textarea/**/*.ts"
               ],
               "coverageExclude": [
                 "projects/gleks/ui/src/**/*.spec.ts",
@@ -64,6 +72,10 @@
                 "projects/gleks/ui/datepicker/**/*.spec.ts",
                 "projects/gleks/ui/dialog/**/*.spec.ts",
                 "projects/gleks/ui/scheduler/**/*.spec.ts",
+                "projects/gleks/ui/icon/**/*.spec.ts",
+                "projects/gleks/ui/tag/**/*.spec.ts",
+                "projects/gleks/ui/toggle/**/*.spec.ts",
+                "projects/gleks/ui/textarea/**/*.spec.ts",
                 "projects/gleks/ui/src/public-api.ts",
                 "projects/gleks/ui/shared/public-api.ts",
                 "projects/gleks/ui/table/public-api.ts",

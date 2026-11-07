@@ -21,7 +21,7 @@ import { NgTemplateOutlet, isPlatformBrowser } from '@angular/common';
 import { GogSize } from '@guildofgleks/ui/shared';
 import { handleRovingFocusKeydown } from '@guildofgleks/ui/shared';
 import { GogRippleDirective } from '../ripple/ripple.directive';
-import { IconComponent } from '../icon/icon.component';
+import { IconComponent } from '@guildofgleks/ui/icon';
 import { SkeletonComponent } from '../skeleton/skeleton.component';
 import { GOG_CONFIG } from '@guildofgleks/ui/shared';
 import { resolveRipple } from '@guildofgleks/ui/shared';

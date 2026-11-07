@@ -17,7 +17,7 @@ import { ControlValueAccessor, NgControl } from '@angular/forms';
 
 import { NgTemplateOutlet } from '@angular/common';
 
-import { IconComponent, type GogIconName } from '../icon/icon.component';
+import { IconComponent, type GogIconName } from '@guildofgleks/ui/icon';
 import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
 import { resolveRipple } from '@guildofgleks/ui/shared';
 import { GogRippleDirective } from '../ripple/ripple.directive';

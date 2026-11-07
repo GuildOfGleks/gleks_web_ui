@@ -1,7 +1,7 @@
 import { Injectable, TemplateRef, inject, signal } from '@angular/core';
 
 import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
-import { GogIconName } from '../../components/icon/icon.component';
+import { GogIconName } from '@guildofgleks/ui/icon';
 
 export type ToastType = 'success' | 'error' | 'warning' | 'info';
 import type { ToastPosition } from '@guildofgleks/ui/shared';

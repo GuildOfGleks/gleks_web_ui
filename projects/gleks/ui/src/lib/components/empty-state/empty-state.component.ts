@@ -12,7 +12,7 @@ import {
   viewChild,
 } from '@angular/core';
 
-import { IconComponent, type GogIconName } from '../icon/icon.component';
+import { IconComponent, type GogIconName } from '@guildofgleks/ui/icon';
 import { GogSize } from '@guildofgleks/ui/shared';
 
 /** An illustration in place of the icon — an `<img>`, an `<svg>`. Decorative; say it in words. */

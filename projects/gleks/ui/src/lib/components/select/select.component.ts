@@ -11,7 +11,7 @@ import {
 
 import { GogFilterableDropdownBase, type GogDropdownOption } from '@guildofgleks/ui/shared';
 import { GogRippleDirective } from '../ripple/ripple.directive';
-import { IconComponent } from '../icon/icon.component';
+import { IconComponent } from '@guildofgleks/ui/icon';
 import { ScrollComponent } from '../scroll/scroll.component';
 import { configurableBooleanAttribute } from '@guildofgleks/ui/shared';
 

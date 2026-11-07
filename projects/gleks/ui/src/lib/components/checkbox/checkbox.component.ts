@@ -12,7 +12,7 @@ import {
   booleanAttribute,
 } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
-import { IconComponent } from '../icon/icon.component';
+import { IconComponent } from '@guildofgleks/ui/icon';
 import { GogSize } from '@guildofgleks/ui/shared';
 import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
 import {

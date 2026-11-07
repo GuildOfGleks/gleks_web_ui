@@ -13,7 +13,7 @@ import {
   booleanAttribute,
 } from '@angular/core';
 
-import type { GogIconName } from '../icon/icon.component';
+import type { GogIconName } from '@guildofgleks/ui/icon';
 import { GOG_TABS_STATE } from './tabs-state';
 
 /**

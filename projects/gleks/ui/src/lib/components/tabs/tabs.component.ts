@@ -22,7 +22,7 @@ import {
 } from '@angular/core';
 
 import { GogRippleDirective } from '../ripple/ripple.directive';
-import { IconComponent } from '../icon/icon.component';
+import { IconComponent } from '@guildofgleks/ui/icon';
 import { ScrollComponent } from '../scroll/scroll.component';
 import { GOG_CONFIG } from '@guildofgleks/ui/shared';
 import { resolveRipple } from '@guildofgleks/ui/shared';

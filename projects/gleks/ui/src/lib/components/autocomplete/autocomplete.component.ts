@@ -18,7 +18,7 @@ import {
 import { GogDropdownBase, type GogDropdownOption } from '@guildofgleks/ui/shared';
 import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
 import { GogRippleDirective } from '../ripple/ripple.directive';
-import { IconComponent } from '../icon/icon.component';
+import { IconComponent } from '@guildofgleks/ui/icon';
 import { ScrollComponent } from '../scroll/scroll.component';
 import { SpinnerComponent } from '../spinner/spinner.component';
 import { configurableBooleanAttribute } from '@guildofgleks/ui/shared';

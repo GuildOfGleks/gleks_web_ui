@@ -1,4 +1,4 @@
-@use '../../styles/float-label' as float-label;
+@use '../src/lib/styles/float-label' as float-label;
 
 /*
  * Reuses the `--gog-input-*` field tokens (see inputfield.component.scss) so a textarea

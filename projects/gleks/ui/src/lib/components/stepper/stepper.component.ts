@@ -9,7 +9,7 @@ import {
   booleanAttribute,
 } from '@angular/core';
 
-import { IconComponent } from '../icon/icon.component';
+import { IconComponent } from '@guildofgleks/ui/icon';
 import { GOG_CONFIG, GogOrientation, GogSize, resolveConfigured } from '@guildofgleks/ui/shared';
 
 /** One step of a `gog-stepper`. */

@@ -6,7 +6,7 @@ import { describe, expect, it } from 'vitest';
 import { InputfieldComponent } from '../components/inputfield/inputfield.component';
 import { MultiselectComponent } from '../components/multiselect/multiselect.component';
 import { SelectComponent } from '../components/select/select.component';
-import { TextareaComponent } from '../components/textarea/textarea.component';
+import { TextareaComponent } from '@guildofgleks/ui/textarea';
 import { provideGogConfig } from '@guildofgleks/ui/shared';
 
 const OPTIONS = [

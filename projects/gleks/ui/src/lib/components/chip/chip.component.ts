@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 
 import { AvatarComponent } from '../avatar/avatar.component';
-import { type GogIconName, IconComponent } from '../icon/icon.component';
+import { type GogIconName, IconComponent } from '@guildofgleks/ui/icon';
 import { GogSize, GogTagShape } from '@guildofgleks/ui/shared';
 import { GOG_CONFIG } from '@guildofgleks/ui/shared';
 import { resolveRipple } from '@guildofgleks/ui/shared';

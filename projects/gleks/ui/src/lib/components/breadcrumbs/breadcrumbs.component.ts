@@ -18,7 +18,7 @@ import {
   signal,
 } from '@angular/core';
 
-import { IconComponent, type GogIconName } from '../icon/icon.component';
+import { IconComponent, type GogIconName } from '@guildofgleks/ui/icon';
 import {
   GOG_CONFIG,
   GogSize,

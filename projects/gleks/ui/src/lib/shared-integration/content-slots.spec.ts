@@ -6,7 +6,7 @@ import {
   CheckboxComponent,
   GogCheckboxIconDirective,
 } from '../components/checkbox/checkbox.component';
-import { GogTagIconDirective, TagComponent } from '../components/tag/tag.component';
+import { GogTagIconDirective, TagComponent } from '@guildofgleks/ui/tag';
 import {
   GogMultiselectClearIconDirective,
   MultiselectComponent,

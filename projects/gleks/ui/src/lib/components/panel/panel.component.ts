@@ -17,7 +17,7 @@ import { GogSize, GogSurfaceVariant } from '@guildofgleks/ui/shared';
 import { CollapsibleComponent } from '../collapsible/collapsible.component';
 import { GogCollapsibleContentDirective } from '../collapsible/collapsible-content.directive';
 import { GogCollapsibleTriggerDirective } from '../collapsible/collapsible-trigger.directive';
-import { IconComponent } from '../icon/icon.component';
+import { IconComponent } from '@guildofgleks/ui/icon';
 import { SkeletonComponent } from '../skeleton/skeleton.component';
 
 /** Accessible name for the collapse toggle of a panel that has no heading to borrow one from. */

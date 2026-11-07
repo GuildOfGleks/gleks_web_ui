@@ -10,7 +10,7 @@ import {
   booleanAttribute,
 } from '@angular/core';
 
-import { IconComponent, type GogIconName } from '../icon/icon.component';
+import { IconComponent, type GogIconName } from '@guildofgleks/ui/icon';
 import { GogSize, GogTagVariant } from '@guildofgleks/ui/shared';
 import { GogTagShape } from '@guildofgleks/ui/shared';
 

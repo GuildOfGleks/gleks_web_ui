@@ -46,8 +46,11 @@ import { fileURLToPath } from 'node:url';
 import {
   ROOT_LIB_DIR as libRoot,
   SHARED_DIR as sharedRoot,
+  COMPONENT_ENTRY_POINTS,
+  HEAVY_ENTRY_POINTS,
   SPLIT_DIRS,
   SPLIT_ENTRY_POINTS,
+  UI_ROOT,
 } from './library-sources.mjs';
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -121,11 +124,14 @@ async function main() {
         continue;
       }
       const split = SPLIT_ENTRY_POINTS.find((name) => specifier === `${ROOT_PACKAGE}/${name}`);
-      if (split && from.startsWith('split:')) {
-        addEdge(from, `split:${split}`, file);
+      if (split && from === 'shared') {
+        problems.push(
+          `[shared-is-a-floor] ${rel(file)}\n` +
+            `      shared/ imports ${specifier} — every entry point imports shared, so this is a cycle`,
+        );
         continue;
       }
-      if (split) {
+      if (split && HEAVY_ENTRY_POINTS.includes(split) && !from.startsWith('split:')) {
         problems.push(
           `[root-never-imports-a-split] ${rel(file)}
 ` +
@@ -135,8 +141,21 @@ async function main() {
         );
         continue;
       }
+      if (split) {
+        addEdge(from, `split:${split}`, file);
+        continue;
+      }
       if (specifier === ROOT_PACKAGE) {
         addEdge(from, 'root', file);
+        const component = COMPONENT_ENTRY_POINTS.find((name) => from === `split:${name}`);
+        if (component) {
+          problems.push(
+            `[subpaths-never-import-the-root] ${rel(file)}\n` +
+              `      ${ROOT_PACKAGE}/${component} imports ${ROOT_PACKAGE} — the root re-exports this entry\n` +
+              `      point, so that is a cycle, and an app importing the subpath would get the whole root\n` +
+              `      with it. Import the other component's own subpath`,
+          );
+        }
         if (from === 'shared') {
           problems.push(
             `[shared-is-a-floor] ${rel(file)}\n` +
@@ -161,9 +180,10 @@ async function main() {
       }
       if (to.startsWith('split:') && !from.startsWith('split:')) {
         problems.push(
-          `[root-never-imports-a-split] ${rel(file)}\n` +
-            `      reaches ${specifier} by relative path — the root must not depend on a split entry\n` +
-            `      point, or it rides into every app's initial bundle`,
+          `[split-by-package] ${rel(file)}\n` +
+            `      reaches ${specifier} by relative path — that compiles the entry point's code into\n` +
+            `      this bundle a second time. Import it by its ${ROOT_PACKAGE}/<name> subpath, and never\n` +
+            `      one of ${HEAVY_ENTRY_POINTS.join(', ')} from the root`,
         );
         continue;
       }
@@ -185,6 +205,19 @@ async function main() {
         continue;
       }
       addEdge(from, to, file);
+    }
+  }
+
+  // G. root-re-exports-every-subpath: a component that moved out of src/ and is not re-exported
+  // has silently left the root, which is a breaking change on the 21 line.
+  const publicApi = readFileSync(path.join(UI_ROOT, 'src/public-api.ts'), 'utf8');
+  for (const name of COMPONENT_ENTRY_POINTS) {
+    if (!publicApi.includes(`export * from '${ROOT_PACKAGE}/${name}';`)) {
+      problems.push(
+        `[root-re-exports-every-subpath] src/public-api.ts\n` +
+          `      does not \`export * from '${ROOT_PACKAGE}/${name}'\` — the component left the root, and\n` +
+          `      every app importing it from ${ROOT_PACKAGE} breaks (docs/component-entry-points.md)`,
+      );
     }
   }
 
@@ -214,8 +247,9 @@ async function main() {
   console.log(
     `Layering check passed — ${units.size} unit(s) across ${fileCount} ` +
       `file(s), no cycles, shared/ (${sharedFiles.length} file(s)) imports nothing above it, and ` +
-      `nothing outside it imports shared by relative path; ${SPLIT_DIRS.length} split entry point(s) ` +
-      `(${splitFiles.length} file(s)) import the root by package name and nothing imports them back.`,
+      `nothing outside it imports shared by relative path; ${HEAVY_ENTRY_POINTS.length} heavy entry point(s) ` +
+      `nothing imports back, and ${COMPONENT_ENTRY_POINTS.length} component entry point(s) the root re-exports ` +
+      `(${splitFiles.length} file(s) in all) that never import the root.`,
   );
 }
 

@@ -22,7 +22,7 @@ import { resolveConfigured } from '@guildofgleks/ui/shared';
 import { GogFilterableDropdownBase, type GogDropdownOption } from '@guildofgleks/ui/shared';
 import { ButtonComponent } from '../button/button.component';
 import { GogRippleDirective } from '../ripple/ripple.directive';
-import { IconComponent } from '../icon/icon.component';
+import { IconComponent } from '@guildofgleks/ui/icon';
 import { ScrollComponent } from '../scroll/scroll.component';
 import { GogTooltipDirective } from '../tooltip/tooltip.directive';
 import { configurableBooleanAttribute } from '@guildofgleks/ui/shared';

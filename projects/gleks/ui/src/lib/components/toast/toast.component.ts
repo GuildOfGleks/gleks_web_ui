@@ -14,7 +14,7 @@ import {
 } from '@angular/core';
 import { ButtonComponent } from '../button/button.component';
 import { Toast, ToastAction } from '../../services/toast-service/toast-service';
-import { IconComponent } from '../icon/icon.component';
+import { IconComponent } from '@guildofgleks/ui/icon';
 import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
 
 /** Built-in default, used when `GOG_CONFIG.labels.closeToast` is unset. */

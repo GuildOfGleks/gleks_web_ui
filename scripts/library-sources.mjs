@@ -14,6 +14,7 @@
  * than aliases, and a scan that misses one misses those components entirely.
  */
 
+import { existsSync, readdirSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -29,12 +30,31 @@ export const ROOT_LIB_DIR = path.join(UI_ROOT, 'src/lib');
 export const SHARED_DIR = path.join(UI_ROOT, 'shared');
 
 /**
- * Entry points split out of the root so a lazy route can keep them out of an app's initial
- * bundle. The root must never import one (`check:layering` rule D).
+ * The heavy units split out of the root so a lazy route can keep them out of an app's initial
+ * bundle. The root does not export them and must never import one (`check:layering` rule D).
  */
-export const SPLIT_ENTRY_POINTS = ['table', 'datepicker', 'dialog', 'scheduler'];
+export const HEAVY_ENTRY_POINTS = ['table', 'datepicker', 'dialog', 'scheduler'];
 
-/** Each split entry point's own directory, in the order above. */
+/**
+ * One entry point per component, opt-in (`docs/component-entry-points.md`): `@guildofgleks/ui/icon`
+ * and so on. The root re-exports every one of them, so a root import keeps working, and an app
+ * that imports only subpaths gets them split by route.
+ *
+ * **Discovered, not listed** — any directory beside `src/` holding an `ng-package.json`, other than
+ * `shared/` and the heavy units. The layout moved twice before and each move blinded a check whose
+ * list nobody updated; a directory that is an entry point is now one here the day it is created.
+ */
+export const COMPONENT_ENTRY_POINTS = readdirSync(UI_ROOT, { withFileTypes: true })
+  .filter((entry) => entry.isDirectory())
+  .map((entry) => entry.name)
+  .filter((name) => name !== 'shared' && !HEAVY_ENTRY_POINTS.includes(name))
+  .filter((name) => existsSync(path.join(UI_ROOT, name, 'ng-package.json')))
+  .sort();
+
+/** Every entry point whose code lives beside `src/` rather than in it, `shared` aside. */
+export const SPLIT_ENTRY_POINTS = [...HEAVY_ENTRY_POINTS, ...COMPONENT_ENTRY_POINTS];
+
+/** Each of those entry points' own directory, in the order above. */
 export const SPLIT_DIRS = SPLIT_ENTRY_POINTS.map((name) => path.join(UI_ROOT, name));
 
 /**

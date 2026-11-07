@@ -16,7 +16,7 @@ import {
 } from '@angular/core';
 
 import { ButtonComponent } from '../button/button.component';
-import { IconComponent, type GogIconName } from '../icon/icon.component';
+import { IconComponent, type GogIconName } from '@guildofgleks/ui/icon';
 import { GOG_CONFIG, resolveConfigured } from '@guildofgleks/ui/shared';
 import { GogAlertLive, GogSeverity } from '@guildofgleks/ui/shared';
 

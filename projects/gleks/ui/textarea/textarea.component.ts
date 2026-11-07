@@ -22,7 +22,7 @@ import { GogErrorState, type GogErrorDisplay } from '@guildofgleks/ui/shared';
 import { GogClearableState } from '@guildofgleks/ui/shared';
 import { GogFloatLabelState } from '@guildofgleks/ui/shared';
 import { GogFloatLabelVariant, GogSize, GogTextareaResize } from '@guildofgleks/ui/shared';
-import { IconComponent } from '../icon/icon.component';
+import { IconComponent } from '@guildofgleks/ui/icon';
 import { configurableBooleanAttribute } from '@guildofgleks/ui/shared';
 
 /** Built-in defaults, used when neither the instance input nor `GOG_CONFIG` supplies one. */
