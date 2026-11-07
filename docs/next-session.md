@@ -42,9 +42,9 @@ undecodable data URL for the image, a code snippet quoting the warning for the i
 - **Input masking** (`docs/feedback-triage.md`, the one item left) — with the next batch of new
   components, since it is new `gog-inputfield` API.
 
-**Decided, not deferred:** no _existing_ component moves to an entry point beyond `table`,
-`datepicker` and `dialog`; a new heavy one may start in its own, as `gog-scheduler` did
-(`docs/entry-points.md`, _Where the split stops_).
+**Superseded on 2026-11-07:** the 2026-09-13 decision that no existing component moves to an
+entry point was reopened by a real app's measurement, and every component now has one, re-exported
+by the root (`docs/component-entry-points.md`, all iterations done, in 21.20.0).
 
 ## Two lessons worth more than the fixes
 

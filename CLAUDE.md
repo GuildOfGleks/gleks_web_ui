@@ -131,6 +131,12 @@ owner's decision that a _new_ heavy component may start in its own (`docs/entry-
 the split stops_). A new entry point triggers `check:install`; its `SMOKE` table has the page.
 Iteration 2 of the scheduler, the same day, added **`gog-popover`** and **`gog-context-menu`** to
 the root (`docs/popover-and-context-menu.md`) and made the scheduler editable behind `readonly`.
+**21.20.0 also carries one entry point per component** (`docs/component-entry-points.md`, done
+2026-11-07, reversing the 2026-09-13 "split stops here" decision on a real app's measurement):
+every component lives in `projects/gleks/ui/<name>/`, the root is nothing but `export *` lines
+(`check:layering` rule H), and an app splits by route whichever path it imports — 143.5 → 116.6 kB
+on the admin app, unchanged. `shared` has three internal nested units (`shared/date`,
+`/dropdown`, `/virtual`); `check:subpaths` keeps every root export on a public subpath.
 `check:release` fails until the user cuts it, as it should.
 
 ### The release sequence
