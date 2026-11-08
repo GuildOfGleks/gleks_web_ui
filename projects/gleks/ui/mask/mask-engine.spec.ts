@@ -57,7 +57,7 @@ describe('mask engine', () => {
       const plate = compileMask('aa 0000 \\a*');
       expect(conformMask(plate, 'ab1234x9', true).display).toBe('ab 1234 ax');
       expect(conformMask(plate, 'ab 1234 a9', false).raw).toBe('ab12349');
-      expect(conformMask(compileMask('aaa'), 'éßж').raw).toBe('éßж');
+      expect(conformMask(compileMask('aaa'), 'éßλ').raw).toBe('éßλ');
     });
 
     it('takes extra slot characters, and a stateful flag does not make them skip', () => {

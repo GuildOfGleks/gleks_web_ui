@@ -39,6 +39,7 @@ import {
   GogDropdownOptionDirective,
   GogInputAddonEndDirective,
   GogInputAddonStartDirective,
+  GogMaskDirective,
   GogMenuItemDirective,
   GogMenuTriggerDirective,
   GogPopoverTriggerDirective,
@@ -158,6 +159,13 @@ export const UNITS: readonly GogUnit[] = [
       dir(GogInputAddonStartDirective, '[gogInputAddonStart]'),
       dir(GogInputAddonEndDirective, '[gogInputAddonEnd]'),
     ],
+  },
+  {
+    id: 'mask',
+    name: 'Mask',
+    group: 'form',
+    entry: 'root',
+    parts: [dir(GogMaskDirective, 'input[gogMask]')],
   },
   {
     id: 'textarea',

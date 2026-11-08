@@ -463,7 +463,8 @@ dropdowns, always for the menu.
 
 **Directives:** `gogButton` (a link that looks like a button), `gogTooltip`, `gogBadge`,
 `gogRipple` (a press wash on any element), `gogCollapsibleTrigger`, `gogCollapsibleContent`,
-`gogCardLink` (a link the whole card activates), `*gogBreadcrumb` (your link as a breadcrumb item).
+`gogCardLink` (a link the whole card activates), `*gogBreadcrumb` (your link as a breadcrumb item),
+`gogMask` (formats an `<input>` you own to a fixed shape — a phone number, a postcode).
 **Services:** `DialogService`, `ToastService`, `ThemeService`.
 
 Seventeen more directives go on markup you own rather than configuring a component through an

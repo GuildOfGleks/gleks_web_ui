@@ -24,6 +24,7 @@ import { DIVIDER_API } from './divider/divider.api';
 import { DROPDOWN_TEMPLATES_API } from './dropdown-templates/dropdown-templates.api';
 import { ICON_API } from './icon/icon.api';
 import { INPUTFIELD_API } from './inputfield/inputfield.api';
+import { MASK_API } from './mask/mask.api';
 import { MENU_API } from './menu/menu.api';
 import { CONTEXT_MENU_API } from './context-menu/context-menu.api';
 import { POPOVER_API } from './popover/popover.api';
@@ -71,6 +72,11 @@ export const PAGES: Readonly<Record<string, DocPageEntry>> = {
     load: () => import('./inputfield/inputfield-page').then((m) => m.InputfieldPage),
     api: INPUTFIELD_API,
     tokens: ['Input field', 'Field sizing', 'Float label geometry', 'Field label'],
+  },
+  mask: {
+    load: () => import('./mask/mask-page').then((m) => m.MaskPage),
+    api: MASK_API,
+    tokens: [],
   },
   textarea: {
     load: () => import('./textarea/textarea-page').then((m) => m.TextareaPage),

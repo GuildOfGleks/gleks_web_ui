@@ -90,6 +90,19 @@ _Versioning_ section. Before 21.16.0 a minor could carry a breaking change, and 
   fields read `date` on `zone`'s clock, which is how a `disabledDates` predicate reads a weekday in
   the configured zone.
 
+- **Input masking** — `input[gogMask]` on any native `<input>`, and `gog-inputfield`'s `mask`,
+  from the new entry point **`@guildofgleks/ui/mask`** (re-exported by the root): a phone number,
+  a postcode, a card number formatted as it is typed. `0` takes a digit, `a` a letter, `*` either,
+  `\` escapes, anything else is a literal inserted as the user types; `gogMaskTokens`/`maskTokens`
+  adds slot characters, and an array of patterns is a value whose length varies. The form gets the
+  slot characters alone (`'380501234567'`) unless `gogMaskValue`/`maskValue` is `'formatted'`, and
+  a value written in is read the same way. A non-empty value that fills no pattern is invalid with
+  `{ gogMask: { actual, required } }`; an empty one is left to `Validators.required`. The caret
+  stays after the same characters through a reformat, Backspace and Delete step over a literal, IME
+  composition is never interrupted, and a digits-only mask asks for the numeric keyboard. The
+  directive also emits `(gogMaskChange)` for an input with no form. `formatMask()` formats a raw
+  value with no control at all. New types `GogMask`, `GogMaskTokens`, `GogMaskValue` and
+  `GogMaskState`. No effect, and a dev-mode warning, on `type="number"` or `"password"`.
 - **Every component has its own entry point, and an app code-splits by route without changing an
   import.** `@guildofgleks/ui/button`, `/select`, `/toast` and so on — 44 subpaths beside the four
   that already existed — plus `/config` (`provideGogConfig`, `GOG_CONFIG`, the shared types),

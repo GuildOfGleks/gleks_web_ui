@@ -42,6 +42,9 @@ export const INPUTFIELD_API: readonly DocApi[] = [
         config: 'GOG_CONFIG.labels.decrement',
       },
       { name: 'errorMessage', type: 'string', default: "''" },
+      { name: 'mask', type: 'GogMask | null', default: 'null' },
+      { name: 'maskTokens', type: 'GogMaskTokens', default: '{}' },
+      { name: 'maskValue', type: 'GogMaskValue', default: "'raw'" },
       {
         name: 'errorDisplay',
         type: 'GogErrorDisplay | undefined',

@@ -66,6 +66,18 @@ delete the section too.
   48), and each component page's import line where it names the root — optionally showing the
   subpath beside it, from `AGENTS.md`'s _Quick facts_ list. Re-measure the code-splitting
   section's numbers against the published package rather than quoting the admin app's.
+- **A new Mask page** (`components/mask`, Form controls) for `input[gogMask]`, from the new
+  `@guildofgleks/ui/mask` subpath (also the root) — route, `nav-data.ts`, `seo-data.ts`, the
+  Components overview, and `/mask` in every list of entry points. Sections: the pattern language
+  table, raw vs `'formatted'` with a `formControl` (show the value and the `gogMask` error), a
+  variable-length card number, `gogMaskTokens` (the hex example), `(gogMaskChange)` without a
+  form, `formatMask()` for a table cell, and the accessibility note (`inputmode`, number/password
+  get no mask). Source: `AGENTS.md`'s `gogMask` section and `docs/input-mask.md`; the showcase's
+  Mask page has every demo. The page's own `<input>`s need the lab's own field styling — the
+  directive brings none.
+- **Inputfield page**: `mask`, `maskTokens` and `maskValue` in the inputs table, and a Mask
+  section — a phone field on a `formControl` showing the raw value and the error, and a note that
+  `[(value)]` is the text as shown. Link it to the Mask page for the pattern language.
 - **Progressbar page**: `animation` (`'none' | 'stripes' | 'shimmer'`) in the inputs table, a demo
   of both (and of both under reduced motion: stripes stop, the shimmer goes), and the five new
   tokens in the token reference.

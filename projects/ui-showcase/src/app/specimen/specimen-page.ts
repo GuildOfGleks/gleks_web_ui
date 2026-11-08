@@ -41,6 +41,7 @@ import {
   GogDropdownOptionDirective,
   GogInputAddonEndDirective,
   GogInputAddonStartDirective,
+  GogMaskDirective,
   GogMenuItemDirective,
   GogMenuTriggerDirective,
   GogMultiselectClearIconDirective,
@@ -181,6 +182,7 @@ import {
     GogDropdownOptionDirective,
     GogInputAddonEndDirective,
     GogInputAddonStartDirective,
+    GogMaskDirective,
     GogMenuItemDirective,
     GogMenuTriggerDirective,
     GogMultiselectClearIconDirective,
@@ -252,7 +254,9 @@ export class SpecimenPage {
   ];
   protected readonly fulfilmentStep = signal(2);
   protected readonly email = signal('mila@');
+  protected readonly phone = signal('+38 (050) 123-45-67');
   protected readonly website = signal('gleks.example');
+  protected readonly recoveryComplete = signal(false);
   protected readonly bio = signal('Runs the finance team. Prefers spreadsheets to meetings.');
   protected readonly country = signal<string | number | null>('ua');
   protected readonly city = signal<string | number | null>('kyiv');

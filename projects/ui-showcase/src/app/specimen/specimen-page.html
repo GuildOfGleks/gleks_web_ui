@@ -75,6 +75,15 @@
                 [(value)]="email"
               />
               <gog-inputfield
+                label="Phone"
+                type="tel"
+                autocomplete="tel"
+                mask="+00 (000) 000-00-00"
+                [size]="size()"
+                [disabled]="disabled()"
+                [(value)]="phone"
+              />
+              <gog-inputfield
                 label="Website"
                 [size]="size()"
                 [disabled]="disabled()"
@@ -256,6 +265,29 @@
                 [showValue]="true"
                 [size]="size()"
               />
+              <div class="specimen__codes">
+                <label class="specimen__code-field">
+                  Authenticator code
+                  <input
+                    type="text"
+                    autocomplete="one-time-code"
+                    gogMask="000 000"
+                    [disabled]="disabled()"
+                  />
+                </label>
+                <label class="specimen__code-field">
+                  Recovery code
+                  <input
+                    type="text"
+                    gogMask="**** **** ****"
+                    [disabled]="disabled()"
+                    (gogMaskChange)="recoveryComplete.set($event.complete)"
+                  />
+                </label>
+                @if (recoveryComplete()) {
+                  <gog-tag size="xsm" variant="success">Ready to verify</gog-tag>
+                }
+              </div>
               <gog-table
                 ariaLabel="Active sessions"
                 [value]="sessions"

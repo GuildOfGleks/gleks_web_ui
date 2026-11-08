@@ -39,8 +39,9 @@ undecodable data URL for the image, a code snippet quoting the warning for the i
 **Deferred by the owner on 2026-09-13 — do not start these without asking:**
 
 - **`themes.md` iteration 4** (five unbuilt theme slots) — later.
-- **Input masking** (`docs/feedback-triage.md`, the one item left) — with the next batch of new
-  components, since it is new `gog-inputfield` API.
+
+**Input masking** was taken off that list on 2026-11-07 and built into 21.20.0
+(`docs/input-mask.md`, all four iterations done 2026-11-08).
 
 **Superseded on 2026-11-07:** the 2026-09-13 decision that no existing component moves to an
 entry point was reopened by a real app's measurement, and every component now has one, re-exported

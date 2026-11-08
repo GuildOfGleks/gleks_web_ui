@@ -1,0 +1,201 @@
+<app-doc-page unit="mask">
+  <app-doc-section
+    id="states"
+    title="States"
+    lead="A mask has no look of its own — it goes on your <input> and leaves its styling to you. What it changes is the text: each cell writes a raw value in through ngModel and shows what the field displays."
+  >
+    <h3>pattern × value written in</h3>
+    <p class="mask-page__note">
+      A literal appears only once a slot after it is filled — <code>+38 (050</code>, never
+      <code>+38 (050) </code> — except a leading run, which comes with the first character. Every
+      cell is live: type into one, paste into one, delete across a literal.
+    </p>
+    <app-doc-matrix rowAxis="pattern" colAxis="raw value">
+      <ng-template appDocCell [rows]="patterns" [cols]="fills" let-pattern let-fill="col">
+        <input
+          class="mask-page__input"
+          type="text"
+          [attr.aria-label]="pattern.name + ', ' + fill"
+          [gogMask]="pattern.mask"
+          [gogMaskTokens]="pattern.tokens"
+          [ngModel]="pattern.values[fill]"
+        />
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+
+  <app-doc-section id="content" title="Content & layout">
+    <h3>the pattern language</h3>
+    <table class="mask-page__table">
+      <thead>
+        <tr>
+          <th scope="col">In the pattern</th>
+          <th scope="col">Accepts</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>0</code></td>
+          <td>a digit</td>
+        </tr>
+        <tr>
+          <td><code>a</code></td>
+          <td>a letter, in any script</td>
+        </tr>
+        <tr>
+          <td><code>*</code></td>
+          <td>a letter or a digit</td>
+        </tr>
+        <tr>
+          <td><code>\x</code></td>
+          <td>the literal <code>x</code> — <code>\0</code> is a zero that is not a slot</td>
+        </tr>
+        <tr>
+          <td>anything else</td>
+          <td>itself, a literal inserted as the user types</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="mask-page__note">
+      <code>gogMaskTokens</code> adds slot characters or overrides the three above. An array of
+      patterns is a value whose length varies: the first pattern with room for what was typed is
+      used, and the value is complete when it fills any of them exactly.
+    </p>
+
+    <h3>on any input — or gog-inputfield's own mask</h3>
+    <p class="mask-page__note">
+      The directive's selector is <code>input[gogMask]</code>, so it works on a native input you
+      own, or one inside a component that is not this library's. <code>gog-inputfield</code> runs
+      the same engine through its own <code>mask</code>, <code>maskTokens</code> and
+      <code>maskValue</code> inputs — see the Inputfield page. It cannot take the directive on its
+      inner input, because the field is already that input's form accessor.
+    </p>
+  </app-doc-section>
+
+  <app-doc-section
+    id="behaviour"
+    title="Behaviour"
+    lead="The form gets the slot characters alone unless gogMaskValue says 'formatted'. A non-empty value that fills no pattern is invalid; an empty one is left to Validators.required."
+  >
+    <h3>gogMaskValue × formControl</h3>
+    <div class="mask-page__pair">
+      <div class="mask-page__demo">
+        <label class="mask-page__label">
+          Phone, raw (the default)
+          <input
+            class="mask-page__input"
+            type="text"
+            gogMask="+00 (000) 000-00-00"
+            [formControl]="phoneRaw"
+          />
+        </label>
+        <code> value: "{{ phoneRaw.value }}" · errors: {{ phoneRaw.errors | json }} </code>
+      </div>
+      <div class="mask-page__demo">
+        <label class="mask-page__label">
+          Phone, gogMaskValue="formatted"
+          <input
+            class="mask-page__input"
+            type="text"
+            gogMask="+00 (000) 000-00-00"
+            gogMaskValue="formatted"
+            [formControl]="phoneFormatted"
+          />
+        </label>
+        <code>
+          value: "{{ phoneFormatted.value }}" · errors: {{ phoneFormatted.errors | json }}
+        </code>
+      </div>
+    </div>
+    <div class="mask-page__actions">
+      <button type="button" (click)="phoneRaw.setValue('380501234567')">
+        phoneRaw.setValue('380501234567')
+      </button>
+      <button type="button" (click)="phoneFormatted.setValue('+38 (067) 111-22-33')">
+        phoneFormatted.setValue('+38 (067) 111-22-33')
+      </button>
+    </div>
+    <p class="mask-page__note">
+      A value written in is read the way <code>gogMaskValue</code> says. Raw, the <code>38</code> of
+      <code>'380501234567'</code> fills slots rather than matching the <code>+38</code> literal —
+      the engine cannot tell the two apart, so the mode has to.
+    </p>
+
+    <h3>(gogMaskChange), no form</h3>
+    <div class="mask-page__demo">
+      <label class="mask-page__label">
+        Card number, 16 or 19 digits
+        <input
+          class="mask-page__input"
+          type="text"
+          autocomplete="cc-number"
+          [gogMask]="cardMask"
+          (gogMaskChange)="card.set($event)"
+        />
+      </label>
+      <code>{{ card() | json }}</code>
+    </div>
+    <p class="mask-page__note">
+      Each pattern is digits only, so the field asks for the numeric keyboard on its own. Backspace
+      just after a space deletes the digit before it, not the space — otherwise the engine would put
+      the space straight back and the caret would be stuck.
+    </p>
+
+    <h3>formatMask(), for text that is not a control</h3>
+    <p class="mask-page__note">
+      The engine is pure, so it formats a stored raw value in a table cell or on the server. The
+      last one is incomplete and is shown as far as it goes.
+    </p>
+    <ul class="mask-page__list">
+      @for (raw of stored; track raw; let i = $index) {
+        <li>
+          <code>formatMask('{{ raw }}', '+00 (000) 000-00-00')</code> →
+          <code>'{{ formatted[i] }}'</code>
+        </li>
+      }
+    </ul>
+  </app-doc-section>
+
+  <app-doc-section
+    id="accessibility"
+    title="Accessibility"
+    lead="The input stays a plain text input. Its label, its error and its aria-invalid are yours, as they would be without a mask."
+  >
+    <p class="mask-page__note">
+      Read from the live DOM. When every slot of every pattern takes a digit and the element has no
+      <code>inputmode</code>, the directive sets <code>inputmode="numeric"</code>; one the template
+      sets is left alone. Literals are real characters in the value, so a screen reader reads
+      <code>+38 (050) 123</code> as it is shown. <code>type="number"</code> and
+      <code>type="password"</code> get no mask and a dev-mode warning: a number input exposes no
+      caret, and a password has no shape to show.
+    </p>
+    <app-doc-matrix rowAxis="input" colAxis="">
+      <ng-template appDocCell [rows]="a11yStates" [cols]="a11yColumns" let-state>
+        <app-doc-attrs target="input">
+          @switch (state) {
+            @case ('gogMask="000 000"') {
+              <input
+                class="mask-page__input"
+                type="text"
+                aria-label="Verification code"
+                gogMask="000 000"
+              />
+            }
+            @case ('gogMask="a0a 0a0"') {
+              <input class="mask-page__input" type="text" aria-label="Postcode" gogMask="a0a 0a0" />
+            }
+            @case ('gogMask="000 000" inputmode="text"') {
+              <input
+                class="mask-page__input"
+                type="text"
+                inputmode="text"
+                aria-label="Verification code"
+                gogMask="000 000"
+              />
+            }
+          }
+        </app-doc-attrs>
+      </ng-template>
+    </app-doc-matrix>
+  </app-doc-section>
+</app-doc-page>

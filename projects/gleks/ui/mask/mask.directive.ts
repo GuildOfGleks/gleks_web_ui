@@ -72,9 +72,9 @@ export class GogMaskDirective implements ControlValueAccessor, Validator, OnInit
   /** The pattern, or several for a value whose length varies. `null` or `''` turns masking off. */
   readonly mask = input.required<GogMask | null>({ alias: 'gogMask' });
   /** Extra slot characters, or overrides of `0`, `a` and `*`. */
-  readonly tokens = input<GogMaskTokens>({}, { alias: 'gogMaskTokens' });
+  readonly gogMaskTokens = input<GogMaskTokens>({});
   /** What the form gets, and how a written value is read. */
-  readonly maskValue = input<GogMaskValue>('raw', { alias: 'gogMaskValue' });
+  readonly gogMaskValue = input<GogMaskValue>('raw');
 
   /** Every conformed value, typed or written — for an `<input>` with no form around it. */
   readonly gogMaskChange = output<GogMaskState>();
@@ -84,7 +84,7 @@ export class GogMaskDirective implements ControlValueAccessor, Validator, OnInit
   private readonly compiled = computed(() => {
     const mask = this.mask();
     if (!mask || mask.length === 0 || this.unmaskable()) return null;
-    return compileMask(mask, this.tokens());
+    return compileMask(mask, this.gogMaskTokens());
   });
   private readonly controller = new GogMaskController(
     () => this.element,
@@ -92,7 +92,7 @@ export class GogMaskDirective implements ControlValueAccessor, Validator, OnInit
   );
   private readonly validator = gogMaskValidator(
     () => this.compiled(),
-    () => this.maskValue(),
+    () => this.gogMaskValue(),
   );
   /** `inputmode` this directive set, so it takes back only its own. */
   private ownInputMode = false;
@@ -131,7 +131,7 @@ export class GogMaskDirective implements ControlValueAccessor, Validator, OnInit
 
   writeValue(value: unknown): void {
     const text = value === null || value === undefined ? '' : String(value);
-    this.controller.write(text, this.maskValue() === 'raw');
+    this.controller.write(text, this.gogMaskValue() === 'raw');
   }
 
   registerOnChange(fn: (value: string) => void): void {
@@ -180,7 +180,7 @@ export class GogMaskDirective implements ControlValueAccessor, Validator, OnInit
 
   private emit(state: GogMaskState | null): void {
     if (!state) return;
-    this.onChange(this.controller.value(this.maskValue()));
+    this.onChange(this.controller.value(this.gogMaskValue()));
     this.gogMaskChange.emit(state);
   }
 

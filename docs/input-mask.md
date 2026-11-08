@@ -93,6 +93,26 @@ Behaviour, stated so the specs can be written from it:
 | 1   | The engine (`mask/mask-engine.ts`): parse, format, raw, caret, completeness, `formatMask()`; specs       | ✅ 2026-11-07 |
 | 2   | `GogMaskController` + `input[gogMask]` (accessor, validator, keys, IME, `inputmode`); the entry point    | ✅ 2026-11-07 |
 | 3   | `gog-inputfield`: `mask`, `maskTokens`, `maskValue`, the `gogMask` error on its control; specs           | ✅ 2026-11-07 |
-| 4   | Showcase (a Mask page, the Inputfield page's section), AGENTS, CHANGELOG, lab checklist, `check:install` |               |
+| 4   | Showcase (a Mask page, the Inputfield page's section), AGENTS, CHANGELOG, lab checklist, `check:install` | ✅ 2026-11-08 |
 
 A new entry point triggers `check:install`, and its `SMOKE` table needs the page — iteration 4.
+
+## Iteration 4, as it finished (2026-11-08)
+
+- **Showcase**: a Mask page (`/mask`, Form controls) — a pattern × raw-value matrix written in
+  through `ngModel`, the pattern language, raw vs `'formatted'` on a `formControl`, a variable-length
+  card on `(gogMaskChange)`, `formatMask()`, and `inputmode` read from the DOM. The Inputfield page
+  gained a Mask section and its three API rows; the specimen a masked phone field and two native
+  code inputs. Driven in Chrome against the SSR build: typing, Backspace over a literal, `setValue`
+  in both modes, the `gogMask` error, the numeric keyboard hint — and a clean console.
+- **A lint error from iteration 2 surfaced here**: the directive's `tokens`/`maskValue` were
+  aliased to `gogMaskTokens`/`gogMaskValue` (`no-input-rename`). The properties carry the public
+  names now; nothing a template writes changed.
+- **`check:install`** (compared with the published 21.19.0): passed. `/mask` has its own `SMOKE`
+  page — `formatMask()` in the prerendered HTML, then `[gogMask]` and the field's `mask` typed into
+  after hydration. Its **first run failed** with `[not-lazy]`: the page's chunk was 673 bytes. The
+  code was not in the initial bundle — it sat in a 7.5 kB chunk the bundler split out because the
+  generated `/subpaths` page reaches the same code through `inputfield`. The check had measured
+  the page's own chunk only; it now adds the lazy chunks that chunk imports (initial chunks are
+  never counted). Second run: initial 111.56 kB, `/mask` 9 760 bytes lazy, every page hydrated.
+- **Not done**: the AGENTS.md version marker was already at 21.20.0, so it did not move.

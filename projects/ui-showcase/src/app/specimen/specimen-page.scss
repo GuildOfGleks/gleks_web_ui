@@ -250,3 +250,33 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+// Two native inputs carrying gogMask: the directive goes on markup the app owns.
+.specimen__codes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: var(--gog-space-16);
+}
+
+.specimen__code-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gog-space-4);
+  font-size: var(--gog-text-sm);
+
+  input {
+    padding: var(--gog-space-8) var(--gog-space-12);
+    border: 1px solid var(--gog-control-boundary-color);
+    border-radius: var(--gog-radius);
+    background-color: var(--gog-surface-color);
+    color: var(--gog-text-color);
+    font-family: var(--gog-font-mono), monospace;
+    font-size: var(--gog-text-sm);
+    font-variant-numeric: tabular-nums;
+  }
+
+  input:disabled {
+    opacity: var(--gog-disabled-opacity);
+  }
+}

@@ -45,7 +45,8 @@ defaults.
   (with `gog-tab`), and so on. App-wide pieces have theirs: `/config` (`provideGogConfig`,
   `GOG_CONFIG`, `GogSize` and the other shared types), `/icon` (also `provideGogIcons` and the icon
   registry), `/toast` (also `ToastService`), `/theme` (`ThemeService`), `/date` (the date helpers),
-  `/dropdown` (the dropdown base classes), `/tokens` (`GOG_TOKEN_GROUPS`), `/ripple`. **The root
+  `/dropdown` (the dropdown base classes), `/tokens` (`GOG_TOKEN_GROUPS`), `/ripple`, `/mask`
+  (`gogMask` and `formatMask`). **The root
   re-exports all of them**, so `import { ButtonComponent } from '@guildofgleks/ui'` and
   `from '@guildofgleks/ui/button'` are the same class; either is fine, and neither is deprecated.
 - `@guildofgleks/ui/shared` and `/shared/date`, `/shared/dropdown`, `/shared/virtual` also
@@ -779,25 +780,28 @@ toggles) — this is a real ARIA distinction, not cosmetic.
 
 #### `gog-inputfield`
 
-| Input                                     | Type                   | Default                             | Notes                                                                                       |
-| ----------------------------------------- | ---------------------- | ----------------------------------- | ------------------------------------------------------------------------------------------- |
-| `label`, `placeholder`                    | `string`               | `''`                                |                                                                                             |
-| `type`                                    | `GogInputType`         | `'text'`                            | `text`/`password`/`email`/`number`/`search`/`tel`/`url`/`date`/`time`/`datetime-local`      |
-| `readonly`                                | `boolean`              | `false`                             | value stays focusable and submitted, edits blocked; hides the clear button and stepper      |
-| `maxlength`, `minlength`                  | `number \| null`       | `null`                              | native attributes                                                                           |
-| `pattern`                                 | `string`               | `''`                                | native attribute, regex source                                                              |
-| `inputMode`                               | `GogInputMode \| null` | `null`                              | on-screen keyboard hint (`numeric`, `tel`, …)                                               |
-| `spellcheck`                              | `boolean \| null`      | `null`                              | unset = browser default                                                                     |
-| `inputId`                                 | `string`               | `''` → generated                    | a real id is always rendered; pass one only to reference the field externally               |
-| `min`, `max`, `step`                      | `number \| null`       | `null`                              | `type="number"` only                                                                        |
-| `showSpinButtons`                         | `boolean \| undefined` | `true`                              | own +/- glyphs on `type="number"`; via `GOG_CONFIG.inputfield.showSpinButtons`              |
-| `errorMessage`, `errorDisplay`            |                        | `''`, `'manual'`                    | see conventions                                                                             |
-| `disabled`, `size`, `fullWidth`           |                        | `false`, `'md'`, `true`             |                                                                                             |
-| `iconStart` / `iconEnd`                   | `GogIconName \| ''`    | `''`                                | bare leading/trailing icon; on `password`/`number` `iconEnd` sits beside the toggle/stepper |
-| `clearable`, `clearAriaLabel`             |                        | `false`, `'Clear'`                  | on `type="number"` the clear button renders alongside the stepper                           |
-| `floatLabel`, `floatLabelShowPlaceholder` |                        | `'none'`, `false`                   |                                                                                             |
-| `showPasswordLabel` / `hidePasswordLabel` | `string \| undefined`  | `'Show password'`/`'Hide password'` | `type="password"` reveal toggle aria-labels; via `GOG_CONFIG.labels`                        |
-| `incrementLabel` / `decrementLabel`       | `string \| undefined`  | `'Increment'`/`'Decrement'`         | spin button aria-labels; via `GOG_CONFIG.labels`                                            |
+| Input                                     | Type                   | Default                             | Notes                                                                                             |
+| ----------------------------------------- | ---------------------- | ----------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `label`, `placeholder`                    | `string`               | `''`                                |                                                                                                   |
+| `type`                                    | `GogInputType`         | `'text'`                            | `text`/`password`/`email`/`number`/`search`/`tel`/`url`/`date`/`time`/`datetime-local`            |
+| `readonly`                                | `boolean`              | `false`                             | value stays focusable and submitted, edits blocked; hides the clear button and stepper            |
+| `maxlength`, `minlength`                  | `number \| null`       | `null`                              | native attributes                                                                                 |
+| `pattern`                                 | `string`               | `''`                                | native attribute, regex source                                                                    |
+| `inputMode`                               | `GogInputMode \| null` | `null`                              | on-screen keyboard hint (`numeric`, `tel`, …)                                                     |
+| `spellcheck`                              | `boolean \| null`      | `null`                              | unset = browser default                                                                           |
+| `inputId`                                 | `string`               | `''` → generated                    | a real id is always rendered; pass one only to reference the field externally                     |
+| `min`, `max`, `step`                      | `number \| null`       | `null`                              | `type="number"` only                                                                              |
+| `showSpinButtons`                         | `boolean \| undefined` | `true`                              | own +/- glyphs on `type="number"`; via `GOG_CONFIG.inputfield.showSpinButtons`                    |
+| `errorMessage`, `errorDisplay`            |                        | `''`, `'manual'`                    | see conventions                                                                                   |
+| `disabled`, `size`, `fullWidth`           |                        | `false`, `'md'`, `true`             |                                                                                                   |
+| `iconStart` / `iconEnd`                   | `GogIconName \| ''`    | `''`                                | bare leading/trailing icon; on `password`/`number` `iconEnd` sits beside the toggle/stepper       |
+| `clearable`, `clearAriaLabel`             |                        | `false`, `'Clear'`                  | on `type="number"` the clear button renders alongside the stepper                                 |
+| `floatLabel`, `floatLabelShowPlaceholder` |                        | `'none'`, `false`                   |                                                                                                   |
+| `showPasswordLabel` / `hidePasswordLabel` | `string \| undefined`  | `'Show password'`/`'Hide password'` | `type="password"` reveal toggle aria-labels; via `GOG_CONFIG.labels`                              |
+| `incrementLabel` / `decrementLabel`       | `string \| undefined`  | `'Increment'`/`'Decrement'`         | spin button aria-labels; via `GOG_CONFIG.labels`                                                  |
+| `mask`                                    | `GogMask \| null`      | `null`                              | formats the value as typed — see [`gogMask`](#gogmask--input-masking); not on `number`/`password` |
+| `maskTokens`                              | `GogMaskTokens`        | `{}`                                | extra slot characters for `mask`, e.g. `{ H: /[0-9a-f]/i }`                                       |
+| `maskValue`                               | `GogMaskValue`         | `'raw'`                             | what the **form** gets: slot characters only (`'raw'`) or the text as shown (`'formatted'`)       |
 
 Model: `value: string` (always a string, even for `type="number"` — the _form control_ value is
 `number | null`, but the `[(value)]` model mirrors the raw text). CVA: yes.
@@ -816,6 +820,25 @@ Hooks: the field's own buttons carry `data-gog-part` — `increment`, `decrement
 `password-toggle` — a stable selector for tests and automation. The `gog-input__*` classes are
 internal and may change.
 
+Mask: with `mask` set, the form control gets the slot characters alone (`'380501234567'`) unless
+`maskValue="formatted"`, and a value the form writes in is read the same way; the `[(value)]` model
+is always the text as shown (`'+38 (050) 123-45-67'`). A non-empty value that fills no pattern
+puts `{ gogMask: { actual, required } }` on the control — show it through `errorMessage`;
+an empty one is `Validators.required`'s to judge. A digits-only mask sets `inputmode="numeric"`
+unless `inputMode` is set. Use `mask` here, never `gogMask` on the field's inner input — the field
+is already that input's form accessor.
+
+```html
+<gog-inputfield
+  label="Phone"
+  type="tel"
+  mask="+00 (000) 000-00-00"
+  formControlName="phone"
+  errorDisplay="auto"
+  errorMessage="Enter all 12 digits"
+/>
+```
+
 ```html
 <gog-inputfield
   label="Email"
@@ -829,6 +852,40 @@ internal and may change.
 <gog-inputfield label="Amount" [fullWidth]="false">
   <span gogInputAddonStart>€</span>
 </gog-inputfield>
+```
+
+#### `gogMask` — input masking
+
+`input[gogMask]` (`GogMaskDirective`, from `@guildofgleks/ui/mask` or the root) formats a native
+`<input>` you own to a fixed shape as it is typed. `gog-inputfield` has the same engine as its
+`mask` input (above) — use that on the library's field.
+
+| Input / output    | Type              | Default  | Notes                                                                             |
+| ----------------- | ----------------- | -------- | --------------------------------------------------------------------------------- |
+| `gogMask`         | `GogMask \| null` | required | a pattern, or an array of them for a value whose length varies; `null`/`''` = off |
+| `gogMaskTokens`   | `GogMaskTokens`   | `{}`     | extra slot characters, or overrides of `0`, `a`, `*`                              |
+| `gogMaskValue`    | `GogMaskValue`    | `'raw'`  | `'raw'` = slot characters only; `'formatted'` = the text as shown                 |
+| `(gogMaskChange)` | `GogMaskState`    |          | every conformed value: `{ display, raw, complete, slots }` — for no form          |
+
+Pattern language: `0` a digit, `a` a letter (any script), `*` a letter or digit, `\x` the literal
+`x`, anything else a literal inserted as the user types. A literal shows only once a slot after it
+is filled (`+38 (050`, not `+38 (050) `), except a leading run. An array —
+`['0000 0000 0000 0000', '0000 0000 0000 0000 000']` — uses the first pattern with room and is
+complete when any is filled exactly.
+
+Forms: a `ControlValueAccessor` and a `Validator`, so `ngModel`/`formControl` on the same input just
+work. The value written in is read as `gogMaskValue` says — raw, `'380501234567'` fills the slots
+of `+00 (000) …`. Incomplete and non-empty gives `{ gogMask: { actual, required } }` (slot counts);
+empty is valid (add `Validators.required`). Digits-only patterns set `inputmode="numeric"` unless
+the input has one. No effect, and a dev-mode warning, on `type="number"` or `"password"`. Not in
+this version: visible slot placeholders (`___-__`), numeric/currency formatting.
+
+`formatMask(value, mask, tokens?)` formats a raw value with no control — a table cell, the server.
+Types: `GogMask`, `GogMaskTokens`, `GogMaskValue`, `GogMaskState`.
+
+```html
+<input type="tel" gogMask="+00 (000) 000-00-00" [formControl]="phone" />
+<input gogMask="#HHHHHH" [gogMaskTokens]="{ H: hexDigit }" [(ngModel)]="colour" />
 ```
 
 #### `gog-textarea`

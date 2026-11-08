@@ -59,6 +59,13 @@ interface FloatState {
   readonly value: string;
 }
 
+interface MaskRow {
+  readonly name: string;
+  readonly label: string;
+  readonly mask: string;
+  readonly value: string;
+}
+
 @Component({
   selector: 'app-inputfield-page',
   imports: [
@@ -227,6 +234,25 @@ export class InputfieldPage {
     validators: [Validators.required],
   });
   protected readonly formDisabled = signal(false);
+
+  protected readonly phoneMask = '+00 (000) 000-00-00';
+  protected readonly maskRows: readonly MaskRow[] = [
+    { name: 'mask="+00 (000) 000-00-00"', label: 'Phone', mask: this.phoneMask, value: '' },
+    {
+      name: 'mask="+00 (000) 000-00-00" value="+38050"',
+      label: 'Phone',
+      mask: this.phoneMask,
+      value: '+38050',
+    },
+    {
+      name: 'mask="0000 0000" value="12345678"',
+      label: 'Account',
+      mask: '0000 0000',
+      value: '12345678',
+    },
+  ];
+  protected readonly maskedPhone = new FormControl('380501234567', { nonNullable: true });
+  protected readonly maskedPostcode = signal('');
 
   private readonly counts = signal<Readonly<Record<string, number>>>({});
 

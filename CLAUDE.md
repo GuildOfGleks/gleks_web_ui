@@ -137,6 +137,9 @@ every component lives in `projects/gleks/ui/<name>/`, the root is nothing but `e
 (`check:layering` rule H), and an app splits by route whichever path it imports — 143.5 → 116.6 kB
 on the admin app, unchanged. `shared` has three internal nested units (`shared/date`,
 `/dropdown`, `/virtual`); `check:subpaths` keeps every root export on a public subpath.
+**And input masking** (`docs/input-mask.md`, done 2026-11-08): `input[gogMask]` and
+`gog-inputfield`'s `mask`, from a new `@guildofgleks/ui/mask` subpath — `feedback-triage.md`'s
+last open item.
 `check:release` fails until the user cuts it, as it should.
 
 ### The release sequence

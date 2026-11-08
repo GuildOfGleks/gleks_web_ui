@@ -191,6 +191,51 @@
   </app-doc-section>
 
   <app-doc-section
+    id="mask"
+    title="Mask"
+    lead="mask formats the value to a fixed shape as it is typed — the same engine as the [gogMask] directive, whose page has the pattern language. The form gets the slot characters alone unless maskValue is 'formatted'."
+  >
+    <h3>mask × size</h3>
+    <app-doc-matrix rowAxis="mask" colAxis="size">
+      <ng-template appDocCell [rows]="maskRows" [cols]="sizes" let-row let-size="col">
+        <gog-inputfield
+          [label]="row.label"
+          type="tel"
+          [size]="size"
+          [mask]="row.mask"
+          [value]="row.value"
+          [clearable]="true"
+        />
+      </ng-template>
+    </app-doc-matrix>
+
+    <h3>formControl, raw by default</h3>
+    <div class="inputfield-page__demo">
+      <gog-inputfield
+        label="Phone"
+        type="tel"
+        [mask]="phoneMask"
+        [formControl]="maskedPhone"
+        errorMessage="Enter all 12 digits"
+        errorDisplay="auto"
+      />
+      <div class="inputfield-page__actions">
+        <button type="button" (click)="maskedPhone.setValue('380671112233')">
+          setValue('380671112233')
+        </button>
+        <button type="button" (click)="maskedPhone.setValue('3806711')">setValue('3806711')</button>
+      </div>
+      <code> value: "{{ maskedPhone.value }}" · errors: {{ maskedPhone.errors | json }} </code>
+    </div>
+
+    <h3>[(value)] is the text as shown</h3>
+    <div class="inputfield-page__demo">
+      <gog-inputfield label="Postcode" mask="a0a 0a0" [(value)]="maskedPostcode" />
+      <code>value: "{{ maskedPostcode() }}"</code>
+    </div>
+  </app-doc-section>
+
+  <app-doc-section
     id="behaviour"
     title="Behaviour"
     lead="value is model-bound: [(value)] and [value] / (valueChange) both work, and the field is a full ControlValueAccessor, so formControl works the same way."
