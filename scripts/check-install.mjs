@@ -27,8 +27,10 @@
  *      name from the root, and must render that all of them are the same object. A subpath with
  *      no value export to test that way fails the check.
  *   5. `ng build` with prerendering. An error fails; so does a warning that names the package. Each
- *      secondary entry point's lazy chunk must be at least its `minLazyBytes` — the 21.13.0 shape
- *      of this bug was a 442-byte chunk that left the whole component in the initial bundle.
+ *      secondary entry point's lazy load must be at least its `minLazyBytes` — the 21.13.0 shape
+ *      of this bug was a 442-byte chunk that left the whole component in the initial bundle. The
+ *      lazy load is the page's own chunk plus the lazy chunks it imports: code two lazy pages share
+ *      goes to a chunk of its own, which is still lazy (21.20.0's `/mask` page, 673 bytes alone).
  *   6. The prerendered HTML of each page must carry its expected marker labels, which is what proves
  *      the root's `GOG_CONFIG` reaches components from other entry points (two copies of the token
  *      would render the defaults instead).
@@ -145,6 +147,32 @@ const SMOKE = {
     async interact(page) {
       await page.click('.gog-scheduler__event');
       await page.waitForSelector('.gog-scheduler__event:focus', { timeout: 5000 });
+    },
+  },
+  // The directive on a native input and the field's own mask, typed into after hydration: the
+  // engine, the controller and the field's import of `/mask` all have to arrive in the lazy chunk.
+  [`${PACKAGE}/mask`]: {
+    imports: {
+      [`${PACKAGE}/mask`]: ['GogMaskDirective', 'formatMask'],
+      [`${PACKAGE}/inputfield`]: ['InputfieldComponent'],
+    },
+    components: ['GogMaskDirective', 'InputfieldComponent'],
+    fields: `protected readonly formatted = formatMask('380501234567', '+00 (000) 000-00-00');`,
+    template: `<p>{{ formatted }}</p>
+    <input id="native" aria-label="Phone" gogMask="+00 (000) 000-00-00" />
+    <gog-inputfield id="field" label="Code" mask="000-000" />`,
+    expectHtml: ['+38 (050) 123-45-67'],
+    minLazyBytes: 1024,
+    async interact(page) {
+      await page.type('#native', '380501234567');
+      await page.type('#field input', '123456');
+      const values = await page.evaluate(() => [
+        document.querySelector('#native').value,
+        document.querySelector('#field input').value,
+      ]);
+      if (values[0] !== '+38 (050) 123-45-67' || values[1] !== '123-456') {
+        throw new Error(`masked values after typing: ${JSON.stringify(values)}`);
+      }
     },
   },
 };
@@ -434,17 +462,41 @@ export const appConfig: ApplicationConfig = {
   return pages;
 }
 
-/** `name → estimated transfer bytes` for the browser build's lazy chunks. */
+/**
+ * The browser build's lazy chunks, estimated transfer bytes each: `byName` for the named ones
+ * (`ep-mask`), `byFile` for every one, the unnamed shared chunks included.
+ */
 function lazyChunkSizes(buildOutput) {
-  const sizes = new Map();
-  const lazy = buildOutput.split('Lazy chunk files')[1] ?? '';
+  const byName = new Map();
+  const byFile = new Map();
+  const lazy = (buildOutput.split('Lazy chunk files')[1] ?? '').split(/\r?\n\r?\n/)[0];
   for (const line of lazy.split(/\r?\n/)) {
-    const match = line.match(/^\S+\.js\s+\|\s+(\S+)\s+\|[^|]*\|\s+([\d.]+)\s+(bytes|kB|MB)/);
+    const match = line.match(/^(\S+\.js)\s+\|\s+(\S+)\s+\|[^|]*\|\s+([\d.]+)\s+(bytes|kB|MB)/);
     if (!match) continue;
-    const factor = { bytes: 1, kB: 1000, MB: 1_000_000 }[match[3]];
-    sizes.set(match[1], Math.round(parseFloat(match[2]) * factor));
+    const factor = { bytes: 1, kB: 1000, MB: 1_000_000 }[match[4]];
+    const bytes = Math.round(parseFloat(match[3]) * factor);
+    byFile.set(match[1], { name: match[2], bytes });
+    if (match[2] !== '-') byName.set(match[2], match[1]);
   }
-  return sizes;
+  return { byName, byFile };
+}
+
+/**
+ * What navigating to a lazy page loads that the initial bundle did not: its own chunk plus every
+ * lazy chunk it imports statically, transitively. A page's own chunk alone undercounts whenever
+ * the bundler moves code two lazy pages share into a chunk of its own — still lazy, and still
+ * fetched by that navigation. Initial chunks are not in `byFile`, so they are never counted.
+ */
+function lazyWeight(browserDir, file, byFile) {
+  const seen = new Set();
+  const visit = (name) => {
+    if (seen.has(name) || !byFile.has(name)) return;
+    seen.add(name);
+    const source = readFileSync(path.join(browserDir, name), 'utf8');
+    for (const [, imported] of source.matchAll(/from\s*"\.\/(chunk-[\w-]+\.js)"/g)) visit(imported);
+  };
+  visit(file);
+  return [...seen].reduce((sum, name) => sum + byFile.get(name).bytes, 0);
 }
 
 async function waitForServer(url, timeoutMs = 30_000) {
@@ -624,15 +676,17 @@ async function main() {
     if (initial) notes.push(`initial bundle, estimated transfer: ${initial[1]}`);
 
     const lazy = lazyChunkSizes(build.output);
+    const browserDir = path.join(appDir, `dist/${APP}/browser`);
     for (const page of pages) {
       if (page.specifier === PACKAGE) continue;
-      const bytes = lazy.get(`ep-${page.slug}`);
-      notes.push(`lazy chunk for ${page.specifier}: ${bytes ?? '?'} bytes`);
+      const file = lazy.byName.get(`ep-${page.slug}`);
+      const bytes = file === undefined ? undefined : lazyWeight(browserDir, file, lazy.byFile);
+      notes.push(`lazy load for ${page.specifier}: ${bytes ?? '?'} bytes`);
       if (bytes === undefined) {
         problems.push(`[not-lazy] no lazy chunk named ep-${page.slug} in the build output`);
       } else if (page.smoke.minLazyBytes && bytes < page.smoke.minLazyBytes) {
         problems.push(
-          `[not-lazy] ${page.specifier}'s lazy chunk is ${bytes} bytes, under ${page.smoke.minLazyBytes} — ` +
+          `[not-lazy] ${page.specifier}'s lazy chunks come to ${bytes} bytes, under ${page.smoke.minLazyBytes} — ` +
             `its code landed in the initial bundle (a root that re-exports it drags it there)`,
         );
       }

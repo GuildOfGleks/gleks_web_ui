@@ -261,8 +261,12 @@ app, so it is not a CI step. What it runs, in order (the script's header has the
    one lazy — with `provideGogConfig` marker labels set once in the root. **A new public entry
    point with no `SMOKE` page fails the check**: add its page in the same change.
 5. `ng build` with prerendering: fails on an error, on a warning naming the package, and on a
-   secondary entry point's lazy chunk under its `minLazyBytes` (the 21.13.0 shape: a 442-byte chunk
-   and the component in the initial bundle).
+   secondary entry point's lazy load under its `minLazyBytes` (the 21.13.0 shape: a 442-byte chunk
+   and the component in the initial bundle). The lazy load is the page's own chunk plus every lazy
+   chunk it imports statically: when two lazy pages share code the bundler gives it a chunk of its
+   own, and the page's chunk alone then reads as tiny although nothing reached the initial bundle —
+   21.20.0's `/mask` page measured 673 bytes that way, its 7.5 kB in a chunk shared with
+   `/subpaths`.
 6. The prerendered HTML must carry each page's marker labels (the root's `GOG_CONFIG` reached the
    other entry points), and in Chrome, through the app's own SSR server, every page must hydrate
    with an empty console, a navigation to each lazy page must fetch a script, and each page's
