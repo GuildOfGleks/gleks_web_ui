@@ -63,7 +63,7 @@ delete the section too.
   module or that only four components split), the comparison page's code-splitting section
   (`compare-full.md`, from line ~243, and the "root plus the three split entry points" bundling
   recipe near line 100 — the whole-library figure must still bundle every public entry point, now
-  48), and each component page's import line where it names the root — optionally showing the
+  49), and each component page's import line where it names the root — optionally showing the
   subpath beside it, from `AGENTS.md`'s _Quick facts_ list. Re-measure the code-splitting
   section's numbers against the published package rather than quoting the admin app's.
 - **A new Mask page** (`components/mask`, Form controls) for `input[gogMask]`, from the new

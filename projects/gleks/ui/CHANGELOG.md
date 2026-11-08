@@ -104,7 +104,7 @@ _Versioning_ section. Before 21.16.0 a minor could carry a breaking change, and 
   value with no control at all. New types `GogMask`, `GogMaskTokens`, `GogMaskValue` and
   `GogMaskState`. No effect, and a dev-mode warning, on `type="number"` or `"password"`.
 - **Every component has its own entry point, and an app code-splits by route without changing an
-  import.** `@guildofgleks/ui/button`, `/select`, `/toast` and so on — 44 subpaths beside the four
+  import.** `@guildofgleks/ui/button`, `/select`, `/toast` and so on — 45 subpaths, `/mask` among them, beside the four
   that already existed — plus `/config` (`provideGogConfig`, `GOG_CONFIG`, the shared types),
   `/date` (the date helpers), `/dropdown` (the base classes for a dropdown of your own), `/tokens`
   (`GOG_TOKEN_GROUPS`), `/theme` (`ThemeService`) and `/ripple`. `ToastService` is on `/toast` and
